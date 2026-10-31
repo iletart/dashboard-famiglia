@@ -180,6 +180,168 @@ h3{
   border-radius:50%;
 }
 
+.wx-icon{
+  display:inline-block;
+  position:relative;
+  width:44px;
+  height:40px;
+  margin:2px auto;
+}
+
+.wx-cloud{
+  display:block;
+  position:absolute;
+  left:7px;
+  top:13px;
+  width:29px;
+  height:13px;
+  background:#111;
+  border-radius:12px;
+}
+
+.wx-cloud:before{
+  content:"";
+  position:absolute;
+  left:5px;
+  top:-9px;
+  width:16px;
+  height:16px;
+  background:#111;
+  border-radius:50%;
+}
+
+.wx-cloud:after{
+  content:"";
+  position:absolute;
+  left:15px;
+  top:-13px;
+  width:20px;
+  height:20px;
+  background:#111;
+  border-radius:50%;
+}
+
+.wx-sun{
+  display:block;
+  position:absolute;
+  left:7px;
+  top:4px;
+  width:18px;
+  height:18px;
+  background:#111;
+  border-radius:50%;
+}
+
+.wx-moon{
+  display:block;
+  position:absolute;
+  left:10px;
+  top:3px;
+  width:22px;
+  height:22px;
+  background:#111;
+  border-radius:50%;
+}
+
+.wx-moon:after{
+  content:"";
+  position:absolute;
+  left:9px;
+  top:-4px;
+  width:19px;
+  height:19px;
+  background:#fff;
+  border-radius:50%;
+}
+
+.wx-sun-cloud .wx-cloud,
+.wx-moon-cloud .wx-cloud{
+  left:13px;
+  top:17px;
+}
+
+.wx-sun-cloud .wx-sun{
+  left:3px;
+  top:3px;
+}
+
+.wx-moon-cloud .wx-moon{
+  left:3px;
+  top:2px;
+}
+
+.wx-rain,
+.wx-snow,
+.wx-lightning{
+  display:none;
+  position:absolute;
+}
+
+.wx-rain{
+  display:block;
+  left:13px;
+  top:29px;
+  width:4px;
+  height:8px;
+  background:#111;
+  border-radius:50%;
+  box-shadow:9px 2px 0 #111, 18px 0 0 #111;
+}
+
+.wx-drizzle .wx-rain{
+  height:4px;
+  width:4px;
+  top:29px;
+}
+
+.wx-rain .wx-cloud,
+.wx-drizzle .wx-cloud,
+.wx-snow .wx-cloud,
+.wx-storm .wx-cloud{
+  display:block;
+}
+
+.wx-snow{
+  display:block;
+  left:13px;
+  top:29px;
+  width:5px;
+  height:5px;
+  background:#111;
+  border-radius:50%;
+  box-shadow:10px 2px 0 #111, 20px 0 0 #111;
+}
+
+.wx-fog .wx-cloud{
+  display:none;
+}
+
+.wx-fog:after{
+  content:"";
+  position:absolute;
+  left:5px;
+  top:14px;
+  width:34px;
+  height:3px;
+  background:#111;
+  box-shadow:0 7px 0 #111, 0 14px 0 #111;
+}
+
+.wx-storm .wx-lightning{
+  display:block;
+  left:20px;
+  top:24px;
+  width:0;
+  height:0;
+  border-left:6px solid transparent;
+  border-right:3px solid transparent;
+  border-top:14px solid #111;
+}
+
+.wx-storm .wx-rain{
+  display:none;
+}
+
 #info{
   overflow:hidden
 }
@@ -848,62 +1010,73 @@ function renderWeather() {
   var temp = Math.round(wData.temperature_2m);
   var feels = Math.round(wData.apparent_temperature);
 
-  var icon = "🌤️";
+if(iconEl){
+  var now = toRome(new Date().getTime());
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var currentTime = hour * 60 + minute;
 
-  if (code === 0) icon = "☀️";
-  else if (code === 1 || code === 2) icon = "⛅";
-  else if (code === 3) icon = "☁️";
-  else if (code === 45 || code === 48) icon = "🌫️";
-  else if (code >= 51 && code <= 57) icon = "🌦️";
-  else if (code >= 61 && code <= 67) icon = "🌧️";
-  else if (code >= 71 && code <= 77) icon = "❄️";
-  else if (code >= 80 && code <= 82) icon = "🌧️";
-  else if (code === 85 || code === 86) icon = "🌨️";
-  else if (code >= 95) icon = "⛈️";
+  var today = now.getFullYear() + "-" +
+    (now.getMonth() + 1) + "-" +
+    now.getDate();
 
-  if (iconEl) {
-	var now = toRome(new Date().getTime());
-	var hour = now.getHours();
-	var minute = now.getMinutes();
-    var currentTime = hour * 60 + minute;
+  var night = (hour >= 17 || hour < 6);
 
-    var today = now.getFullYear() + "-" +
-            (now.getMonth() + 1) + "-" +
-            now.getDate();
+  if(sunData &&
+     sunDate === today &&
+     sunData.civil_twilight_start &&
+     sunData.civil_twilight_end){
 
-    /* Fallback se gli orari astronomici non sono disponibili */
-    var night = (hour >= 17 || hour < 6);
+    var dawn = sunData.civil_twilight_start.split(":");
+    var dusk = sunData.civil_twilight_end.split(":");
 
-    if (sunData &&
-        sunDate === today &&
-        sunData.civil_twilight_start &&
-        sunData.civil_twilight_end) {
+    var dawnMinutes = parseInt(dawn[0], 10) * 60 +
+      parseInt(dawn[1], 10);
 
-      var dawn = sunData.civil_twilight_start.split(":");
-      var dusk = sunData.civil_twilight_end.split(":");
+    var duskMinutes = parseInt(dusk[0], 10) * 60 +
+      parseInt(dusk[1], 10);
 
-      var dawnMinutes = parseInt(dawn[0], 10) * 60 +
-                        parseInt(dawn[1], 10);
-
-      var duskMinutes = parseInt(dusk[0], 10) * 60 +
-                        parseInt(dusk[1], 10);
-
-      night = (
-        currentTime < dawnMinutes ||
-        currentTime >= duskMinutes
-      );
-    }
-
-    if (night && (code === 0 || code === 1 || code === 2)) {
-      iconEl.innerHTML = "<span class='moon-icon'></span>";
-    } else if (code === 0 || code === 1) {
-      iconEl.innerHTML = "<span class='sun-icon'></span>";
-	} else if (code === 3) {
-	  iconEl.innerHTML = "<span class='cloud-icon'></span>";
-	} else {
-	  iconEl.innerHTML = "<span class='weather-icon'>" + icon + "</span>";
-	}
+    night = (
+      currentTime < dawnMinutes ||
+      currentTime >= duskMinutes
+    );
   }
+
+  var iconClass = "wx-cloud";
+
+  if(code === 0){
+    iconClass = night ? "wx-moon" : "wx-sun";
+  } else if(code === 1 || code === 2){
+    iconClass = night ? "wx-moon-cloud" : "wx-sun-cloud";
+  } else if(code === 3){
+    iconClass = "wx-cloud";
+  } else if(code === 45 || code === 48){
+    iconClass = "wx-fog";
+  } else if(code >= 51 && code <= 57){
+    iconClass = "wx-drizzle";
+  } else if(code >= 61 && code <= 67){
+    iconClass = "wx-rain";
+  } else if(code >= 71 && code <= 77){
+    iconClass = "wx-snow";
+  } else if(code >= 80 && code <= 82){
+    iconClass = "wx-rain";
+  } else if(code === 85 || code === 86){
+    iconClass = "wx-snow";
+  } else if(code >= 95){
+    iconClass = "wx-storm";
+  }
+
+  iconEl.innerHTML =
+    "<span class='wx-icon " + iconClass + "'>" +
+    "<span class='wx-cloud'></span>" +
+    "<span class='wx-sun'></span>" +
+    "<span class='wx-moon'></span>" +
+    "<span class='wx-rain'></span>" +
+    "<span class='wx-snow'></span>" +
+    "<span class='wx-fog'></span>" +
+    "<span class='wx-lightning'></span>" +
+    "</span>";
+}
 
   el.innerHTML =
     "Milano: " + temp + "°C, " + wcText(code) +
