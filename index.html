@@ -324,7 +324,7 @@ li{margin:3px 0}
         <button type="button" id="tb-domani">Domani</button>
       </div>
 
-      <div id="taskCtl">
+      <div id="taskCtl" style="display:none;">
 		  <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
 		  <button type="button" id="taskAddButton">Aggiungi</button>
 		</div>
@@ -334,7 +334,7 @@ li{margin:3px 0}
 	
     <div class="box">
       <h2>Da fare</h2>
-      <div id="todoCtl"></div>
+      <div id="todoCtl" style="display:none;"></div>
       <div id="todoList"></div>
       <div class="small" id="todoStatus"></div>
     </div>
@@ -1135,6 +1135,14 @@ function todoConnect(){
 	ctl.appendChild(inp);
 	ctl.appendChild(document.createTextNode(" "));
 	ctl.appendChild(add);
+
+	/* Mostra insieme i campi di inserimento */
+	ctl.style.display = "";
+
+	var taskCtl = $("taskCtl");
+	if(taskCtl){
+	  taskCtl.style.display = "";
+	}
 
 	todoSchedulePoll();
 	initTasks();
