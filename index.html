@@ -1473,10 +1473,9 @@ function updateTaskButtons(){
     }
   }
 
-  setText(
-    $("taskDateTitle"),
-    "Task del " + taskDateLabel(TASK_OFF[taskSel])
-  );
+  $("taskDateTitle").innerHTML =
+    "Task del " + taskDateLabel(TASK_OFF[taskSel]) +
+    " <span class='sync-label'>(synced)</span>";
 }
 
 function loadTasks(){
