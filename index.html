@@ -1873,7 +1873,7 @@ function loadTasks(silent){
   if(!todoConnected){
     taskSyncError = false;
     updateTaskButtons();
-    setText($("taskStatus"), "Connetti prima la lista condivisa.");
+    setText($("taskStatus"), "");
     return;
   }
 
