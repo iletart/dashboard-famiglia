@@ -62,6 +62,13 @@ h3{
   box-sizing:border-box;
 }
 
+.sync-label {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #888;
+  font-weight: normal;
+}
+
 /* OROLOGIO */
 
 #clock{
@@ -484,55 +491,58 @@ li{margin:3px 0}
 </div>
 
 <div class="row cf">
-  <div class="col">
-    <div class="box">
-      <h2 id="agendaTitle">Agenda famiglia</h2>
-      <div id="agenda">Caricamento...</div>
-      <div class="small" id="agendaStatus"></div>
-    </div>
-
-    <div class="box">
-      <h2 id="routesTitle">Spostamenti</h2>
-      <div id="routes"></div>
-      <div class="small" id="routesStatus"></div>
-    </div>
-  </div>
-
-<div class="col">
-    <div class="box">
-      <h2 id="taskDateTitle">Task <span class="sync-label">(synced)</span></h2>
-
-      <div id="taskDayButtons">
-        <button type="button" id="tb-ieri">Ieri</button>
-        <button type="button" id="tb-oggi" class="sel">Oggi</button>
-        <button type="button" id="tb-domani">Domani</button>
-      </div>
-
-      <div id="taskCtl" style="display:none;">
-		  <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
-		  <button type="button" id="taskAddButton">Aggiungi</button>
+	<div class="col">
+		<div class="box">
+			<h2 id="agendaTitle">Agenda famiglia</h2>
+			<div class="sync-label" id="agendaTimes"></div>
+			<div id="agenda">Caricamento...</div>
+			<div class="small" id="agendaStatus"></div>
 		</div>
-      <div id="taskList"></div>
-      <div class="small" id="taskStatus"></div>
-    </div>
-	
-    <div class="box">
-      <h2>Da fare <span id="todoSyncLabel" class="sync-label">(non connesso)</span></h2>
-      <div id="todoCtl" style="display:none;"></div>
-      <div id="todoList"></div>
-      <div class="small" id="todoStatus"></div>
-    </div>
 
-    <div class="box">
-      <h2 id="menuTitle">Menu scuola</h2>
-      <div>
-        <button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
-      </div>
-      <h3 id="menuDate"></h3>
-      <div id="menuList"></div>
-      <div class="small" id="menuStatus"></div>
-    </div>
-  </div>
+		<div class="box">
+			<h2 id="routesTitle">Spostamenti</h2>
+			<div class="sync-label" id="routesTimes"></div>
+			<div id="routes"></div>
+			<div class="small" id="routesStatus"></div>
+		</div>
+	</div>
+
+	<div class="col">
+		<div class="box">
+		  <h2 id="taskDateTitle">Task <span class="sync-label">(synced)</span></h2>
+
+		  <div id="taskDayButtons">
+			<button type="button" id="tb-ieri">Ieri</button>
+			<button type="button" id="tb-oggi" class="sel">Oggi</button>
+			<button type="button" id="tb-domani">Domani</button>
+		  </div>
+
+		  <div id="taskCtl" style="display:none;">
+			  <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
+			  <button type="button" id="taskAddButton">Aggiungi</button>
+			</div>
+		  <div id="taskList"></div>
+		  <div class="small" id="taskStatus"></div>
+		</div>
+
+		<div class="box">
+		  <h2>Da fare <span id="todoSyncLabel" class="sync-label">(non connesso)</span></h2>
+		  <div id="todoCtl" style="display:none;"></div>
+		  <div id="todoList"></div>
+		  <div class="small" id="todoStatus"></div>
+		</div>
+
+		<div class="box">
+			<h2 id="menuTitle">Menu scuola</h2>
+			<div class="sync-label" id="menuTimes"></div>
+			<div>
+				<button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
+			</div>
+			<h3 id="menuDate"></h3>
+			<div id="menuList"></div>
+			<div class="small" id="menuStatus"></div>
+		</div>
+	</div>
 </div>
 
 <div id="err"></div>
@@ -869,28 +879,30 @@ function renderAgenda(){
   var weekEnd = monday + 6;
 
   // Titolo con orario ultimo aggiornamento
-	var gen = parseIso(agendaData.generated_at);
-	var title = "AGENDA FAMIGLIA";
+	$("agendaTitle").innerHTML = "AGENDA FAMIGLIA";
+
+	var times = "";
+
+	var gen = parseIso(agendaData.generated_at || agendaData.updated_at);
 
 	if (gen !== null) {
-	  title += " <span class='sync-label'>(upd time: " +
-		hhmmRome(gen) + ")</span>";
-
-	  if (new Date().getTime() - gen > 3 * 3600000) {
-		title += " <span class='sync-label'>(dati vecchi)</span>";
-	  }
+	  times += "upd time: " + hhmmRome(gen) + "<br>";
 	}
 
 	if (agendaSyncedAt !== null) {
-	  title += " <span class='sync-label'>(sync time: " +
-		hhmmRome(agendaSyncedAt.getTime()) + ")</span>";
+	  times += "sync time: " + hhmmRome(agendaSyncedAt.getTime());
 	}
 
 	if (agendaErr) {
-	  title += " <span class='sync-label'>(rete non disponibile)</span>";
+	  times += "<br>rete non disponibile";
 	}
 
-	$("agendaTitle").innerHTML = title;
+	if (gen !== null && new Date().getTime() - gen > 3 * 3600000) {
+	  times += "<br>dati vecchi";
+	}
+
+	setText($("agendaTimes"), "");
+	$("agendaTimes").innerHTML = times;
 
 
   // Pulsanti di navigazione
@@ -1185,126 +1197,126 @@ function loadRoutes() {
 }
 
 function renderRoutes(){
-	var box = $("routes");
-	var i, r, data, departure, calculated, today, line;
+  var box = $("routes");
+  var i, r, data, departure, calculated, today, line;
 
-	clear(box);
+  clear(box);
 
-	var now = new Date();
-	var day = now.getDay();
+  var now = new Date();
+  var day = now.getDay();
 
-	var routesTitle = "SPOSTAMENTI";
-	var routesGenerated = null;
+  // Titolo separato dai timestamp
+  if ($("routesTitle")) {
+    $("routesTitle").innerHTML = "SPOSTAMENTI";
+  }
 
-	if (routesData) {
-	  routesGenerated = parseIso(
-		routesData.generated_at || routesData.updated_at
-	  );
-	}
+  var times = "";
+  var routesGenerated = null;
 
-	if (routesGenerated !== null) {
-	  routesTitle +=
-		" <span class='sync-label'>(upd time: " +
-		hhmmRome(routesGenerated) + ")</span>";
-	}
+  if (routesData) {
+    routesGenerated = parseIso(
+      routesData.generated_at || routesData.updated_at
+    );
+  }
 
-	if (routesSyncedAt !== null) {
-	  routesTitle +=
-		" <span class='sync-label'>(sync time: " +
-		hhmmRome(routesSyncedAt.getTime()) + ")</span>";
-	}
+  if (routesGenerated !== null) {
+    times += "upd time: " + hhmmRome(routesGenerated) + "<br>";
+  }
 
-	if (routesErr) {
-	  routesTitle +=
-		" <span class='sync-label'>(sync error)</span>";
-	}
+  if (routesSyncedAt !== null) {
+    times += "sync time: " +
+      hhmmRome(routesSyncedAt.getTime());
+  }
 
-	if ($("routesTitle")) {
-	  $("routesTitle").innerHTML = routesTitle;
-	}
+  if (routesErr) {
+    times += "<br>sync error";
+  }
 
-	/* Weekend */
-	if(day === 0 || day === 6){
-	var phrase = WEEKEND_PHRASES[
-	  Math.floor(Math.random() * WEEKEND_PHRASES.length)
-	];
+  if ($("routesTimes")) {
+    $("routesTimes").innerHTML = times;
+  }
 
-	box.appendChild(mk("div", "weekend-message", phrase));
-	setText($("routesStatus"), "");
-	scheduleBoxAlignment();
-	return;
-	}
+  /* Weekend */
+  if(day === 0 || day === 6){
+    var phrase = WEEKEND_PHRASES[
+      Math.floor(Math.random() * WEEKEND_PHRASES.length)
+    ];
 
-	/* Giorni feriali */
-	if(!CONFIG.routesUrl){
-	setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
-	scheduleBoxAlignment();
-	return;
-	}
+    box.appendChild(mk("div", "weekend-message", phrase));
+    setText($("routesStatus"), "");
+    scheduleBoxAlignment();
+    return;
+  }
 
-	var todayDate = toRome(new Date().getTime());
+  /* Giorni feriali */
+  if(!CONFIG.routesUrl){
+    setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
+    scheduleBoxAlignment();
+    return;
+  }
 
-	var today =
-	  todayDate.getUTCFullYear() + "-" +
-	  p2(todayDate.getUTCMonth() + 1) + "-" +
-	  p2(todayDate.getUTCDate());
+  var todayDate = toRome(new Date().getTime());
 
-	for(i = 0; i < ROUTES.length; i++){
-	r = ROUTES[i];
-	data = routesData && routesData.routes ?
-	  routesData.routes[r.id] : null;
+  var today =
+    todayDate.getUTCFullYear() + "-" +
+    p2(todayDate.getUTCMonth() + 1) + "-" +
+    p2(todayDate.getUTCDate());
 
-	if(!data || !data.departure || !data.calculated_at){
-	  line = r.da + " \u2192 " + r.a + ": in attesa del calcolo";
-	  box.appendChild(mk("div", "rt", line));
-	  continue;
-	}
+  for(i = 0; i < ROUTES.length; i++){
+    r = ROUTES[i];
+    data = routesData && routesData.routes ?
+      routesData.routes[r.id] : null;
 
-	var calculated = parseIso(data.calculated_at);
+    if(!data || !data.departure || !data.calculated_at){
+      line = r.da + " \u2192 " + r.a + ": in attesa del calcolo";
+      box.appendChild(mk("div", "rt", line));
+      continue;
+    }
 
-	if (calculated === null) continue;
+    calculated = parseIso(data.calculated_at);
 
-	var calculatedRome = toRome(calculated);
+    if (calculated === null) continue;
 
-	if (
-	  calculatedRome.getUTCFullYear() + "-" +
-	  p2(calculatedRome.getUTCMonth() + 1) + "-" +
-	  p2(calculatedRome.getUTCDate()) !== today
-	) {
-	  continue;
-	}
+    var calculatedRome = toRome(calculated);
 
-	departure = parseIso(data.departure);
+    if (
+      calculatedRome.getUTCFullYear() + "-" +
+      p2(calculatedRome.getUTCMonth() + 1) + "-" +
+      p2(calculatedRome.getUTCDate()) !== today
+    ) {
+      continue;
+    }
 
-	if(departure === null){
-	  continue;
-	}
+    departure = parseIso(data.departure);
 
-	line = r.da + " \u2192 " + r.a +
-	  ": partenza " + hhmmRome(departure) +
-	  " · " + data.duration_minutes + " min";
+    if(departure === null){
+      continue;
+    }
 
-	box.appendChild(mk("div", "rt", line));
-	}
+    line = r.da + " \u2192 " + r.a +
+      ": partenza " + hhmmRome(departure) +
+      " · " + data.duration_minutes + " min";
 
-	var st = "";
+    box.appendChild(mk("div", "rt", line));
+  }
 
-	if(routesData && routesData.generated_at){
-	var g = parseIso(routesData.generated_at);
-	if(g !== null){
-	  st = "Aggiornato alle " + hhmmRome(g);
-	}
-	}
+  var st = "";
 
-	if(routesErr){
-	st = st ? st + " - rete non disponibile" :
-	  "Tempi non raggiungibili.";
-	}
+  if(routesData && routesData.generated_at){
+    var g = parseIso(routesData.generated_at);
+    if(g !== null){
+      st = "Aggiornato alle " + hhmmRome(g);
+    }
+  }
 
-	setText($("routesStatus"), st);
+  if(routesErr){
+    st = st ? st + " - rete non disponibile" :
+      "Tempi non raggiungibili.";
+  }
 
-	scheduleBoxAlignment();
-  
+  setText($("routesStatus"), st);
+
+  scheduleBoxAlignment();
 }
 
 /* ===== FINE SPOSTAMENTI ===== */
@@ -2189,6 +2201,25 @@ function renderMenuWeekend(){
 function renderMenu(k, err, d){
   var list = $("menuList"), i;
   clear(list);
+
+  $("menuTitle").innerHTML = "MENU SCUOLA";
+
+  var times = "";
+
+  if(menuUpdatedAt !== null){
+    times += "upd time: " + hhmmRome(menuUpdatedAt) + "<br>";
+  }
+
+  if(menuSyncedAt !== null){
+    times += "sync time: " +
+      hhmmRome(menuSyncedAt.getTime());
+  }
+
+  if(err){
+    times += "<br>sync error";
+  }
+
+  $("menuTimes").innerHTML = times;
 
   var label = fullDateText(todayNum() + MENUOFF[k]);
   setText($("menuDate"), label);
