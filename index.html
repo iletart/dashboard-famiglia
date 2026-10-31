@@ -306,7 +306,10 @@ li{margin:3px 0}
         <button type="button" id="tb-domani">Domani</button>
       </div>
 
-      <div id="taskCtl"></div>
+      <div id="taskCtl">
+		  <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
+		  <button type="button" id="taskAddButton">Aggiungi</button>
+		</div>
       <div id="taskList"></div>
       <div class="small" id="taskStatus"></div>
     </div>
@@ -1088,7 +1091,6 @@ function todoConnect(){
 	/* Barra aggiunta attività */
 	var ctl = $("todoCtl");
 	clear(ctl);
-	setText(ctl, "TEST CAMPO TASK");
 
 	var inp = mk("input");
 	inp.id = "todoInput";
@@ -1553,14 +1555,8 @@ function addTask(){
 }
 
 function initTasks(){
-  var ctl = $("taskCtl");
-  clear(ctl);
-
-  var inp = mk("input");
-  inp.id = "taskInput";
-  inp.type = "text";
-  inp.maxLength = 200;
-  inp.placeholder = "Nuova attività";
+  var inp = $("taskInput");
+  var add = $("taskAddButton");
 
   inp.onkeydown = function(ev){
     ev = ev || window.event;
@@ -1569,17 +1565,19 @@ function initTasks(){
     }
   };
 
-  var add = mk("button", "", "Aggiungi");
-  add.type = "button";
   add.onclick = addTask;
 
-  ctl.appendChild(inp);
-  ctl.appendChild(document.createTextNode(" "));
-  ctl.appendChild(add);
+  $("tb-ieri").onclick = function(){
+    selectTask("ieri");
+  };
 
-  $("tb-ieri").onclick = function(){ selectTask("ieri"); };
-  $("tb-oggi").onclick = function(){ selectTask("oggi"); };
-  $("tb-domani").onclick = function(){ selectTask("domani"); };
+  $("tb-oggi").onclick = function(){
+    selectTask("oggi");
+  };
+
+  $("tb-domani").onclick = function(){
+    selectTask("domani");
+  };
 
   updateTaskButtons();
   loadTasks();
