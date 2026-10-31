@@ -825,8 +825,6 @@ function renderWeather() {
   else if (code >= 80 && code <= 82) icon = "🌧️";
   else if (code === 85 || code === 86) icon = "🌨️";
   else if (code >= 95) icon = "⛈️";
-  
-  icon = icon.replace(/\uFE0F/g, "");
 
   if (iconEl) {
 	var now = toRome(new Date().getTime());
@@ -1817,32 +1815,27 @@ setInterval(function(){
 function alignBottomBoxes(){
   var cols = document.querySelectorAll(".col");
   var i, boxes, last;
-  var bottoms = [];
-  var maxBottom = 0;
+  var heights = [];
+  var maxHeight = 0;
 
-  /* Azzera le altezze precedenti */
+  /* Azzera le altezze minime precedenti */
   for(i = 0; i < cols.length; i++){
     boxes = cols[i].querySelectorAll(".box");
 
     for(var j = 0; j < boxes.length; j++){
       boxes[j].style.minHeight = "";
     }
-  }
 
-  /* Misura il fondo effettivo di ogni colonna */
-  for(i = 0; i < cols.length; i++){
-    bottoms[i] = cols[i].getBoundingClientRect().bottom;
+    heights[i] = cols[i].offsetHeight;
 
-    if(bottoms[i] > maxBottom){
-      maxBottom = bottoms[i];
+    if(heights[i] > maxHeight){
+      maxHeight = heights[i];
     }
   }
 
-  /* Allunga l'ultimo riquadro della colonna più corta */
+  /* Allunga l'ultimo box della colonna più corta */
   for(i = 0; i < cols.length; i++){
-    var diff = maxBottom - bottoms[i];
-
-    if(diff > 1){
+    if(heights[i] < maxHeight){
       boxes = cols[i].querySelectorAll(".box");
 
       if(boxes.length){
@@ -1856,7 +1849,7 @@ function alignBottomBoxes(){
           parseFloat(style.borderBottomWidth);
 
         last.style.minHeight =
-          (last.offsetHeight + diff - extra) + "px";
+          (last.offsetHeight + maxHeight - heights[i] - extra) + "px";
       }
     }
   }
