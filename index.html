@@ -44,21 +44,21 @@ h3{
 }
 
 .row{
-  display:flex;
-  align-items:stretch;
+  display:block;
   margin:0;
 }
 
+.row:after{
+  content:"";
+  display:table;
+  clear:both;
+}
+
 .col{
-  display:flex;
-  flex-direction:column;
+  float:left;
   width:50%;
   min-width:0;
   box-sizing:border-box;
-}
-
-.col > .box:last-child{
-  flex-grow:1;
 }
 
 #clock{
@@ -274,12 +274,8 @@ li{margin:3px 0}
   }
 
   .col{
-    display:block;
+    float:none;
     width:100%;
-  }
-
-  .col > .box:last-child{
-    flex-grow:0;
   }
 
   #info {
