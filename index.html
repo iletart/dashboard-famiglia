@@ -281,6 +281,12 @@ li{margin:3px 0}
   </div>
 </div>
 
+<div class="box" id="syncBox">
+  <h2>Sincronizzazione</h2>
+  <div id="syncCtl"></div>
+  <div class="small" id="syncStatus"></div>
+</div>
+
 <div class="row cf">
   <div class="col">
     <div class="box">
@@ -1044,7 +1050,7 @@ function todoConnect(){
   todoPin = pin;
   todoBusy = true;
 
-  setText($("todoStatus"), "Connessione in corso...");
+  setText($("syncStatus"), "Connessione in corso...");
 
   todoRequest("GET", null, function(err, data){
     todoBusy = false;
@@ -1060,7 +1066,7 @@ function todoConnect(){
 	  var detail = data && data.detail ? data.detail : "";
 
 	  setText(
-		$("todoStatus"),
+		$("syncStatus"),
 		"Connessione non riuscita: " +
 		(err || "risposta non valida") +
 		(detail ? " - " + detail : "")
@@ -1071,6 +1077,11 @@ function todoConnect(){
 
 	todoItems = data.items;
 	todoConnected = true;
+	
+	var syncBox = $("syncBox");
+	if(syncBox){
+	  syncBox.style.display = "none";
+	}
 
 	try {
 	  window.localStorage.setItem("todoPin", todoPin);
@@ -1260,8 +1271,8 @@ function todoRow(i){
 }
 
 function loadTodo(){
-  var ctl = $("todoCtl");
-  var st = $("todoStatus");
+  var ctl = $("syncCtl");
+  var st = $("syncStatus");
 
   clear(ctl);
   clear($("todoList"));
@@ -1288,19 +1299,19 @@ function loadTodo(){
       todoConnect();
     }
   };
-  
-	var savedPin = "";
 
-	try {
-	  savedPin = window.localStorage.getItem("todoPin") || "";
-	} catch(e) {}
+  var savedPin = "";
 
-	if(savedPin){
-	  pinInput.value = savedPin;
-	  todoConnect();
-	} else {
-	  setText(st, "Inserisci il PIN per caricare la lista condivisa.");
-	}
+  try {
+    savedPin = window.localStorage.getItem("todoPin") || "";
+  } catch(e) {}
+
+  if(savedPin){
+    pinInput.value = savedPin;
+    todoConnect();
+  } else {
+    setText(st, "Inserisci il PIN per collegare la dashboard.");
+  }
 }
 
 /* ===== TASK GIORNALIERI ===== */
