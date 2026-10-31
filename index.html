@@ -44,21 +44,21 @@ h3{
 }
 
 .row{
-  display:block;
+  display:flex;
+  align-items:stretch;
   margin:0;
 }
 
-.row:after{
-  content:"";
-  display:table;
-  clear:both;
-}
-
 .col{
-  float:left;
+  display:flex;
+  flex-direction:column;
   width:50%;
   min-width:0;
   box-sizing:border-box;
+}
+
+.col > .box:last-child{
+  flex-grow:1;
 }
 
 #clock{
@@ -264,17 +264,21 @@ li{margin:3px 0}
 
 @media (max-width:560px){
   .row{
-    display:block
+    display:block;
   }
 
   .col{
-    float:none;
-    width:100%
+    display:block;
+    width:100%;
   }
 
-	#info {
-	  overflow:hidden;
-	}
+  .col > .box:last-child{
+    flex-grow:0;
+  }
+
+  #info {
+    overflow:hidden;
+  }
 }
 </style>
 
