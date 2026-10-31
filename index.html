@@ -2111,15 +2111,19 @@ function updateMenuButtons(){
 
 
 function loadMenu() {
-  var now = toRome(new Date().getTime());
-  var day = now.getUTCDay();
+  var k = menuSel;
 
+  // Calcola il giorno effettivamente selezionato
+  var selectedDay = todayNum() + MENUOFF[k];
+  var selectedDate = dateOfDayNum(selectedDay);
+  var day = selectedDate.getUTCDay();
+
+  // Se il giorno selezionato è sabato o domenica
   if (day === 0 || day === 6) {
     renderMenuWeekend();
     return;
   }
 
-  var k = menuSel;
   setText($("menuStatus"), "Caricamento...");
 
   getJson([CONFIG.base + MENUF[k], MENUF[k]], function(err, d) {
