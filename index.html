@@ -492,7 +492,7 @@ li{margin:3px 0}
     </div>
 
     <div class="box">
-      <h2>Spostamenti</h2>
+      <h2 id="routesTitle">Spostamenti</h2>
       <div id="routes"></div>
       <div class="small" id="routesStatus"></div>
     </div>
@@ -524,7 +524,7 @@ li{margin:3px 0}
     </div>
 
     <div class="box">
-      <h2>Menu scuola</h2>
+      <h2 id="menuTitle">Menu scuola</h2>
       <div>
         <button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
       </div>
@@ -542,13 +542,28 @@ li{margin:3px 0}
 /* ===== CONFIGURAZIONE ===== */
 var CONFIG = {
   base: "https://raw.githubusercontent.com/iletart/menu-scuola/main/",
-  lat: 45.484, lon: 9.233,          /* Milano - Lambrate */
-  agendaMin: 30, weatherMin: 15, menuMin: 60,
-  todoWorkerUrl: "https://todo-sync.iletarta-633.workers.dev",    /* JSON pubblico della lista (sola lettura), vuoto = non configurato */
-  routesUrl: "https://raw.githubusercontent.com/iletart/menu-scuola/main/routes.json"   /* JSON pubblico con i tempi di percorrenza, vuoto = non configurato */
+  lat: 45.484, lon: 9.233,
+  agendaMin: 10,
+  weatherMin: 15,
+  menuMin: 60,
+  todoWorkerUrl: "https://todo-sync.iletarta-633.workers.dev",
+  routesUrl: "https://raw.githubusercontent.com/iletart/menu-scuola/main/routes.json"
 };
+
 var MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 var GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
+
+
+var agendaSyncedAt = null;
+var routesSyncedAt = null;
+var todoSyncedAt = null;
+var taskSyncedAt = null;
+var menuSyncedAt = null;
+
+var routesErr = false;
+var menuUpdatedAt = null;
+
+var taskPollTimer = null;
 var taskSyncError = false;
 
 /* ===== UTILITÀ ===== */
@@ -708,7 +723,51 @@ function dateOnlyNum(s){
   var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));
   return m ? dayNum(+m[1], +m[2] - 1, +m[3]) : null;
 }
-function hhmmRome(ms){ var r = toRome(ms); return p2(r.getUTCHours()) + ":" + p2(r.getUTCMinutes()); }
+function hhmmRome(ms){ 
+	var r = toRome(ms); 
+	return p2(r.getUTCHours()) + ":" + p2(r.getUTCMinutes()); 
+}
+
+function scheduleDailyAt(hour, minute, fn) {
+  function scheduleNext() {
+    var nowMs = new Date().getTime();
+    var r = toRome(nowMs);
+
+    var localTarget = Date.UTC(
+      r.getUTCFullYear(),
+      r.getUTCMonth(),
+      r.getUTCDate(),
+      hour,
+      minute,
+      0,
+      0
+    );
+
+    var targetMs = localTarget -
+      romeOffsetHours(nowMs) * 3600000;
+
+    targetMs = localTarget -
+      romeOffsetHours(targetMs) * 3600000;
+
+    if (targetMs <= nowMs) {
+      localTarget += 86400000;
+
+      targetMs = localTarget -
+        romeOffsetHours(nowMs) * 3600000;
+
+      targetMs = localTarget -
+        romeOffsetHours(targetMs) * 3600000;
+    }
+
+    setTimeout(function() {
+      safe(fn);
+      scheduleNext();
+    }, Math.max(1000, targetMs - nowMs));
+  }
+
+  scheduleNext();
+}
+
 function todayNum(){ return dayNumOfRome(toRome(new Date().getTime())); }
 
 /* ===== OROLOGIO ===== */
@@ -731,33 +790,54 @@ function syncLabelText(){
   return "synced";
 }
 
-function updateTodoSyncLabel(){
-  setText($("todoSyncLabel"), "(" + syncLabelText() + ")");
+function updateTodoSyncLabel() {
+  var label = "(non connesso)";
+
+  if (todoConnected) {
+    if (todoSyncError) {
+      label = "(sync error";
+      if (todoSyncedAt !== null) {
+        label += " - sync time: " +
+          hhmmRome(todoSyncedAt.getTime());
+      }
+      label += ")";
+    } else if (todoSyncedAt !== null) {
+      label = "(sync time: " +
+        hhmmRome(todoSyncedAt.getTime()) + ")";
+    } else {
+      label = "(sync in attesa)";
+    }
+  }
+
+  setText($("todoSyncLabel"), label);
 }
 
 /* ===== AGENDA ===== */
 var agendaData = null;
 var agendaErr = false;
-var agendaSyncedAt = null;
 
 var agendaWeekOffset = 0;
 
-function loadAgenda(){
-  getJson([CONFIG.base + "agenda.json", "agenda.json"], function(err, d){
-    if(!err && d && d.events){
-      agendaData = d;
-      agendaErr = false;
-      agendaSyncedAt = new Date();
-    } else {
-      agendaErr = true;
+function loadAgenda() {
+  getJson(
+    [CONFIG.base + "agenda.json", "agenda.json"],
+    function(err, d) {
+
+      if (!err && d && d.events) {
+        agendaData = d;
+        agendaErr = false;
+        agendaSyncedAt = new Date();
+      } else {
+        agendaErr = true;
+      }
+
+      safe(renderAgenda);
+
+      setTimeout(function() {
+        safe(loadAgenda);
+      }, CONFIG.agendaMin * 60000);
     }
-
-    safe(renderAgenda);
-
-    setTimeout(function(){
-      safe(loadAgenda);
-    }, CONFIG.agendaMin * 60000);
-  });
+  );
 }
 
 function dayLabel(n, today){
@@ -792,19 +872,26 @@ function renderAgenda(){
 	var gen = parseIso(agendaData.generated_at);
 	var title = "AGENDA FAMIGLIA";
 
-	if(gen !== null){
-	  title += " <span class='sync-label'>(last sync: " + hhmmRome(gen) + ")</span>";
+	if (gen !== null) {
+	  title += " <span class='sync-label'>(upd time: " +
+		hhmmRome(gen) + ")</span>";
 
-	  if(new Date().getTime() - gen > 3 * 3600000){
+	  if (new Date().getTime() - gen > 3 * 3600000) {
 		title += " <span class='sync-label'>(dati vecchi)</span>";
 	  }
 	}
 
-  if(agendaErr){
-    title += " - rete non disponibile";
-  }
+	if (agendaSyncedAt !== null) {
+	  title += " <span class='sync-label'>(sync time: " +
+		hhmmRome(agendaSyncedAt.getTime()) + ")</span>";
+	}
 
-  $("agendaTitle").innerHTML = title;
+	if (agendaErr) {
+	  title += " <span class='sync-label'>(rete non disponibile)</span>";
+	}
+
+	$("agendaTitle").innerHTML = title;
+
 
   // Pulsanti di navigazione
   var nav = mk("div", "agenda-nav");
@@ -1076,115 +1163,177 @@ var WEEKEND_PHRASES = [
   "Oggi l'unico appuntamento è con il tempo libero!"
 ];
 
-var routesData = null, routesErr = false;
+var routesData = null;
 
-function loadRoutes(){
-  if(!CONFIG.routesUrl){
+function loadRoutes() {
+  if (!CONFIG.routesUrl) {
     renderRoutes();
     return;
   }
 
-  getJson([CONFIG.routesUrl], function(err, d){
-    if(!err && d && d.routes){
+  getJson([CONFIG.routesUrl], function(err, d) {
+    if (!err && d && d.routes) {
       routesData = d;
       routesErr = false;
+      routesSyncedAt = new Date();
     } else {
       routesErr = true;
     }
 
     safe(renderRoutes);
-    setTimeout(function(){ safe(loadRoutes); }, 15 * 60000);
   });
 }
 
 function renderRoutes(){
-  var box = $("routes");
-  var i, r, data, departure, calculated, today, line;
+	var box = $("routes");
+	var i, r, data, departure, calculated, today, line;
 
-  clear(box);
+	clear(box);
 
-  var now = new Date();
-  var day = now.getDay();
+	var now = new Date();
+	var day = now.getDay();
 
-  /* Weekend */
-  if(day === 0 || day === 6){
-    var phrase = WEEKEND_PHRASES[
-      Math.floor(Math.random() * WEEKEND_PHRASES.length)
-    ];
+	var routesTitle = "SPOSTAMENTI";
+	var routesGenerated = null;
+
+	if (routesData) {
+	  routesGenerated = parseIso(
+		routesData.generated_at || routesData.updated_at
+	  );
+	}
+
+	if (routesGenerated !== null) {
+	  routesTitle +=
+		" <span class='sync-label'>(upd time: " +
+		hhmmRome(routesGenerated) + ")</span>";
+	}
+
+	if (routesSyncedAt !== null) {
+	  routesTitle +=
+		" <span class='sync-label'>(sync time: " +
+		hhmmRome(routesSyncedAt.getTime()) + ")</span>";
+	}
+
+	if (routesErr) {
+	  routesTitle +=
+		" <span class='sync-label'>(sync error)</span>";
+	}
+
+	if ($("routesTitle")) {
+	  $("routesTitle").innerHTML = routesTitle;
+	}
+
+	/* Weekend */
+	if(day === 0 || day === 6){
+	var phrase = WEEKEND_PHRASES[
+	  Math.floor(Math.random() * WEEKEND_PHRASES.length)
+	];
 
 	box.appendChild(mk("div", "weekend-message", phrase));
 	setText($("routesStatus"), "");
 	scheduleBoxAlignment();
 	return;
-  }
+	}
 
-  /* Giorni feriali */
-  if(!CONFIG.routesUrl){
-    setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
+	/* Giorni feriali */
+	if(!CONFIG.routesUrl){
+	setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
 	scheduleBoxAlignment();
-    return;
-  }
+	return;
+	}
 
-  today = now.getFullYear() + "-" +
-    p2(now.getMonth() + 1) + "-" +
-    p2(now.getDate());
+	var todayDate = toRome(new Date().getTime());
 
-  for(i = 0; i < ROUTES.length; i++){
-    r = ROUTES[i];
-    data = routesData && routesData.routes ?
-      routesData.routes[r.id] : null;
+	var today =
+	  todayDate.getUTCFullYear() + "-" +
+	  p2(todayDate.getUTCMonth() + 1) + "-" +
+	  p2(todayDate.getUTCDate());
 
-    if(!data || !data.departure || !data.calculated_at){
-      line = r.da + " \u2192 " + r.a + ": in attesa del calcolo";
-      box.appendChild(mk("div", "rt", line));
-      continue;
-    }
+	for(i = 0; i < ROUTES.length; i++){
+	r = ROUTES[i];
+	data = routesData && routesData.routes ?
+	  routesData.routes[r.id] : null;
 
-    calculated = parseIso(data.calculated_at);
+	if(!data || !data.departure || !data.calculated_at){
+	  line = r.da + " \u2192 " + r.a + ": in attesa del calcolo";
+	  box.appendChild(mk("div", "rt", line));
+	  continue;
+	}
 
-    if(calculated === null ||
-       calculated.getFullYear() + "-" +
-       p2(calculated.getMonth() + 1) + "-" +
-       p2(calculated.getDate()) !== today){
-      continue;
-    }
+	var calculated = parseIso(data.calculated_at);
 
-    departure = parseIso(data.departure);
+	if (calculated === null) continue;
 
-    if(departure === null){
-      continue;
-    }
+	var calculatedRome = toRome(calculated);
 
-    line = r.da + " \u2192 " + r.a +
-      ": partenza " + hhmmRome(departure) +
-      " · " + data.duration_minutes + " min";
+	if (
+	  calculatedRome.getUTCFullYear() + "-" +
+	  p2(calculatedRome.getUTCMonth() + 1) + "-" +
+	  p2(calculatedRome.getUTCDate()) !== today
+	) {
+	  continue;
+	}
 
-    box.appendChild(mk("div", "rt", line));
-  }
+	departure = parseIso(data.departure);
 
-  var st = "";
+	if(departure === null){
+	  continue;
+	}
 
-  if(routesData && routesData.generated_at){
-    var g = parseIso(routesData.generated_at);
-    if(g !== null){
-      st = "Aggiornato alle " + hhmmRome(g);
-    }
-  }
+	line = r.da + " \u2192 " + r.a +
+	  ": partenza " + hhmmRome(departure) +
+	  " · " + data.duration_minutes + " min";
 
-  if(routesErr){
-    st = st ? st + " - rete non disponibile" :
-      "Tempi non raggiungibili.";
-  }
+	box.appendChild(mk("div", "rt", line));
+	}
 
-  setText($("routesStatus"), st);
-  
-  scheduleBoxAlignment();
+	var st = "";
+
+	if(routesData && routesData.generated_at){
+	var g = parseIso(routesData.generated_at);
+	if(g !== null){
+	  st = "Aggiornato alle " + hhmmRome(g);
+	}
+	}
+
+	if(routesErr){
+	st = st ? st + " - rete non disponibile" :
+	  "Tempi non raggiungibili.";
+	}
+
+	setText($("routesStatus"), st);
+
+	scheduleBoxAlignment();
   
 }
 
 /* ===== FINE SPOSTAMENTI ===== */
 
 
+/* ===== AGGIORNAMENTI AUTOMATICI ===== */
+
+function startDailyUpdates() {
+
+  scheduleDailyAt(0, 5, function() {
+    menuSel = "oggi";
+
+    if (typeof updateMenuButtons === "function") {
+      updateMenuButtons();
+    }
+
+    loadMenu();
+  });
+
+  scheduleDailyAt(7, 5, function() {
+    loadRoutes();
+  });
+
+  scheduleDailyAt(16, 5, function() {
+    loadRoutes();
+  });
+}
+
+/* ===== FINE AGGIORNAMENTI AUTOMATICI ===== */
 
 /* ===== LISTA DA FARE OGGI - SINCRONIZZATA ===== */
 
@@ -1310,9 +1459,12 @@ function todoConnect(){
 
 	  return;
 	}
-
+	
 	todoItems = data.items;
 	todoConnected = true;
+	todoSyncedAt = new Date();
+	todoSyncError = false;
+	updateTodoSyncLabel();
 	
 	var syncBox = $("syncBox");
 	if(syncBox){
@@ -1386,7 +1538,9 @@ function todoSchedulePoll(){
     todoRequest("GET", null, function(err, data){
       if(!err && data && data.items){
         todoItems = data.items;
+        todoSyncedAt = new Date();
         todoSyncError = false;
+
         updateTodoSyncLabel();
         updateTaskButtons();
 
@@ -1394,6 +1548,7 @@ function todoSchedulePoll(){
         setText($("todoStatus"), "");
       } else {
         todoSyncError = true;
+
         updateTodoSyncLabel();
         updateTaskButtons();
 
@@ -1436,7 +1591,9 @@ function todoChange(action, index, text){
     }
 
     todoItems = result.items;
+    todoSyncedAt = new Date();
     todoSyncError = false;
+
     updateTodoSyncLabel();
     updateTaskButtons();
 
@@ -1685,42 +1842,86 @@ function updateTaskButtons(){
     }
   }
 
-  $("taskDateTitle").innerHTML =
-  "Task del " + taskDateLabel(TASK_OFF[taskSel]) +
-  " <span class='sync-label'>(" + syncLabelText() + ")</span>";
+  var title =
+    "Task del " + taskDateLabel(TASK_OFF[taskSel]);
+
+  if(taskSyncedAt !== null){
+    title +=
+      " <span class='sync-label'>(sync time: " +
+      hhmmRome(taskSyncedAt.getTime()) + ")</span>";
+  } else {
+    title +=
+      " <span class='sync-label'>(sync in attesa)</span>";
+  }
+
+  if(taskSyncError){
+    title +=
+      " <span class='sync-label'>(sync error)</span>";
+  }
+
+  $("taskDateTitle").innerHTML = title;
 }
 
-function loadTasks(){
+function loadTasks(silent){
   if(!todoConnected){
-	  taskSyncError = false;
-	  updateTodoSyncLabel();
-	  updateTaskButtons();
-	  setText($("taskStatus"), "Connetti prima la lista condivisa.");
-	  return;
-	}
+    taskSyncError = false;
+    updateTaskButtons();
+    setText($("taskStatus"), "Connetti prima la lista condivisa.");
+    return;
+  }
 
-  setText($("taskStatus"), "Caricamento...");
+  if(!silent){
+    setText($("taskStatus"), "Caricamento...");
+  }
 
   taskRequest("GET", null, function(err, data){
     if(err || !data || !data.days){
       taskSyncError = true;
-      updateTodoSyncLabel();
       updateTaskButtons();
 
-      setText($("taskStatus"), "Task non disponibili: " + (err || "risposta non valida"));
+      if(!silent){
+        setText($("taskStatus"), "Task non disponibili: " + (err || "risposta non valida"));
+      }
+
+      taskSchedulePoll();
       return;
     }
 
     taskDays = data.days;
     taskReady = true;
     taskSyncError = false;
+    taskSyncedAt = new Date();
 
-    updateTodoSyncLabel();
     renderTasks();
     updateTaskButtons();
 
-    setText($("taskStatus"), "");
+    if(!silent){
+      setText($("taskStatus"), "");
+    }
+
+    taskSchedulePoll();
   });
+}
+
+function taskSchedulePoll(){
+  if(taskPollTimer !== null){
+    clearTimeout(taskPollTimer);
+  }
+
+  taskPollTimer = setTimeout(function(){
+    taskPollTimer = null;
+
+    if(!todoConnected){
+      return;
+    }
+
+    if(taskBusy){
+      taskSchedulePoll();
+      return;
+    }
+
+    loadTasks(true);
+  }, 30000);
 }
 
 function renderTasks(){
@@ -1810,14 +2011,25 @@ function changeTask(action, index, text){
     taskBusy = false;
 
     if(err || !result || !result.days){
+      taskSyncError = true;
+      updateTaskButtons();
+
       setText($("taskStatus"), "Salvataggio non riuscito: " + (err || "errore"));
-      loadTasks();
+
+      taskSchedulePoll();
       return;
     }
 
     taskDays = result.days;
+    taskSyncedAt = new Date();
+    taskSyncError = false;
+
     renderTasks();
+    updateTaskButtons();
+
     setText($("taskStatus"), "Task sincronizzati.");
+
+    taskSchedulePoll();
   });
 }
 
@@ -1898,20 +2110,33 @@ function updateMenuButtons(){
 }
 
 
-function loadMenu(){
+function loadMenu() {
   var now = toRome(new Date().getTime());
   var day = now.getUTCDay();
 
-  if(day === 0 || day === 6){
+  if (day === 0 || day === 6) {
     renderMenuWeekend();
     return;
   }
 
   var k = menuSel;
   setText($("menuStatus"), "Caricamento...");
-  getJson([CONFIG.base + MENUF[k], MENUF[k]], function(err, d){
-    if(k !== menuSel){ return; }
-    safe(function(){ renderMenu(k, err, d); });
+
+  getJson([CONFIG.base + MENUF[k], MENUF[k]], function(err, d) {
+    if (k !== menuSel) {
+      return;
+    }
+
+    if (!err && d) {
+      menuSyncedAt = new Date();
+      menuUpdatedAt = parseIso(
+        d.generated_at || d.updated_at
+      );
+    }
+
+    safe(function() {
+      renderMenu(k, err, d);
+    });
   });
 }
 
@@ -1996,12 +2221,6 @@ function renderMenu(k, err, d){
 }
 
 
-function menuLoop(){
-	loadMenu(); setTimeout(function(){
-		safe(menuLoop); 
-	}, CONFIG.menuMin * 60000); 
-}
-
 /* ===== AVVIO: ogni blocco è indipendente ===== */
 if(IS_KINDLE){ document.body.className = "k"; }
 safe(updateClock);
@@ -2009,9 +2228,12 @@ safe(loadAgenda);
 safe(loadWeather);
 safe(loadSunTimes);
 safe(loadRoutes);
+safe(loadMenu);
 safe(loadTodo);
 safe(updateMenuButtons);
-safe(menuLoop);
+
+initTasks();
+startDailyUpdates();
 
 setInterval(function(){
   safe(loadSunTimes);
