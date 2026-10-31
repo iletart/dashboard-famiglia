@@ -247,6 +247,12 @@ input{
   min-width:24px;
 }
 
+.sync-label{
+  font-size:.65em;
+  font-weight:normal;
+  text-transform:none;
+}
+
 .done{text-decoration:line-through}
 
 ul{
@@ -287,6 +293,7 @@ li{margin:3px 0}
   color:#555;
   margin-top:3px;
 }
+
 </style>
 
 </head>
@@ -327,7 +334,7 @@ li{margin:3px 0}
 
 <div class="col">
     <div class="box">
-      <h2 id="taskDateTitle">Task</h2>
+      <h2 id="taskDateTitle">Task <span class="sync-label">(synced)</span></h2>
 
       <div id="taskDayButtons">
         <button type="button" id="tb-ieri">Ieri</button>
@@ -344,7 +351,7 @@ li{margin:3px 0}
     </div>
 	
     <div class="box">
-      <h2>Da fare</h2>
+      <h2>Da fare <span class="sync-label">(synced)</span></h2>
       <div id="todoCtl" style="display:none;"></div>
       <div id="todoList"></div>
       <div class="small" id="todoStatus"></div>
@@ -552,17 +559,30 @@ function updateClock(){
 }
 
 /* ===== AGENDA ===== */
-var agendaData = null, agendaErr = false;
+var agendaData = null;
+var agendaErr = false;
+var agendaSyncedAt = null;
 
 var agendaWeekOffset = 0;
 
 function loadAgenda(){
   getJson([CONFIG.base + "agenda.json", "agenda.json"], function(err, d){
-    if(!err && d && d.events){ agendaData = d; agendaErr = false; } else { agendaErr = true; }
+    if(!err && d && d.events){
+      agendaData = d;
+      agendaErr = false;
+      agendaSyncedAt = new Date();
+    } else {
+      agendaErr = true;
+    }
+
     safe(renderAgenda);
-    setTimeout(function(){ safe(loadAgenda); }, CONFIG.agendaMin * 60000);
+
+    setTimeout(function(){
+      safe(loadAgenda);
+    }, CONFIG.agendaMin * 60000);
   });
 }
+
 function dayLabel(n, today){
   var base = fullDateText(n);
   if(n === today){ return "Oggi - " + base; }
@@ -592,22 +612,22 @@ function renderAgenda(){
   var weekEnd = monday + 6;
 
   // Titolo con orario ultimo aggiornamento
-  var gen = parseIso(agendaData.generated_at);
-  var title = "AGENDA FAMIGLIA";
+	var gen = parseIso(agendaData.generated_at);
+	var title = "AGENDA FAMIGLIA";
 
-  if(gen !== null){
-    title += " (aggiornata alle " + hhmmRome(gen) + ")";
+	if(gen !== null){
+	  title += " <span class='sync-label'>(synced at " + hhmmRome(gen) + ")</span>";
 
-    if(new Date().getTime() - gen > 3 * 3600000){
-      title += " (dati vecchi)";
-    }
-  }
+	  if(new Date().getTime() - gen > 3 * 3600000){
+		title += " <span class='sync-label'>(dati vecchi)</span>";
+	  }
+	}
 
   if(agendaErr){
     title += " - rete non disponibile";
   }
 
-  setText($("agendaTitle"), title);
+  $("agendaTitle").innerHTML = title;
 
   // Pulsanti di navigazione
   var nav = mk("div", "agenda-nav");
@@ -1111,7 +1131,6 @@ function todoConnect(){
 	} catch(e) {}
 
     renderTodo();
-    setText($("todoStatus"), "Lista sincronizzata.");
 
     if(pinInput){
       pinInput.style.display = "none";
@@ -1477,7 +1496,6 @@ function loadTasks(){
     taskDays = data.days;
     taskReady = true;
     renderTasks();
-    setText($("taskStatus"), "Task sincronizzati.");
   });
 }
 
