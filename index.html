@@ -1829,6 +1829,16 @@ setInterval(function(){
 }, 3600000);
 
 function alignBottomBoxes(){
+
+  /* Sul cellulare non allineare i riquadri */
+  if(window.innerWidth <= 560){
+    var allBoxes = document.querySelectorAll(".box");
+    for(var n = 0; n < allBoxes.length; n++){
+      allBoxes[n].style.minHeight = "";
+    }
+    return;
+  }
+
   var cols = document.querySelectorAll(".col");
   var i, j, boxes, last;
   var heights = [];
@@ -1861,9 +1871,7 @@ function alignBottomBoxes(){
 
       if(boxes.length){
         last = boxes[boxes.length - 1];
-
-        last.style.minHeight =
-          (last.offsetHeight + diff) + "px";
+        last.style.minHeight = (last.offsetHeight + diff) + "px";
       }
     }
   }
