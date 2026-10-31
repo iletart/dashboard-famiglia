@@ -1194,7 +1194,7 @@ function todoSchedulePoll(){
       if(!err && data && data.items){
         todoItems = data.items;
         renderTodo();
-        setText($("todoStatus"), "Lista sincronizzata.");
+        setText($("todoStatus"), "");
       } else if(err) {
         setText($("todoStatus"), "Sincronizzazione temporaneamente non disponibile.");
       }
@@ -1232,7 +1232,7 @@ function todoChange(action, index, text){
 
     todoItems = result.items;
     renderTodo();
-    setText($("todoStatus"), "Lista sincronizzata.");
+    setText($("todoStatus"), "");
   });
 }
 
@@ -1496,6 +1496,7 @@ function loadTasks(){
     taskDays = data.days;
     taskReady = true;
     renderTasks();
+    setText($("taskStatus"), "");
   });
 }
 
