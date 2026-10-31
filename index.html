@@ -2167,16 +2167,19 @@ function renderMenuWeekend(){
 
   for(i = 0; i < buttons.length; i++){
     el = $(buttons[i]);
-    if(el){ el.style.display = "none"; }
+    if(el){
+      el.style.display = "";
+    }
   }
+
+  updateMenuButtons();
 
   var phrase = phrases[Math.floor(Math.random() * phrases.length)];
   var message = mk("div", "weekend-message", phrase);
 
   list.appendChild(message);
-  
+
   scheduleBoxAlignment();
-  
 }
 
 function renderMenu(k, err, d){
