@@ -1732,33 +1732,15 @@ setInterval(function(){
 
 function alignBottomBoxes(){
   var cols = document.querySelectorAll(".col");
-  if(cols.length < 2) return;
+  var i, boxes, j;
 
-  var leftBoxes = cols[0].querySelectorAll(".box");
-  var rightBoxes = cols[1].querySelectorAll(".box");
+  for(i = 0; i < cols.length; i++){
+    boxes = cols[i].querySelectorAll(".box");
 
-  if(leftBoxes.length < 2 || rightBoxes.length < 2) return;
-
-  var upperLeft = leftBoxes[0];
-  var upperRight = rightBoxes[0];
-  var lowerLeft = leftBoxes[1];
-  var lowerRight = rightBoxes[1];
-
-  lowerLeft.style.minHeight = "";
-  lowerRight.style.minHeight = "";
-
-  if(window.innerWidth <= 560) return;
-
-  var totalLeft = upperLeft.offsetHeight + lowerLeft.offsetHeight;
-  var totalRight = upperRight.offsetHeight + lowerRight.offsetHeight;
-
-  var target = Math.max(totalLeft, totalRight);
-
-  lowerLeft.style.minHeight =
-    (target - upperLeft.offsetHeight) + "px";
-
-  lowerRight.style.minHeight =
-    (target - upperRight.offsetHeight) + "px";
+    for(j = 0; j < boxes.length; j++){
+      boxes[j].style.minHeight = "";
+    }
+  }
 }
 
 function scheduleBoxAlignment(){
