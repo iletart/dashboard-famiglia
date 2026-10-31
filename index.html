@@ -148,6 +148,38 @@ h3{
   text-align:center;
 }
 
+.cloud-icon{
+  display:inline-block;
+  position:relative;
+  width:28px;
+  height:10px;
+  background:#111;
+  border-radius:10px;
+  margin-top:12px;
+}
+
+.cloud-icon:before{
+  content:"";
+  position:absolute;
+  width:15px;
+  height:15px;
+  background:#111;
+  border-radius:50%;
+  left:4px;
+  top:-7px;
+}
+
+.cloud-icon:after{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  background:#111;
+  border-radius:50%;
+  left:11px;
+  top:-10px;
+}
+
 #info{
   overflow:hidden
 }
@@ -866,6 +898,8 @@ function renderWeather() {
       iconEl.innerHTML = "<span class='moon-icon'></span>";
     } else if (code === 0 || code === 1) {
       iconEl.innerHTML = "<span class='sun-icon'></span>";
+	} else if (code === 3) {
+	  iconEl.innerHTML = "<span class='cloud-icon'></span>";
 	} else {
 	  iconEl.innerHTML = "<span class='weather-icon'>" + icon + "</span>";
 	}
