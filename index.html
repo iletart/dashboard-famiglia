@@ -2190,10 +2190,15 @@ function renderMenu(k, err, d){
   setText($("menuDate"), label);
 
   var buttons = ["mb-ieri", "mb-oggi", "mb-domani", "mb-refresh"];
+
   for(i = 0; i < buttons.length; i++){
     var el = $(buttons[i]);
-    if(el){ el.style.display = ""; }
+    if(el){
+      el.style.display = "";
+    }
   }
+
+  updateMenuButtons();
 
   if(err){
     setText(list, "Menu non disponibile.");
@@ -2203,6 +2208,7 @@ function renderMenu(k, err, d){
   }
 
   var dishes = collectMenu(d);
+
   if(!dishes.length){
     setText(list, "Menu non disponibile per questo giorno.");
     setText($("menuStatus"), "");
@@ -2211,6 +2217,7 @@ function renderMenu(k, err, d){
   }
 
   var ul = mk("ul");
+
   for(i = 0; i < dishes.length; i++){
     ul.appendChild(mk("li", "", dishes[i]));
   }
@@ -2218,7 +2225,13 @@ function renderMenu(k, err, d){
   list.appendChild(ul);
 
   var now = toRome(new Date().getTime());
-  setText($("menuStatus"), "Caricato alle " + p2(now.getUTCHours()) + ":" + p2(now.getUTCMinutes()));
+
+  setText(
+    $("menuStatus"),
+    "Caricato alle " +
+    p2(now.getUTCHours()) + ":" +
+    p2(now.getUTCMinutes())
+  );
 
   scheduleBoxAlignment();
 }
