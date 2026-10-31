@@ -1730,13 +1730,43 @@ setInterval(function(){
 
 function alignBottomBoxes(){
   var cols = document.querySelectorAll(".col");
-  var i, boxes, j;
+  var i, boxes, last;
+  var heights = [];
+  var maxHeight = 0;
 
+  /* Azzera le altezze minime precedenti */
   for(i = 0; i < cols.length; i++){
     boxes = cols[i].querySelectorAll(".box");
 
-    for(j = 0; j < boxes.length; j++){
+    for(var j = 0; j < boxes.length; j++){
       boxes[j].style.minHeight = "";
+    }
+
+    heights[i] = cols[i].offsetHeight;
+
+    if(heights[i] > maxHeight){
+      maxHeight = heights[i];
+    }
+  }
+
+  /* Allunga l'ultimo box della colonna più corta */
+  for(i = 0; i < cols.length; i++){
+    if(heights[i] < maxHeight){
+      boxes = cols[i].querySelectorAll(".box");
+
+      if(boxes.length){
+        last = boxes[boxes.length - 1];
+
+        var style = window.getComputedStyle(last);
+        var extra =
+          parseFloat(style.paddingTop) +
+          parseFloat(style.paddingBottom) +
+          parseFloat(style.borderTopWidth) +
+          parseFloat(style.borderBottomWidth);
+
+        last.style.minHeight =
+          (last.offsetHeight + maxHeight - heights[i] - extra) + "px";
+      }
     }
   }
 }
