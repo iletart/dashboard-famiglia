@@ -1,3 +1,10 @@
 {
-  "days": {}
+  "days": {
+    "2026-10-31": [
+      {
+        "text": "sadsasad",
+        "done": false
+      }
+    ]
+  }
 }
