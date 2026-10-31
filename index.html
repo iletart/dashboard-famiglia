@@ -347,7 +347,7 @@ li{margin:3px 0}
     </div>
 	
     <div class="box">
-      <h2>Da fare <span id="todoSyncLabel" class="sync-label">(synced)</span></h2>
+      <h2>Da fare <span id="todoSyncLabel" class="sync-label">(non connesso)</span></h2>
       <div id="todoCtl" style="display:none;"></div>
       <div id="todoList"></div>
       <div class="small" id="todoStatus"></div>
@@ -555,11 +555,14 @@ function updateClock(){
   setTimeout(function(){ safe(updateClock); }, 60000 - (now % 60000) + 500);
 }
 
+function syncLabelText(){
+  if(!todoConnected) return "non connesso";
+  if(todoSyncError || taskSyncError) return "sync error";
+  return "synced";
+}
+
 function updateTodoSyncLabel(){
-  setText(
-    $("todoSyncLabel"),
-    todoSyncError ? "(sync error)" : "(synced)"
-  );
+  setText($("todoSyncLabel"), "(" + syncLabelText() + ")");
 }
 
 /* ===== AGENDA ===== */
@@ -1202,12 +1205,14 @@ function todoSchedulePoll(){
         todoItems = data.items;
         todoSyncError = false;
         updateTodoSyncLabel();
+        updateTaskButtons();
 
         renderTodo();
         setText($("todoStatus"), "");
       } else {
         todoSyncError = true;
         updateTodoSyncLabel();
+        updateTaskButtons();
 
         setText($("todoStatus"), "Sincronizzazione temporaneamente non disponibile.");
       }
@@ -1240,6 +1245,7 @@ function todoChange(action, index, text){
     if(err || !result || !result.items){
       todoSyncError = true;
       updateTodoSyncLabel();
+      updateTaskButtons();
 
       setText($("todoStatus"), "Salvataggio non riuscito: " + (err || "errore"));
       renderTodo();
@@ -1249,6 +1255,7 @@ function todoChange(action, index, text){
     todoItems = result.items;
     todoSyncError = false;
     updateTodoSyncLabel();
+    updateTaskButtons();
 
     renderTodo();
     setText($("todoStatus"), "");
@@ -1493,10 +1500,8 @@ function updateTaskButtons(){
   }
 
   $("taskDateTitle").innerHTML =
-    "Task del " + taskDateLabel(TASK_OFF[taskSel]) +
-    " <span class='sync-label'>(" +
-    (taskSyncError ? "sync error" : "synced") +
-    ")</span>";
+  "Task del " + taskDateLabel(TASK_OFF[taskSel]) +
+  " <span class='sync-label'>(" + syncLabelText() + ")</span>";
 }
 
 function loadTasks(){
@@ -1509,18 +1514,22 @@ function loadTasks(){
 
   taskRequest("GET", null, function(err, data){
     if(err || !data || !data.days){
+      taskSyncError = true;
+      updateTodoSyncLabel();
+      updateTaskButtons();
+
       setText($("taskStatus"), "Task non disponibili: " + (err || "risposta non valida"));
-	  taskSyncError = true;
-	  updateTaskButtons();
       return;
     }
 
     taskDays = data.days;
     taskReady = true;
-	taskSyncError = false;
+    taskSyncError = false;
+
+    updateTodoSyncLabel();
     renderTasks();
-	updateTaskButtons();
-	setText($("taskStatus"), "");
+    updateTaskButtons();
+
     setText($("taskStatus"), "");
   });
 }
