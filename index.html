@@ -280,6 +280,13 @@ li{margin:3px 0}
     overflow:hidden;
   }
 }
+
+#taskStatus,
+#todoStatus {
+  font-size:0.65em;
+  color:#555;
+  margin-top:3px;
+}
 </style>
 
 </head>
@@ -1260,7 +1267,7 @@ function todoRow(i){
   var txt = mk(
     "span",
     it.done ? "todo-text done" : "todo-text",
-    it.text
+    (i + 1) + ". " + it.text
   );
 
   row.appendChild(txt);
@@ -1505,7 +1512,7 @@ function taskRow(index, item){
   var txt = mk(
     "span",
     item.done ? "todo-text done" : "todo-text",
-    item.text
+    (index + 1) + ". " + item.text
   );
 
   row.appendChild(txt);
