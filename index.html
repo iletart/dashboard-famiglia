@@ -616,7 +616,7 @@ function renderAgenda(){
 	var title = "AGENDA FAMIGLIA";
 
 	if(gen !== null){
-	  title += " <span class='sync-label'>(synced at " + hhmmRome(gen) + ")</span>";
+	  title += " <span class='sync-label'>(last sync: " + hhmmRome(gen) + ")</span>";
 
 	  if(new Date().getTime() - gen > 3 * 3600000){
 		title += " <span class='sync-label'>(dati vecchi)</span>";
