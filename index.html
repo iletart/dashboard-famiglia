@@ -926,14 +926,16 @@ function renderRoutes(){
       Math.floor(Math.random() * WEEKEND_PHRASES.length)
     ];
 
-    box.appendChild(mk("div", "weekend-message", phrase));
-    setText($("routesStatus"), "");
-    return;
+	box.appendChild(mk("div", "weekend-message", phrase));
+	setText($("routesStatus"), "");
+	scheduleBoxAlignment();
+	return;
   }
 
   /* Giorni feriali */
   if(!CONFIG.routesUrl){
     setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
+	scheduleBoxAlignment();
     return;
   }
 
@@ -1770,6 +1772,7 @@ function renderMenu(k, err, d){
   if(err){
     setText(list, "Menu non disponibile.");
     setText($("menuStatus"), "File non raggiungibile.");
+    scheduleBoxAlignment();
     return;
   }
 
@@ -1777,6 +1780,7 @@ function renderMenu(k, err, d){
   if(!dishes.length){
     setText(list, "Menu non disponibile per questo giorno.");
     setText($("menuStatus"), "");
+    scheduleBoxAlignment();
     return;
   }
 
@@ -1791,11 +1795,14 @@ function renderMenu(k, err, d){
   setText($("menuStatus"), "Caricato alle " + p2(now.getUTCHours()) + ":" + p2(now.getUTCMinutes()));
 
   scheduleBoxAlignment();
-  
 }
 
 
-function menuLoop(){ loadMenu(); setTimeout(function(){ safe(menuLoop); }, CONFIG.menuMin * 60000); }
+function menuLoop(){
+	loadMenu(); setTimeout(function(){
+		safe(menuLoop); 
+	}, CONFIG.menuMin * 60000); 
+}
 
 /* ===== AVVIO: ogni blocco è indipendente ===== */
 if(IS_KINDLE){ document.body.className = "k"; }
