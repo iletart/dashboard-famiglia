@@ -1437,6 +1437,9 @@ var TASK_OFF = {
   domani: 1
 };
 
+updateTodoSyncLabel();
+updateTaskButtons();
+
 function taskDateKey(offset){
   var now = toRome(new Date().getTime());
   var d = new Date(Date.UTC(
@@ -1540,9 +1543,12 @@ function updateTaskButtons(){
 
 function loadTasks(){
   if(!todoConnected){
-    setText($("taskStatus"), "Connetti prima la lista condivisa.");
-    return;
-  }
+	  taskSyncError = false;
+	  updateTodoSyncLabel();
+	  updateTaskButtons();
+	  setText($("taskStatus"), "Connetti prima la lista condivisa.");
+	  return;
+	}
 
   setText($("taskStatus"), "Caricamento...");
 
