@@ -1344,7 +1344,7 @@ function updateTaskDate(){
 
   var d = new Date();
 
-  var testo = "Task del " +
+  var testo = "Task di " +
     giorni[d.getDay()] + " " +
     ("0" + d.getDate()).slice(-2) + " " +
     mesi[d.getMonth()];
@@ -1843,7 +1843,7 @@ function updateTaskButtons(){
   }
 
   var title =
-    "Task del " + taskDateLabel(TASK_OFF[taskSel]);
+    "Task di " + taskDateLabel(TASK_OFF[taskSel]);
 
   if(taskSyncedAt !== null){
     title +=
