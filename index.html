@@ -351,7 +351,7 @@ li{margin:3px 0}
     </div>
 	
     <div class="box">
-      <h2>Da fare <span class="sync-label">(synced)</span></h2>
+      <h2>Da fare <span id="todoSyncLabel" class="sync-label">(synced)</span></h2>
       <div id="todoCtl" style="display:none;"></div>
       <div id="todoList"></div>
       <div class="small" id="todoStatus"></div>
@@ -383,6 +383,7 @@ var CONFIG = {
 };
 var MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 var GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
+var taskSyncError = false;
 
 /* ===== UTILITÀ ===== */
 function $(id) {
@@ -556,6 +557,13 @@ function updateClock(){
   if(lastDay !== null && dn !== lastDay){ safe(renderAgenda); safe(loadMenu); }
   lastDay = dn;
   setTimeout(function(){ safe(updateClock); }, 60000 - (now % 60000) + 500);
+}
+
+function updateTodoSyncLabel(){
+  setText(
+    $("todoSyncLabel"),
+    todoSyncError ? "(sync error)" : "(synced)"
+  );
 }
 
 /* ===== AGENDA ===== */
@@ -1021,6 +1029,7 @@ var todoPin = "";
 var todoConnected = false;
 var todoBusy = false;
 var todoPollTimer = null;
+var todoSyncError = false;
 
 function todoCanEdit(){
   return todoConnected && !todoBusy;
@@ -1193,9 +1202,15 @@ function todoSchedulePoll(){
     todoRequest("GET", null, function(err, data){
       if(!err && data && data.items){
         todoItems = data.items;
+        todoSyncError = false;
+        updateTodoSyncLabel();
+
         renderTodo();
         setText($("todoStatus"), "");
-      } else if(err) {
+      } else {
+        todoSyncError = true;
+        updateTodoSyncLabel();
+
         setText($("todoStatus"), "Sincronizzazione temporaneamente non disponibile.");
       }
 
@@ -1225,12 +1240,18 @@ function todoChange(action, index, text){
     todoBusy = false;
 
     if(err || !result || !result.items){
+      todoSyncError = true;
+      updateTodoSyncLabel();
+
       setText($("todoStatus"), "Salvataggio non riuscito: " + (err || "errore"));
       renderTodo();
       return;
     }
 
     todoItems = result.items;
+    todoSyncError = false;
+    updateTodoSyncLabel();
+
     renderTodo();
     setText($("todoStatus"), "");
   });
@@ -1475,7 +1496,9 @@ function updateTaskButtons(){
 
   $("taskDateTitle").innerHTML =
     "Task del " + taskDateLabel(TASK_OFF[taskSel]) +
-    " <span class='sync-label'>(synced)</span>";
+    " <span class='sync-label'>(" +
+    (taskSyncError ? "sync error" : "synced") +
+    ")</span>";
 }
 
 function loadTasks(){
@@ -1489,12 +1512,17 @@ function loadTasks(){
   taskRequest("GET", null, function(err, data){
     if(err || !data || !data.days){
       setText($("taskStatus"), "Task non disponibili: " + (err || "risposta non valida"));
+	  taskSyncError = true;
+	  updateTaskButtons();
       return;
     }
 
     taskDays = data.days;
     taskReady = true;
+	taskSyncError = false;
     renderTasks();
+	updateTaskButtons();
+	setText($("taskStatus"), "");
     setText($("taskStatus"), "");
   });
 }
