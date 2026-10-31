@@ -509,7 +509,8 @@ li{margin:3px 0}
 
 	<div class="col">
 		<div class="box">
-		  <h2 id="taskDateTitle">Task <span class="sync-label">(synced)</span></h2>
+			<h2 id="taskDateTitle">Task</h2>
+			<div class="sync-label" id="taskTimes"></div>
 
 		  <div id="taskDayButtons">
 			<button type="button" id="tb-ieri">Ieri</button>
@@ -801,22 +802,17 @@ function syncLabelText(){
 }
 
 function updateTodoSyncLabel() {
-  var label = "(non connesso)";
+  var label = "";
 
-  if (todoConnected) {
-    if (todoSyncError) {
-      label = "(sync error";
-      if (todoSyncedAt !== null) {
-        label += " - sync time: " +
-          hhmmRome(todoSyncedAt.getTime());
-      }
-      label += ")";
-    } else if (todoSyncedAt !== null) {
-      label = "(sync time: " +
-        hhmmRome(todoSyncedAt.getTime()) + ")";
-    } else {
-      label = "(sync in attesa)";
-    }
+  if(!todoConnected){
+    label = "non connesso";
+  } else if(todoSyncError){
+    label = "sync error";
+  } else if(todoSyncedAt !== null){
+    label = "sync time: " +
+      hhmmRome(todoSyncedAt.getTime());
+  } else {
+    label = "sync in attesa";
   }
 
   setText($("todoSyncLabel"), label);
@@ -1854,24 +1850,23 @@ function updateTaskButtons(){
     }
   }
 
-  var title =
+  $("taskDateTitle").innerHTML =
     "Task di " + taskDateLabel(TASK_OFF[taskSel]);
 
-  if(taskSyncedAt !== null){
-    title +=
-      " <span class='sync-label'>(sync time: " +
-      hhmmRome(taskSyncedAt.getTime()) + ")</span>";
+  var times = "";
+
+  if(!todoConnected){
+    times = "non connesso";
+  } else if(taskSyncError){
+    times = "sync error";
+  } else if(taskSyncedAt !== null){
+    times = "sync time: " +
+      hhmmRome(taskSyncedAt.getTime());
   } else {
-    title +=
-      " <span class='sync-label'>(sync in attesa)</span>";
+    times = "sync in attesa";
   }
 
-  if(taskSyncError){
-    title +=
-      " <span class='sync-label'>(sync error)</span>";
-  }
-
-  $("taskDateTitle").innerHTML = title;
+  $("taskTimes").innerHTML = times;
 }
 
 function loadTasks(silent){
