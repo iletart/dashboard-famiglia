@@ -2768,10 +2768,18 @@ function renderMenu(k, err, d){
     ul.style.listStyle = "none";
     ul.style.paddingLeft = "0";
     ul.style.marginLeft = "0";
+	ul.style.listStyleType = "none";
+	li.style.listStyleType = "none";
+	li.style.display = "block";
   }
 
   for(i = 0; i < dishes.length; i++){
     var li = mk("li");
+	
+	if(isKindle){
+	  li.style.listStyleType = "none";
+	  li.style.display = "block";
+	}
 
     if(isKindle){
       li.appendChild(document.createTextNode("\u2022\u00A0"));
