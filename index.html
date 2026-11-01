@@ -591,9 +591,9 @@ li{margin:3px 0}
 var CONFIG = {
   base: "https://raw.githubusercontent.com/iletart/menu-scuola/main/",
   lat: 45.484, lon: 9.233,
-  agendaMin: 10,
-  weatherMin: 15,
-  menuMin: 60,
+  agendaMin: 0.5,
+  weatherMin: 5,
+  //menuMin: 60,
   todoWorkerUrl: "https://todo-sync.iletarta-633.workers.dev",
   routesUrl: "https://raw.githubusercontent.com/iletart/menu-scuola/main/routes.json"
 };
@@ -876,11 +876,9 @@ function loadAgenda() {
       }
 
       safe(renderAgenda);
-
-      setTimeout(function() {
-        safe(loadAgenda);
-      }, CONFIG.agendaMin * 60000);
-    }
+		setTimeout(function(){
+			safe(loadWeather);
+		}, CONFIG.agendaMin * 60000);
   );
 }
 
@@ -1151,14 +1149,23 @@ function wcText(c){
   if(c >= 95){ return "Temporale"; }
   return "Meteo variabile";
 }
+
 function loadWeather(){
   var u = "https://api.open-meteo.com/v1/forecast?latitude=" + CONFIG.lat + "&longitude=" + CONFIG.lon +
           "&current=temperature_2m,apparent_temperature,weather_code&timezone=Europe%2FRome";
   getJson([u], function(err, d){
-    if(!err && d && d.current && typeof d.current.temperature_2m === "number"){ wData = d.current; wTime = new Date().getTime(); wErr = false; }
-    else { wErr = true; }
+    if(!err && d && d.current && typeof d.current.temperature_2m === "number") {
+		wData = d.current; wTime = new Date().getTime(); wErr = false; 
+	}
+    else {
+		wErr = true; 
+	}
+	
     safe(renderWeather);
-    setTimeout(function(){ safe(loadWeather); }, CONFIG.weatherMin * 60000);
+	
+	setTimeout(function(){
+		safe(loadWeather);
+	}, CONFIG.weatherMin * 60000);
   }, true);
 }
 
