@@ -1,104 +1,8 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-01T23:59:02.243810+01:00",
+  "generated_at": "2026-11-02T00:00:02.247444+01:00",
   "period_days": 14,
   "events": [
-    {
-      "id": "12ug354gtoq95bjhtvc2lbvafc_20261026T163000Z",
-      "title": "Motricità",
-      "start": {
-        "dateTime": "2026-10-26T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-10-26T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "- calze antiscivolo",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjEwMjZUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "01guhquf80r3kbvobnkb9hv1pk_20261027T161500Z",
-      "title": "Piscina",
-      "start": {
-        "dateTime": "2026-10-27T16:15:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-10-27T17:00:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MDFndWhxdWY4MHIza2J2b2Jua2I5aHYxcGtfMjAyNjEwMjdUMTYxNTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "34ec9dkbompbtjfs9oa9f2apjb_20261028T164500Z",
-      "title": "Atletica",
-      "start": {
-        "dateTime": "2026-10-28T16:45:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-10-28T16:45:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "- zaino\n- borraccia\n- maglietta\n- scarpe",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MzRlYzlka2JvbXBidGpmczlvYTlmMmFwamJfMjAyNjEwMjhUMTY0NTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "072ngfmhkv80b5s5n8h83qgatj_20261029T163000Z",
-      "title": "Inglese Mattia",
-      "start": {
-        "dateTime": "2026-10-29T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-10-29T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MDcybmdmbWhrdjgwYjVzNW44aDgzcWdhdGpfMjAyNjEwMjlUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "ckrj2o9icpj3eb9gchi3cb9k71hj0bb1c4r68b9l74qj6dhm6ph32c1i64_20261030T163000Z",
-      "title": "Rugby",
-      "start": {
-        "dateTime": "2026-10-30T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-10-30T17:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "- calze antiscivolo",
-      "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTAzMFQxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
-    },
-    {
-      "id": "5i8ckcek99csq134noj3b1v4gs",
-      "title": "Prova calendar",
-      "start": {
-        "dateTime": "2026-11-01T07:00:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-01T08:00:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "mamma\n- task 1\npapa\n- task 2\n\nmolti altri dettagli",
-      "htmlLink": "https://www.google.com/calendar/event?eid=NWk4Y2tjZWs5OWNzcTEzNG5vajNiMXY0Z3MgZmFtaWx5MDI3MjI5Nzk3MDg3MjgwNTUzNzRAZw"
-    },
     {
       "id": "12ug354gtoq95bjhtvc2lbvafc_20261102T163000Z",
       "title": "Motricità",
@@ -178,6 +82,86 @@
       "location": "",
       "description": "- calze antiscivolo",
       "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTEwNlQxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
+    },
+    {
+      "id": "12ug354gtoq95bjhtvc2lbvafc_20261109T163000Z",
+      "title": "Motricità",
+      "start": {
+        "dateTime": "2026-11-09T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-09T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "- calze antiscivolo",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDlUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "01guhquf80r3kbvobnkb9hv1pk_20261110T161500Z",
+      "title": "Piscina",
+      "start": {
+        "dateTime": "2026-11-10T16:15:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-10T17:00:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MDFndWhxdWY4MHIza2J2b2Jua2I5aHYxcGtfMjAyNjExMTBUMTYxNTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "34ec9dkbompbtjfs9oa9f2apjb_20261111T164500Z",
+      "title": "Atletica",
+      "start": {
+        "dateTime": "2026-11-11T16:45:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-11T16:45:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "- zaino\n- borraccia\n- maglietta\n- scarpe",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MzRlYzlka2JvbXBidGpmczlvYTlmMmFwamJfMjAyNjExMTFUMTY0NTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "072ngfmhkv80b5s5n8h83qgatj_20261112T163000Z",
+      "title": "Inglese Mattia",
+      "start": {
+        "dateTime": "2026-11-12T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-12T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MDcybmdmbWhrdjgwYjVzNW44aDgzcWdhdGpfMjAyNjExMTJUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "ckrj2o9icpj3eb9gchi3cb9k71hj0bb1c4r68b9l74qj6dhm6ph32c1i64_20261113T163000Z",
+      "title": "Rugby",
+      "start": {
+        "dateTime": "2026-11-13T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-13T17:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "- calze antiscivolo",
+      "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTExM1QxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
     }
   ]
 }
