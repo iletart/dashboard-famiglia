@@ -589,8 +589,6 @@ body.k #menuList li {
   list-style: none !important;
   list-style-type: none !important;
 }
-
-
 </style>
 
 
@@ -1021,56 +1019,6 @@ function scheduleAgendaRefresh() {
   setTimeout(function() {
     safe(loadAgenda);
   }, delay);
-}
-
-function alignKindleColumns() {
-  if (!document.body.classList.contains("k")) return;
-
-  var row = document.querySelector(".row.cf");
-  if (!row) return;
-
-  var cols = row.querySelectorAll(":scope > .col");
-  if (cols.length < 2) return;
-
-  var leftBoxes = cols[0].querySelectorAll(":scope > .box");
-  var rightBoxes = cols[1].querySelectorAll(":scope > .box");
-
-  if (leftBoxes.length < 2 || rightBoxes.length < 3) return;
-
-  var agenda = leftBoxes[0];
-  var routes = leftBoxes[1];
-
-  var rightHeight = 0;
-  for (var i = 0; i < rightBoxes.length; i++) {
-    rightHeight += rightBoxes[i].getBoundingClientRect().height;
-  }
-
-  var agendaHeight = agenda.getBoundingClientRect().height;
-  var routesHeight = routes.getBoundingClientRect().height;
-
-  var extra = rightHeight - agendaHeight - routesHeight;
-
-  routes.style.minHeight = extra > 0
-    ? (routesHeight + extra) + "px"
-    : "";
-}
-
-if (document.body.classList.contains("k")) {
-  var alignTimer;
-
-  var alignObserver = new MutationObserver(function() {
-    clearTimeout(alignTimer);
-    alignTimer = setTimeout(alignKindleColumns, 100);
-  });
-
-  alignObserver.observe(document.body, {
-    childList: true,
-    subtree: true,
-    characterData: true
-  });
-
-  window.addEventListener("resize", alignKindleColumns);
-  window.addEventListener("load", alignKindleColumns);
 }
 
 function loadAgenda() {
