@@ -2944,14 +2944,18 @@ function renderMenu(k, err, d){
   for(i = 0; i < dishes.length; i++){
     var li = mk("li");
 
-    // Emoji solo su PC e cellulare, non su Kindle
-    if(!/(^|\s)k(\s|$)/.test(document.body.className)){
-      var icon = mk("span");
-      icon.className = "dish-icon";
-      setText(icon, classifyDish(dishes[i]));
-      li.appendChild(icon);
-      li.appendChild(document.createTextNode(" "));
-    }
+	// Emoji solo su PC e cellulare, mai su Kindle
+	var isKindle = document.body.classList.contains("k");
+
+	if(!isKindle){
+	  var icon = mk("span");
+	  icon.className = "dish-icon";
+	  setText(icon, classifyDish(dishes[i]));
+	  li.appendChild(icon);
+	  li.appendChild(document.createTextNode(" "));
+	}
+
+	li.appendChild(document.createTextNode(dishes[i]));
 
     li.appendChild(document.createTextNode(dishes[i]));
     ul.appendChild(li);
