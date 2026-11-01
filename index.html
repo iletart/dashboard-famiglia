@@ -46,54 +46,36 @@ body.k .wrap {
   box-sizing: border-box;
 }
 
-/* PULSANTI NAVIGAZIONE AGENDA */
-.agenda-nav {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 4px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-top: 2px;
-}
-
-.agenda-nav button {
-  flex: 1 1 0;
-  min-width: 0;
-  white-space: nowrap;
-  font-size: 0.8em;
-  padding: 3px 5px;
-  margin: 1px 0;
-}
-
-/* TITOLO E ORARI AGGIORNAMENTO SULLA STESSA RIGA */
 .section-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  width: 100%;
-  box-sizing: border-box;
-  padding-bottom: 3px;
-  margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    gap: 8px;
 }
 
 .section-heading h2 {
-  float: none;
-  flex: 0 1 auto;
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
+    float: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    text-align: left;
+    flex: 0 1 auto;
 }
 
 .section-heading .sync-label {
-  flex: 0 1 auto;
-  max-width: 55%;
-  min-width: 0;
-  margin: 0;
-  font-size: 0.6em;
-  line-height: 1.15;
-  text-align: right;
+    float: none;
+    flex: 0 0 auto;
+    font-size: 0.65em;
+    line-height: 1.4;
+    color: #888;
+    text-align: right;
+    white-space: normal;
+    margin: 0;
 }
 
 .sync-label {
@@ -816,25 +798,6 @@ body.k #taskDayButtons button {
     font-size: 1.05em;
     padding: 8px 12px;
     margin-right: 4px;
-}
-
-/* AGENDA KINDLE: pulsanti più compatti */
-body.k .agenda-nav {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 3px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-top: 2px;
-}
-
-body.k .agenda-nav button {
-  flex: 1 1 0;
-  min-width: 0;
-  white-space: nowrap;
-  font-size: 0.78em;
-  padding: 2px 4px;
-  margin: 1px 0;
 }
 
 </style>
