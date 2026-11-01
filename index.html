@@ -2962,11 +2962,11 @@ function renderMenu(k, err, d){
   }
   
   if (menuSyncedAt !== null) {
-    times += " | sync time: " + hhmmRome(menuSyncedAt.getTime());
+    times += "<br>sync time: " + hhmmRome(menuSyncedAt.getTime());
   }
   
   if ($("menuTimes")) {
-    setText($("menuTimes"), times);
+    $("menuTimes").innerHTML = times;
   }
 
   var label = fullDateText(todayNum() + MENUOFF[k]);
