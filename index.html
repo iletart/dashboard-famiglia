@@ -402,18 +402,18 @@ input {
 
   body:not(.k) #head {
     display: grid;
-    grid-template-columns: 110px minmax(0, 1fr);
+    grid-template-columns: 85px minmax(0, 1fr);
     align-items: center;
-    column-gap: 10px;
+    column-gap: 8px;
     min-height: 0;
     height: auto;
   }
 
   body:not(.k) #clock {
     float: none;
-    width: 110px;
-    font-size: 2.1em;
-    text-align: left;
+    width: 85px;
+    font-size: 2em;
+    line-height: 1;
     grid-column: 1;
     grid-row: 1;
   }
@@ -424,12 +424,12 @@ input {
 
   body:not(.k) #info {
     display: grid;
-    grid-template-columns: max-content 44px minmax(0, 1fr);
+    grid-template-columns: max-content 40px minmax(0, 1fr);
     grid-template-rows: auto auto;
     column-gap: 5px;
     align-items: center;
-    width: 100%;
     min-width: 0;
+    width: 100%;
     margin: 0;
     padding: 0;
     grid-column: 2;
@@ -439,57 +439,70 @@ input {
   body:not(.k) #wday {
     grid-column: 1;
     grid-row: 1;
-    font-size: 1em;
+    font-size: 0.95em;
+    white-space: nowrap;
   }
 
   body:not(.k) #fulldate {
     grid-column: 1;
     grid-row: 2;
     font-size: 0.85em;
+    white-space: nowrap;
   }
 
   body:not(.k) #weatherIcon {
     grid-column: 2;
     grid-row: 1 / span 2;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
 
   body:not(.k) #weatherIcon svg {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
 
   body:not(.k) #weather {
     grid-column: 3;
     grid-row: 1 / span 2;
     font-size: 0.8em;
+    line-height: 1.3;
     white-space: normal;
-    overflow-wrap: break-word;
+    min-width: 0;
   }
 }
 
-/* Solo cellulare molto stretto */
-@media screen and (max-width: 400px) {
+/* CELLULARI STRETTI */
+
+@media screen and (max-width: 380px) {
+
   body:not(.k) #head {
-    grid-template-columns: 95px minmax(0, 1fr);
-    column-gap: 6px;
+    grid-template-columns: 72px minmax(0, 1fr);
+    column-gap: 5px;
   }
 
   body:not(.k) #clock {
-    width: 95px;
-    font-size: 1.8em;
+    width: 72px;
+    font-size: 1.7em;
   }
 
   body:not(.k) #info {
-    grid-template-columns: max-content 36px minmax(0, 1fr);
+    grid-template-columns: max-content 32px minmax(0, 1fr);
     column-gap: 3px;
+  }
+
+  body:not(.k) #wday {
+    font-size: 0.8em;
+  }
+
+  body:not(.k) #fulldate {
+    font-size: 0.75em;
   }
 
   body:not(.k) #weatherIcon,
   body:not(.k) #weatherIcon svg {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
 
   body:not(.k) #weather {
@@ -1341,9 +1354,8 @@ function renderWeather() {
   }
 
   el.innerHTML =
-    "Milano: " + temp + "°C, " + wcText(code) +
-    "<br>Percepita: " + feels + "°C" +
-    (wErr ? "<div class='small'>Ultimo aggiornamento disponibile</div>" : "");
+  "Milano " + temp + "°C" +
+  "<br>Percepita " + feels + "°C";
 }
 
 /* ===== SPOSTAMENTI ===== */
