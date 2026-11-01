@@ -2770,10 +2770,7 @@ function renderMenu(k, err, d){
   var now = toRome(new Date().getTime());
 
   setText(
-    $("menuStatus"),
-    "Caricato alle " +
-    p2(now.getUTCHours()) + ":" +
-    p2(now.getUTCMinutes())
+    $("menuStatus"), ""
   );
 
   scheduleBoxAlignment();
