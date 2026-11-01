@@ -672,7 +672,19 @@ body.k #menuList li {
 
 <script>
 /* ===== CONFIGURAZIONE ===== */
-document.body.className += IS_KINDLE ? " k" : "";
+
+var IS_KINDLE = (function(){
+  var q = window.location.search;
+
+  if(q.indexOf("kindle=1") >= 0){ return true; }
+  if(q.indexOf("kindle=0") >= 0){ return false; }
+
+  return /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
+})();
+
+if(IS_KINDLE){
+  document.body.className += " k";
+}
 
 var CONFIG = {
   base: "https://raw.githubusercontent.com/iletart/menu-scuola/main/",
@@ -765,13 +777,6 @@ window.onerror = function(m, u, l) {
 
   return true;
 };
-
-var IS_KINDLE = (function(){
-  var q = window.location.search;
-  if(q.indexOf("kindle=1") >= 0){ return true; }
-  if(q.indexOf("kindle=0") >= 0){ return false; }
-  return /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
-})();
 
 function parseJson(t){
   if(typeof JSON !== "undefined" && JSON.parse){ return JSON.parse(t); }
@@ -2986,7 +2991,6 @@ function renderMenu(k, err, d){
 
 
 /* ===== AVVIO: ogni blocco è indipendente ===== */
-if(IS_KINDLE){ document.body.className = "k"; }
 
 safe(startClock);
 safe(loadAgenda);
