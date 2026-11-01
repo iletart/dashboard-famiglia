@@ -132,10 +132,16 @@ h3{
   margin-right:4px;
 }
 
-/* KINDLE: SOLO ELENCO PUNTATO */
+/* PC e cellulare: niente pallini */
+#menuList ul{
+  list-style:none;
+  padding-left:0;
+}
 
-body.k .dish-icon{
-  display:none;
+/* Kindle: elenco puntato tradizionale */
+body.k #menuList ul{
+  list-style:disc;
+  padding-left:40px;
 }
 
 body.k ul{
@@ -2726,18 +2732,20 @@ function renderMenu(k, err, d){
     // Emoji solo su PC e cellulare, mai su Kindle
 	var isKindle = document.body.classList.contains("k");
 
-	if(!isKindle){
-	  var icon = mk("span");
-	  icon.className = "dish-icon";
-	  setText(icon, classifyDish(dishes[i]));
-	  li.appendChild(icon);
-	  li.appendChild(document.createTextNode(" "));
-	}
+	for(i = 0; i < dishes.length; i++){
+	  var li = mk("li");
 
-	li.appendChild(document.createTextNode(dishes[i]));
-	
-    ul.appendChild(li);
-  }
+	  if(!isKindle){
+		var icon = mk("span");
+		icon.className = "dish-icon";
+		setText(icon, classifyDish(dishes[i]));
+		li.appendChild(icon);
+		li.appendChild(document.createTextNode(" "));
+	  }
+
+	  li.appendChild(document.createTextNode(dishes[i]));
+	  ul.appendChild(li);
+	}
 
   list.appendChild(ul);
 
