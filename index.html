@@ -1669,9 +1669,13 @@ function renderEventTasksInline(eventItem, taskContainer){
 
   todoRequest("GET", null, function(err, result){
 
-    clear(taskContainer);
+	clear(taskContainer);
 
-    if(err){
+	if(details){
+	  addEventDetailsLink(eventItem, taskContainer);
+	}
+
+	if(err){
       taskContainer.appendChild(
         mk("div", "", "Errore caricamento: " + err)
       );
@@ -1734,10 +1738,6 @@ function renderEventTasksInline(eventItem, taskContainer){
         };
 
       })(i);
-    }
-
-    if(details){
-      addEventDetailsLink(eventItem, taskContainer);
     }
 
   }, url);
