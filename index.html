@@ -896,17 +896,53 @@ function todayNum(){ return dayNumOfRome(toRome(new Date().getTime())); }
 
 /* ===== OROLOGIO ===== */
 var lastDay = null;
+var clockTimer = null;
+
 function updateClock(){
   var now = new Date().getTime();
   var r = toRome(now);
+
   setText($("clock"), p2(r.getUTCHours()) + ":" + p2(r.getUTCMinutes()));
   setText($("wday"), GIORNI[r.getUTCDay()]);
   setText($("fulldate"), r.getUTCDate() + " " + MESI[r.getUTCMonth()] + " " + r.getUTCFullYear());
+
   var dn = dayNumOfRome(r);
-  if(lastDay !== null && dn !== lastDay){ safe(renderAgenda); safe(loadMenu); }
+
+  if(lastDay !== null && dn !== lastDay){
+    safe(renderAgenda);
+    safe(loadMenu);
+  }
+
   lastDay = dn;
-  setTimeout(function(){ safe(updateClock); }, 60000 - (now % 60000) + 500);
 }
+
+/* Aggiornamento periodico ogni 10 secondi */
+function startClock(){
+  safe(updateClock);
+
+  if(clockTimer !== null){
+    clearInterval(clockTimer);
+  }
+
+  clockTimer = setInterval(function(){
+    safe(updateClock);
+  }, 10000);
+}
+
+/* Aggiorna subito quando si torna alla pagina */
+window.addEventListener("focus", function(){
+  safe(updateClock);
+});
+
+window.addEventListener("pageshow", function(){
+  safe(updateClock);
+});
+
+document.addEventListener("visibilitychange", function(){
+  if(!document.hidden){
+    safe(updateClock);
+  }
+});
 
 function syncLabelText(){
   if(!todoConnected) return "non connesso";
@@ -2898,7 +2934,7 @@ function renderMenu(k, err, d){
 
 /* ===== AVVIO: ogni blocco è indipendente ===== */
 if(IS_KINDLE){ document.body.className = "k"; }
-safe(updateClock);
+safe(startClock);
 safe(loadAgenda);
 safe(loadWeather);
 safe(loadSunTimes);
