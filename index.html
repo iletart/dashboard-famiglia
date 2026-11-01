@@ -2758,7 +2758,8 @@ function renderMenu(k, err, d){
     return;
   }
 
-  var isKindle = IS_KINDLE || document.body.classList.contains("k");
+  var isKindle = IS_KINDLE || document.body.classList.contains("k") ||
+               /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
   var ul = mk("ul");
 
   if(isKindle){
