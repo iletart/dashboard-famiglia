@@ -70,21 +70,21 @@ h3{
 }
 
 .section-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .section-heading h2 {
-  margin: 0;
+    margin: 0;
+    text-align: left;
 }
 
 .section-heading .sync-label {
-  text-align: right;
-  font-size: 11px;
-  line-height: 1.4;
-  white-space: nowrap;
+    text-align: right;
+    white-space: nowrap;
+    line-height: 1.4;
 }
 
 /* OROLOGIO */
@@ -509,13 +509,15 @@ li{margin:3px 0}
 </div>
 
 <div class="row cf">
-	<div class="col">
-		<div class="box">
-			<h2 id="agendaTitle">Agenda famiglia</h2>
-			<div class="sync-label" id="agendaTimes"></div>
-			<div id="agenda">Caricamento...</div>
-			<div class="small" id="agendaStatus"></div>
-		</div>
+    <div class="col">
+        <div class="box">
+            <div class="section-heading">
+                <h2 id="agendaTitle">Agenda famiglia</h2>
+                <div class="sync-label" id="agendaTimes"></div>
+            </div>
+            <div id="agenda">Caricamento...</div>
+            <div class="small" id="agendaStatus"></div>
+        </div>
 
 		<div class="box">
 			<h2 id="routesTitle">Spostamenti</h2>
@@ -971,11 +973,12 @@ function renderAgenda(){
 
       for(n = sd; n <= last; n++){
         if(n >= monday && n < monday + 7){
-          buckets[n - monday].push({
-            key: -1,
-            time: "Tutto il giorno",
-            title: titleEv
-          });
+			buckets[n - monday].push({
+			  key: e.id || (e.start + "|" + titleEv),
+			  time: "Tutto il giorno",
+			  title: titleEv,
+			  description: e.description || ""
+			});
         }
       }
     } else {
@@ -984,11 +987,13 @@ function renderAgenda(){
       n = dayNumOfRome(toRome(ms));
 
       if(n >= monday && n < monday + 7){
-        buckets[n - monday].push({
-          key: ms,
-          time: hhmmRome(ms),
-          title: titleEv
-        });
+		buckets[n - monday].push({
+		  key: ms,
+		  eventId: e.id || "",
+		  time: hhmmRome(ms),
+		  title: titleEv,
+		  description: e.description || ""
+		});
       }
     }
   }
