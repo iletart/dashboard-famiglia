@@ -101,40 +101,39 @@ h3{
 }
 
 /* BOX SUPERIORE */
-
 #head{
-  display:grid;
-  grid-template-columns:5em 1fr;
-  grid-template-rows:auto auto;
-  align-items:start;
+  position:relative;
+  min-height:110px;
+  padding:8px;
+  box-sizing:border-box;
 }
 
-/* OROLOGIO */
-
+/* ORARIO: in alto a sinistra */
 #clock{
-  grid-column:1;
-  grid-row:1;
-  float:none;
+  position:absolute;
+  top:10px;
+  left:8px;
+  width:5em;
+  text-align:center;
   font-size:3.2em;
   font-weight:bold;
   line-height:1;
   margin:0;
-  text-align:center;
+  float:none;
 }
 
-/* METEO SOTTO L'OROLOGIO */
-
+/* METEO: sotto l'orario */
 #clockWeather{
-  grid-column:1;
-  grid-row:2;
-  float:none;
-  clear:none;
+  position:absolute;
+  top:65px;
+  left:8px;
   width:5em;
-  height:3em;
-  margin:4px 0 0 0;
+  height:64px;
+  margin:0;
   padding:0;
   text-align:center;
-  position:static;
+  float:none;
+  clear:none;
 }
 
 #clockWeather svg{
@@ -144,14 +143,11 @@ h3{
   margin:0 auto;
 }
 
-/* DATA E DESCRIZIONE METEO */
-
+/* GIORNO, DATA E TEMPERATURA: a destra */
 #info{
-  grid-column:2;
-  grid-row:1 / 3;
+  margin-left:6em;
+  padding:4px 0 0 8px;
   overflow:hidden;
-  margin:0;
-  padding:0;
   min-width:0;
 }
 
