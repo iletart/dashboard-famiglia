@@ -2766,28 +2766,31 @@ function renderMenu(k, err, d){
     return;
   }
 
-  var ul = mk("ul");
-  var isKindle = IS_KINDLE;
+var ul = mk("ul");
+var isKindle = IS_KINDLE;
+
+if(isKindle){
+  ul.style.listStyleType = "none";
+  ul.style.paddingLeft = "0";
+  ul.style.marginLeft = "0";
+}
+
+for(i = 0; i < dishes.length; i++){
+  var li = mk("li");
 
   if(isKindle){
-    ul.style.listStyleType = "disc";
-    ul.style.paddingLeft = "25px";
+    li.appendChild(document.createTextNode("\u2022 "));
+  } else {
+    var icon = mk("span");
+    icon.className = "dish-icon";
+    setText(icon, classifyDish(dishes[i]));
+    li.appendChild(icon);
+    li.appendChild(document.createTextNode(" "));
   }
 
-  for(i = 0; i < dishes.length; i++){
-    var li = mk("li");
-
-    if(!isKindle){
-      var icon = mk("span");
-      icon.className = "dish-icon";
-      setText(icon, classifyDish(dishes[i]));
-      li.appendChild(icon);
-      li.appendChild(document.createTextNode(" "));
-    }
-
-    li.appendChild(document.createTextNode(dishes[i]));
-    ul.appendChild(li);
-  }
+  li.appendChild(document.createTextNode(dishes[i]));
+  ul.appendChild(li);
+}
 
   list.appendChild(ul);
 
