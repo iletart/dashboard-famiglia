@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-01T20:45:02.776874+01:00",
+  "generated_at": "2026-11-01T23:51:20.804260+01:00",
   "period_days": 14,
   "events": [
     {
@@ -32,7 +32,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "",
+      "description": "- zaino\n- ciabatte\n- costume\n- cuffia\n- accappatoio\n- m&m's",
       "htmlLink": "https://www.google.com/calendar/event?eid=MDFndWhxdWY4MHIza2J2b2Jua2I5aHYxcGtfMjAyNjEwMjdUMTYxNTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
@@ -80,12 +80,12 @@
       },
       "all_day": false,
       "location": "",
-      "description": "",
+      "description": "- calze antiscivolo\n- zaino\n- completo rugby\n- borraccia\n- m&m's\n- succo frutta",
       "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTAzMFQxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
     },
     {
       "id": "5i8ckcek99csq134noj3b1v4gs",
-      "title": "altra prova",
+      "title": "Prova calendar",
       "start": {
         "dateTime": "2026-11-01T07:00:00Z",
         "timeZone": "Europe/Rome"
@@ -96,7 +96,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "- ewjrpoewr\n- ewrèwker\n\ncorsepojpjew prpewr\npdsojfspjf ewpoewjr",
+      "description": "mamma\n- task 1\npapa\n- task 2\n\nmolti altri dettagli",
       "htmlLink": "https://www.google.com/calendar/event?eid=NWk4Y2tjZWs5OWNzcTEzNG5vajNiMXY0Z3MgZmFtaWx5MDI3MjI5Nzk3MDg3MjgwNTUzNzRAZw"
     },
     {
@@ -128,7 +128,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "",
+      "description": "- zaino\n- ciabatte\n- costume\n- cuffia\n- accappatoio\n- m&m's",
       "htmlLink": "https://www.google.com/calendar/event?eid=MDFndWhxdWY4MHIza2J2b2Jua2I5aHYxcGtfMjAyNjExMDNUMTYxNTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
@@ -176,7 +176,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "",
+      "description": "- calze antiscivolo\n- zaino\n- completo rugby\n- borraccia\n- m&m's\n- succo frutta",
       "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTEwNlQxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
     }
   ]
