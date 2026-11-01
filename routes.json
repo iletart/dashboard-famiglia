@@ -17,13 +17,13 @@
       "from": "Lavoro",
       "to": "Asilo",
       "arrival": "16:45",
-      "departure": "2026-11-02T16:29:39+01:00",
-      "duration_minutes": 10,
+      "departure": "2026-11-02T16:29:18+01:00",
+      "duration_minutes": 11,
       "static_duration_minutes": 11,
       "buffer_minutes": 5,
       "distance_meters": 9927,
-      "calculated_at": "2026-11-02T00:26:37.103877+01:00"
+      "calculated_at": "2026-11-02T00:28:52.754668+01:00"
     }
   },
-  "generated_at": "2026-11-02T00:28:49.956359+01:00"
+  "generated_at": "2026-11-02T00:28:52.754668+01:00"
 }
