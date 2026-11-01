@@ -589,6 +589,22 @@ body.k #menuList li {
   list-style: none !important;
   list-style-type: none !important;
 }
+
+body.k .row.cf {
+  display: flex;
+  align-items: stretch;
+}
+
+body.k .row.cf > .col {
+  float: none;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+body.k .row.cf > .col > .box:last-child {
+  flex: 1;
+}
 </style>
 
 
