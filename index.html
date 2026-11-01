@@ -33,6 +33,10 @@ body.k {
   padding: 4px;
 }
 
+body.k .wrap {
+  padding-right: 14px;
+}
+
 .box {
   border: 2px solid #000;
   border-radius: 5px;
@@ -534,7 +538,8 @@ body.k #fulldate {
 
 body.k #weatherIcon {
   position: absolute;
-  left: 140px;
+  right: 135px;
+  left: auto;
   top: 0;
   width: 48px;
   height: 42px;
@@ -551,12 +556,13 @@ body.k #weatherIcon svg {
 
 body.k #weather {
   position: absolute;
-  left: 193px;
   right: 0;
+  left: auto;
   top: 0;
+  width: 130px;
   font-size: 0.8em;
   line-height: 1.2;
-  text-align: right;
+  text-align: left;
   white-space: normal;
   margin: 0;
 }
