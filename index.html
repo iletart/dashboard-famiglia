@@ -2810,34 +2810,19 @@ function renderMenu(k, err, d){
   var list = $("menuList"), i;
   clear(list);
 
-  $("menuTimes").innerHTML = "";
-
   var times = "";
 
   if(menuUpdatedAt !== null){
-    times += "upd time: " + hhmmRome(menuUpdatedAt);
+    times = "upd time: " + hhmmRome(menuUpdatedAt);
   }
 
-  if(menuSyncedAt !== null){
-    if(times !== ""){ times += " | "; }
-    times += "sync time: " + hhmmRome(menuSyncedAt.getTime());
+  if($("menuTimes")){
+    setText($("menuTimes"), times);
   }
-
-  if(err){
-    if(times !== ""){ times += " | "; }
-    times += "sync error";
-  }
-
-  $("menuTimes").innerHTML = times;
 
   var label = fullDateText(todayNum() + MENUOFF[k]);
   setText($("menuDate"), label);
-  
-  setText(
-  $("menuStatus"),
-  menuUpdatedAt !== null
-    ? "upd time: " + hhmmRome(menuUpdatedAt)
-    : ""
+
 );
 
   var buttons = ["mb-ieri", "mb-oggi", "mb-domani", "mb-refresh"];
