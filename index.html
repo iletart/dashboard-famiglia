@@ -3047,11 +3047,29 @@ setInterval(function(){
 
 function alignBottomBoxes(){
 
-  if(IS_KINDLE || window.innerWidth <= 560){
-    var allBoxes = document.querySelectorAll(".box");
-    for(var n = 0; n < allBoxes.length; n++){
-      allBoxes[n].style.minHeight = "";
+  /* Kindle: allinea Spostamenti a Menu scuola */
+  if(IS_KINDLE){
+
+    var row = document.querySelector(".row.cf");
+    if(!row) return;
+
+    var cols = row.querySelectorAll(":scope > .col");
+    if(cols.length < 2) return;
+
+    var leftBoxes = cols[0].querySelectorAll(":scope > .box");
+    if(leftBoxes.length < 2) return;
+
+    var routes = leftBoxes[1];
+
+    routes.style.minHeight = "";
+
+    var diff = cols[1].offsetHeight - cols[0].offsetHeight;
+
+    if(diff > 0){
+      routes.style.minHeight =
+        (routes.offsetHeight + diff) + "px";
     }
+
     return;
   }
 
