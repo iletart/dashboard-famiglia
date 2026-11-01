@@ -27,7 +27,7 @@ body.k{font-size:20px}
   margin:6px 3px;
   overflow:hidden;
   -webkit-box-sizing:border-box;
-  box-sizing:border-box
+  box-sizing:border-box;
   border-radius:5px;
 }
 
@@ -191,11 +191,16 @@ body.k #clock{
 }
 
 /* Kindle: solo elenco puntato, senza icone */
-body.k #menuList ul{
-  list-style:disc;
-  margin:4px 0 4px 20px;
-  padding:0;
-  text-align:left;
+
+
+body.k #menuList .menu-icon{
+  display:none !important;
+}
+
+body.k #menuList ul,
+body.k #menuList li {
+  list-style:none !important;
+  list-style-type:none !important;
 }
 
 #menuList li{
@@ -367,21 +372,6 @@ li{margin:3px 0}
   }
 }
 
-body.k #menuList .menu-icon{
-  display:none !important;
-}
-
-body.k #menuList ul {
-  list-style-type: disc !important;
-  list-style-position: outside !important;
-  padding-left: 25px !important;
-  margin-left: 0 !important;
-}
-
-body.k #menuList li {
-  display: list-item !important;
-  list-style-type: disc !important;
-}
 
 </style>
 
