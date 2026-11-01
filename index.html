@@ -69,6 +69,10 @@ h3{
   font-weight: normal;
 }
 
+#mb-refresh{
+  display:none !important;
+}
+
 .section-heading {
     display: block;
     width: 100%;
@@ -2873,14 +2877,17 @@ function renderMenu(k, err, d){
 
   for(i = 0; i < dishes.length; i++){
     var li = mk("li");
-    var icon = mk("span");
 
-    icon.className = "dish-icon";
-    setText(icon, classifyDish(dishes[i]));
+    // Emoji solo su PC e cellulare, non su Kindle
+    if(!/(^|\s)k(\s|$)/.test(document.body.className)){
+      var icon = mk("span");
+      icon.className = "dish-icon";
+      setText(icon, classifyDish(dishes[i]));
+      li.appendChild(icon);
+      li.appendChild(document.createTextNode(" "));
+    }
 
-    li.appendChild(icon);
-    li.appendChild(document.createTextNode(" " + dishes[i]));
-
+    li.appendChild(document.createTextNode(dishes[i]));
     ul.appendChild(li);
   }
 
@@ -2888,37 +2895,6 @@ function renderMenu(k, err, d){
 
   scheduleBoxAlignment();
 }
-
-function classifyDish(dish){
-  var s = dish.toLowerCase();
-
-  if(/pizza/.test(s)){ return "🍕"; }
-
-  if(/pasta|riso|risotto|gnocchi|lasagne|tortellini|cous cous/.test(s)){
-    return "🍝";
-  }
-
-  if(/frutta|mela|pera|banana|arancia|mandarino/.test(s)){
-    return "🍎";
-  }
-
-  if(/gelato|dolce|torta|budino|dessert/.test(s)){
-    return "🍨";
-  }
-
-  if(/pane/.test(s)){ return "🥖"; }
-
-  if(/insalata|verdura|pomodori|carote|finocchi|zucchine|contorno/.test(s)){
-    return "🥗";
-  }
-
-  if(/burger|hamburger|carne|pollo|pesce|formaggio|uova|legumi|frittata/.test(s)){
-    return "🍽️";
-  }
-
-  return "🍽️";
-}
-
 
 /* ===== AVVIO: ogni blocco è indipendente ===== */
 if(IS_KINDLE){ document.body.className = "k"; }
