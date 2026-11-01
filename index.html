@@ -107,17 +107,19 @@ h3{
   font-size:3.2em;
   font-weight:bold;
   line-height:1;
-  margin-right:16px
+  margin-right:16px;
 }
 
 #clockWeather{
   float:left;
-  clear:left;
+  clear:none;
   width:5em;
   height:3em;
   text-align:center;
   margin-top:4px;
+  margin-left:-3.5em;
   position:relative;
+  top:3.2em;
 }
 
 /* ICONE MENU */
@@ -2537,6 +2539,7 @@ var MENUF = {ieri: "menu-ieri.json", oggi: "menu.json", domani: "menu-domani.jso
 var MENUOFF = {ieri: -1, oggi: 0, domani: 1};
 var menuSel = "oggi";
 var SKIP = /^(date|data|giorno|day|id|generated_at|updated|updated_at|url|link|scuola|school|centro|center|plesso|sede|nome_scuola|nome_centro)$/i;
+
 function collectMenu(d){
   var out = [];
   if(!d || !d.plates){ return out; }
@@ -2704,9 +2707,10 @@ function renderMenu(k, err, d){
 
   var dishes = collectMenu(d);
 
+  setText($("menuStatus"), "");
+
   if(!dishes.length){
     setText(list, "Menu non disponibile per questo giorno.");
-    setText($("menuStatus"), "");
     scheduleBoxAlignment();
     return;
   }
@@ -2716,7 +2720,7 @@ function renderMenu(k, err, d){
   for(i = 0; i < dishes.length; i++){
     var li = mk("li");
 
-	// Emoji solo su PC e cellulare, mai su Kindle
+    // Emoji solo su PC e cellulare, mai su Kindle
 	var isKindle = document.body.classList.contains("k");
 
 	if(!isKindle){
@@ -2728,8 +2732,7 @@ function renderMenu(k, err, d){
 	}
 
 	li.appendChild(document.createTextNode(dishes[i]));
-
-    li.appendChild(document.createTextNode(dishes[i]));
+	
     ul.appendChild(li);
   }
 
