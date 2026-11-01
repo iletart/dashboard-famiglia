@@ -47,35 +47,38 @@ body.k .wrap {
 }
 
 .section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    width: 100%;
-    box-sizing: border-box;
-    border-bottom: 1px solid #000;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid #000;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .section-heading h2 {
-    float: none;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    text-align: left;
-    flex: 0 1 auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  text-align: left;
 }
 
 .section-heading .sync-label {
-    float: none;
-    flex: 0 0 auto;
-    font-size: 0.65em;
-    line-height: 1.4;
-    color: #888;
-    text-align: right;
-    white-space: normal;
-    margin: 0;
+  flex: 0 1 48%;
+  min-width: 0;
+  max-width: 48%;
+  margin: 0;
+  font-size: 0.65em;
+  line-height: 1.2;
+  color: #888;
+  text-align: right;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .sync-label {
@@ -84,6 +87,24 @@ body.k .wrap {
     color: #888;
     font-weight: normal;
     text-transform: none;
+}
+
+.agenda-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.agenda-nav button {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: nowrap;
+  font-size: 0.9em;
+  padding: 4px 5px;
+  margin: 2px 0;
 }
 
 /* ==================================================
@@ -607,12 +628,6 @@ input {
     display: none;
   }
 
-  /* Navigazione agenda */
-  .agenda-nav button {
-      font-size: 1.05em;
-      padding: 8px 18px;
-      margin-right: 6px;
-  }
 
   /* Navigazione task: Ieri, Oggi, Domani */
   #taskDayButtons button {
@@ -784,13 +799,6 @@ body.k .agenda-nav {
     gap: 4px;
     width: 100%;
     box-sizing: border-box;
-}
-
-/* Pulsanti navigazione agenda */
-body.k .agenda-nav button {
-    font-size: 1.05em;
-    padding: 8px 12px;
-    margin-right: 4px;
 }
 
 /* Pulsanti navigazione task */
