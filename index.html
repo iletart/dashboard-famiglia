@@ -1092,11 +1092,13 @@ function renderAgenda(){
 	}
   }
 
-  if(!any){
-    box.appendChild(
-      mk("div", "", "Nessun impegno nella settimana.")
-    );
-  }
+	if(!any){
+	  box.appendChild(mk("div", "",
+		agendaTodayOnly ?
+		  "Nessun impegno nel giorno." :
+		  "Nessun impegno nella settimana."
+	  ));
+	}
 
   setText(st, "");
 
