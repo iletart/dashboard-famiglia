@@ -152,7 +152,7 @@ h3 {
   height: 64px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   justify-self: end;
 }
 
@@ -528,22 +528,31 @@ input {
 
 body.k #head {
   display: block;
-  min-height: 0;
+  position: relative;
+  min-height: 60px;
   height: auto;
   overflow: hidden;
 }
 
 body.k #clock {
+  float: left;
+  width: 120px;
   font-size: 2.5em;
 }
 
 body.k #info {
+  display: block;
+  position: relative;
   margin-left: 140px;
-  display: grid;
-  grid-template-columns: max-content max-content 48px minmax(0, 1fr);
-  grid-template-rows: auto;
-  column-gap: 6px;
-  align-items: center;
+  padding: 0;
+  min-height: 52px;
+}
+
+body.k #wday,
+body.k #fulldate {
+  display: block;
+  width: 135px;
+  margin: 0;
 }
 
 body.k #wday {
@@ -554,16 +563,31 @@ body.k #fulldate {
   font-size: 0.8em;
 }
 
-body.k #weatherIcon,
+body.k #weatherIcon {
+  position: absolute;
+  left: 140px;
+  top: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 body.k #weatherIcon svg {
   width: 48px;
   height: 48px;
 }
 
 body.k #weather {
+  position: absolute;
+  left: 195px;
+  right: 0;
+  top: 0;
   font-size: 0.8em;
   line-height: 1.2;
-  white-space: nowrap;
+  text-align: right;
+  white-space: normal;
 }
 
 body.k #menuList .menu-icon {
