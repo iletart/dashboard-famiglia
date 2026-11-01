@@ -2414,6 +2414,11 @@ function loadTodo(){
   var ctl = $("syncCtl");
   var st = $("syncStatus");
 
+  var syncBox = $("syncBox");
+  if(syncBox){
+    syncBox.style.display = "";
+  }
+
   clear(ctl);
   clear($("todoList"));
 
