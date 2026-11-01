@@ -47,21 +47,35 @@ body.k .wrap {
 }
 
 .section-heading {
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
     width: 100%;
     box-sizing: border-box;
     border-bottom: 1px solid #000;
     padding-bottom: 5px;
     margin-bottom: 10px;
-    overflow: hidden;
+    gap: 8px;
 }
 
 .section-heading h2 {
-    float: left;
+    float: none;
     margin: 0;
     padding: 0;
     border: 0;
     text-align: left;
+    flex: 0 1 auto;
+}
+
+.section-heading .sync-label {
+    float: none;
+    flex: 0 0 auto;
+    font-size: 0.65em;
+    line-height: 1.4;
+    color: #888;
+    text-align: right;
+    white-space: normal;
+    margin: 0;
 }
 
 .sync-label {
@@ -70,15 +84,6 @@ body.k .wrap {
     color: #888;
     font-weight: normal;
     text-transform: none;
-}
-
-.section-heading .sync-label {
-    float: right;
-    text-align: right;
-    white-space: normal;
-    margin: 0;
-    min-width: 0;
-    max-width: 100%;
 }
 
 /* ==================================================
