@@ -120,7 +120,7 @@ h3 {
 
 #info {
   display: grid;
-  grid-template-columns: max-content 48px minmax(0, 1fr);
+  grid-template-columns: max-content 64px minmax(0, 1fr);
   grid-template-rows: auto auto;
   column-gap: 10px;
   align-items: center;
@@ -150,6 +150,16 @@ body.k #clock {
   grid-column: 1;
   grid-row: 2;
   font-size: 1.2em;
+}
+
+#weatherIcon {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #weather {
@@ -398,12 +408,12 @@ input {
 
 <div class="box cf" id="head">
   <div id="clock">--:--</div>
-  <div id="clockWeather"></div>
-  <div id="info">
-    <div id="wday"></div>
-    <div id="fulldate"></div>
-    <div id="weather">Meteo: caricamento...</div>
-  </div>
+	<div id="info">
+	  <div id="wday"></div>
+	  <div id="fulldate"></div>
+	  <div id="weatherIcon"></div>
+	  <div id="weather">Meteo: caricamento...</div>
+	</div>
 </div>
 
 <div class="box" id="syncBox">
@@ -1153,10 +1163,9 @@ function loadSunTimes() {
     }
   }, true);
 }
-
 function renderWeather() {
   var el = $("weather");
-  var iconEl = $("clockWeather");
+  var iconEl = $("weatherIcon");
 
   if (!wData || wData.weather_code === undefined) {
     el.innerHTML = wErr ? "Meteo non disponibile" : "Meteo in caricamento...";
@@ -1226,12 +1235,12 @@ function renderWeather() {
     svg = cloud;
   }
 
-	if (iconEl) {
-	  iconEl.innerHTML =
-		"<svg viewBox='0 0 80 80' width='64' height='64' xmlns='http://www.w3.org/2000/svg'>" +
-		svg +
-		"</svg>";
-	}
+  if (iconEl) {
+    iconEl.innerHTML =
+      "<svg viewBox='0 0 80 80' width='64' height='64' xmlns='http://www.w3.org/2000/svg'>" +
+      svg +
+      "</svg>";
+  }
 
   el.innerHTML =
     "Milano: " + temp + "°C, " + wcText(code) +
