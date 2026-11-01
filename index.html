@@ -106,17 +106,25 @@ h3{
   position:absolute;
   top:4px;
   right:8px;
+  width:45%;
+  max-width:45%;
+  box-sizing:border-box;
   font-size:10px;
   color:#888;
-  line-height:1;
+  line-height:1.2;
   text-align:right;
+  white-space:normal;
+  overflow-wrap:break-word;
+  word-wrap:break-word;
 }
 
-/* OROLOGIO */
+/* BOX SUPERIORE */
 
 #head{
+  display:block;
   min-height:125px;
   overflow:hidden;
+  position:relative;
 }
 
 #clock{
@@ -139,14 +147,27 @@ h3{
   position:relative;
 }
 
-/* DATA E METEO */
-
 #info{
-  overflow:hidden;
   margin-left:6em;
   padding-left:12px;
   min-width:0;
   box-sizing:border-box;
+}
+
+#wday{
+  font-size:1.5em;
+  font-weight:bold;
+  text-transform:capitalize;
+}
+
+#fulldate{
+  font-size:1.2em;
+}
+
+#weather{
+  display:block;
+  margin-top:6px;
+  text-align:left;
 }
 
 .wx-icon{
