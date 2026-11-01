@@ -1587,15 +1587,15 @@ function todoRequest(method, data, callback, requestUrl){
 }
 
 /* Estrae i compiti dalla descrizione Google Calendar */
-function getEventTaskList(description){
+function getEventTaskData(description){
 
   var lines = String(description || "").split(/\r?\n/);
   var tasks = [];
+  var details = [];
   var start = false;
   var hasMarker = false;
   var i, line;
 
-  // Verifica se esiste il marcatore TODO:
   for(i = 0; i < lines.length; i++){
     if(/^\s*TODO:\s*$/i.test(lines[i])){
       hasMarker = true;
@@ -1616,27 +1616,46 @@ function getEventTaskList(description){
       continue;
     }
 
+    if(!line){
+      continue;
+    }
+
     if(/^[-*]\s+/.test(line)){
+
       line = line.replace(/^[-*]\s+/, "").replace(/\s+$/g, "");
 
       if(line){
         tasks.push(line);
       }
+
+    } else {
+      details.push(line);
     }
   }
 
-  return tasks;
+  return {
+    tasks: tasks,
+    details: details.join("\n")
+  };
 }
 
 
 function renderEventTasksInline(eventItem, taskContainer){
 
-  var tasks = getEventTaskList(eventItem.description);
+  var data = getEventTaskData(eventItem.description);
+  var tasks = data.tasks;
+  var details = data.details;
 
-  if(!tasks.length){
+  if(!tasks.length && !details){
     taskContainer.appendChild(
       mk("div", "", "Nessun compito indicato.")
     );
+    return;
+  }
+
+  if(!tasks.length){
+    // Non ci sono checkbox da sincronizzare.
+    addEventDetailsLink(eventItem, taskContainer);
     return;
   }
 
@@ -1717,7 +1736,36 @@ function renderEventTasksInline(eventItem, taskContainer){
       })(i);
     }
 
+    if(details){
+      addEventDetailsLink(eventItem, taskContainer);
+    }
+
   }, url);
+}
+
+function addEventDetailsLink(eventItem, taskContainer){
+
+  if(!eventItem.htmlLink){
+    return;
+  }
+
+  var link = document.createElement("a");
+
+  link.href = eventItem.htmlLink;
+  link.target = "_blank";
+  link.appendChild(
+    document.createTextNode("Altri dettagli in Google Calendar")
+  );
+
+  link.style.display = "block";
+  link.style.marginTop = "8px";
+  link.style.fontSize = "14px";
+  link.style.fontStyle = "italic";
+  link.style.color = "#555";
+  link.style.textDecoration = "underline";
+  link.style.cursor = "pointer";
+
+  taskContainer.appendChild(link);
 }
 
 /* Apre la finestra dei compiti associati all'evento */
