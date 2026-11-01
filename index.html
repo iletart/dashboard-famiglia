@@ -2699,6 +2699,7 @@ function renderMenuWeekend(){
 
   scheduleBoxAlignment();
 }
+
 function classifyDish(dish){
   if(IS_KINDLE){ return ""; }
 
@@ -2730,7 +2731,6 @@ function classifyDish(dish){
 
   return "🍽️";
 }
-
 function renderMenu(k, err, d){
   var list = $("menuList"), i;
   clear(list);
@@ -2774,32 +2774,31 @@ function renderMenu(k, err, d){
     return;
   }
 
-var ul = mk("ul");
-
-if(isKindle){
-  ul.style.listStyle = "none";
-  ul.style.paddingLeft = "0";
-  ul.style.marginLeft = "0";
-}
-
-for(i = 0; i < dishes.length; i++){
-  var li = mk("li");
+  var isKindle = true;
+  var ul = mk("ul");
 
   if(isKindle){
-    var bullet = mk("span");
-    setText(bullet, "• ");
-    li.appendChild(bullet);
-  } else {
-    var icon = mk("span");
-    icon.className = "dish-icon";
-    setText(icon, classifyDish(dishes[i]));
-    li.appendChild(icon);
-    li.appendChild(document.createTextNode(" "));
+    ul.style.listStyle = "none";
+    ul.style.paddingLeft = "0";
+    ul.style.marginLeft = "0";
   }
 
-  li.appendChild(document.createTextNode(dishes[i]));
-  ul.appendChild(li);
-}
+  for(i = 0; i < dishes.length; i++){
+    var li = mk("li");
+
+    if(isKindle){
+      li.appendChild(document.createTextNode("\u2022\u00A0"));
+    } else {
+      var icon = mk("span");
+      icon.className = "dish-icon";
+      setText(icon, classifyDish(dishes[i]));
+      li.appendChild(icon);
+      li.appendChild(document.createTextNode(" "));
+    }
+
+    li.appendChild(document.createTextNode(dishes[i]));
+    ul.appendChild(li);
+  }
 
   list.appendChild(ul);
 
