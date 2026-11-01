@@ -100,29 +100,27 @@ h3{
     padding: 0;
 }
 
-/* BOX SUPERIORE */
+/* OROLOGIO E METEO */
+
 #head{
   position:relative;
-  min-height:110px;
-  padding:8px;
+  min-height:125px;
   box-sizing:border-box;
+  overflow:hidden;
 }
 
-/* ORARIO: in alto a sinistra */
 #clock{
   position:absolute;
   top:10px;
   left:8px;
   width:5em;
-  text-align:center;
   font-size:3.2em;
   font-weight:bold;
   line-height:1;
   margin:0;
-  float:none;
+  text-align:center;
 }
 
-/* METEO: sotto l'orario */
 #clockWeather{
   position:absolute;
   top:65px;
@@ -132,8 +130,6 @@ h3{
   margin:0;
   padding:0;
   text-align:center;
-  float:none;
-  clear:none;
 }
 
 #clockWeather svg{
@@ -145,9 +141,9 @@ h3{
 
 /* GIORNO, DATA E TEMPERATURA: a destra */
 #info{
-  margin-left:6em;
-  padding:4px 0 0 8px;
   overflow:hidden;
+  margin-left:6em;
+  padding:8px 0 0 12px;
   min-width:0;
 }
 
