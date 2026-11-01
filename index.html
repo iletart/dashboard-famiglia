@@ -162,22 +162,26 @@ h3{
   margin-right:4px;
 }
 
-/* PC e cellulare: niente pallini */
+/* MENU */
+
+/* PC e cellulare: icone, senza pallini, testo a sinistra */
 #menuList ul{
   list-style:none;
-  padding-left:0;
+  margin:4px 0;
+  padding:0;
+  text-align:left;
 }
 
-/* Kindle: elenco puntato tradizionale */
+/* Kindle: solo elenco puntato, senza icone */
 body.k #menuList ul{
   list-style:disc;
-  padding-left:40px;
+  margin:4px 0 4px 20px;
+  padding:0;
+  text-align:left;
 }
 
-body.k ul{
-  list-style-type:disc;
-  margin-left:20px;
-  padding-left:0;
+#menuList li{
+  margin:3px 0;
 }
 
 /* DATA E METEO */
