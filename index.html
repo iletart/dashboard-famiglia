@@ -2857,10 +2857,6 @@ function loadMenu() {
 
   getJson([CONFIG.base + MENUF[k], MENUF[k]], function(err, d) {
   
-	console.log("LOAD MENU - callback eseguita");
-	console.log("LOAD MENU - errore:", err);
-	console.log("LOAD MENU - risposta:", d);
-	
     if (k !== menuSel) {
       return;
     }
