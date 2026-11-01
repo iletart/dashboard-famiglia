@@ -903,7 +903,8 @@ function renderAgenda(){
     return;
   }
 
-	var today = todayNum(), buckets = [], i, j, n;
+	var today = dayNumOfRome(parseIso("2026-11-02T12:00:00Z"));
+	var buckets = [], i, j, n;
 	var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
 	monday += agendaWeekOffset * 7;
 
