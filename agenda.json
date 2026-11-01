@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-01T16:54:02.672313+01:00",
+  "generated_at": "2026-11-01T16:55:02.687755+01:00",
   "period_days": 14,
   "events": [
     {
@@ -87,11 +87,11 @@
       "id": "5i8ckcek99csq134noj3b1v4gs",
       "title": "altra prova",
       "start": {
-        "dateTime": "2026-11-02T07:00:00Z",
+        "dateTime": "2026-11-01T07:00:00Z",
         "timeZone": "Europe/Rome"
       },
       "end": {
-        "dateTime": "2026-11-02T08:00:00Z",
+        "dateTime": "2026-11-01T08:00:00Z",
         "timeZone": "Europe/Rome"
       },
       "all_day": false,
