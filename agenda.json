@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-01T10:30:02.920237+01:00",
+  "generated_at": "2026-11-01T10:43:53.427225+01:00",
   "period_days": 14,
   "events": [
     {
@@ -77,6 +77,21 @@
       "all_day": false,
       "location": "",
       "description": ""
+    },
+    {
+      "id": "6n806t6nm4gj0104gsrkekndha",
+      "title": "prova prova",
+      "start": {
+        "dateTime": "2026-11-02T06:00:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-02T07:00:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "cose da fare\npippo pluto"
     },
     {
       "id": "12ug354gtoq95bjhtvc2lbvafc_20261102T163000Z",
