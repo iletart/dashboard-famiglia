@@ -120,268 +120,6 @@ h3{
   position:relative;
 }
 
-/* =========================================
-   ICONE METEO - STILE MINIMAL BIANCO E NERO
-   ========================================= */
-
-.wx-icon{
-  display:block;
-  position:relative;
-  width:48px;
-  height:46px;
-  margin:2px auto;
-  left:29px;
-}
-
-.wx-part{
-  display:none;
-  position:absolute;
-  box-sizing:border-box;
-}
-
-/* =========================================
-   SOLE - CERCHIO E 8 RAGGI SEPARATI
-   ========================================= */
-
-.wx-part-sun{
-  width:34px;
-  height:34px;
-  left:0;
-  top:0;
-  border-radius:50%;
-  background:
-    radial-gradient(circle,
-      #fff 0,
-      #fff 7px,
-      #111 7px,
-      #111 9px,
-      transparent 9px
-    ),
-    linear-gradient(#111,#111) center top / 2px 5px no-repeat,
-    linear-gradient(#111,#111) center bottom / 2px 5px no-repeat,
-    linear-gradient(#111,#111) left center / 5px 2px no-repeat,
-    linear-gradient(#111,#111) right center / 5px 2px no-repeat,
-    linear-gradient(45deg,transparent 46%,#111 47%,#111 53%,transparent 54%) center / 34px 34px no-repeat,
-    linear-gradient(-45deg,transparent 46%,#111 47%,#111 53%,transparent 54%) center / 34px 34px no-repeat;
-}
-
-/* =========================================
-   LUNA - MEZZALUNA
-   ========================================= */
-
-.wx-part-moon{
-  width:25px;
-  height:25px;
-  left:4px;
-  top:3px;
-  border-radius:50%;
-  background:#111;
-}
-
-.wx-part-moon:after{
-  content:"";
-  position:absolute;
-  width:22px;
-  height:22px;
-  left:8px;
-  top:-5px;
-  border-radius:50%;
-  background:#fff;
-}
-
-/* =========================================
-   NUVOLA
-   ========================================= */
-
-.wx-part-cloud{
-  width:34px;
-  height:16px;
-  left:8px;
-  top:19px;
-  border:2px solid #111;
-  border-radius:12px;
-  background:#fff;
-  z-index:2;
-}
-
-.wx-part-cloud:before{
-  content:"";
-  position:absolute;
-  width:17px;
-  height:17px;
-  left:3px;
-  top:-12px;
-  border:2px solid #111;
-  border-radius:50%;
-  background:#fff;
-  box-sizing:border-box;
-  z-index:-1;
-}
-
-.wx-part-cloud:after{
-  content:"";
-  position:absolute;
-  width:21px;
-  height:21px;
-  left:13px;
-  top:-15px;
-  border:2px solid #111;
-  border-radius:50%;
-  background:#fff;
-  box-sizing:border-box;
-  z-index:-1;
-}
-
-/* =========================================
-   PIOGGIA - GOCCE
-   ========================================= */
-
-.wx-part-rain{
-  left:13px;
-  top:34px;
-  width:5px;
-  height:9px;
-  border:1px solid #111;
-  border-radius:50%;
-  background:#111;
-  transform:rotate(20deg);
-  box-shadow:
-    10px 2px 0 -1px #fff,
-    10px 2px 0 0 #111,
-    20px 0 0 -1px #fff,
-    20px 0 0 0 #111;
-}
-
-/* =========================================
-   NEVE - FIOCCHI
-   ========================================= */
-
-.wx-part-snow{
-  left:13px;
-  top:36px;
-  width:6px;
-  height:6px;
-  border:1px solid #111;
-  border-radius:50%;
-  background:#fff;
-  box-shadow:
-    10px 0 0 -1px #fff,
-    10px 0 0 0 #111,
-    20px 0 0 -1px #fff,
-    20px 0 0 0 #111;
-}
-
-/* =========================================
-   NEBBIA - LINEE ORIZZONTALI
-   ========================================= */
-
-.wx-part-fog{
-  left:5px;
-  top:13px;
-  width:38px;
-  height:3px;
-  background:#111;
-  border-radius:2px;
-}
-
-.wx-part-fog:before{
-  content:"";
-  position:absolute;
-  left:5px;
-  top:8px;
-  width:28px;
-  height:3px;
-  background:#111;
-  border-radius:2px;
-}
-
-.wx-part-fog:after{
-  content:"";
-  position:absolute;
-  left:0;
-  top:16px;
-  width:34px;
-  height:3px;
-  background:#111;
-  border-radius:2px;
-}
-
-/* =========================================
-   FULMINE
-   ========================================= */
-
-.wx-part-lightning{
-  left:19px;
-  top:28px;
-  width:0;
-  height:0;
-  border-left:6px solid transparent;
-  border-right:4px solid transparent;
-  border-top:11px solid #111;
-  transform:skew(-15deg);
-}
-
-.wx-part-lightning:after{
-  content:"";
-  position:absolute;
-  left:-5px;
-  top:-3px;
-  width:0;
-  height:0;
-  border-left:4px solid transparent;
-  border-right:5px solid transparent;
-  border-top:12px solid #111;
-  transform:rotate(180deg);
-}
-
-/* =========================================
-   VISIBILITA' ELEMENTI
-   ========================================= */
-
-.wx-sun .wx-part-sun,
-.wx-moon .wx-part-moon,
-.wx-cloud .wx-part-cloud,
-.wx-sun-cloud .wx-part-sun,
-.wx-sun-cloud .wx-part-cloud,
-.wx-moon-cloud .wx-part-moon,
-.wx-moon-cloud .wx-part-cloud,
-.wx-drizzle .wx-part-cloud,
-.wx-drizzle .wx-part-rain,
-.wx-rain .wx-part-cloud,
-.wx-rain .wx-part-rain,
-.wx-snow .wx-part-cloud,
-.wx-snow .wx-part-snow,
-.wx-fog .wx-part-fog,
-.wx-storm .wx-part-cloud,
-.wx-storm .wx-part-lightning{
-  display:block;
-}
-
-/* =========================================
-   SOLE E LUNA CON NUVOLA
-   ========================================= */
-
-.wx-sun-cloud .wx-part-cloud,
-.wx-moon-cloud .wx-part-cloud{
-  left:16px;
-  top:21px;
-}
-
-.wx-sun-cloud .wx-part-sun,
-.wx-moon-cloud .wx-part-moon{
-  left:0;
-  top:0;
-}
-
-/* =========================================
-   PIOVIGGINE
-   ========================================= */
-
-.wx-drizzle .wx-part-rain{
-  height:5px;
-  top:35px;
-}
-
 /* ICONE MENU */
 
 .dish-icon{
@@ -1342,7 +1080,6 @@ function renderWeather() {
   var temp = Math.round(wData.temperature_2m);
   var feels = Math.round(wData.apparent_temperature);
 
-if(iconEl){
   var now = toRome(new Date().getTime());
   var hour = now.getHours();
   var minute = now.getMinutes();
@@ -1354,61 +1091,59 @@ if(iconEl){
 
   var night = (hour >= 17 || hour < 6);
 
-  if(sunData &&
-     sunDate === today &&
-     sunData.civil_twilight_start &&
-     sunData.civil_twilight_end){
+  if (sunData &&
+      sunDate === today &&
+      sunData.civil_twilight_start &&
+      sunData.civil_twilight_end) {
 
     var dawn = sunData.civil_twilight_start.split(":");
     var dusk = sunData.civil_twilight_end.split(":");
 
-    var dawnMinutes = parseInt(dawn[0], 10) * 60 +
-      parseInt(dawn[1], 10);
+    var dawnMinutes = parseInt(dawn[0], 10) * 60 + parseInt(dawn[1], 10);
+    var duskMinutes = parseInt(dusk[0], 10) * 60 + parseInt(dusk[1], 10);
 
-    var duskMinutes = parseInt(dusk[0], 10) * 60 +
-      parseInt(dusk[1], 10);
-
-    night = (
-      currentTime < dawnMinutes ||
-      currentTime >= duskMinutes
-    );
+    night = currentTime < dawnMinutes || currentTime >= duskMinutes;
   }
 
-  var iconClass = "wx-cloud";
+  var svg = "";
+  var sun = "<circle cx='30' cy='27' r='11' fill='#FDB813'/>";
+  var moon = "<path d='M37 12 A15 15 0 1 0 49 34 A12 12 0 0 1 37 12' fill='#F5D76E'/>";
+  var cloud = "<path d='M18 48 H53 A12 12 0 0 0 53 24 A17 17 0 0 0 21 28 A10 10 0 0 0 18 48' fill='#A9C7DD' stroke='#7197B1' stroke-width='2'/>";
+  var rain = "<path d='M23 53 L19 62 M37 53 L33 62 M51 53 L47 62' stroke='#39A9DB' stroke-width='4' stroke-linecap='round'/>";
+  var snow = "<g stroke='#54BDE8' stroke-width='2.5' stroke-linecap='round'><path d='M23 54v12 M18 57l10 6 M28 57l-10 6 M42 54v12 M37 57l10 6 M47 57l-10 6'/></g>";
+  var lightning = "<path d='M37 48 L28 62 H37 L32 73 L49 55 H40 L45 48 Z' fill='#FFD43B' stroke='#E5A900' stroke-width='1.5'/>";
+  var fog = "<g stroke='#9AAAB5' stroke-width='3' stroke-linecap='round'><path d='M12 55 H55 M18 63 H49 M25 71 H58'/></g>";
 
-  if(code === 0){
-    iconClass = night ? "wx-moon" : "wx-sun";
-  } else if(code === 1 || code === 2){
-    iconClass = night ? "wx-moon-cloud" : "wx-sun-cloud";
-  } else if(code === 3){
-    iconClass = "wx-cloud";
-  } else if(code === 45 || code === 48){
-    iconClass = "wx-fog";
-  } else if(code >= 51 && code <= 57){
-    iconClass = "wx-drizzle";
-  } else if(code >= 61 && code <= 67){
-    iconClass = "wx-rain";
-  } else if(code >= 71 && code <= 77){
-    iconClass = "wx-snow";
-  } else if(code >= 80 && code <= 82){
-    iconClass = "wx-rain";
-  } else if(code === 85 || code === 86){
-    iconClass = "wx-snow";
-  } else if(code >= 95){
-    iconClass = "wx-storm";
+  if (code === 0) {
+    svg = night ? moon : sun;
+  } else if (code === 1 || code === 2) {
+    svg = (night ? moon : sun) + cloud;
+  } else if (code === 3) {
+    svg = cloud;
+  } else if (code === 45 || code === 48) {
+    svg = cloud + fog;
+  } else if (code >= 51 && code <= 57) {
+    svg = cloud + rain;
+  } else if (code >= 61 && code <= 67) {
+    svg = cloud + rain;
+  } else if (code >= 71 && code <= 77) {
+    svg = cloud + snow;
+  } else if (code >= 80 && code <= 82) {
+    svg = cloud + rain;
+  } else if (code === 85 || code === 86) {
+    svg = cloud + snow;
+  } else if (code >= 95) {
+    svg = cloud + lightning + rain;
+  } else {
+    svg = cloud;
   }
 
-	iconEl.innerHTML =
-	  "<span class='wx-icon wx-" + iconClass.replace("wx-", "") + "'>" +
-	  "<span class='wx-part wx-part-sun'></span>" +
-	  "<span class='wx-part wx-part-moon'></span>" +
-	  "<span class='wx-part wx-part-cloud'></span>" +
-	  "<span class='wx-part wx-part-rain'></span>" +
-	  "<span class='wx-part wx-part-snow'></span>" +
-	  "<span class='wx-part wx-part-fog'></span>" +
-	  "<span class='wx-part wx-part-lightning'></span>" +
-	  "</span>";
-}
+  if (iconEl) {
+    iconEl.innerHTML =
+      "<svg viewBox='0 0 80 80' width='64' height='64' xmlns='http://www.w3.org/2000/svg'>" +
+      svg +
+      "</svg>";
+  }
 
   el.innerHTML =
     "Milano: " + temp + "°C, " + wcText(code) +
