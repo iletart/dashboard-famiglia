@@ -3059,55 +3059,64 @@ function alignBottomBoxes(){
      ========================================= */
 
   if(IS_KINDLE){
-
+  
     var row = document.querySelector(".row.cf");
-
     if(!row) return;
-
-    cols = [];
-
-    /* Recupera le due colonne */
-    for(i = 0; i < row.children.length; i++){
-      if(row.children[i].className &&
-         (" " + row.children[i].className + " ").indexOf(" col ") !== -1){
-        cols.push(row.children[i]);
+  
+    var cols = [];
+  
+    for(var i = 0; i < row.children.length; i++){
+      var child = row.children[i];
+  
+      if(child.className &&
+         (" " + child.className + " ").indexOf(" col ") !== -1){
+        cols.push(child);
       }
     }
-
+  
     if(cols.length < 2) return;
-
-    /* Recupera i box della colonna sinistra */
-    boxes = [];
-
-    for(i = 0; i < cols[0].children.length; i++){
-      if(cols[0].children[i].className &&
-         (" " + cols[0].children[i].className + " ").indexOf(" box ") !== -1){
-        boxes.push(cols[0].children[i]);
+  
+    var leftBoxes = [];
+    var rightBoxes = [];
+  
+    for(var i = 0; i < cols[0].children.length; i++){
+      var child = cols[0].children[i];
+  
+      if(child.className &&
+         (" " + child.className + " ").indexOf(" box ") !== -1){
+        leftBoxes.push(child);
       }
     }
-
-    if(boxes.length < 2) return;
-
-    var routes = boxes[1];
-
-    /* Azzera l'altezza precedente */
+  
+    for(var i = 0; i < cols[1].children.length; i++){
+      var child = cols[1].children[i];
+  
+      if(child.className &&
+         (" " + child.className + " ").indexOf(" box ") !== -1){
+        rightBoxes.push(child);
+      }
+    }
+  
+    if(leftBoxes.length < 2 || rightBoxes.length < 1) return;
+  
+    var routes = leftBoxes[1];
+    var menu = rightBoxes[rightBoxes.length - 1];
+  
     routes.style.minHeight = "";
-
-    /* Misura le due colonne */
-    var leftHeight = cols[0].offsetHeight;
-    var rightHeight = cols[1].offsetHeight;
-
-    /* Allunga Spostamenti se necessario */
-    var diff = rightHeight - leftHeight;
-
+  
+    var routesBottom = routes.getBoundingClientRect().bottom;
+    var menuBottom = menu.getBoundingClientRect().bottom;
+  
+    var diff = menuBottom - routesBottom;
+  
     if(diff > 0){
       routes.style.minHeight =
         (routes.offsetHeight + diff) + "px";
     }
-
+  
     return;
   }
-
+  
   /* =========================================
      CELLULARE
      Nessun allineamento
