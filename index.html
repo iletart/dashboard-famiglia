@@ -2775,10 +2775,9 @@ function renderMenu(k, err, d){
   }
 
 var ul = mk("ul");
-var isKindle = IS_KINDLE;
 
 if(isKindle){
-  ul.style.listStyleType = "none";
+  ul.style.listStyle = "none";
   ul.style.paddingLeft = "0";
   ul.style.marginLeft = "0";
 }
@@ -2787,7 +2786,9 @@ for(i = 0; i < dishes.length; i++){
   var li = mk("li");
 
   if(isKindle){
-    li.appendChild(document.createTextNode("\u2022 "));
+    var bullet = mk("span");
+    setText(bullet, "• ");
+    li.appendChild(bullet);
   } else {
     var icon = mk("span");
     icon.className = "dish-icon";
