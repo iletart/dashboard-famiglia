@@ -3047,30 +3047,93 @@ setInterval(function(){
 
 function alignBottomBoxes(){
 
-  if(IS_KINDLE || window.innerWidth <= 560){
-    var allBoxes = document.querySelectorAll(".box");
-    for(var n = 0; n < allBoxes.length; n++){
-      allBoxes[n].style.minHeight = "";
-    }
-    return;
-  }
-
-  /* Sul cellulare non allineare i riquadri */
-  if(window.innerWidth <= 560){
-    var allBoxes = document.querySelectorAll(".box");
-    for(var n = 0; n < allBoxes.length; n++){
-      allBoxes[n].style.minHeight = "";
-    }
-    return;
-  }
-
-  var cols = document.querySelectorAll(".col");
-  var i, j, boxes, last;
-  var heights = [];
+  var cols;
+  var boxes;
+  var i, j;
   var maxHeight = 0;
+  var heights = [];
+
+  /* =========================================
+     KINDLE
+     Allinea Spostamenti con Menu Scuola
+     ========================================= */
+
+  if(IS_KINDLE){
+
+    var row = document.querySelector(".row.cf");
+
+    if(!row) return;
+
+    cols = [];
+
+    /* Recupera le due colonne */
+    for(i = 0; i < row.children.length; i++){
+      if(row.children[i].className &&
+         (" " + row.children[i].className + " ").indexOf(" col ") !== -1){
+        cols.push(row.children[i]);
+      }
+    }
+
+    if(cols.length < 2) return;
+
+    /* Recupera i box della colonna sinistra */
+    boxes = [];
+
+    for(i = 0; i < cols[0].children.length; i++){
+      if(cols[0].children[i].className &&
+         (" " + cols[0].children[i].className + " ").indexOf(" box ") !== -1){
+        boxes.push(cols[0].children[i]);
+      }
+    }
+
+    if(boxes.length < 2) return;
+
+    var routes = boxes[1];
+
+    /* Azzera l'altezza precedente */
+    routes.style.minHeight = "";
+
+    /* Misura le due colonne */
+    var leftHeight = cols[0].offsetHeight;
+    var rightHeight = cols[1].offsetHeight;
+
+    /* Allunga Spostamenti se necessario */
+    var diff = rightHeight - leftHeight;
+
+    if(diff > 0){
+      routes.style.minHeight =
+        (routes.offsetHeight + diff) + "px";
+    }
+
+    return;
+  }
+
+  /* =========================================
+     CELLULARE
+     Nessun allineamento
+     ========================================= */
+
+  if(window.innerWidth <= 560){
+
+    var allBoxes = document.querySelectorAll(".box");
+
+    for(i = 0; i < allBoxes.length; i++){
+      allBoxes[i].style.minHeight = "";
+    }
+
+    return;
+  }
+
+  /* =========================================
+     PC
+     Allineamento originale
+     ========================================= */
+
+  cols = document.querySelectorAll(".col");
 
   /* Azzera le altezze precedenti */
   for(i = 0; i < cols.length; i++){
+
     boxes = cols[i].querySelectorAll(".box");
 
     for(j = 0; j < boxes.length; j++){
@@ -3080,6 +3143,7 @@ function alignBottomBoxes(){
 
   /* Misura le colonne */
   for(i = 0; i < cols.length; i++){
+
     heights[i] = cols[i].offsetHeight;
 
     if(heights[i] > maxHeight){
@@ -3087,16 +3151,21 @@ function alignBottomBoxes(){
     }
   }
 
-  /* Allunga l'ultimo riquadro della colonna più corta */
+  /* Allunga l'ultimo box della colonna più corta */
   for(i = 0; i < cols.length; i++){
-    var diff = maxHeight - heights[i];
 
-    if(diff > 0){
+    var difference = maxHeight - heights[i];
+
+    if(difference > 0){
+
       boxes = cols[i].querySelectorAll(".box");
 
       if(boxes.length){
-        last = boxes[boxes.length - 1];
-        last.style.minHeight = (last.offsetHeight + diff) + "px";
+
+        var last = boxes[boxes.length - 1];
+
+        last.style.minHeight =
+          (last.offsetHeight + difference) + "px";
       }
     }
   }
