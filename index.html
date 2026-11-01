@@ -6,6 +6,7 @@
 <title>Dashboard famiglia</title>
 
 
+
 <style>
 /* ==================================================
    IMPOSTAZIONI GENERALI
@@ -39,7 +40,6 @@ body.k {
   margin: 3px;
   overflow: hidden;
   box-sizing: border-box;
-  -webkit-box-sizing: border-box;
 }
 
 /* ==================================================
@@ -92,10 +92,10 @@ h3 {
 
 #head {
   display: block;
+  position: relative;
   min-height: 0;
   height: auto;
   overflow: hidden;
-  position: relative;
 }
 
 #clock {
@@ -108,22 +108,11 @@ h3 {
   text-align: left;
 }
 
-#clockWeather {
-  float: left;
-  clear: left;
-  width: 5em;
-  height: 3em;
-  text-align: center;
-  margin-top: 4px;
-  position: relative;
-  left: 30px;
-}
-
 #info {
   display: grid;
-  grid-template-columns: max-content 64px minmax(0, 1fr);
+  grid-template-columns: max-content minmax(0, 1fr) 64px max-content;
   grid-template-rows: auto auto;
-  column-gap: 10px;
+  column-gap: 5px;
   align-items: center;
   margin-left: 120px;
   padding-left: 8px;
@@ -146,38 +135,25 @@ h3 {
 }
 
 #weatherIcon {
-  grid-column: 2;
+  grid-column: 3;
   grid-row: 1 / span 2;
   width: 64px;
   height: 64px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  justify-self: end;
+  margin: 0;
 }
 
 #weather {
-  grid-column: 3;
+  grid-column: 4;
   grid-row: 1 / span 2;
   margin: 0;
   text-align: left;
   align-self: center;
+  justify-self: start;
   min-width: 0;
-  justify-self: end;
 }
-
-.wx-icon {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  display: block;
-  position: relative;
-  width: 48px;
-  height: 46px;
-  margin: 2px auto;
-  left: 0;
-}
-
-/* Nasconde il riquadro autonomo di sincronizzazione */
 
 #syncBox {
   display: none;
@@ -251,16 +227,6 @@ h3 {
 .dish-icon {
   display: inline;
   margin-right: 4px;
-}
-
-body.k #menuList .menu-icon {
-  display: none !important;
-}
-
-body.k #menuList ul,
-body.k #menuList li {
-  list-style: none !important;
-  list-style-type: none !important;
 }
 
 #mb-refresh {
@@ -357,7 +323,6 @@ input {
   padding: 4px;
   width: 60%;
   box-sizing: border-box;
-  -webkit-box-sizing: border-box;
 }
 
 /* ==================================================
@@ -384,31 +349,92 @@ input {
 }
 
 /* ==================================================
-   CELLULARE E TABLET
+   TABLET E CELLULARI
    ================================================== */
 
-/* BOX UNO SOTTO L'ALTRO SU CELLULARE */
+@media screen and (max-width: 800px) {
 
-@media screen and (max-width: 560px) {
+  /* Colonne una sotto l'altra */
   .col {
     float: none;
+    display: block;
     width: 100%;
+  }
+
+  /* Header */
+  body:not(.k) #head {
+    display: grid;
+    grid-template-columns: 85px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 8px;
+  }
+
+  body:not(.k) #clock {
+    float: none;
+    width: 85px;
+    font-size: 2em;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  body:not(.k) #info {
+    display: grid;
+    grid-template-columns: max-content 40px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 5px;
+    align-items: center;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  body:not(.k) #wday {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 0.95em;
+    white-space: nowrap;
+  }
+
+  body:not(.k) #fulldate {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 0.85em;
+    white-space: nowrap;
+  }
+
+  body:not(.k) #weatherIcon {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+  }
+
+  body:not(.k) #weatherIcon svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  body:not(.k) #weather {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    font-size: 0.8em;
+    line-height: 1.3;
+    white-space: normal;
+    min-width: 0;
+  }
+
+  body:not(.k) #clockWeather {
+    display: none;
   }
 }
 
-/* CELLULARI STRETTI */
-
-@media screen and (max-width: 560px) {
-  .row {
-    display: block;
-  }
-
-  .col {
-    float: none;
-    width: 100%;
-    display: block;
-  }
-}
+/* ==================================================
+   CELLULARI MOLTO STRETTI
+   ================================================== */
 
 @media screen and (max-width: 380px) {
 
@@ -445,82 +471,6 @@ input {
     font-size: 0.7em;
   }
 }
-
-@media screen and (max-width: 800px) {
-
-  body:not(.k) #head {
-    display: grid;
-    grid-template-columns: 85px minmax(0, 1fr);
-    align-items: center;
-    column-gap: 8px;
-    min-height: 0;
-    height: auto;
-  }
-
-  body:not(.k) #clock {
-    float: none;
-    width: 85px;
-    font-size: 2em;
-    line-height: 1;
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  body:not(.k) #clockWeather {
-    display: none;
-  }
-
-  body:not(.k) #info {
-    display: grid;
-    grid-template-columns: max-content 40px minmax(0, 1fr);
-    grid-template-rows: auto auto;
-    column-gap: 5px;
-    align-items: center;
-    min-width: 0;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  body:not(.k) #wday {
-    grid-column: 1;
-    grid-row: 1;
-    font-size: 0.95em;
-    white-space: nowrap;
-  }
-
-  body:not(.k) #fulldate {
-    grid-column: 1;
-    grid-row: 2;
-    font-size: 0.85em;
-    white-space: nowrap;
-  }
-
-  body:not(.k) #weatherIcon {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    width: 40px;
-    height: 40px;
-  }
-
-  body:not(.k) #weatherIcon svg {
-    width: 40px;
-    height: 40px;
-  }
-
-  body:not(.k) #weather {
-    grid-column: 3;
-    grid-row: 1 / span 2;
-    font-size: 0.8em;
-    line-height: 1.3;
-    white-space: normal;
-    min-width: 0;
-  }
-}
-
-
 
 /* ==================================================
    PERSONALIZZAZIONI KINDLE
@@ -605,7 +555,6 @@ body.k #menuList li {
   list-style: none !important;
   list-style-type: none !important;
 }
-
 </style>
 
 
