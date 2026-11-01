@@ -529,8 +529,9 @@ input {
 body.k #head {
   display: block;
   position: relative;
-  min-height: 60px;
   height: auto;
+  min-height: 0;
+  padding-bottom: 2px;
   overflow: hidden;
 }
 
@@ -538,6 +539,8 @@ body.k #clock {
   float: left;
   width: 120px;
   font-size: 2.5em;
+  line-height: 1;
+  margin: 0;
 }
 
 body.k #info {
@@ -545,7 +548,7 @@ body.k #info {
   position: relative;
   margin-left: 140px;
   padding: 0;
-  min-height: 52px;
+  min-height: 42px;
 }
 
 body.k #wday,
@@ -553,6 +556,7 @@ body.k #fulldate {
   display: block;
   width: 135px;
   margin: 0;
+  line-height: 1.1;
 }
 
 body.k #wday {
@@ -568,15 +572,16 @@ body.k #weatherIcon {
   left: 140px;
   top: 0;
   width: 48px;
-  height: 48px;
+  height: 42px;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: flex-end;
+  margin: 0;
 }
 
 body.k #weatherIcon svg {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
 }
 
 body.k #weather {
@@ -588,6 +593,7 @@ body.k #weather {
   line-height: 1.2;
   text-align: right;
   white-space: normal;
+  margin: 0;
 }
 
 body.k #menuList .menu-icon {
