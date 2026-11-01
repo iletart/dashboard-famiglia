@@ -1054,20 +1054,24 @@ function renderAgenda(){
       mk("h3", "", dayLabel(monday + i, today))
     );
 
-    for(j = 0; j < buckets[i].length; j++){
+	for(j = 0; j < buckets[i].length; j++){
 
-      var row = mk("div", "ev");
+	  var row = mk("div", "ev");
+	  var item = buckets[i][j];
 
-      row.appendChild(
-        mk("span", "t", buckets[i][j].time)
-      );
+	  row.style.cursor = "pointer";
 
-      row.appendChild(
-        mk("span", "tt", buckets[i][j].title)
-      );
+	  row.onclick = (function(eventItem){
+		return function(){
+		  openEventTasks(eventItem);
+		};
+	  })(item);
 
-      box.appendChild(row);
-    }
+	  row.appendChild(mk("span", "t", item.time));
+	  row.appendChild(mk("span", "tt", item.title));
+
+	  box.appendChild(row);
+	}
   }
 
   if(!any){
