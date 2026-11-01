@@ -110,7 +110,6 @@ h3 {
   line-height: 1;
   margin: 0;
   text-align: left;
-  top: 9px;
 }
 
 #info {
@@ -150,7 +149,7 @@ h3 {
   margin: 0;
   position: relative;
   left: -3px;
-  top: 14px;
+  top: 10px;
 }
 
 #weather {
@@ -161,12 +160,35 @@ h3 {
   align-self: center;
   justify-self: start;
   min-width: 0;
-  position: relative;
-  left: -2px;
 }
 
 #syncBox {
   display: none;
+}
+
+/* ==================================================
+   SPOSTAMENTO ELEMENTI HEADER - SOLO PC
+   ================================================== */
+
+@media screen and (min-width: 801px) {
+
+  body:not(.k) #clock {
+    position: relative;
+    left: 5px;
+    top: 9px;
+  }
+
+  body:not(.k) #weatherIcon {
+    position: relative;
+    left: 5px;
+    top: 14px;
+  }
+  
+  body:not(.k) #weather {
+    position: relative;
+	left: -2px;
+  }
+  
 }
 
 /* ==================================================
