@@ -862,6 +862,23 @@ var agendaErr = false;
 var agendaWeekOffset = 0;
 var agendaTodayOnly = true;
 
+function scheduleAgendaRefresh() {
+  var now = new Date();
+  var next = new Date(now.getTime());
+
+  next.setSeconds(5, 0);
+
+  if (next.getTime() <= now.getTime()) {
+    next.setMinutes(next.getMinutes() + 1);
+  }
+
+  var delay = next.getTime() - now.getTime();
+
+  setTimeout(function() {
+    safe(loadAgenda);
+  }, delay);
+}
+
 function loadAgenda() {
   getJson(
     [CONFIG.base + "agenda.json", "agenda.json"],
@@ -877,10 +894,7 @@ function loadAgenda() {
 
       safe(renderAgenda);
 
-      setTimeout(function() {
-        safe(loadAgenda);
-      }, CONFIG.agendaMin * 60000);
-
+      scheduleAgendaRefresh();
     }
   );
 }
