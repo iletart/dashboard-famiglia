@@ -2707,6 +2707,7 @@ function classifyDish(dish){
   return "🍽️";
 }
 
+
 function renderMenu(k, err, d){
   var list = $("menuList"), i;
   clear(list);
@@ -2751,25 +2752,21 @@ function renderMenu(k, err, d){
   }
 
   var isKindle = IS_KINDLE;
+  var ul = mk("ul");
 
   if(isKindle){
     ul.style.listStyle = "none";
+    ul.style.listStyleType = "none";
     ul.style.paddingLeft = "0";
     ul.style.marginLeft = "0";
-	ul.style.listStyleType = "none";
-	li.style.listStyleType = "none";
-	li.style.display = "block";
   }
 
   for(i = 0; i < dishes.length; i++){
     var li = mk("li");
-	
-	if(isKindle){
-	  li.style.listStyleType = "none";
-	  li.style.display = "block";
-	}
 
     if(isKindle){
+      li.style.listStyleType = "none";
+      li.style.display = "block";
       li.appendChild(document.createTextNode("\u2022\u00A0"));
     } else {
       var icon = mk("span");
