@@ -410,7 +410,7 @@ input {
     grid-row: 1 / span 2;
     width: 40px;
     height: 40px;
-    justify-content: center;
+    justify-content: flex-end;
   }
 
   body:not(.k) #weatherIcon svg {
@@ -425,6 +425,7 @@ input {
     line-height: 1.3;
     white-space: normal;
     min-width: 0;
+    text-align: left;
   }
 
   body:not(.k) #clockWeather {
@@ -467,8 +468,19 @@ input {
     height: 32px;
   }
 
+  body:not(.k) #weatherIcon {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    justify-content: flex-end;
+  }
+  
   body:not(.k) #weather {
+    grid-column: 3;
+    grid-row: 1 / span 2;
     font-size: 0.7em;
+    text-align: left;
+    white-space: normal;
+    min-width: 0;
   }
 }
 
@@ -519,7 +531,8 @@ body.k #fulldate {
 
 body.k #weatherIcon {
   position: absolute;
-  left: 140px;
+  left: 195px;
+  right: auto;
   top: 0;
   width: 48px;
   height: 42px;
@@ -536,12 +549,12 @@ body.k #weatherIcon svg {
 
 body.k #weather {
   position: absolute;
-  left: 195px;
+  left: 250px;
   right: 0;
   top: 0;
   font-size: 0.8em;
   line-height: 1.2;
-  text-align: right;
+  text-align: left;
   white-space: normal;
   margin: 0;
 }
