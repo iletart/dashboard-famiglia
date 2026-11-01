@@ -1172,47 +1172,10 @@ function renderWeather() {
   }
 
 	if (iconEl) {
-	  var isKindle = document.body.classList.contains("k");
-
-	  if (isKindle) {
-		var descriptions = {
-		  0: night ? "Sereno" : "Sole",
-		  1: "Poco nuvoloso",
-		  2: "Parzialmente nuvoloso",
-		  3: "Nuvoloso",
-		  45: "Nebbia",
-		  48: "Nebbia",
-		  51: "Pioviggine",
-		  53: "Pioviggine",
-		  55: "Pioviggine intensa",
-		  56: "Pioviggine gelata",
-		  57: "Pioviggine gelata",
-		  61: "Pioggia debole",
-		  63: "Pioggia",
-		  65: "Pioggia intensa",
-		  66: "Pioggia gelata",
-		  67: "Pioggia gelata",
-		  71: "Neve debole",
-		  73: "Neve",
-		  75: "Neve intensa",
-		  77: "Nevischio",
-		  80: "Rovesci",
-		  81: "Rovesci",
-		  82: "Rovesci intensi",
-		  85: "Rovesci di neve",
-		  86: "Rovesci di neve intensi",
-		  95: "Temporale",
-		  96: "Temporale con grandine",
-		  99: "Temporale con grandine intensa"
-		};
-
-		setText(iconEl, descriptions[code] || "Condizioni variabili");
-	  } else {
-		iconEl.innerHTML =
-		  "<svg viewBox='0 0 80 80' width='64' height='64' xmlns='http://www.w3.org/2000/svg'>" +
-		  svg +
-		  "</svg>";
-	  }
+	  iconEl.innerHTML =
+		"<svg viewBox='0 0 80 80' width='64' height='64' xmlns='http://www.w3.org/2000/svg'>" +
+		svg +
+		"</svg>";
 	}
 
   el.innerHTML =
