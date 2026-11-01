@@ -892,8 +892,6 @@ function dayLabel(n, today){
 function cmpEv(a, b){ return a.key - b.key; }
 
 
-
-
 function renderAgenda(){
   var box = $("agenda"), st = $("agendaStatus");
   clear(box);
@@ -908,37 +906,34 @@ function renderAgenda(){
   var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
   monday += agendaWeekOffset * 7;
 
-  // Intervallo della settimana visualizzata
   var weekEnd = monday + 6;
 
-  // Titolo con orario ultimo aggiornamento
-	$("agendaTitle").innerHTML = "AGENDA FAMIGLIA";
+  // Titolo e aggiornamenti
+  $("agendaTitle").innerHTML = "AGENDA FAMIGLIA";
 
-	var times = "";
+  var times = "";
+  var gen = parseIso(agendaData.generated_at || agendaData.updated_at);
 
-	var gen = parseIso(agendaData.generated_at || agendaData.updated_at);
+  if(gen !== null){
+    times += "upd time: " + hhmmRome(gen) + "<br>";
+  }
 
-	if (gen !== null) {
-	  times += "upd time: " + hhmmRome(gen) + "<br>";
-	}
+  if(agendaSyncedAt !== null){
+    times += "sync time: " + hhmmRome(agendaSyncedAt.getTime());
+  }
 
-	if (agendaSyncedAt !== null) {
-	  times += "sync time: " + hhmmRome(agendaSyncedAt.getTime());
-	}
+  if(agendaErr){
+    times += "<br>rete non disponibile";
+  }
 
-	if (agendaErr) {
-	  times += "<br>rete non disponibile";
-	}
+  if(gen !== null && new Date().getTime() - gen > 3 * 3600000){
+    times += "<br>dati vecchi";
+  }
 
-	if (gen !== null && new Date().getTime() - gen > 3 * 3600000) {
-	  times += "<br>dati vecchi";
-	}
+  setText($("agendaTimes"), "");
+  $("agendaTimes").innerHTML = times;
 
-	setText($("agendaTimes"), "");
-	$("agendaTimes").innerHTML = times;
-
-
-  // Pulsanti di navigazione
+  // Pulsanti navigazione
   var nav = mk("div", "agenda-nav");
 
   var btnCurrent = mk("button", "", "This week");
@@ -961,88 +956,128 @@ function renderAgenda(){
   nav.appendChild(btnNext);
   box.appendChild(nav);
 
-  // Date settimana: Lunedì 26/10 – Domenica 01/11
+  // Date settimana
   function weekDateText(num){
     var d = dateOfDayNum(num);
     var day = GIORNI[d.getUTCDay()];
+
     return day.charAt(0).toUpperCase() + day.substring(1) +
       " " + p2(d.getUTCDate()) + "/" + p2(d.getUTCMonth() + 1);
   }
 
-	var period = mk("div", "agenda-period",
-	  weekDateText(monday) + " – " + weekDateText(weekEnd)
-	);
-	period.style.fontWeight = "bold";
-	box.appendChild(period);
+  var period = mk("div", "agenda-period",
+    weekDateText(monday) + " – " + weekDateText(weekEnd)
+  );
 
-  for(i = 0; i < 7; i++){ buckets.push([]); }
+  period.style.fontWeight = "bold";
+  box.appendChild(period);
+
+  for(i = 0; i < 7; i++){
+    buckets.push([]);
+  }
 
   var ev = agendaData.events || [];
 
+  // Raggruppamento eventi per giorno
   for(i = 0; i < ev.length; i++){
-    var e = ev[i], titleEv = e.title || "(senza titolo)";
+
+    var e = ev[i];
+    var titleEv = e.title || "(senza titolo)";
 
     if(e.all_day){
-      var sd = dateOnlyNum(e.start), ed = dateOnlyNum(e.end);
-      if(sd === null){ continue; }
+
+      var startDate = e.start && (e.start.date || e.start.dateTime);
+      var endDate = e.end && (e.end.date || e.end.dateTime);
+
+      var sd = dateOnlyNum(startDate);
+      var ed = dateOnlyNum(endDate);
+
+      if(sd === null){
+        continue;
+      }
 
       var last = (ed !== null && ed > sd) ? ed - 1 : sd;
 
       for(n = sd; n <= last; n++){
+
         if(n >= monday && n < monday + 7){
-			buckets[n - monday].push({
-			  key: e.id || (e.start + "|" + titleEv),
-			  time: "Tutto il giorno",
-			  title: titleEv,
-			  description: e.description || ""
-			});
+
+          buckets[n - monday].push({
+            key: e.id || (startDate + "|" + titleEv),
+            eventId: e.id || "",
+            time: "Tutto il giorno",
+            title: titleEv,
+            description: e.description || ""
+          });
+
         }
       }
-	} else {
-	  var ms = parseIso(
-		e.start && (e.start.dateTime || e.start.date)
-	  );
 
-	  if(ms === null){ continue; }
+    } else {
 
-	  n = dayNumOfRome(toRome(ms));
+      var startDateTime = e.start && (e.start.dateTime || e.start.date);
+      var ms = parseIso(startDateTime);
 
-	  if(n >= monday && n < monday + 7){
-		buckets[n - monday].push({
-		  key: ms,
-		  eventId: e.id || "",
-		  time: hhmmRome(ms),
-		  title: titleEv,
-		  description: e.description || ""
-		});
-	  }
-	}
+      if(ms === null){
+        continue;
+      }
 
+      n = dayNumOfRome(toRome(ms));
+
+      if(n >= monday && n < monday + 7){
+
+        buckets[n - monday].push({
+          key: ms,
+          eventId: e.id || "",
+          time: hhmmRome(ms),
+          title: titleEv,
+          description: e.description || ""
+        });
+
+      }
+    }
+  }
+
+  // Visualizzazione eventi
   var any = false;
 
   for(i = 0; i < 7; i++){
-    if(!buckets[i].length){ continue; }
+
+    if(!buckets[i].length){
+      continue;
+    }
 
     any = true;
     buckets[i].sort(cmpEv);
 
-    box.appendChild(mk("h3", "", dayLabel(monday + i, today)));
+    box.appendChild(
+      mk("h3", "", dayLabel(monday + i, today))
+    );
 
     for(j = 0; j < buckets[i].length; j++){
+
       var row = mk("div", "ev");
-      row.appendChild(mk("span", "t", buckets[i][j].time));
-      row.appendChild(mk("span", "tt", buckets[i][j].title));
+
+      row.appendChild(
+        mk("span", "t", buckets[i][j].time)
+      );
+
+      row.appendChild(
+        mk("span", "tt", buckets[i][j].title)
+      );
+
       box.appendChild(row);
     }
   }
 
   if(!any){
-    box.appendChild(mk("div", "", "Nessun impegno nella settimana."));
+    box.appendChild(
+      mk("div", "", "Nessun impegno nella settimana.")
+    );
   }
 
-  // L'aggiornamento è ora nel titolo
   setText(st, "");
-  
+
   scheduleBoxAlignment();
 }
 
