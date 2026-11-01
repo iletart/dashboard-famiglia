@@ -347,6 +347,14 @@ li{margin:3px 0}
     overflow:hidden;
   }
 }
+
+body.k #menuList ul{
+  list-style:disc !important;
+}
+
+body.k #menuList .menu-icon{
+  display:none !important;
+}
 </style>
 
 
@@ -545,6 +553,8 @@ var IS_KINDLE = (function(){
   if(q.indexOf("kindle=0") >= 0){ return false; }
   return /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
 })();
+
+document.body.className += IS_KINDLE ? " k" : "";
 
 function parseJson(t){
   if(typeof JSON !== "undefined" && JSON.parse){ return JSON.parse(t); }
@@ -2647,8 +2657,9 @@ function renderMenuWeekend(){
 
   scheduleBoxAlignment();
 }
-
 function classifyDish(dish){
+  if(IS_KINDLE){ return ""; }
+
   var s = dish.toLowerCase();
 
   if(/pizza/.test(s)){ return "🍕"; }
@@ -2677,8 +2688,6 @@ function classifyDish(dish){
 
   return "🍽️";
 }
-
-
 function renderMenu(k, err, d){
   var list = $("menuList"), i;
   clear(list);
@@ -2723,12 +2732,16 @@ function renderMenu(k, err, d){
   }
 
   var ul = mk("ul");
-  var isKindle = document.body.classList.contains("k");
+  var isKindle = IS_KINDLE;
+
+  if(isKindle){
+    ul.style.listStyleType = "disc";
+    ul.style.paddingLeft = "25px";
+  }
 
   for(i = 0; i < dishes.length; i++){
     var li = mk("li");
 
-    // Emoji solo su PC e cellulare
     if(!isKindle){
       var icon = mk("span");
       icon.className = "dish-icon";
