@@ -1237,6 +1237,7 @@ function renderWeather() {
   }
 
   var code = wData.weather_code;
+  console.log("Weather code:", code, "Icon:", iconClass);
   var temp = Math.round(wData.temperature_2m);
   var feels = Math.round(wData.apparent_temperature);
 
