@@ -2867,6 +2867,36 @@ function renderMenuWeekend(){
   scheduleBoxAlignment();
 }
 
+function classifyDish(dish){
+  var s = dish.toLowerCase();
+
+  if(/pizza/.test(s)){ return "🍕"; }
+
+  if(/pasta|riso|risotto|gnocchi|lasagne|tortellini|cous cous/.test(s)){
+    return "🍝";
+  }
+
+  if(/frutta|mela|pera|banana|arancia|mandarino/.test(s)){
+    return "🍎";
+  }
+
+  if(/gelato|dolce|torta|budino|dessert/.test(s)){
+    return "🍨";
+  }
+
+  if(/pane/.test(s)){ return "🥖"; }
+
+  if(/insalata|verdura|pomodori|carote|finocchi|zucchine|contorno/.test(s)){
+    return "🥗";
+  }
+
+  if(/burger|hamburger|carne|pollo|pesce|formaggio|uova|legumi|frittata/.test(s)){
+    return "🍽️";
+  }
+
+  return "🍽️";
+}
+
 function renderMenu(k, err, d){
   var list = $("menuList"), i;
   clear(list);
