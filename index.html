@@ -860,6 +860,7 @@ var agendaData = null;
 var agendaErr = false;
 
 var agendaWeekOffset = 0;
+var agendaTodayOnly = false;
 
 function loadAgenda() {
   getJson(
@@ -902,11 +903,13 @@ function renderAgenda(){
     return;
   }
 
-  var today = todayNum(), buckets = [], i, j, n;
-  var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
-  monday += agendaWeekOffset * 7;
+	var today = todayNum(), buckets = [], i, j, n;
+	var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
+	monday += agendaWeekOffset * 7;
 
-  var weekEnd = monday + 6;
+	var viewStart = agendaTodayOnly ? today : monday;
+	var viewDays = agendaTodayOnly ? 1 : 7;
+	var weekEnd = viewStart + viewDays - 1;
 
   // Titolo e aggiornamenti
   $("agendaTitle").innerHTML = "AGENDA FAMIGLIA";
@@ -933,28 +936,43 @@ function renderAgenda(){
   setText($("agendaTimes"), "");
   $("agendaTimes").innerHTML = times;
 
-  // Pulsanti navigazione
-  var nav = mk("div", "agenda-nav");
+	// Pulsanti navigazione
+	var nav = mk("div", "agenda-nav");
 
-  var btnCurrent = mk("button", "", "This week");
-  btnCurrent.type = "button";
-  btnCurrent.disabled = agendaWeekOffset === 0;
-  btnCurrent.onclick = function(){
-    agendaWeekOffset = 0;
-    safe(renderAgenda);
-  };
+	var btnToday = mk("button", "", "Today");
+	btnToday.type = "button";
+	btnToday.disabled = agendaTodayOnly;
 
-  var btnNext = mk("button", "", "Next Week");
-  btnNext.type = "button";
-  btnNext.disabled = agendaWeekOffset === 1;
-  btnNext.onclick = function(){
-    agendaWeekOffset = 1;
-    safe(renderAgenda);
-  };
+	btnToday.onclick = function(){
+	  agendaTodayOnly = true;
+	  safe(renderAgenda);
+	};
 
-  nav.appendChild(btnCurrent);
-  nav.appendChild(btnNext);
-  box.appendChild(nav);
+	var btnCurrent = mk("button", "", "This week");
+	btnCurrent.type = "button";
+	btnCurrent.disabled = !agendaTodayOnly && agendaWeekOffset === 0;
+
+	btnCurrent.onclick = function(){
+	  agendaTodayOnly = false;
+	  agendaWeekOffset = 0;
+	  safe(renderAgenda);
+	};
+
+	var btnNext = mk("button", "", "Next Week");
+	btnNext.type = "button";
+	btnNext.disabled = !agendaTodayOnly && agendaWeekOffset === 1;
+
+	btnNext.onclick = function(){
+	  agendaTodayOnly = false;
+	  agendaWeekOffset = 1;
+	  safe(renderAgenda);
+	};
+
+	nav.appendChild(btnToday);
+	nav.appendChild(btnCurrent);
+	nav.appendChild(btnNext);
+
+	box.appendChild(nav);
 
   // Date settimana
   function weekDateText(num){
@@ -966,15 +984,17 @@ function renderAgenda(){
   }
 
   var period = mk("div", "agenda-period",
-    weekDateText(monday) + " – " + weekDateText(weekEnd)
+    agendaTodayOnly ?
+	  weekDateText(today) :
+	  weekDateText(monday) + " – " + weekDateText(weekEnd)
   );
 
   period.style.fontWeight = "bold";
   box.appendChild(period);
 
-  for(i = 0; i < 7; i++){
-    buckets.push([]);
-  }
+	for(i = 0; i < viewDays; i++){
+	  buckets.push([]);
+	}
 
   var ev = agendaData.events || [];
 
@@ -1000,7 +1020,7 @@ function renderAgenda(){
 
       for(n = sd; n <= last; n++){
 
-        if(n >= monday && n < monday + 7){
+        if(n >= viewStart && n < viewStart + viewDays){
 
           buckets[n - monday].push({
             key: e.id || (startDate + "|" + titleEv),
@@ -1024,7 +1044,7 @@ function renderAgenda(){
 
       n = dayNumOfRome(toRome(ms));
 
-      if(n >= monday && n < monday + 7){
+      if(n >= viewStart && n < viewStart + viewDays){
 
         buckets[n - monday].push({
           key: ms,
@@ -1041,7 +1061,7 @@ function renderAgenda(){
   // Visualizzazione eventi
   var any = false;
 
-  for(i = 0; i < 7; i++){
+  for(i = 0; i < viewDays; i++){
 
     if(!buckets[i].length){
       continue;
