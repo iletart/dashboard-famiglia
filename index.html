@@ -70,17 +70,17 @@ h3{
 }
 
 .section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: block;
     width: 100%;
     box-sizing: border-box;
     border-bottom: 1px solid #000;
     padding-bottom: 5px;
     margin-bottom: 10px;
+    overflow: hidden;
 }
 
 .section-heading h2 {
+    float: left;
     margin: 0;
     padding: 0;
     border: 0;
@@ -88,10 +88,12 @@ h3{
 }
 
 .section-heading .sync-label {
+    float: right;
     text-align: right;
     white-space: nowrap;
-    line-height: 1.4;
+    line-height: 1.05em;
     margin: 0;
+    padding: 0;
 }
 
 /* OROLOGIO */
@@ -2823,8 +2825,6 @@ function renderMenu(k, err, d){
   var label = fullDateText(todayNum() + MENUOFF[k]);
   setText($("menuDate"), label);
 
-);
-
   var buttons = ["mb-ieri", "mb-oggi", "mb-domani", "mb-refresh"];
 
   for(i = 0; i < buttons.length; i++){
@@ -2868,25 +2868,31 @@ function renderMenu(k, err, d){
 function classifyDish(dish){
   var s = dish.toLowerCase();
 
-  if(/pizza/.test(s)){ return "🍕"; }
+  if(/pizza/.test(s)){ return "[P]"; }
+
   if(/pasta|riso|risotto|gnocchi|lasagne|tortellini|cous cous/.test(s)){
-    return "🍝";
-  }
-  if(/frutta|mela|pera|banana|arancia|mandarino/.test(s)){
-    return "🍎";
-  }
-  if(/gelato|dolce|torta|budino|dessert/.test(s)){
-    return "🍨";
-  }
-  if(/pane/.test(s)){ return "🥖"; }
-  if(/insalata|verdura|pomodori|carote|finocchi|zucchine|contorno/.test(s)){
-    return "🥗";
-  }
-  if(/burger|hamburger|carne|pollo|pesce|formaggio|uova|legumi|frittata/.test(s)){
-    return "🍽️";
+    return "[PA]";
   }
 
-  return "🍽️";
+  if(/frutta|mela|pera|banana|arancia|mandarino/.test(s)){
+    return "[F]";
+  }
+
+  if(/gelato|dolce|torta|budino|dessert/.test(s)){
+    return "[D]";
+  }
+
+  if(/pane/.test(s)){ return "[PN]"; }
+
+  if(/insalata|verdura|pomodori|carote|finocchi|zucchine|contorno/.test(s)){
+    return "[V]";
+  }
+
+  if(/burger|hamburger|carne|pollo|pesce|formaggio|uova|legumi|frittata/.test(s)){
+    return "[S]";
+  }
+
+  return "[*]";
 }
 
 
