@@ -715,6 +715,26 @@ body.k #menuList li {
   list-style: none !important;
   list-style-type: none !important;
 }
+
+/* ==================================================
+   POSIZIONAMENTO FINALE HEADER - SOLO PC
+   ================================================== */
+
+@media screen and (min-width: 801px) {
+
+  body:not(.k) #clock {
+    transform: translate(5px, 4px);
+  }
+
+  body:not(.k) #weatherIcon {
+    transform: translate(-3px, 4px);
+  }
+
+  body:not(.k) #weather {
+    transform: translateX(-2px);
+  }
+}
+
 </style>
 
 
