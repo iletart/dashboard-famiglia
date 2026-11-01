@@ -1673,10 +1673,6 @@ function renderEventTasksInline(eventItem, taskContainer){
 
 	clear(taskContainer);
 
-	if(details){
-	  addEventDetailsLink(eventItem, taskContainer);
-	}
-
 	if(err){
       taskContainer.appendChild(
         mk("div", "", "Errore caricamento: " + err)
@@ -1712,6 +1708,10 @@ function renderEventTasksInline(eventItem, taskContainer){
         label.appendChild(checkbox);
         label.appendChild(
           document.createTextNode(tasks[index])
+		  
+		if(details){
+		  addEventDetailsLink(eventItem, taskContainer);
+		}
         );
 
         taskContainer.appendChild(label);
@@ -1747,25 +1747,23 @@ function renderEventTasksInline(eventItem, taskContainer){
 
 function addEventDetailsLink(eventItem, taskContainer){
 
-  if(!eventItem.htmlLink){
-    return;
-  }
-
-  var link = document.createElement("a");
-
-  link.href = eventItem.htmlLink;
-  link.target = "_blank";
-  link.appendChild(
-    document.createTextNode("Altri dettagli in Google Calendar")
+  var link = mk(
+    "div",
+    "",
+    "Altri dettagli in Google Calendar"
   );
 
   link.style.display = "block";
   link.style.marginTop = "8px";
   link.style.fontSize = "14px";
   link.style.fontStyle = "italic";
-  link.style.color = "#555";
   link.style.textDecoration = "underline";
   link.style.cursor = "pointer";
+  link.style.color = "#555";
+
+  link.onclick = function(){
+    openEventTasks(eventItem);
+  };
 
   taskContainer.appendChild(link);
 }
