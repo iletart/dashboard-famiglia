@@ -2866,6 +2866,10 @@ function loadMenu() {
         d.generated_at || d.updated_at
       );
     }
+	
+	console.log("MENU generated_at:", d.generated_at);
+	console.log("MENU updated_at:", d.updated_at);
+	console.log("MENU menuUpdatedAt:", menuUpdatedAt);
 
     safe(function() {
       renderMenu(k, err, d);
