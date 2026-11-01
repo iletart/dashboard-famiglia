@@ -817,7 +817,7 @@ body.k .section-heading {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 4px;
     width: 100%;
@@ -827,19 +827,22 @@ body.k .section-heading {
 body.k .section-heading h2 {
     flex: 1 1 auto;
     min-width: 0;
-    font-size: 1em;
+    margin: 0;
+    line-height: 1.2;
     white-space: nowrap;
 }
 
 body.k .section-heading .sync-label {
     flex: 0 0 auto;
-    width: auto;
     max-width: none;
     min-width: 0;
+    margin: 0;
+    padding: 0;
     font-size: 0.55em;
-    line-height: 1.1;
-    white-space: nowrap;
+    line-height: 1.2;
     text-align: right;
+    white-space: nowrap;
+    align-self: flex-start;
 }
 
 </style>
