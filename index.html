@@ -1037,13 +1037,14 @@ function renderAgenda(){
 
         if(n >= viewStart && n < viewStart + viewDays){
 
-          buckets[n - viewStart].push({
-            key: e.id || (startDate + "|" + titleEv),
-            eventId: e.id || "",
-            time: "Tutto il giorno",
-            title: titleEv,
-            description: e.description || ""
-          });
+		buckets[n - viewStart].push({
+		  key: e.id || (startDate + "|" + titleEv),
+		  eventId: e.id || "",
+		  time: "Tutto il giorno",
+		  title: titleEv,
+		  description: e.description || "",
+		  htmlLink: e.htmlLink || ""
+		});
 
         }
       }
@@ -1061,13 +1062,14 @@ function renderAgenda(){
 
       if(n >= viewStart && n < viewStart + viewDays){
 
-        buckets[n - viewStart].push({
-          key: ms,
-          eventId: e.id || "",
-          time: hhmmRome(ms),
-          title: titleEv,
-          description: e.description || ""
-        });
+		buckets[n - viewStart].push({
+		  key: ms,
+		  eventId: e.id || "",
+		  time: hhmmRome(ms),
+		  title: titleEv,
+		  description: e.description || "",
+		  htmlLink: e.htmlLink || ""
+		});
 
       }
     }
