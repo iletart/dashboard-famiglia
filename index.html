@@ -396,14 +396,15 @@ input {
 
 /* CELLULARI STRETTI */
 
-@media (max-width: 560px) {
+@media screen and (max-width: 560px) {
+  .row {
+    display: block;
+  }
+
   .col {
     float: none;
     width: 100%;
-  }
-
-  #info {
-    overflow: hidden;
+    display: block;
   }
 }
 
@@ -622,7 +623,6 @@ body.k #menuList li {
 			<h2 id="taskDateTitle">Task</h2>
 			<div class="sync-label" id="taskTimes"></div>
 		</div>
-			<div class="sync-label" id="taskTimes"></div>
 
 		  <div id="taskDayButtons">
 			<button type="button" id="tb-ieri">Ieri</button>
@@ -671,6 +671,8 @@ body.k #menuList li {
 
 <script>
 /* ===== CONFIGURAZIONE ===== */
+document.body.className += IS_KINDLE ? " k" : "";
+
 var CONFIG = {
   base: "https://raw.githubusercontent.com/iletart/menu-scuola/main/",
   lat: 45.484, lon: 9.233,
@@ -769,8 +771,6 @@ var IS_KINDLE = (function(){
   if(q.indexOf("kindle=0") >= 0){ return false; }
   return /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
 })();
-
-document.body.className += IS_KINDLE ? " k" : "";
 
 function parseJson(t){
   if(typeof JSON !== "undefined" && JSON.parse){ return JSON.parse(t); }
