@@ -2953,17 +2953,21 @@ function renderMenu(k, err, d){
   var list = $("menuList"), i;
   clear(list);
 
-	var times = "";
-
-	if (menuUpdatedAt !== null) {
-	  times = "upd time: " + hhmmRome(menuUpdatedAt);
-	} else {
-	  times = "upd time: NON DISPONIBILE";
-	}
-
-	if ($("menuTimes")) {
-	  setText($("menuTimes"), times);
-	}
+  var times = "";
+  
+  if (menuUpdatedAt !== null) {
+    times = "upd time: " + hhmmRome(menuUpdatedAt);
+  } else {
+    times = "upd time: NON DISPONIBILE";
+  }
+  
+  if (menuSyncedAt !== null) {
+    times += " | sync time: " + hhmmRome(menuSyncedAt.getTime());
+  }
+  
+  if ($("menuTimes")) {
+    setText($("menuTimes"), times);
+  }
 
   var label = fullDateText(todayNum() + MENUOFF[k]);
   setText($("menuDate"), label);
