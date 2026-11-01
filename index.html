@@ -903,7 +903,7 @@ function renderAgenda(){
     return;
   }
 
-	var today = todayNum(), buckets = [], i, j, n;
+	var today = todayNum() + 1, buckets = [], i, j, n;
 	var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
 	monday += agendaWeekOffset * 7;
 
