@@ -47,21 +47,38 @@ body.k .wrap {
 }
 
 .section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    overflow: hidden;
 }
 
 .section-heading h2 {
+    float: left;
     margin: 0;
+    padding: 0;
+    border: 0;
+    text-align: left;
+}
+
+.sync-label {
+    font-size: 0.65em;
+    line-height: 1.4;
+    color: #888;
+    font-weight: normal;
+    text-transform: none;
 }
 
 .section-heading .sync-label {
-    font-size: 0.7em;
-    font-weight: normal;
+    float: right;
     text-align: right;
-    white-space: nowrap;
+    white-space: normal;
+    margin: 0;
+    min-width: 0;
+    max-width: 100%;
 }
 
 /* ==================================================
@@ -584,6 +601,20 @@ input {
   body:not(.k) #clockWeather {
     display: none;
   }
+
+  /* Navigazione agenda */
+  .agenda-nav button {
+      font-size: 1.05em;
+      padding: 8px 18px;
+      margin-right: 6px;
+  }
+
+  /* Navigazione task: Ieri, Oggi, Domani */
+  #taskDayButtons button {
+      font-size: 1.05em;
+      padding: 8px 18px;
+      margin-right: 6px;
+  }
 }
 
 /* ==================================================
@@ -750,13 +781,18 @@ body.k .agenda-nav {
     box-sizing: border-box;
 }
 
+/* Pulsanti navigazione agenda */
 body.k .agenda-nav button {
-    flex: 1 1 0;
-    min-width: 0;
-    white-space: nowrap;
-    padding-left: 2px;
-    padding-right: 2px;
-    font-size: 0.85em;
+    font-size: 1.05em;
+    padding: 8px 12px;
+    margin-right: 4px;
+}
+
+/* Pulsanti navigazione task */
+body.k #taskDayButtons button {
+    font-size: 1.05em;
+    padding: 8px 12px;
+    margin-right: 4px;
 }
 
 </style>
