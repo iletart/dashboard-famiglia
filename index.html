@@ -119,8 +119,8 @@ h3{
 .wx-icon{
   display:block;
   position:relative;
-  width:52px;
-  height:48px;
+  width:48px;
+  height:44px;
   margin:2px auto;
   left:29px;
 }
@@ -128,32 +128,30 @@ h3{
 .wx-part{
   display:none;
   position:absolute;
-  box-sizing:border-box;
 }
 
 /* SOLE */
 
 .wx-part-sun{
-  width:18px;
-  height:18px;
+  width:20px;
+  height:20px;
   left:5px;
-  top:4px;
+  top:2px;
+  background:#fff;
   border:2px solid #111;
   border-radius:50%;
-  background:#fff;
+  box-sizing:border-box;
 }
 
 .wx-part-sun:before{
   content:"";
   position:absolute;
   left:-7px;
-  top:6px;
-  width:28px;
-  height:2px;
+  top:7px;
+  width:30px;
+  height:3px;
   background:#111;
-  box-shadow:
-    0 -11px 0 #111,
-    0 11px 0 #111;
+  box-shadow:0 -12px 0 -1px #111, 0 12px 0 -1px #111;
 }
 
 .wx-part-sun:after{
@@ -161,24 +159,22 @@ h3{
   position:absolute;
   left:6px;
   top:-7px;
-  width:2px;
-  height:28px;
+  width:3px;
+  height:30px;
   background:#111;
-  box-shadow:
-    -11px 0 0 #111,
-    11px 0 0 #111;
 }
 
 /* LUNA */
 
 .wx-part-moon{
-  width:23px;
-  height:23px;
+  width:24px;
+  height:24px;
   left:5px;
-  top:3px;
+  top:2px;
+  background:#fff;
   border:2px solid #111;
   border-radius:50%;
-  background:#111;
+  box-sizing:border-box;
 }
 
 .wx-part-moon:after{
@@ -186,35 +182,36 @@ h3{
   position:absolute;
   width:21px;
   height:21px;
-  left:7px;
+  left:8px;
   top:-6px;
-  border-radius:50%;
   background:#fff;
+  border-radius:50%;
 }
 
 /* NUVOLA */
 
 .wx-part-cloud{
+  width:31px;
+  height:14px;
   left:9px;
-  top:18px;
-  width:34px;
-  height:16px;
+  top:17px;
+  background:#fff;
   border:2px solid #111;
   border-radius:12px;
-  background:#fff;
+  box-sizing:border-box;
   z-index:2;
 }
 
 .wx-part-cloud:before{
   content:"";
   position:absolute;
-  left:4px;
-  top:-12px;
   width:17px;
   height:17px;
+  left:3px;
+  top:-11px;
+  background:#fff;
   border:2px solid #111;
   border-radius:50%;
-  background:#fff;
   box-sizing:border-box;
   z-index:-1;
 }
@@ -222,13 +219,13 @@ h3{
 .wx-part-cloud:after{
   content:"";
   position:absolute;
-  left:15px;
-  top:-15px;
-  width:21px;
-  height:21px;
+  width:20px;
+  height:20px;
+  left:12px;
+  top:-14px;
+  background:#fff;
   border:2px solid #111;
   border-radius:50%;
-  background:#fff;
   box-sizing:border-box;
   z-index:-1;
 }
@@ -237,55 +234,58 @@ h3{
 
 .wx-part-rain{
   left:13px;
-  top:36px;
-  width:4px;
-  height:8px;
-  background:#111;
+  top:32px;
+  width:5px;
+  height:9px;
+  background:#fff;
+  border:1px solid #111;
   border-radius:50%;
-  box-shadow:
-    10px 0 0 #111,
-    20px 0 0 #111;
+  box-sizing:border-box;
+  box-shadow:10px 0 0 -1px #fff, 10px 0 0 0 #111,
+             20px 0 0 -1px #fff, 20px 0 0 0 #111;
 }
 
 /* NEVE */
 
 .wx-part-snow{
   left:13px;
-  top:37px;
+  top:33px;
   width:6px;
   height:6px;
-  border:2px solid #111;
-  border-radius:50%;
   background:#fff;
-  box-shadow:
-    10px 0 0 -1px #fff,
-    10px 0 0 1px #111,
-    20px 0 0 -1px #fff,
-    20px 0 0 1px #111;
+  border:1px solid #111;
+  border-radius:50%;
+  box-sizing:border-box;
+  box-shadow:10px 0 0 -1px #fff, 10px 0 0 0 #111,
+             20px 0 0 -1px #fff, 20px 0 0 0 #111;
 }
 
 /* NEBBIA */
 
 .wx-part-fog{
   left:6px;
-  top:14px;
-  width:37px;
+  top:16px;
+  width:35px;
   height:3px;
-  background:#111;
-  box-shadow:
-    0 8px 0 #111,
-    5px 16px 0 #111;
+  background:#fff;
+  border-top:1px solid #111;
+  border-bottom:1px solid #111;
+  box-sizing:border-box;
+  box-shadow:0 7px 0 -1px #fff, 0 7px 0 0 #111,
+             0 14px 0 -1px #fff, 0 14px 0 0 #111;
 }
 
 /* FULMINE */
 
 .wx-part-lightning{
-  left:21px;
-  top:29px;
-  width:10px;
-  height:16px;
-  background:#111;
-  clip-path:polygon(55% 0, 100% 0, 65% 45%, 100% 45%, 15% 100%, 38% 55%, 0 55%);
+  left:19px;
+  top:24px;
+  width:9px;
+  height:17px;
+  background:#fff;
+  border:1px solid #111;
+  box-sizing:border-box;
+  transform:skew(-18deg);
 }
 
 /* VISIBILITA' ELEMENTI */
@@ -313,21 +313,69 @@ h3{
 
 .wx-sun-cloud .wx-part-cloud,
 .wx-moon-cloud .wx-part-cloud{
-  left:17px;
-  top:22px;
+  left:16px;
+  top:20px;
 }
 
 .wx-sun-cloud .wx-part-sun,
 .wx-moon-cloud .wx-part-moon{
-  left:1px;
-  top:1px;
+  left:2px;
+  top:2px;
 }
 
 /* PIOVIGGINE */
 
 .wx-drizzle .wx-part-rain{
   height:4px;
-  top:36px;
+  top:32px;
+}
+
+/* DATA E METEO */
+
+#info{
+  overflow:hidden
+}
+
+#wday{
+  font-size:1.5em;
+  font-weight:bold;
+  text-transform:capitalize
+}
+
+#fulldate{
+  font-size:1.2em
+}
+
+#weather{
+  display:block;
+  margin-top:6px;
+  text-align:left
+}
+
+#agendaTitle{
+  text-transform:none;
+}
+
+/* AGENDA */
+
+.ev{margin:2px 0}
+
+.t{
+  display:inline-block;
+  width:5.2em;
+  font-weight:bold;
+  vertical-align:top
+}
+
+.tt{
+  display:inline-block;
+  vertical-align:top
+}
+
+.small{
+  font-size:.8em;
+  color:#333;
+  margin-top:6px
 }
 
 /* SPOSTAMENTI */
