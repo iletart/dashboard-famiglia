@@ -74,10 +74,16 @@ h3{
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .section-heading h2 {
     margin: 0;
+    padding: 0;
+    border: 0;
     text-align: left;
 }
 
@@ -85,6 +91,7 @@ h3{
     text-align: right;
     white-space: nowrap;
     line-height: 1.4;
+    margin: 0;
 }
 
 /* OROLOGIO */
@@ -520,8 +527,10 @@ li{margin:3px 0}
         </div>
 
 		<div class="box">
+			<div class="section-heading">
 			<h2 id="routesTitle">Spostamenti</h2>
 			<div class="sync-label" id="routesTimes"></div>
+		</div>
 			<div id="routes"></div>
 			<div class="small" id="routesStatus"></div>
 		</div>
@@ -529,7 +538,10 @@ li{margin:3px 0}
 
 	<div class="col">
 		<div class="box">
+			<div class="section-heading">
 			<h2 id="taskDateTitle">Task</h2>
+			<div class="sync-label" id="taskTimes"></div>
+		</div>
 			<div class="sync-label" id="taskTimes"></div>
 
 		  <div id="taskDayButtons">
@@ -547,15 +559,20 @@ li{margin:3px 0}
 		</div>
 
 		<div class="box">
-		  <h2>Da fare <span id="todoSyncLabel" class="sync-label">(non connesso)</span></h2>
+		  <div class="section-heading">
+			<h2>Da fare</h2>
+			<div id="todoSyncLabel" class="sync-label">(non connesso)</div>
+		</div>
 		  <div id="todoCtl" style="display:none;"></div>
 		  <div id="todoList"></div>
 		  <div class="small" id="todoStatus"></div>
 		</div>
 
 		<div class="box">
+			<div class="section-heading">
 			<h2 id="menuTitle">Menu scuola</h2>
 			<div class="sync-label" id="menuTimes"></div>
+		</div>
 			<div>
 				<button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
 			</div>
