@@ -2813,6 +2813,15 @@ setInterval(function(){
 
 function alignBottomBoxes(){
 
+  if(IS_KINDLE || document.body.classList.contains("k") ||
+     window.innerWidth <= 560){
+    var allBoxes = document.querySelectorAll(".box");
+    for(var n = 0; n < allBoxes.length; n++){
+      allBoxes[n].style.minHeight = "";
+    }
+    return;
+  }
+
   /* Sul cellulare non allineare i riquadri */
   if(window.innerWidth <= 560){
     var allBoxes = document.querySelectorAll(".box");
