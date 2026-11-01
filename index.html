@@ -102,27 +102,55 @@ h3{
 
 /* OROLOGIO */
 
+/* BOX SUPERIORE */
+
+#head{
+  display:grid;
+  grid-template-columns:5em 1fr;
+  grid-template-rows:auto auto;
+  align-items:start;
+}
+
+/* OROLOGIO */
+
 #clock{
-  float:left;
+  grid-column:1;
+  grid-row:1;
+  float:none;
   font-size:3.2em;
   font-weight:bold;
   line-height:1;
-  margin-right:16px;
+  margin:0;
 }
 
+/* METEO SOTTO L'OROLOGIO */
+
 #clockWeather{
-  float:left;
-  clear:left;
-  width:100%;
+  grid-column:1;
+  grid-row:2;
+  float:none;
+  clear:none;
+  width:5em;
   height:3em;
   text-align:center;
-  margin-top:4px;
-  position:relative;
+  margin:4px 0 0 0;
+  position:static;
 }
 
 #clockWeather svg{
   display:block;
   margin:0 auto;
+}
+
+/* DATA E DESCRIZIONE METEO */
+
+#info{
+  grid-column:2;
+  grid-row:1 / 3;
+  overflow:hidden;
+  margin:0;
+  padding:0;
+  min-width:0;
 }
 
 /* ICONE MENU */
@@ -151,12 +179,6 @@ body.k ul{
 }
 
 /* DATA E METEO */
-
-#info{
-  overflow:hidden;
-  margin-left:0;
-  padding-left:0;
-}
 
 #wday{
   font-size:1.5em;
