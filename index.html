@@ -409,25 +409,38 @@ input {
   }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
+  body:not(.k) #head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    min-height: 0;
+  }
+
+  body:not(.k) #clock {
+    width: auto;
+    margin: 0;
+    text-align: center;
+  }
+
   body:not(.k) #info {
     display: grid;
     grid-template-columns: 48px minmax(0, 1fr);
     grid-template-rows: auto auto auto;
     column-gap: 8px;
-    margin-left: 0;
-    padding-left: 0;
+    margin: 8px 0 0;
+    padding: 0;
+    width: 100%;
   }
 
-  body:not(.k) #wday {
-    grid-column: 1 / 3;
-    grid-row: 1;
-  }
-
+  body:not(.k) #wday,
   body:not(.k) #fulldate {
     grid-column: 1 / 3;
-    grid-row: 2;
   }
+
+  body:not(.k) #wday { grid-row: 1; }
+  body:not(.k) #fulldate { grid-row: 2; }
 
   body:not(.k) #weatherIcon {
     grid-column: 1;
@@ -439,7 +452,7 @@ input {
   body:not(.k) #weather {
     grid-column: 2;
     grid-row: 3;
-    white-space: nowrap;
+    white-space: normal;
     font-size: 0.9em;
   }
 
@@ -916,7 +929,7 @@ function renderAgenda(){
     return;
   }
 
-	var today = todayNum() + 1, buckets = [], i, j, n;
+	var today = todayNum(), buckets = [], i, j, n;
 	var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
 	monday += agendaWeekOffset * 7;
 
