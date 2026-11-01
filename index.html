@@ -2750,9 +2750,7 @@ function renderMenu(k, err, d){
     return;
   }
 
-  var isKindle = IS_KINDLE || document.body.classList.contains("k") ||
-               /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
-  var ul = mk("ul");
+  var isKindle = IS_KINDLE;
 
   if(isKindle){
     ul.style.listStyle = "none";
@@ -2813,8 +2811,7 @@ setInterval(function(){
 
 function alignBottomBoxes(){
 
-  if(IS_KINDLE || document.body.classList.contains("k") ||
-     window.innerWidth <= 560){
+  if(IS_KINDLE || window.innerWidth <= 560){
     var allBoxes = document.querySelectorAll(".box");
     for(var n = 0; n < allBoxes.length; n++){
       allBoxes[n].style.minHeight = "";
