@@ -573,13 +573,16 @@ li{margin:3px 0}
 			<h2 id="menuTitle">Menu scuola</h2>
 			<div class="sync-label" id="menuTimes"></div>
 		</div>
-			<div>
-				<button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
-			</div>
-			<h3 id="menuDate"></h3>
-			<div id="menuList"></div>
+		<div>
+			<button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
+		</div>
+
+		<div style="display:flex; justify-content:space-between; align-items:center;">
+			<h3 id="menuDate" style="margin:10px 0;"></h3>
 			<div class="small" id="menuStatus"></div>
 		</div>
+
+		<div id="menuList"></div>
 	</div>
 </div>
 
@@ -1655,12 +1658,8 @@ function renderEventTasksInline(eventItem, taskContainer){
     return;
   }
 
-  // Prima il collegamento ai dettagli, poi i compiti.
-  if(details){
-    addEventDetailsLink(eventItem, taskContainer);
-  }
-
   if(!tasks.length){
+    addEventDetailsLink(eventItem, taskContainer);
     return;
   }
 
@@ -1674,12 +1673,17 @@ function renderEventTasksInline(eventItem, taskContainer){
 
   todoRequest("GET", null, function(err, result){
 
-    clearTasksOnly(taskContainer, details);
+    clear(taskContainer);
 
     if(err){
       taskContainer.appendChild(
         mk("div", "", "Errore caricamento: " + err)
       );
+
+      if(details){
+        addEventDetailsLink(eventItem, taskContainer);
+      }
+
       return;
     }
 
@@ -1741,17 +1745,16 @@ function renderEventTasksInline(eventItem, taskContainer){
       })(i);
     }
 
+    // Collegamento aggiunto dopo tutte le checkbox.
+    if(details){
+      addEventDetailsLink(eventItem, taskContainer);
+    }
+
   }, url);
 }
 
 function clearTasksOnly(container, hasDetails){
-
-  var children = container.childNodes;
-  var keep = hasDetails ? 1 : 0;
-
-  while(container.childNodes.length > keep){
-    container.removeChild(container.lastChild);
-  }
+  clear(container);
 }
 
 function addEventDetailsLink(eventItem, taskContainer){
@@ -2778,13 +2781,13 @@ function renderMenu(k, err, d){
 
   var now = toRome(new Date().getTime());
 
-  setText(
-    $("menuStatus"),
-    "Caricato alle " +
-    p2(now.getUTCHours()) + ":" +
-    p2(now.getUTCMinutes())
-  );
-
+	setText(
+	  $("menuStatus"),
+	  "upd time: " +
+	  p2(now.getUTCHours()) + ":" +
+	  p2(now.getUTCMinutes())
+	);
+	
   scheduleBoxAlignment();
 }
 
