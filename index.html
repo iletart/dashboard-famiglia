@@ -1762,7 +1762,7 @@ function addEventDetailsLink(eventItem, taskContainer){
   var link = mk(
     "div",
     "",
-    "Altri dettagli in Google Calendar"
+    "Dettagli evento"
   );
 
   link.style.display = "block";
@@ -1780,7 +1780,7 @@ function addEventDetailsLink(eventItem, taskContainer){
   taskContainer.appendChild(link);
 }
 
-/* Apre la finestra dei compiti associati all'evento */
+/* Apre la finestra dei compiti e dei dettagli associati all'evento */
 function openEventTasks(eventItem){
 
   var old = $("eventTasksOverlay");
@@ -1795,6 +1795,10 @@ function openEventTasks(eventItem){
     alert("ID evento non disponibile.");
     return;
   }
+
+  var data = getEventTaskData(eventItem.description);
+  var tasks = data.tasks;
+  var details = data.details;
 
   var overlay = mk("div", "");
   overlay.id = "eventTasksOverlay";
@@ -1844,12 +1848,18 @@ function openEventTasks(eventItem){
   overlay.appendChild(panel);
   document.body.appendChild(overlay);
 
-  var tasks = getEventTaskList(eventItem.description);
+  if(!tasks.length && !details){
+    taskContainer.appendChild(
+      mk("div", "", "Nessun compito o dettaglio indicato.")
+    );
+    return;
+  }
 
   if(!tasks.length){
     taskContainer.appendChild(
-      mk("div", "", "Nessun compito indicato nella descrizione.")
+      mk("div", "", "Nessun compito indicato.")
     );
+    addDetails();
     return;
   }
 
@@ -1870,83 +1880,113 @@ function openEventTasks(eventItem){
     clear(taskContainer);
 
     if(err){
+
       taskContainer.appendChild(
         mk("div", "", "Errore caricamento: " + err)
       );
+
+    } else {
+
+      var completed = result && result.completed ?
+        result.completed : {};
+
+      var i;
+
+      for(i = 0; i < tasks.length; i++){
+
+        (function(index){
+
+          var taskKey = index + ":" + tasks[index];
+
+          var label = mk("label", "");
+          label.style.display = "block";
+          label.style.padding = "12px 5px";
+          label.style.borderBottom = "1px solid #ccc";
+          label.style.fontSize = "18px";
+          label.style.cursor = "pointer";
+
+          var checkbox = document.createElement("input");
+
+          checkbox.type = "checkbox";
+          checkbox.style.marginRight = "12px";
+          checkbox.style.width = "22px";
+          checkbox.style.height = "22px";
+          checkbox.checked = completed[taskKey] === true;
+
+          label.appendChild(checkbox);
+          label.appendChild(
+            document.createTextNode(tasks[index])
+          );
+
+          taskContainer.appendChild(label);
+
+          checkbox.onchange = function(){
+
+            var newValue = checkbox.checked;
+
+            checkbox.disabled = true;
+
+            todoRequest("POST", {
+              action: "set",
+              taskKey: taskKey,
+              done: newValue
+            }, function(saveErr){
+
+              if(!$("eventTasksOverlay")){
+                return;
+              }
+
+              checkbox.disabled = false;
+
+              if(saveErr){
+
+                checkbox.checked = !newValue;
+
+                alert("Errore nel salvataggio: " + saveErr);
+
+              } else {
+
+                completed[taskKey] = newValue;
+
+              }
+
+            }, url);
+
+          };
+
+        })(i);
+      }
+    }
+
+    addDetails();
+
+  }, url);
+
+
+  function addDetails(){
+
+    if(!details){
       return;
     }
 
-    var completed = result && result.completed ?
-      result.completed : {};
+    var separator = mk("hr", "");
+    separator.style.marginTop = "20px";
+    taskContainer.appendChild(separator);
 
-    var i;
+    var heading = mk("div", "", "Altri dettagli");
+    heading.style.fontWeight = "bold";
+    heading.style.fontSize = "17px";
+    heading.style.marginBottom = "8px";
 
-    for(i = 0; i < tasks.length; i++){
+    taskContainer.appendChild(heading);
 
-      (function(index){
+    var detailText = mk("div", "", details);
+    detailText.style.fontSize = "16px";
+    detailText.style.whiteSpace = "pre-line";
+    detailText.style.lineHeight = "1.5";
 
-        var taskKey = index + ":" + tasks[index];
-
-        var label = mk("label", "");
-        label.style.display = "block";
-        label.style.padding = "12px 5px";
-        label.style.borderBottom = "1px solid #ccc";
-        label.style.fontSize = "18px";
-        label.style.cursor = "pointer";
-
-        var checkbox = document.createElement("input");
-
-        checkbox.type = "checkbox";
-        checkbox.style.marginRight = "12px";
-        checkbox.style.width = "22px";
-        checkbox.style.height = "22px";
-        checkbox.checked = completed[taskKey] === true;
-
-        label.appendChild(checkbox);
-        label.appendChild(
-          document.createTextNode(tasks[index])
-        );
-
-        taskContainer.appendChild(label);
-
-        checkbox.onchange = function(){
-
-          var newValue = checkbox.checked;
-
-          checkbox.disabled = true;
-
-          todoRequest("POST", {
-            action: "set",
-            taskKey: taskKey,
-            done: newValue
-          }, function(saveErr){
-
-            if(!$("eventTasksOverlay")){
-              return;
-            }
-
-            checkbox.disabled = false;
-
-            if(saveErr){
-
-              checkbox.checked = !newValue;
-
-              alert("Errore nel salvataggio: " + saveErr);
-
-            } else {
-
-              completed[taskKey] = newValue;
-
-            }
-
-          }, url);
-
-        };
-
-      })(i);
-    }
-
-  }, url);
+    taskContainer.appendChild(detailText);
+  }
 
 }
 
