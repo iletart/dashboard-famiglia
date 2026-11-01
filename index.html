@@ -1022,7 +1022,7 @@ function renderAgenda(){
 
         if(n >= viewStart && n < viewStart + viewDays){
 
-          buckets[n - monday].push({
+          buckets[n - viewStart].push({
             key: e.id || (startDate + "|" + titleEv),
             eventId: e.id || "",
             time: "Tutto il giorno",
@@ -1046,7 +1046,7 @@ function renderAgenda(){
 
       if(n >= viewStart && n < viewStart + viewDays){
 
-        buckets[n - monday].push({
+        buckets[n - viewStart].push({
           key: ms,
           eventId: e.id || "",
           time: hhmmRome(ms),
@@ -1071,36 +1071,55 @@ function renderAgenda(){
     buckets[i].sort(cmpEv);
 
     box.appendChild(
-      mk("h3", "", dayLabel(monday + i, today))
+      mk("h3", "", dayLabel(viewStart + i, today))
     );
 
-	for(j = 0; j < buckets[i].length; j++){
+    for(j = 0; j < buckets[i].length; j++){
 
-	  var row = mk("div", "ev");
-	  var item = buckets[i][j];
+      var row = mk("div", "ev");
+      var item = buckets[i][j];
 
-	  row.style.cursor = "pointer";
+      row.style.cursor = "pointer";
 
-		row.onclick = (function(eventItem){
-		  return function(){
-			openEventTasks(eventItem);
-		  };
-		})(item);
-	
-	  row.appendChild(mk("span", "t", item.time));
-	  row.appendChild(mk("span", "tt", item.title));
+      row.appendChild(mk("span", "t", item.time));
+      row.appendChild(mk("span", "tt", item.title));
 
-	  box.appendChild(row);
-	}
+      if(agendaTodayOnly){
+
+        // In Today, mostra direttamente i compiti
+        row.style.cursor = "default";
+        box.appendChild(row);
+
+        var taskContainer = mk("div", "event-task-inline");
+        taskContainer.style.margin = "2px 0 12px 25px";
+        taskContainer.style.padding = "4px 8px";
+        taskContainer.style.borderLeft = "2px solid #999";
+
+        box.appendChild(taskContainer);
+
+        renderEventTasksInline(item, taskContainer);
+
+      } else {
+
+        // Nelle viste settimanali mantiene la finestra al clic
+        row.onclick = (function(eventItem){
+          return function(){
+            openEventTasks(eventItem);
+          };
+        })(item);
+
+        box.appendChild(row);
+      }
+    }
   }
 
-	if(!any){
-	  box.appendChild(mk("div", "",
-		agendaTodayOnly ?
-		  "Nessun impegno nel giorno." :
-		  "Nessun impegno nella settimana."
-	  ));
-	}
+  if(!any){
+    box.appendChild(mk("div", "",
+      agendaTodayOnly ?
+        "Nessun impegno nel giorno." :
+        "Nessun impegno nella settimana."
+    ));
+  }
 
   setText(st, "");
 
@@ -1585,6 +1604,97 @@ function getEventTaskList(description){
   return tasks;
 }
 
+
+function renderEventTasksInline(eventItem, taskContainer){
+
+  var tasks = getEventTaskList(eventItem.description);
+
+  if(!tasks.length){
+    taskContainer.appendChild(
+      mk("div", "", "Nessun compito indicato.")
+    );
+    return;
+  }
+
+  taskContainer.appendChild(
+    mk("div", "", "Caricamento compiti...")
+  );
+
+  var url = CONFIG.todoWorkerUrl +
+    "?list=event-tasks&eventId=" +
+    encodeURIComponent(eventItem.eventId);
+
+  todoRequest("GET", null, function(err, result){
+
+    clear(taskContainer);
+
+    if(err){
+      taskContainer.appendChild(
+        mk("div", "", "Errore caricamento: " + err)
+      );
+      return;
+    }
+
+    var completed = result && result.completed ?
+      result.completed : {};
+
+    var i;
+
+    for(i = 0; i < tasks.length; i++){
+
+      (function(index){
+
+        var taskKey = index + ":" + tasks[index];
+
+        var label = mk("label", "");
+        label.style.display = "block";
+        label.style.padding = "5px 2px";
+        label.style.fontSize = "16px";
+        label.style.cursor = "pointer";
+
+        var checkbox = document.createElement("input");
+
+        checkbox.type = "checkbox";
+        checkbox.style.marginRight = "10px";
+        checkbox.style.width = "20px";
+        checkbox.style.height = "20px";
+        checkbox.checked = completed[taskKey] === true;
+
+        label.appendChild(checkbox);
+        label.appendChild(
+          document.createTextNode(tasks[index])
+        );
+
+        taskContainer.appendChild(label);
+
+        checkbox.onchange = function(){
+
+          var newValue = checkbox.checked;
+          checkbox.disabled = true;
+
+          todoRequest("POST", {
+            action: "set",
+            taskKey: taskKey,
+            done: newValue
+          }, function(saveErr){
+
+            checkbox.disabled = false;
+
+            if(saveErr){
+              checkbox.checked = !newValue;
+              alert("Errore nel salvataggio: " + saveErr);
+            } else {
+              completed[taskKey] = newValue;
+            }
+
+          }, url);
+        };
+
+      })(i);
+    }
+
+  }, url);
+}
 
 /* Apre la finestra dei compiti associati all'evento */
 function openEventTasks(eventItem){
