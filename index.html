@@ -2159,12 +2159,28 @@ function todoConnect(){
 	  var detail = data && data.detail ? data.detail : "";
 
 	  setText(
-		$("syncStatus"),
-		"Connessione non riuscita: " +
-		(err || "risposta non valida") +
-		(detail ? " - " + detail : "")
+	    $("syncStatus"),
+	    "Connessione non riuscita: " +
+	    (err || "risposta non valida") +
+	    (detail ? " - " + detail : "")
 	  );
-
+	  
+	  // Ripristina la richiesta del PIN
+	  var syncBox = $("syncBox");
+	  if(syncBox){
+	    syncBox.style.display = "";
+	  }
+	  
+	  if(pinInput){
+	    pinInput.style.display = "";
+	    pinInput.value = "";
+	  }
+	  
+	  var connectButton = $("todoConnectButton");
+	  if(connectButton){
+	    connectButton.style.display = "";
+	  }
+	  
 	  return;
 	}
 	
