@@ -1458,9 +1458,11 @@ function todoCanEdit(){
   return todoConnected && !todoBusy;
 }
 
-function todoRequest(method, data, callback){
+function todoRequest(method, data, callback, requestUrl){
+
   var x = new XMLHttpRequest();
-  var url = CONFIG.todoWorkerUrl;
+  var url = requestUrl || CONFIG.todoWorkerUrl;
+  var finished = false;
 
   x.open(method, url, true);
   x.setRequestHeader("X-Todo-Pin", todoPin);
@@ -1469,8 +1471,20 @@ function todoRequest(method, data, callback){
     x.setRequestHeader("Content-Type", "application/json");
   }
 
+  function finish(err, result){
+    if(finished){
+      return;
+    }
+
+    finished = true;
+    callback(err, result);
+  }
+
   x.onreadystatechange = function(){
-    if(x.readyState !== 4) return;
+
+    if(x.readyState !== 4 || finished){
+      return;
+    }
 
     var result = null;
 
@@ -1479,9 +1493,9 @@ function todoRequest(method, data, callback){
     } catch(e) {}
 
     if(x.status >= 200 && x.status < 300){
-      callback(null, result);
+      finish(null, result);
     } else {
-      callback(
+      finish(
         result && result.error ?
           result.error :
           "Errore HTTP " + x.status,
@@ -1491,11 +1505,11 @@ function todoRequest(method, data, callback){
   };
 
   x.onerror = function(){
-    callback("Errore di connessione", null);
+    finish("Errore di connessione", null);
   };
 
   x.ontimeout = function(){
-    callback("Timeout di connessione", null);
+    finish("Timeout di connessione", null);
   };
 
   x.timeout = 20000;
@@ -1503,8 +1517,221 @@ function todoRequest(method, data, callback){
   try {
     x.send(method === "POST" ? JSON.stringify(data) : null);
   } catch(e) {
-    callback("Errore di invio richiesta", null);
+    finish("Errore di invio richiesta", null);
   }
+}
+
+/* Estrae i compiti dalla descrizione Google Calendar */
+function getEventTaskList(description){
+
+  var lines = String(description || "").split(/\r?\n/);
+  var tasks = [];
+  var start = false;
+  var hasMarker = false;
+  var i, line;
+
+  // Verifica se esiste il marcatore TODO:
+  for(i = 0; i < lines.length; i++){
+    if(/^\s*TODO:\s*$/i.test(lines[i])){
+      hasMarker = true;
+      break;
+    }
+  }
+
+  for(i = 0; i < lines.length; i++){
+
+    line = lines[i].replace(/^\s+|\s+$/g, "");
+
+    if(/^TODO:\s*$/i.test(line)){
+      start = true;
+      continue;
+    }
+
+    if(hasMarker && !start){
+      continue;
+    }
+
+    if(/^[-*]\s+/.test(line)){
+      line = line.replace(/^[-*]\s+/, "").replace(/\s+$/g, "");
+
+      if(line){
+        tasks.push(line);
+      }
+    }
+  }
+
+  return tasks;
+}
+
+
+/* Apre la finestra dei compiti associati all'evento */
+function openEventTasks(eventItem){
+
+  var old = $("eventTasksOverlay");
+
+  if(old && old.parentNode){
+    old.parentNode.removeChild(old);
+  }
+
+  var eventId = eventItem.eventId || "";
+
+  if(!eventId){
+    alert("ID evento non disponibile.");
+    return;
+  }
+
+  var overlay = mk("div", "");
+  overlay.id = "eventTasksOverlay";
+
+  overlay.style.position = "fixed";
+  overlay.style.left = "0";
+  overlay.style.top = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "#fff";
+  overlay.style.zIndex = "9999";
+  overlay.style.overflowY = "auto";
+  overlay.style.padding = "20px";
+  overlay.style.boxSizing = "border-box";
+
+  var panel = mk("div", "");
+  panel.style.border = "2px solid #000";
+  panel.style.padding = "15px";
+  panel.style.backgroundColor = "#fff";
+
+  var header = mk("div", "");
+  header.style.overflow = "hidden";
+
+  var title = mk("h2", "", eventItem.title);
+  title.style.float = "left";
+  title.style.margin = "0 0 15px 0";
+
+  var close = mk("button", "", "Chiudi");
+  close.type = "button";
+  close.style.float = "right";
+
+  close.onclick = function(){
+    if(overlay.parentNode){
+      overlay.parentNode.removeChild(overlay);
+    }
+  };
+
+  header.appendChild(title);
+  header.appendChild(close);
+  panel.appendChild(header);
+
+  panel.appendChild(mk("hr", ""));
+
+  var taskContainer = mk("div", "");
+  panel.appendChild(taskContainer);
+
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
+
+  var tasks = getEventTaskList(eventItem.description);
+
+  if(!tasks.length){
+    taskContainer.appendChild(
+      mk("div", "", "Nessun compito indicato nella descrizione.")
+    );
+    return;
+  }
+
+  taskContainer.appendChild(
+    mk("div", "", "Caricamento compiti...")
+  );
+
+  var url = CONFIG.todoWorkerUrl +
+    "?list=event-tasks&eventId=" +
+    encodeURIComponent(eventId);
+
+  todoRequest("GET", null, function(err, result){
+
+    if(!$("eventTasksOverlay")){
+      return;
+    }
+
+    clear(taskContainer);
+
+    if(err){
+      taskContainer.appendChild(
+        mk("div", "", "Errore caricamento: " + err)
+      );
+      return;
+    }
+
+    var completed = result && result.completed ?
+      result.completed : {};
+
+    var i;
+
+    for(i = 0; i < tasks.length; i++){
+
+      (function(index){
+
+        var taskKey = index + ":" + tasks[index];
+
+        var label = mk("label", "");
+        label.style.display = "block";
+        label.style.padding = "12px 5px";
+        label.style.borderBottom = "1px solid #ccc";
+        label.style.fontSize = "18px";
+        label.style.cursor = "pointer";
+
+        var checkbox = document.createElement("input");
+
+        checkbox.type = "checkbox";
+        checkbox.style.marginRight = "12px";
+        checkbox.style.width = "22px";
+        checkbox.style.height = "22px";
+        checkbox.checked = completed[taskKey] === true;
+
+        label.appendChild(checkbox);
+        label.appendChild(
+          document.createTextNode(tasks[index])
+        );
+
+        taskContainer.appendChild(label);
+
+        checkbox.onchange = function(){
+
+          var newValue = checkbox.checked;
+
+          checkbox.disabled = true;
+
+          todoRequest("POST", {
+            action: "set",
+            taskKey: taskKey,
+            done: newValue
+          }, function(saveErr){
+
+            if(!$("eventTasksOverlay")){
+              return;
+            }
+
+            checkbox.disabled = false;
+
+            if(saveErr){
+
+              checkbox.checked = !newValue;
+
+              alert("Errore nel salvataggio: " + saveErr);
+
+            } else {
+
+              completed[taskKey] = newValue;
+
+            }
+
+          }, url);
+
+        };
+
+      })(i);
+    }
+
+  }, url);
+
 }
 
 function todoConnect(){
