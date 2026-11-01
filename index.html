@@ -2774,7 +2774,7 @@ function renderMenu(k, err, d){
     return;
   }
 
-  var isKindle = true;
+  var isKindle = IS_KINDLE || document.body.classList.contains("k");
   var ul = mk("ul");
 
   if(isKindle){
