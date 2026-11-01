@@ -1,768 +1,2377 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f6f8">
-  <title>Menu della scuola</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard famiglia</title>
 
-  <style>
-    :root {
-      --bg: #f5f6f8;
-      --card: #ffffff;
-      --text: #20242b;
-      --muted: #737b87;
-      --accent: #287a57;
-      --border: #e7e9ed;
-    }
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+html,body{margin:0;padding:0}
 
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: "Trebuchet MS", Arial, sans-serif;
-    }
+body{
+  background:#fff;
+  color:#111;
+  font-family:"Trebuchet MS",Arial,sans-serif;
+  font-size:16px;
+  line-height:1.3
+}
 
-    body.modal-open {
-      overflow: hidden;
-    }
+body.k{font-size:20px}
 
-    .page {
-      width: 100%;
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 24px 20px 40px;
-    }
+.wrap{padding:4px}
 
-    header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
+.box{
+  border:1px solid #000;
+  padding:8px;
+  margin:6px 3px;
+  overflow:hidden;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box
+}
 
-    .eyebrow {
-      margin: 0 0 8px;
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+h2{
+  font-size:1.05em;
+  margin:0 0 6px 0;
+  padding:0 0 3px 0;
+  border-bottom:2px solid #000;
+  text-transform:uppercase
+}
 
-    h1 {
-      margin: 0;
-      font-size: clamp(27px, 5vw, 38px);
-      line-height: 1.15;
-    }
+h3{
+  font-size:1em;
+  margin:8px 0 2px 0;
+  text-transform:capitalize
+}
 
-    .date-label {
-      margin: 10px 0 0;
-      color: var(--muted);
-      font-size: 15px;
-    }
+.row{
+  display:block;
+  margin:0;
+}
 
-    .day-selector {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin: 0 0 20px;
-      padding: 5px;
-      background: #e9ebef;
-      border-radius: 15px;
-    }
+.row:after{
+  content:"";
+  display:table;
+  clear:both;
+}
 
-    .day-button {
-      min-height: 44px;
-      padding: 10px 6px;
-      border: 0;
-      border-radius: 11px;
-      background: transparent;
-      color: #5d6470;
-      font: inherit;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.col{
+  float:left;
+  width:50%;
+  min-width:0;
+  box-sizing:border-box;
+}
 
-    .day-button.active {
-      background: #ffffff;
-      color: var(--text);
-      box-shadow: 0 1px 5px #00000012;
-    }
+.sync-label {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #888;
+  font-weight: normal;
+}
 
-    .menu-panel {
-      padding: 20px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background: var(--card);
-      box-shadow: 0 4px 18px #1b253008;
-    }
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
 
-    .menu-heading {
-      margin: 0 0 16px;
-      font-size: 18px;
-      font-weight: bold;
-    }
+.section-heading h2 {
+    margin: 0;
+    text-align: left;
+}
 
-    .plates {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+.section-heading .sync-label {
+    text-align: right;
+    white-space: nowrap;
+    line-height: 1.4;
+}
 
-    .plate {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      width: 100%;
-      min-width: 0;
-      padding: 13px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: #ffffff;
-      color: var(--text);
-      text-align: left;
-      font: inherit;
-    }
+/* OROLOGIO */
 
-    .plate.clickable {
-      cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease,
-                  box-shadow 0.15s ease;
-    }
+#clock{
+  float:left;
+  font-size:3.2em;
+  font-weight:bold;
+  line-height:1;
+  margin-right:16px
+}
 
-    .plate.clickable:hover {
-      transform: translateY(-1px);
-      border-color: #c9d8cf;
-      box-shadow: 0 3px 12px #0000000b;
-    }
+#clockWeather{
+  float:left;
+  clear:left;
+  width:5em;
+  height:3em;
+  text-align:center;
+  margin-top:4px;
+  position:relative;
+}
 
-    .plate-icon {
-      display: grid;
-      place-items: center;
-      flex: 0 0 46px;
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      background: #f0f2f4;
-      font-size: 24px;
-    }
+/* ICONE METEO CSS */
 
-    .plate-content {
-      flex: 1;
-      min-width: 0;
-    }
+.wx-icon{
+  display:block;
+  position:relative;
+  width:48px;
+  height:44px;
+  margin:2px auto;
+  left:29px;
+}
 
-    .plate-category {
-      display: block;
-      margin-bottom: 4px;
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
+.wx-part{
+  display:none;
+  position:absolute;
+}
 
-    .plate-name {
-      display: block;
-      font-size: 15px;
-      line-height: 1.4;
-      overflow-wrap: anywhere;
-    }
+/* SOLE */
 
-    .plate-arrow {
-      flex: 0 0 auto;
-      margin-left: 2px;
-      color: #8b929c;
-      font-size: 27px;
-      line-height: 1;
-    }
+.wx-part-sun{
+  width:20px;
+  height:20px;
+  left:5px;
+  top:2px;
+  background:#fff;
+  border:2px solid #111;
+  border-radius:50%;
+  box-sizing:border-box;
+}
 
-    .plate[data-category="primo"] .plate-icon {
-      background: #fff0dc;
-    }
+.wx-part-sun:before{
+  content:"";
+  position:absolute;
+  left:-7px;
+  top:7px;
+  width:30px;
+  height:3px;
+  background:#111;
+  box-shadow:0 -12px 0 -1px #111, 0 12px 0 -1px #111;
+}
 
-    .plate[data-category="secondo"] .plate-icon {
-      background: #fbe8e4;
-    }
+.wx-part-sun:after{
+  content:"";
+  position:absolute;
+  left:6px;
+  top:-7px;
+  width:3px;
+  height:30px;
+  background:#111;
+}
 
-    .plate[data-category="contorno"] .plate-icon {
-      background: #e4f3e8;
-    }
+/* LUNA */
 
-    .plate[data-category="frutta"] .plate-icon {
-      background: #fff0d8;
-    }
+.wx-part-moon{
+  width:24px;
+  height:24px;
+  left:5px;
+  top:2px;
+  background:#fff;
+  border:2px solid #111;
+  border-radius:50%;
+  box-sizing:border-box;
+}
 
-    .plate[data-category="pane"] .plate-icon {
-      background: #f5e9d7;
-    }
+.wx-part-moon:after{
+  content:"";
+  position:absolute;
+  width:21px;
+  height:21px;
+  left:8px;
+  top:-6px;
+  background:#fff;
+  border-radius:50%;
+}
 
-    .plate[data-category="unico"] .plate-icon {
-      background: #ffe6d8;
-    }
+/* NUVOLA */
 
-    .plate[data-category="dessert"] .plate-icon {
-      background: #f1e7fb;
-    }
+.wx-part-cloud{
+  width:31px;
+  height:14px;
+  left:9px;
+  top:17px;
+  background:#fff;
+  border:2px solid #111;
+  border-radius:12px;
+  box-sizing:border-box;
+  z-index:2;
+}
 
-    .plate[data-category="altro"] .plate-icon {
-      background: #e8edf7;
-    }
+.wx-part-cloud:before{
+  content:"";
+  position:absolute;
+  width:17px;
+  height:17px;
+  left:3px;
+  top:-11px;
+  background:#fff;
+  border:2px solid #111;
+  border-radius:50%;
+  box-sizing:border-box;
+  z-index:-1;
+}
 
-    .status {
-      padding: 24px 12px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+.wx-part-cloud:after{
+  content:"";
+  position:absolute;
+  width:20px;
+  height:20px;
+  left:12px;
+  top:-14px;
+  background:#fff;
+  border:2px solid #111;
+  border-radius:50%;
+  box-sizing:border-box;
+  z-index:-1;
+}
 
-    .status.error {
-      color: #a12b2b;
-    }
+/* PIOGGIA */
 
-    .reload-button {
-      display: block;
-      margin: 12px auto 0;
-      padding: 9px 15px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #ffffff;
-      color: var(--text);
-      font: inherit;
-      cursor: pointer;
-    }
+.wx-part-rain{
+  left:13px;
+  top:32px;
+  width:5px;
+  height:9px;
+  background:#fff;
+  border:1px solid #111;
+  border-radius:50%;
+  box-sizing:border-box;
+  box-shadow:10px 0 0 -1px #fff, 10px 0 0 0 #111,
+             20px 0 0 -1px #fff, 20px 0 0 0 #111;
+}
 
-    .footer {
-      padding: 18px 5px 0;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-      text-align: center;
-    }
+/* NEVE */
 
-    /* Finestra della foto del piatto */
+.wx-part-snow{
+  left:13px;
+  top:33px;
+  width:6px;
+  height:6px;
+  background:#fff;
+  border:1px solid #111;
+  border-radius:50%;
+  box-sizing:border-box;
+  box-shadow:10px 0 0 -1px #fff, 10px 0 0 0 #111,
+             20px 0 0 -1px #fff, 20px 0 0 0 #111;
+}
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: #111820c9;
-    }
+/* NEBBIA */
 
-    .modal.visible {
-      display: flex;
-    }
+.wx-part-fog{
+  left:6px;
+  top:16px;
+  width:35px;
+  height:3px;
+  background:#fff;
+  border-top:1px solid #111;
+  border-bottom:1px solid #111;
+  box-sizing:border-box;
+  box-shadow:0 7px 0 -1px #fff, 0 7px 0 0 #111,
+             0 14px 0 -1px #fff, 0 14px 0 0 #111;
+}
 
-    .modal-box {
-      position: relative;
-      width: 100%;
-      max-width: 620px;
-      max-height: 90vh;
-      overflow: auto;
-      padding: 22px;
-      border-radius: 20px;
-      background: #ffffff;
-      text-align: center;
-      box-shadow: 0 15px 60px #00000040;
-    }
+/* FULMINE */
 
-    .modal-close {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      display: grid;
-      place-items: center;
-      width: 38px;
-      height: 38px;
-      border: 0;
-      border-radius: 50%;
-      background: #f0f1f3;
-      color: #30343b;
-      font-size: 26px;
-      cursor: pointer;
-    }
+.wx-part-lightning{
+  left:19px;
+  top:24px;
+  width:9px;
+  height:17px;
+  background:#fff;
+  border:1px solid #111;
+  box-sizing:border-box;
+  transform:skew(-18deg);
+}
 
-    .modal-title {
-      margin: 8px 35px 18px;
-      font-size: 21px;
-      line-height: 1.35;
-    }
+/* VISIBILITA' ELEMENTI */
 
-    .modal-image {
-      display: none;
-      width: 100%;
-      max-height: 65vh;
-      object-fit: contain;
-      border-radius: 12px;
-    }
+.wx-sun .wx-part-sun,
+.wx-moon .wx-part-moon,
+.wx-cloud .wx-part-cloud,
+.wx-sun-cloud .wx-part-sun,
+.wx-sun-cloud .wx-part-cloud,
+.wx-moon-cloud .wx-part-moon,
+.wx-moon-cloud .wx-part-cloud,
+.wx-drizzle .wx-part-cloud,
+.wx-drizzle .wx-part-rain,
+.wx-rain .wx-part-cloud,
+.wx-rain .wx-part-rain,
+.wx-snow .wx-part-cloud,
+.wx-snow .wx-part-snow,
+.wx-fog .wx-part-fog,
+.wx-storm .wx-part-cloud,
+.wx-storm .wx-part-lightning{
+  display:block;
+}
 
-    .modal-placeholder {
-      padding: 35px 10px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+/* SOLE E LUNA CON NUVOLA */
 
-    @media (max-width: 600px) {
-      .page {
-        padding: 20px 13px 30px;
-      }
+.wx-sun-cloud .wx-part-cloud,
+.wx-moon-cloud .wx-part-cloud{
+  left:16px;
+  top:20px;
+}
 
-      header {
-        margin-bottom: 20px;
-      }
+.wx-sun-cloud .wx-part-sun,
+.wx-moon-cloud .wx-part-moon{
+  left:2px;
+  top:2px;
+}
 
-      .menu-panel {
-        padding: 15px;
-        border-radius: 17px;
-      }
+/* PIOVIGGINE */
 
-      .plate {
-        gap: 11px;
-        padding: 11px;
-        border-radius: 13px;
-      }
+.wx-drizzle .wx-part-rain{
+  height:4px;
+  top:32px;
+}
 
-      .plate-icon {
-        flex-basis: 42px;
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        font-size: 22px;
-      }
+/* DATA E METEO */
 
-      .plate-name {
-        font-size: 14px;
-      }
+#info{
+  overflow:hidden
+}
 
-      .modal {
-        padding: 12px;
-      }
+#wday{
+  font-size:1.5em;
+  font-weight:bold;
+  text-transform:capitalize
+}
 
-      .modal-box {
-        padding: 18px 13px;
-        border-radius: 16px;
-      }
+#fulldate{
+  font-size:1.2em
+}
 
-      .modal-title {
-        font-size: 18px;
-      }
+#weather{
+  display:block;
+  margin-top:6px;
+  text-align:left
+}
 
-      .modal-image {
-        max-height: 60vh;
-      }
-    }
-  </style>
+#agendaTitle{
+  text-transform:none;
+}
+
+/* AGENDA */
+
+.ev{margin:2px 0}
+
+.t{
+  display:inline-block;
+  width:5.2em;
+  font-weight:bold;
+  vertical-align:top
+}
+
+.tt{
+  display:inline-block;
+  vertical-align:top
+}
+
+.small{
+  font-size:.8em;
+  color:#333;
+  margin-top:6px
+}
+
+/* SPOSTAMENTI */
+
+.rt{margin:0 0 10px 0}
+
+/* PULSANTI */
+
+button{
+  font-family:inherit;
+  font-size:1em;
+  border:1px solid #000;
+  background:#fff;
+  color:#000;
+  padding:4px 10px;
+  margin:2px 4px 2px 0
+}
+
+button.sel{
+  background:#000;
+  color:#fff
+}
+
+/* INPUT */
+
+input{
+  font-family:inherit;
+  font-size:1em;
+  border:1px solid #000;
+  padding:4px;
+  width:60%;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box
+}
+
+/* DA FARE */
+
+.todo{
+  display:table;
+  width:100%;
+  margin:3px 0;
+  table-layout:fixed;
+}
+
+.todo-text{
+  display:table-cell;
+  vertical-align:middle;
+  text-align:left;
+  word-wrap:break-word;
+}
+
+.todo-actions{
+  display:table-cell;
+  width:65px;
+  vertical-align:middle;
+  text-align:right;
+  white-space:nowrap;
+}
+
+.todo-actions button{
+  padding:2px;
+  margin-left:3px;
+  min-width:24px;
+}
+
+/* SINCRONIZZAZIONE */
+
+.sync-label{
+  font-size:.65em;
+  font-weight:normal;
+  text-transform:none;
+}
+
+.done{text-decoration:line-through}
+
+/* MENU */
+
+ul{
+  margin:4px 0 4px 20px;
+  padding:0
+}
+
+li{margin:3px 0}
+
+/* ERRORI */
+
+#err{
+  color:#000;
+  font-size:.8em;
+  margin:4px 3px
+}
+
+#taskStatus,
+#todoStatus{
+  font-size:0.65em;
+  color:#555;
+  margin-top:3px;
+}
+
+/* LAYOUT CELLULARE */
+
+@media (max-width:560px){
+  .row{
+    display:block;
+  }
+
+  .col{
+    float:none;
+    width:100%;
+  }
+
+  #info{
+    overflow:hidden;
+  }
+}
+</style>
+
+
 </head>
-
 <body>
-  <main class="page">
-    <header>
-      <p class="eyebrow">Il menu del giorno</p>
-      <h1>Menu della scuola</h1>
-      <p class="date-label" id="dateLabel">Caricamento data...</p>
-    </header>
+<div class="wrap">
 
-    <nav class="day-selector" aria-label="Seleziona il giorno">
-      <button class="day-button" type="button" data-day="ieri">Ieri</button>
-      <button class="day-button active" type="button" data-day="oggi">Oggi</button>
-      <button class="day-button" type="button" data-day="domani">Domani</button>
-    </nav>
+<div class="box cf" id="head">
+  <div id="clock">--:--</div>
+  <div id="clockWeather"></div>
 
-    <section class="menu-panel">
-      <h2 class="menu-heading" id="menuHeading">Menu di oggi</h2>
-      <div class="plates" id="plates">
-        <div class="status">Caricamento del menu...</div>
-      </div>
-    </section>
-
-    <footer class="footer">
-      Menu scolastico aggiornato automaticamente.
-    </footer>
-  </main>
-
-  <div class="modal" id="dishModal" aria-hidden="true">
-    <div class="modal-box" role="dialog" aria-modal="true"
-         aria-labelledby="modalTitle">
-      <button class="modal-close" id="modalClose" type="button"
-              aria-label="Chiudi">&times;</button>
-      <h2 class="modal-title" id="modalTitle"></h2>
-      <img class="modal-image" id="modalImage" alt="">
-      <div class="modal-placeholder" id="modalPlaceholder">
-        Caricamento foto...
-      </div>
-    </div>
+  <div id="info">
+    <div id="wday"></div>
+    <div id="fulldate"></div>
+    <div id="weather">Meteo: caricamento...</div>
   </div>
+</div>
 
-  <script>
-    "use strict";
+<div class="box" id="syncBox">
+  <h2>Sincronizzazione</h2>
+  <div id="syncCtl"></div>
+  <div class="small" id="syncStatus"></div>
+</div>
 
-    // File JSON già pubblicati sul repository GitHub.
-    const JSON_BASE =
-      "https://raw.githubusercontent.com/iletart/menu-scuola/main/";
+<div class="row cf">
+    <div class="col">
+        <div class="box">
+            <div class="section-heading">
+                <h2 id="agendaTitle">Agenda famiglia</h2>
+                <div class="sync-label" id="agendaTimes"></div>
+            </div>
+            <div id="agenda">Caricamento...</div>
+            <div class="small" id="agendaStatus"></div>
+        </div>
 
-    const JSON_FILES = {
-      ieri: "menu-ieri.json",
-      oggi: "menu.json",
-      domani: "menu-domani.json"
+		<div class="box">
+			<h2 id="routesTitle">Spostamenti</h2>
+			<div class="sync-label" id="routesTimes"></div>
+			<div id="routes"></div>
+			<div class="small" id="routesStatus"></div>
+		</div>
+	</div>
+
+	<div class="col">
+		<div class="box">
+			<h2 id="taskDateTitle">Task</h2>
+			<div class="sync-label" id="taskTimes"></div>
+
+		  <div id="taskDayButtons">
+			<button type="button" id="tb-ieri">Ieri</button>
+			<button type="button" id="tb-oggi" class="sel">Oggi</button>
+			<button type="button" id="tb-domani">Domani</button>
+		  </div>
+
+		  <div id="taskCtl" style="display:none;">
+			  <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
+			  <button type="button" id="taskAddButton">Aggiungi</button>
+			</div>
+		  <div id="taskList"></div>
+		  <div class="small" id="taskStatus"></div>
+		</div>
+
+		<div class="box">
+		  <h2>Da fare <span id="todoSyncLabel" class="sync-label">(non connesso)</span></h2>
+		  <div id="todoCtl" style="display:none;"></div>
+		  <div id="todoList"></div>
+		  <div class="small" id="todoStatus"></div>
+		</div>
+
+		<div class="box">
+			<h2 id="menuTitle">Menu scuola</h2>
+			<div class="sync-label" id="menuTimes"></div>
+			<div>
+				<button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
+			</div>
+			<h3 id="menuDate"></h3>
+			<div id="menuList"></div>
+			<div class="small" id="menuStatus"></div>
+		</div>
+	</div>
+</div>
+
+<div id="err"></div>
+</div>
+
+<script>
+/* ===== CONFIGURAZIONE ===== */
+var CONFIG = {
+  base: "https://raw.githubusercontent.com/iletart/menu-scuola/main/",
+  lat: 45.484, lon: 9.233,
+  agendaMin: 10,
+  weatherMin: 15,
+  menuMin: 60,
+  todoWorkerUrl: "https://todo-sync.iletarta-633.workers.dev",
+  routesUrl: "https://raw.githubusercontent.com/iletart/menu-scuola/main/routes.json"
+};
+
+var MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
+var GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
+
+
+var agendaSyncedAt = null;
+var routesSyncedAt = null;
+var todoSyncedAt = null;
+var taskSyncedAt = null;
+var menuSyncedAt = null;
+
+var routesErr = false;
+var menuUpdatedAt = null;
+
+var taskPollTimer = null;
+var taskSyncError = false;
+
+/* ===== UTILITÀ ===== */
+function $(id) {
+  return document.getElementById(id);
+}
+
+function clear(el) {
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
+}
+
+function setText(el, t) {
+  if (!el) {
+    return;
+  }
+
+  clear(el);
+  el.appendChild(document.createTextNode(t));
+}
+
+function mk(tag, cls, txt) {
+  var e = document.createElement(tag);
+
+  if (cls) {
+    e.className = cls;
+  }
+
+  if (txt !== undefined && txt !== null) {
+    e.appendChild(document.createTextNode(txt));
+  }
+
+  return e;
+}
+
+function p2(n) {
+  return (n < 10 ? "0" : "") + n;
+}
+
+function showErr(m) {
+  var e = $("err");
+
+  if (e) {
+    e.appendChild(
+      mk("div", "", "Errore: " + m)
+    );
+  }
+}
+
+function safe(f) {
+  try {
+    f();
+  } catch (e) {
+    showErr(
+      e && e.message ? e.message : String(e)
+    );
+  }
+}
+
+window.onerror = function(m, u, l) {
+  showErr(
+    m + " (riga " + l + ")"
+  );
+
+  return true;
+};
+
+var IS_KINDLE = (function(){
+  var q = window.location.search;
+  if(q.indexOf("kindle=1") >= 0){ return true; }
+  if(q.indexOf("kindle=0") >= 0){ return false; }
+  return /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
+})();
+
+function parseJson(t){
+  if(typeof JSON !== "undefined" && JSON.parse){ return JSON.parse(t); }
+  return eval("(" + t + ")");
+}
+
+/* GET JSON con XMLHttpRequest, prova gli URL in ordine (fallback) */
+function getJson(urls, cb, nocb){
+  var i = 0;
+  function next(){
+    if(i >= urls.length){ cb("non raggiungibile", null); return; }
+    var u = urls[i++];
+    if(!nocb){ u += (u.indexOf("?") < 0 ? "?" : "&") + "t=" + (new Date().getTime()); }
+    var x, done = false, timer;
+    try{ x = new XMLHttpRequest(); }catch(e){ next(); return; }
+    function fin(ok, d){
+      if(done){ return; }
+      done = true; clearTimeout(timer);
+      if(ok){ cb(null, d); } else { next(); }
+    }
+    timer = setTimeout(function(){ try{ x.abort(); }catch(e){} fin(false); }, 20000);
+    x.onreadystatechange = function(){
+      if(x.readyState !== 4 || done){ return; }
+      if(x.status === 200){
+        var d;
+        try{ d = parseJson(x.responseText); }catch(e){ fin(false); return; }
+        fin(true, d);
+      } else { fin(false); }
+    };
+    try{ x.open("GET", u, true); x.send(null); }catch(e){ fin(false); }
+  }
+  next();
+}
+
+/* ===== DATE: UTC -> Europe/Rome senza Intl (ora legale automatica) ===== */
+function lastSunday1UTC(year, month0){
+  var last = new Date(Date.UTC(year, month0 + 1, 0));
+  return Date.UTC(year, month0, last.getUTCDate() - last.getUTCDay(), 1, 0, 0);
+}
+function romeOffsetHours(ms){
+  var y = new Date(ms).getUTCFullYear();
+  return (ms >= lastSunday1UTC(y, 2) && ms < lastSunday1UTC(y, 9)) ? 2 : 1;
+}
+/* restituisce una Date i cui campi getUTC* sono l'ora locale di Roma */
+function toRome(ms){ return new Date(ms + romeOffsetHours(ms) * 3600000); }
+function dayNum(y, m0, d){ return Math.round(Date.UTC(y, m0, d) / 86400000); }
+function dayNumOfRome(r){ return dayNum(r.getUTCFullYear(), r.getUTCMonth(), r.getUTCDate()); }
+function dateOfDayNum(n){ return new Date(n * 86400000); }
+function fullDateText(n){
+  var d = dateOfDayNum(n);
+  return GIORNI[d.getUTCDay()] + " " + d.getUTCDate() + " " + MESI[d.getUTCMonth()];
+}
+
+/* Parser ISO 8601 manuale (Z, +hh:mm, frazioni di secondo). Ritorna ms UTC o null */
+function parseIso(s){
+  if(typeof s !== "string"){ return null; }
+
+  var m = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?\s*(Z|[+-]\d{2}:?\d{2})?$/.exec(s);
+
+  if(!m){ return null; }
+
+  var ms = Date.UTC(
+    +m[1], +m[2] - 1, +m[3],
+    +m[4], +m[5], m[6] ? +m[6] : 0
+  );
+
+  var z = m[7];
+
+  if(z && z !== "Z"){
+    var sign = z.charAt(0) === "-" ? -1 : 1;
+    var digits = z.replace(/[^0-9]/g, "");
+
+    ms -= sign * (
+      parseInt(digits.substr(0, 2), 10) * 60 +
+      parseInt(digits.substr(2, 2), 10)
+    ) * 60000;
+  }
+
+  return ms;
+}
+
+function dateOnlyNum(s){
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));
+  return m ? dayNum(+m[1], +m[2] - 1, +m[3]) : null;
+}
+function hhmmRome(ms){ 
+	var r = toRome(ms); 
+	return p2(r.getUTCHours()) + ":" + p2(r.getUTCMinutes()); 
+}
+
+function scheduleDailyAt(hour, minute, fn) {
+  function scheduleNext() {
+    var nowMs = new Date().getTime();
+    var r = toRome(nowMs);
+
+    var localTarget = Date.UTC(
+      r.getUTCFullYear(),
+      r.getUTCMonth(),
+      r.getUTCDate(),
+      hour,
+      minute,
+      0,
+      0
+    );
+
+    var targetMs = localTarget -
+      romeOffsetHours(nowMs) * 3600000;
+
+    targetMs = localTarget -
+      romeOffsetHours(targetMs) * 3600000;
+
+    if (targetMs <= nowMs) {
+      localTarget += 86400000;
+
+      targetMs = localTarget -
+        romeOffsetHours(nowMs) * 3600000;
+
+      targetMs = localTarget -
+        romeOffsetHours(targetMs) * 3600000;
+    }
+
+    setTimeout(function() {
+      safe(fn);
+      scheduleNext();
+    }, Math.max(1000, targetMs - nowMs));
+  }
+
+  scheduleNext();
+}
+
+function todayNum(){ return dayNumOfRome(toRome(new Date().getTime())); }
+
+/* ===== OROLOGIO ===== */
+var lastDay = null;
+function updateClock(){
+  var now = new Date().getTime();
+  var r = toRome(now);
+  setText($("clock"), p2(r.getUTCHours()) + ":" + p2(r.getUTCMinutes()));
+  setText($("wday"), GIORNI[r.getUTCDay()]);
+  setText($("fulldate"), r.getUTCDate() + " " + MESI[r.getUTCMonth()] + " " + r.getUTCFullYear());
+  var dn = dayNumOfRome(r);
+  if(lastDay !== null && dn !== lastDay){ safe(renderAgenda); safe(loadMenu); }
+  lastDay = dn;
+  setTimeout(function(){ safe(updateClock); }, 60000 - (now % 60000) + 500);
+}
+
+function syncLabelText(){
+  if(!todoConnected) return "non connesso";
+  if(todoSyncError || taskSyncError) return "sync error";
+  return "synced";
+}
+
+function updateTodoSyncLabel() {
+  var label = "";
+
+  if(!todoConnected){
+    label = "non connesso";
+  } else if(todoSyncError){
+    label = "sync error";
+  } else if(todoSyncedAt !== null){
+    label = "sync time: " +
+      hhmmRome(todoSyncedAt.getTime());
+  } else {
+    label = "sync in attesa";
+  }
+
+  setText($("todoSyncLabel"), label);
+}
+
+/* ===== AGENDA ===== */
+var agendaData = null;
+var agendaErr = false;
+
+var agendaWeekOffset = 0;
+
+function loadAgenda() {
+  getJson(
+    [CONFIG.base + "agenda.json", "agenda.json"],
+    function(err, d) {
+
+      if (!err && d && d.events) {
+        agendaData = d;
+        agendaErr = false;
+        agendaSyncedAt = new Date();
+      } else {
+        agendaErr = true;
+      }
+
+      safe(renderAgenda);
+
+      setTimeout(function() {
+        safe(loadAgenda);
+      }, CONFIG.agendaMin * 60000);
+    }
+  );
+}
+
+function dayLabel(n, today){
+  var base = fullDateText(n);
+  if(n === today){ return "Oggi - " + base; }
+  if(n === today + 1){ return "Domani - " + base; }
+  return base;
+}
+function cmpEv(a, b){ return a.key - b.key; }
+
+
+
+
+function renderAgenda(){
+  var box = $("agenda"), st = $("agendaStatus");
+  clear(box);
+
+  if(!agendaData){
+    setText(box, agendaErr ? "Agenda non disponibile (file non raggiungibile)." : "Caricamento...");
+    setText(st, "");
+    return;
+  }
+
+  var today = todayNum(), buckets = [], i, j, n;
+  var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
+  monday += agendaWeekOffset * 7;
+
+  // Intervallo della settimana visualizzata
+  var weekEnd = monday + 6;
+
+  // Titolo con orario ultimo aggiornamento
+	$("agendaTitle").innerHTML = "AGENDA FAMIGLIA";
+
+	var times = "";
+
+	var gen = parseIso(agendaData.generated_at || agendaData.updated_at);
+
+	if (gen !== null) {
+	  times += "upd time: " + hhmmRome(gen) + "<br>";
+	}
+
+	if (agendaSyncedAt !== null) {
+	  times += "sync time: " + hhmmRome(agendaSyncedAt.getTime());
+	}
+
+	if (agendaErr) {
+	  times += "<br>rete non disponibile";
+	}
+
+	if (gen !== null && new Date().getTime() - gen > 3 * 3600000) {
+	  times += "<br>dati vecchi";
+	}
+
+	setText($("agendaTimes"), "");
+	$("agendaTimes").innerHTML = times;
+
+
+  // Pulsanti di navigazione
+  var nav = mk("div", "agenda-nav");
+
+  var btnCurrent = mk("button", "", "This week");
+  btnCurrent.type = "button";
+  btnCurrent.disabled = agendaWeekOffset === 0;
+  btnCurrent.onclick = function(){
+    agendaWeekOffset = 0;
+    safe(renderAgenda);
+  };
+
+  var btnNext = mk("button", "", "Next Week");
+  btnNext.type = "button";
+  btnNext.disabled = agendaWeekOffset === 1;
+  btnNext.onclick = function(){
+    agendaWeekOffset = 1;
+    safe(renderAgenda);
+  };
+
+  nav.appendChild(btnCurrent);
+  nav.appendChild(btnNext);
+  box.appendChild(nav);
+
+  // Date settimana: Lunedì 26/10 – Domenica 01/11
+  function weekDateText(num){
+    var d = dateOfDayNum(num);
+    var day = GIORNI[d.getUTCDay()];
+    return day.charAt(0).toUpperCase() + day.substring(1) +
+      " " + p2(d.getUTCDate()) + "/" + p2(d.getUTCMonth() + 1);
+  }
+
+	var period = mk("div", "agenda-period",
+	  weekDateText(monday) + " – " + weekDateText(weekEnd)
+	);
+	period.style.fontWeight = "bold";
+	box.appendChild(period);
+
+  for(i = 0; i < 7; i++){ buckets.push([]); }
+
+  var ev = agendaData.events || [];
+
+  for(i = 0; i < ev.length; i++){
+    var e = ev[i], titleEv = e.title || "(senza titolo)";
+
+    if(e.all_day){
+      var sd = dateOnlyNum(e.start), ed = dateOnlyNum(e.end);
+      if(sd === null){ continue; }
+
+      var last = (ed !== null && ed > sd) ? ed - 1 : sd;
+
+      for(n = sd; n <= last; n++){
+        if(n >= monday && n < monday + 7){
+			buckets[n - monday].push({
+			  key: e.id || (e.start + "|" + titleEv),
+			  time: "Tutto il giorno",
+			  title: titleEv,
+			  description: e.description || ""
+			});
+        }
+      }
+	} else {
+	  var ms = parseIso(
+		e.start && (e.start.dateTime || e.start.date)
+	  );
+
+	  if(ms === null){ continue; }
+
+	  n = dayNumOfRome(toRome(ms));
+
+	  if(n >= monday && n < monday + 7){
+		buckets[n - monday].push({
+		  key: ms,
+		  eventId: e.id || "",
+		  time: hhmmRome(ms),
+		  title: titleEv,
+		  description: e.description || ""
+		});
+	  }
+	}
+
+  var any = false;
+
+  for(i = 0; i < 7; i++){
+    if(!buckets[i].length){ continue; }
+
+    any = true;
+    buckets[i].sort(cmpEv);
+
+    box.appendChild(mk("h3", "", dayLabel(monday + i, today)));
+
+    for(j = 0; j < buckets[i].length; j++){
+      var row = mk("div", "ev");
+      row.appendChild(mk("span", "t", buckets[i][j].time));
+      row.appendChild(mk("span", "tt", buckets[i][j].title));
+      box.appendChild(row);
+    }
+  }
+
+  if(!any){
+    box.appendChild(mk("div", "", "Nessun impegno nella settimana."));
+  }
+
+  // L'aggiornamento è ora nel titolo
+  setText(st, "");
+  
+  scheduleBoxAlignment();
+}
+
+
+
+
+/* ===== METEO (Open-Meteo, nessuna chiave) ===== */
+
+var wData = null;
+var wTime = 0;
+var wErr = false;
+var sunData = null;
+var sunDate = "";
+
+function wcText(c){
+  if(c === 0){ return "Sereno"; }
+  if(c === 1){ return "Prevalentemente sereno"; }
+  if(c === 2){ return "Parzialmente nuvoloso"; }
+  if(c === 3){ return "Coperto"; }
+  if(c === 45 || c === 48){ return "Nebbia"; }
+  if(c >= 51 && c <= 57){ return "Pioggerella"; }
+  if(c >= 61 && c <= 67){ return "Pioggia"; }
+  if(c >= 71 && c <= 77){ return "Neve"; }
+  if(c >= 80 && c <= 82){ return "Rovesci"; }
+  if(c === 85 || c === 86){ return "Rovesci di neve"; }
+  if(c >= 95){ return "Temporale"; }
+  return "Meteo variabile";
+}
+function loadWeather(){
+  var u = "https://api.open-meteo.com/v1/forecast?latitude=" + CONFIG.lat + "&longitude=" + CONFIG.lon +
+          "&current=temperature_2m,apparent_temperature,weather_code&timezone=Europe%2FRome";
+  getJson([u], function(err, d){
+    if(!err && d && d.current && typeof d.current.temperature_2m === "number"){ wData = d.current; wTime = new Date().getTime(); wErr = false; }
+    else { wErr = true; }
+    safe(renderWeather);
+    setTimeout(function(){ safe(loadWeather); }, CONFIG.weatherMin * 60000);
+  }, true);
+}
+
+function loadSunTimes() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var day = now.getDate();
+
+  var dateKey = year + "-" + month + "-" + day;
+
+  var url = "https://sunrise.am/api/sun-month-data/milan/" +
+            year + "/" + month;
+
+  getJson([url], function(err, d) {
+    if (!err && d && d.days) {
+      sunData = null;
+
+      for (var i = 0; i < d.days.length; i++) {
+        if (d.days[i].day === day) {
+          sunData = d.days[i];
+          sunDate = dateKey;
+          break;
+        }
+      }
+
+      safe(renderWeather);
+    }
+  }, true);
+}
+
+function renderWeather() {
+  var el = $("weather");
+  var iconEl = $("clockWeather");
+
+  if (!wData || wData.weather_code === undefined) {
+    el.innerHTML = wErr ? "Meteo non disponibile" : "Meteo in caricamento...";
+    if (iconEl) iconEl.innerHTML = "";
+    return;
+  }
+
+  var code = wData.weather_code;
+  var temp = Math.round(wData.temperature_2m);
+  var feels = Math.round(wData.apparent_temperature);
+
+if(iconEl){
+  var now = toRome(new Date().getTime());
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var currentTime = hour * 60 + minute;
+
+  var today = now.getFullYear() + "-" +
+    (now.getMonth() + 1) + "-" +
+    now.getDate();
+
+  var night = (hour >= 17 || hour < 6);
+
+  if(sunData &&
+     sunDate === today &&
+     sunData.civil_twilight_start &&
+     sunData.civil_twilight_end){
+
+    var dawn = sunData.civil_twilight_start.split(":");
+    var dusk = sunData.civil_twilight_end.split(":");
+
+    var dawnMinutes = parseInt(dawn[0], 10) * 60 +
+      parseInt(dawn[1], 10);
+
+    var duskMinutes = parseInt(dusk[0], 10) * 60 +
+      parseInt(dusk[1], 10);
+
+    night = (
+      currentTime < dawnMinutes ||
+      currentTime >= duskMinutes
+    );
+  }
+
+  var iconClass = "wx-cloud";
+
+  if(code === 0){
+    iconClass = night ? "wx-moon" : "wx-sun";
+  } else if(code === 1 || code === 2){
+    iconClass = night ? "wx-moon-cloud" : "wx-sun-cloud";
+  } else if(code === 3){
+    iconClass = "wx-cloud";
+  } else if(code === 45 || code === 48){
+    iconClass = "wx-fog";
+  } else if(code >= 51 && code <= 57){
+    iconClass = "wx-drizzle";
+  } else if(code >= 61 && code <= 67){
+    iconClass = "wx-rain";
+  } else if(code >= 71 && code <= 77){
+    iconClass = "wx-snow";
+  } else if(code >= 80 && code <= 82){
+    iconClass = "wx-rain";
+  } else if(code === 85 || code === 86){
+    iconClass = "wx-snow";
+  } else if(code >= 95){
+    iconClass = "wx-storm";
+  }
+
+	iconEl.innerHTML =
+	  "<span class='wx-icon wx-" + iconClass.replace("wx-", "") + "'>" +
+	  "<span class='wx-part wx-part-sun'></span>" +
+	  "<span class='wx-part wx-part-moon'></span>" +
+	  "<span class='wx-part wx-part-cloud'></span>" +
+	  "<span class='wx-part wx-part-rain'></span>" +
+	  "<span class='wx-part wx-part-snow'></span>" +
+	  "<span class='wx-part wx-part-fog'></span>" +
+	  "<span class='wx-part wx-part-lightning'></span>" +
+	  "</span>";
+}
+
+  el.innerHTML =
+    "Milano: " + temp + "°C, " + wcText(code) +
+    "<br>Percepita: " + feels + "°C" +
+    (wErr ? "<div class='small'>Ultimo aggiornamento disponibile</div>" : "");
+}
+
+/* ===== SPOSTAMENTI ===== */
+
+var ROUTES = [
+  {id: "mattina", da: "Casa", a: "Lavoro"},
+  {id: "pomeriggio", da: "Lavoro", a: "Asilo"}
+];
+
+var WEEKEND_PHRASES = [
+  "Weekend! Oggi niente lavoro, goditi la giornata!",
+  "Traffico? Oggi non è un nostro problema!",
+  "Nessuna sveglia, nessuna partenza. Buon relax!",
+  "Oggi si viaggia solo per piacere!",
+  "Modalità relax attivata. Buon weekend!",
+  "Oggi l'unico appuntamento è con il tempo libero!"
+];
+
+var routesData = null;
+
+function loadRoutes() {
+  if (!CONFIG.routesUrl) {
+    renderRoutes();
+    return;
+  }
+
+  getJson([CONFIG.routesUrl], function(err, d) {
+    if (!err && d && d.routes) {
+      routesData = d;
+      routesErr = false;
+      routesSyncedAt = new Date();
+    } else {
+      routesErr = true;
+    }
+
+    safe(renderRoutes);
+  });
+}
+
+function renderRoutes(){
+  var box = $("routes");
+  var i, r, data, departure, calculated, today, line;
+
+  clear(box);
+
+  var now = new Date();
+  var day = now.getDay();
+
+  // Titolo separato dai timestamp
+  if ($("routesTitle")) {
+    $("routesTitle").innerHTML = "SPOSTAMENTI";
+  }
+
+  var times = "";
+  var routesGenerated = null;
+
+  if (routesData) {
+    routesGenerated = parseIso(
+      routesData.generated_at || routesData.updated_at
+    );
+  }
+
+  if (routesGenerated !== null) {
+    times += "upd time: " + hhmmRome(routesGenerated) + "<br>";
+  }
+
+  if (routesSyncedAt !== null) {
+    times += "sync time: " +
+      hhmmRome(routesSyncedAt.getTime());
+  }
+
+  if (routesErr) {
+    times += "<br>sync error";
+  }
+
+  if ($("routesTimes")) {
+    $("routesTimes").innerHTML = times;
+  }
+
+  /* Weekend */
+  if(day === 0 || day === 6){
+    var phrase = WEEKEND_PHRASES[
+      Math.floor(Math.random() * WEEKEND_PHRASES.length)
+    ];
+
+    box.appendChild(mk("div", "weekend-message", phrase));
+    setText($("routesStatus"), "");
+    scheduleBoxAlignment();
+    return;
+  }
+
+  /* Giorni feriali */
+  if(!CONFIG.routesUrl){
+    setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
+    scheduleBoxAlignment();
+    return;
+  }
+
+  var todayDate = toRome(new Date().getTime());
+
+  var today =
+    todayDate.getUTCFullYear() + "-" +
+    p2(todayDate.getUTCMonth() + 1) + "-" +
+    p2(todayDate.getUTCDate());
+
+  for(i = 0; i < ROUTES.length; i++){
+    r = ROUTES[i];
+    data = routesData && routesData.routes ?
+      routesData.routes[r.id] : null;
+
+    if(!data || !data.departure || !data.calculated_at){
+      line = r.da + " \u2192 " + r.a + ": in attesa del calcolo";
+      box.appendChild(mk("div", "rt", line));
+      continue;
+    }
+
+    calculated = parseIso(data.calculated_at);
+
+    if (calculated === null) continue;
+
+    var calculatedRome = toRome(calculated);
+
+    if (
+      calculatedRome.getUTCFullYear() + "-" +
+      p2(calculatedRome.getUTCMonth() + 1) + "-" +
+      p2(calculatedRome.getUTCDate()) !== today
+    ) {
+      continue;
+    }
+
+    departure = parseIso(data.departure);
+
+    if(departure === null){
+      continue;
+    }
+
+    line = r.da + " \u2192 " + r.a +
+      ": partenza " + hhmmRome(departure) +
+      " · " + data.duration_minutes + " min";
+
+    box.appendChild(mk("div", "rt", line));
+  }
+
+  var st = "";
+
+  if(routesData && routesData.generated_at){
+    var g = parseIso(routesData.generated_at);
+    if(g !== null){
+      st = "Aggiornato alle " + hhmmRome(g);
+    }
+  }
+
+  if(routesErr){
+    st = st ? st + " - rete non disponibile" :
+      "Tempi non raggiungibili.";
+  }
+
+  setText($("routesStatus"), st);
+
+  scheduleBoxAlignment();
+}
+
+/* ===== FINE SPOSTAMENTI ===== */
+
+
+/* ===== AGGIORNAMENTI AUTOMATICI ===== */
+
+function startDailyUpdates() {
+
+  scheduleDailyAt(0, 5, function() {
+    menuSel = "oggi";
+
+    if (typeof updateMenuButtons === "function") {
+      updateMenuButtons();
+    }
+
+    loadMenu();
+  });
+
+  scheduleDailyAt(7, 5, function() {
+    loadRoutes();
+  });
+
+  scheduleDailyAt(16, 5, function() {
+    loadRoutes();
+  });
+}
+
+/* ===== FINE AGGIORNAMENTI AUTOMATICI ===== */
+
+/* ===== LISTA DA FARE OGGI - SINCRONIZZATA ===== */
+
+function updateTaskDate(){
+  var giorni = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
+  var mesi = ["gen", "feb", "mar", "apr", "mag", "giu",
+              "lug", "ago", "set", "ott", "nov", "dic"];
+
+  var d = new Date();
+
+  var testo = "Task di " +
+    giorni[d.getDay()] + " " +
+    ("0" + d.getDate()).slice(-2) + " " +
+    mesi[d.getMonth()];
+
+  setText($("taskDateTitle"), testo);
+}
+
+updateTaskDate();
+
+
+/* ===== LISTA DA FARE - SINCRONIZZATA ===== */
+
+var todoItems = [];
+var todoPin = "";
+var todoConnected = false;
+var todoBusy = false;
+var todoPollTimer = null;
+var todoSyncError = false;
+
+function todoCanEdit(){
+  return todoConnected && !todoBusy;
+}
+
+function todoRequest(method, data, callback){
+  var x = new XMLHttpRequest();
+  var url = CONFIG.todoWorkerUrl;
+
+  x.open(method, url, true);
+  x.setRequestHeader("X-Todo-Pin", todoPin);
+
+  if(method === "POST"){
+    x.setRequestHeader("Content-Type", "application/json");
+  }
+
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4) return;
+
+    var result = null;
+
+    try {
+      result = parseJson(x.responseText);
+    } catch(e) {}
+
+    if(x.status >= 200 && x.status < 300){
+      callback(null, result);
+    } else {
+      callback(
+        result && result.error ?
+          result.error :
+          "Errore HTTP " + x.status,
+        result
+      );
+    }
+  };
+
+  x.onerror = function(){
+    callback("Errore di connessione", null);
+  };
+
+  x.ontimeout = function(){
+    callback("Timeout di connessione", null);
+  };
+
+  x.timeout = 20000;
+
+  try {
+    x.send(method === "POST" ? JSON.stringify(data) : null);
+  } catch(e) {
+    callback("Errore di invio richiesta", null);
+  }
+}
+
+function todoConnect(){
+	var pinInput = $("todoPinInput");
+	var pin = pinInput ? pinInput.value : "";
+
+	if(!pin){
+	  try {
+		pin = window.localStorage.getItem("todoPin") || "";
+	  } catch(e) {}
+	}
+
+	if(!pin){
+	  setText($("todoStatus"), "Inserisci il PIN.");
+	  return;
+	}
+
+  todoPin = pin;
+  todoBusy = true;
+
+  setText($("syncStatus"), "Connessione in corso...");
+
+  todoRequest("GET", null, function(err, data){
+    todoBusy = false;
+
+	if(err || !data || !data.items){
+	  todoConnected = false;
+	  todoPin = "";
+	  
+	    try {
+		window.localStorage.removeItem("todoPin");
+	  } catch(e) {}
+
+	  var detail = data && data.detail ? data.detail : "";
+
+	  setText(
+		$("syncStatus"),
+		"Connessione non riuscita: " +
+		(err || "risposta non valida") +
+		(detail ? " - " + detail : "")
+	  );
+
+	  return;
+	}
+	
+	todoItems = data.items;
+	todoConnected = true;
+	todoSyncedAt = new Date();
+	todoSyncError = false;
+	updateTodoSyncLabel();
+	
+	var syncBox = $("syncBox");
+	if(syncBox){
+	  syncBox.style.display = "none";
+	}
+
+	try {
+	  window.localStorage.setItem("todoPin", todoPin);
+	} catch(e) {}
+
+    renderTodo();
+
+    if(pinInput){
+      pinInput.style.display = "none";
+    }
+
+	var connectButton = $("todoConnectButton");
+	if(connectButton){
+	  connectButton.style.display = "none";
+	}
+
+	/* Barra aggiunta attività */
+	var ctl = $("todoCtl");
+	clear(ctl);
+
+	var inp = mk("input");
+	inp.id = "todoInput";
+	inp.type = "text";
+	inp.maxLength = 200;
+	inp.placeholder = "Nuova attività";
+
+	inp.onkeydown = function(ev){
+	  ev = ev || window.event;
+	  if(ev.keyCode === 13){
+		todoAdd();
+	  }
+	};
+
+	var add = mk("button", "", "Aggiungi");
+	add.type = "button";
+	add.onclick = todoAdd;
+
+	ctl.appendChild(inp);
+	ctl.appendChild(document.createTextNode(" "));
+	ctl.appendChild(add);
+
+	/* Mostra insieme i campi di inserimento */
+	ctl.style.display = "";
+
+	var taskCtl = $("taskCtl");
+	if(taskCtl){
+	  taskCtl.style.display = "";
+	}
+
+	todoSchedulePoll();
+	initTasks();
+  });
+}
+
+function todoSchedulePoll(){
+  if(todoPollTimer){
+    clearTimeout(todoPollTimer);
+  }
+
+  todoPollTimer = setTimeout(function(){
+    if(!todoConnected || todoBusy) {
+      todoSchedulePoll();
+      return;
+    }
+
+    todoRequest("GET", null, function(err, data){
+      if(!err && data && data.items){
+        todoItems = data.items;
+        todoSyncedAt = new Date();
+        todoSyncError = false;
+
+        updateTodoSyncLabel();
+        updateTaskButtons();
+
+        renderTodo();
+        setText($("todoStatus"), "");
+      } else {
+        todoSyncError = true;
+
+        updateTodoSyncLabel();
+        updateTaskButtons();
+
+        setText($("todoStatus"), "Sincronizzazione temporaneamente non disponibile.");
+      }
+
+      todoSchedulePoll();
+    });
+  }, 30000);
+}
+
+function todoChange(action, index, text){
+  if(!todoConnected || todoBusy) return;
+
+  var data = {
+    action: action
+  };
+
+  if(action === "add"){
+    data.text = text;
+  } else {
+    data.index = index;
+  }
+
+  todoBusy = true;
+  renderTodo();
+  setText($("todoStatus"), "Salvataggio...");
+
+  todoRequest("POST", data, function(err, result){
+    todoBusy = false;
+
+    if(err || !result || !result.items){
+      todoSyncError = true;
+      updateTodoSyncLabel();
+      updateTaskButtons();
+
+      setText($("todoStatus"), "Salvataggio non riuscito: " + (err || "errore"));
+      renderTodo();
+      return;
+    }
+
+    todoItems = result.items;
+    todoSyncedAt = new Date();
+    todoSyncError = false;
+
+    updateTodoSyncLabel();
+    updateTaskButtons();
+
+    renderTodo();
+    setText($("todoStatus"), "");
+  });
+}
+
+function todoAdd(){
+  var inp = $("todoInput");
+  if(!inp) return;
+
+  var value = inp.value.replace(/^\s+|\s+$/g, "");
+
+  if(!value) return;
+
+  if(value.length > 200){
+    setText($("todoStatus"), "Massimo 200 caratteri.");
+    return;
+  }
+
+  todoChange("add", null, value);
+
+  inp.value = "";
+}
+
+function todoToggle(i){
+  todoChange("toggle", i);
+}
+
+function todoDel(i){
+  todoChange("delete", i);
+}
+
+function renderTodo(){
+  var box = $("todoList");
+  var i;
+
+  clear(box);
+
+  for(i = 0; i < todoItems.length; i++){
+    box.appendChild(todoRow(i));
+  }
+
+  if(!todoItems.length){
+    box.appendChild(mk("div", "", "Nessuna attività."));
+  }
+
+  scheduleBoxAlignment();
+}
+
+function todoRow(i){
+  var it = todoItems[i];
+  var row = mk("div", "todo");
+
+  var txt = mk(
+    "span",
+    it.done ? "todo-text done" : "todo-text",
+    (i + 1) + ". " + it.text
+  );
+
+  row.appendChild(txt);
+
+  if(todoConnected){
+    var actions = mk("span", "todo-actions");
+
+    var b = mk("button", "", "✓");
+    b.type = "button";
+    b.disabled = todoBusy;
+    b.title = it.done ? "Segna come da fare" : "Segna come completata";
+
+    b.onclick = function(){
+      todoToggle(i);
     };
 
-    const DAY_LABELS = {
-      ieri: "Menu di ieri",
-      oggi: "Menu di oggi",
-      domani: "Menu di domani"
+    var del = mk("button", "", "🗑");
+    del.type = "button";
+    del.disabled = todoBusy;
+    del.title = "Elimina attività";
+
+    del.onclick = function(){
+      todoDel(i);
     };
 
-    const platesElement = document.getElementById("plates");
-    const dateLabel = document.getElementById("dateLabel");
-    const menuHeading = document.getElementById("menuHeading");
-    const dayButtons = document.querySelectorAll(".day-button");
+    actions.appendChild(b);
+    actions.appendChild(del);
+    row.appendChild(actions);
+  }
 
-    const modal = document.getElementById("dishModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalImage = document.getElementById("modalImage");
-    const modalPlaceholder = document.getElementById("modalPlaceholder");
-    const modalClose = document.getElementById("modalClose");
+  return row;
+}
 
-    let selectedDay = "oggi";
-    let lastFocusedElement = null;
+function loadTodo(){
+  var ctl = $("syncCtl");
+  var st = $("syncStatus");
 
-    // Usa la data locale del dispositivo, senza dipendere dal formato inglese.
-    function getLocalDate(offsetDays) {
-      const date = new Date();
-      date.setHours(12, 0, 0, 0);
-      date.setDate(date.getDate() + offsetDays);
-      return date;
+  clear(ctl);
+  clear($("todoList"));
+
+  var pinInput = mk("input");
+  pinInput.id = "todoPinInput";
+  pinInput.type = "password";
+  pinInput.maxLength = 50;
+  pinInput.placeholder = "PIN sincronizzazione";
+  pinInput.autocomplete = "off";
+
+  var connectButton = mk("button", "", "Connetti");
+  connectButton.id = "todoConnectButton";
+  connectButton.type = "button";
+  connectButton.onclick = todoConnect;
+
+  ctl.appendChild(pinInput);
+  ctl.appendChild(document.createTextNode(" "));
+  ctl.appendChild(connectButton);
+
+  pinInput.onkeydown = function(ev){
+    ev = ev || window.event;
+    if(ev.keyCode === 13){
+      todoConnect();
+    }
+  };
+
+  var savedPin = "";
+
+  try {
+    savedPin = window.localStorage.getItem("todoPin") || "";
+  } catch(e) {}
+
+  if(savedPin){
+    pinInput.value = savedPin;
+    todoConnect();
+  } else {
+    setText(st, "Inserisci il PIN per collegare la dashboard.");
+  }
+}
+
+/* ===== TASK GIORNALIERI ===== */
+
+var taskSel = "oggi";
+var taskDays = {};
+var taskReady = false;
+var taskBusy = false;
+
+var TASK_OFF = {
+  ieri: -1,
+  oggi: 0,
+  domani: 1
+};
+
+updateTodoSyncLabel();
+updateTaskButtons();
+
+function taskDateKey(offset){
+  var now = toRome(new Date().getTime());
+  var d = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + offset
+  ));
+
+  return d.getUTCFullYear() + "-" +
+    p2(d.getUTCMonth() + 1) + "-" +
+    p2(d.getUTCDate());
+}
+
+function taskDateLabel(offset){
+  var giorni = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
+  var mesi = ["gen", "feb", "mar", "apr", "mag", "giu",
+              "lug", "ago", "set", "ott", "nov", "dic"];
+
+  var d = new Date();
+  var now = toRome(new Date().getTime());
+
+  d = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + offset
+  ));
+
+  return giorni[d.getUTCDay()] + " " +
+    p2(d.getUTCDate()) + " " +
+    mesi[d.getUTCMonth()];
+}
+
+function taskRequest(method, data, callback){
+  var x = new XMLHttpRequest();
+  var url = CONFIG.todoWorkerUrl + "?list=tasks";
+
+  x.open(method, url, true);
+  x.setRequestHeader("X-Todo-Pin", todoPin);
+
+  if(method === "POST"){
+    x.setRequestHeader("Content-Type", "application/json");
+  }
+
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4) return;
+
+    var result = null;
+
+    try {
+      result = parseJson(x.responseText);
+    } catch(e) {}
+
+    if(x.status >= 200 && x.status < 300){
+      callback(null, result);
+    } else {
+      callback(
+        result && result.error ? result.error : "Errore HTTP " + x.status,
+        result
+      );
+    }
+  };
+
+  x.onerror = function(){
+    callback("Errore di connessione", null);
+  };
+
+  x.ontimeout = function(){
+    callback("Timeout di connessione", null);
+  };
+
+  x.timeout = 20000;
+
+  try {
+    x.send(method === "POST" ? JSON.stringify(data) : null);
+  } catch(e) {
+    callback("Errore di invio richiesta", null);
+  }
+}
+
+function selectTask(day){
+  taskSel = day;
+  updateTaskButtons();
+  renderTasks();
+}
+
+function updateTaskButtons(){
+  var days = ["ieri", "oggi", "domani"];
+  var i;
+
+  for(i = 0; i < days.length; i++){
+    var el = $("tb-" + days[i]);
+    if(el){
+      el.className = days[i] === taskSel ? "sel" : "";
+    }
+  }
+
+  $("taskDateTitle").innerHTML =
+    "Task di " + taskDateLabel(TASK_OFF[taskSel]);
+
+  var times = "";
+
+  if(!todoConnected){
+    times = "non connesso";
+  } else if(taskSyncError){
+    times = "sync error";
+  } else if(taskSyncedAt !== null){
+    times = "sync time: " +
+      hhmmRome(taskSyncedAt.getTime());
+  } else {
+    times = "sync in attesa";
+  }
+
+  $("taskTimes").innerHTML = times;
+}
+
+function loadTasks(silent){
+  if(!todoConnected){
+    taskSyncError = false;
+    updateTaskButtons();
+    setText($("taskStatus"), "");
+    return;
+  }
+
+  if(!silent){
+    setText($("taskStatus"), "Caricamento...");
+  }
+
+  taskRequest("GET", null, function(err, data){
+    if(err || !data || !data.days){
+      taskSyncError = true;
+      updateTaskButtons();
+
+      if(!silent){
+        setText($("taskStatus"), "Task non disponibili: " + (err || "risposta non valida"));
+      }
+
+      taskSchedulePoll();
+      return;
     }
 
-    function formatDate(dateString) {
-      if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-        return "";
-      }
+    taskDays = data.days;
+    taskReady = true;
+    taskSyncError = false;
+    taskSyncedAt = new Date();
 
-      const parts = dateString.split("-").map(Number);
-      const date = new Date(parts[0], parts[1] - 1, parts[2], 12);
+    renderTasks();
+    updateTaskButtons();
 
-      return date.toLocaleDateString("it-IT", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
+    if(!silent){
+      setText($("taskStatus"), "");
     }
 
-    function getExpectedDate(day) {
-      const offsets = {
-        ieri: -1,
-        oggi: 0,
-        domani: 1
-      };
+    taskSchedulePoll();
+  });
+}
 
-      const date = getLocalDate(offsets[day]);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const dayNumber = String(date.getDate()).padStart(2, "0");
+function taskSchedulePoll(){
+  if(taskPollTimer !== null){
+    clearTimeout(taskPollTimer);
+  }
 
-      return `${year}-${month}-${dayNumber}`;
+  taskPollTimer = setTimeout(function(){
+    taskPollTimer = null;
+
+    if(!todoConnected){
+      return;
     }
 
-    function normalizeDishName(name) {
-      return String(name || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
+    if(taskBusy){
+      taskSchedulePoll();
+      return;
     }
 
-    // Classificazione indicativa basata sul nome restituito dall'API.
-    function classifyDish(name) {
-      const n = normalizeDishName(name);
+    loadTasks(true);
+  }, 30000);
+}
 
-      if (/\b(pane|grissini|cracker)\b/.test(n)) {
-        return { label: "PANE", icon: "🥖", key: "pane" };
-      }
+function renderTasks(){
+  updateTaskButtons();
 
-      if (
-        /\b(frutta|mela|mele|pera|pere|banana|banane|arancia|arance|mandarino|mandarini|kiwi|pesca|pesche|albicocca|albicocche|uva|fragola|fragole|macedonia)\b/.test(n)
-      ) {
-        return { label: "FRUTTA", icon: "🍎", key: "frutta" };
-      }
+  var list = $("taskList");
+  clear(list);
 
-      if (
-        /\b(pasta|riso|risotto|minestra|minestrone|zuppa|passato|brodo|orzo|farro|cous cous|couscous|gnocchi|lasagne|lasagna|tortellini|ravioli)\b/.test(n)
-      ) {
-        return { label: "PRIMO", icon: "🍝", key: "primo" };
-      }
+  if(!taskReady){
+    return;
+  }
 
-      if (
-        /\b(insalata|verdure|verdura|patate|carote|pomodori|finocchi|spinaci|bietole|zucchine|melanzane|fagiolini|piselli|cavolfiore|broccoli|contorno)\b/.test(n)
-      ) {
-        return { label: "CONTORNO", icon: "🥗", key: "contorno" };
-      }
+  var key = taskDateKey(TASK_OFF[taskSel]);
+  var items = taskDays[key] || [];
+  var i;
 
-      if (/\bpizza\b/.test(n)) {
-        return { label: "PIATTO UNICO", icon: "🍕", key: "unico" };
-      }
+  for(i = 0; i < items.length; i++){
+    list.appendChild(taskRow(i, items[i]));
+  }
 
-      if (
-        /\b(gelato|budino|yogurt|torta|dolce|dessert|sorbetto)\b/.test(n)
-      ) {
-        return { label: "DESSERT", icon: "🍨", key: "dessert" };
-      }
+  if(!items.length){
+    list.appendChild(mk("div", "", "Nessuna attività."));
+  }
 
-      if (
-        /\b(burger|hamburger|polpette|arrosto|pollo|tacchino|manzo|vitello|maiale|pesce|merluzzo|platessa|tonno|uova|frittata|formaggio|formaggi|mozzarella|ricotta|legumi|ceci|fagioli|lenticchie|bastoncini)\b/.test(n)
-      ) {
-        return { label: "SECONDO", icon: "🍽️", key: "secondo" };
-      }
+  scheduleBoxAlignment();
+}
 
-      return { label: "ALTRO", icon: "🍽️", key: "altro" };
+function taskRow(index, item){
+  var row = mk("div", "todo");
+
+  var txt = mk(
+    "span",
+    item.done ? "todo-text done" : "todo-text",
+    (index + 1) + ". " + item.text
+  );
+
+  row.appendChild(txt);
+
+  var actions = mk("span", "todo-actions");
+
+  var b = mk("button", "", "✓");
+  b.type = "button";
+  b.disabled = taskBusy;
+  b.title = item.done ? "Segna come da fare" : "Completa";
+
+  b.onclick = function(){
+    changeTask("toggle", index);
+  };
+
+  var del = mk("button", "", "🗑");
+  del.type = "button";
+  del.disabled = taskBusy;
+  del.title = "Elimina attività";
+
+  del.onclick = function(){
+    changeTask("delete", index);
+  };
+
+  actions.appendChild(b);
+  actions.appendChild(del);
+  row.appendChild(actions);
+
+  return row;
+}
+
+function changeTask(action, index, text){
+  if(!taskReady || taskBusy) return;
+
+  var key = taskDateKey(TASK_OFF[taskSel]);
+
+  var data = {
+    action: action,
+    date: key
+  };
+
+  if(action === "add"){
+    data.text = text;
+  } else {
+    data.index = index;
+  }
+
+  taskBusy = true;
+  renderTasks();
+  setText($("taskStatus"), "Salvataggio...");
+
+  taskRequest("POST", data, function(err, result){
+    taskBusy = false;
+
+    if(err || !result || !result.days){
+      taskSyncError = true;
+      updateTaskButtons();
+
+      setText($("taskStatus"), "Salvataggio non riuscito: " + (err || "errore"));
+
+      taskSchedulePoll();
+      return;
     }
 
-    function showStatus(message, isError) {
-      platesElement.replaceChildren();
+    taskDays = result.days;
+    taskSyncedAt = new Date();
+    taskSyncError = false;
 
-      const status = document.createElement("div");
-      status.className = isError ? "status error" : "status";
-      status.textContent = message;
-      platesElement.appendChild(status);
+    renderTasks();
+    updateTaskButtons();
 
-      if (isError) {
-        const retryButton = document.createElement("button");
-        retryButton.type = "button";
-        retryButton.className = "reload-button";
-        retryButton.textContent = "Riprova";
-        retryButton.addEventListener("click", function () {
-          loadMenu(selectedDay);
-        });
-        platesElement.appendChild(retryButton);
-      }
+    setText($("taskStatus"), "Task sincronizzati.");
+
+    taskSchedulePoll();
+  });
+}
+
+function addTask(){
+  var inp = $("taskInput");
+  if(!inp) return;
+
+  var value = inp.value.replace(/^\s+|\s+$/g, "");
+
+  if(!value) return;
+
+  if(value.length > 200){
+    setText($("taskStatus"), "Massimo 200 caratteri.");
+    return;
+  }
+
+  changeTask("add", null, value);
+  inp.value = "";
+}
+
+function initTasks(){
+  var inp = $("taskInput");
+  var add = $("taskAddButton");
+
+  inp.onkeydown = function(ev){
+    ev = ev || window.event;
+    if(ev.keyCode === 13){
+      addTask();
+    }
+  };
+
+  add.onclick = addTask;
+
+  $("tb-ieri").onclick = function(){
+    selectTask("ieri");
+  };
+
+  $("tb-oggi").onclick = function(){
+    selectTask("oggi");
+  };
+
+  $("tb-domani").onclick = function(){
+    selectTask("domani");
+  };
+
+  updateTaskButtons();
+  loadTasks();
+}
+
+/* ===== MENU SCUOLA ===== */
+var MENUF = {ieri: "menu-ieri.json", oggi: "menu.json", domani: "menu-domani.json"};
+var MENUOFF = {ieri: -1, oggi: 0, domani: 1};
+var menuSel = "oggi";
+var SKIP = /^(date|data|giorno|day|id|generated_at|updated|updated_at|url|link|scuola|school|centro|center|plesso|sede|nome_scuola|nome_centro)$/i;
+function collectMenu(d){
+  var out = [];
+  if(!d || !d.plates){ return out; }
+
+  for(var i = 0; i < d.plates.length; i++){
+    var p = d.plates[i];
+
+    if(typeof p === "string"){
+      if(p){ out.push(p); }
+    } else if(p){
+      var name = p.name || p.description;
+      if(name){ out.push(name); }
+    }
+  }
+
+  return out;
+}
+
+function selectMenu(k){ menuSel = k; updateMenuButtons(); loadMenu(); }
+
+function updateMenuButtons(){
+  var ks = ["ieri", "oggi", "domani"], i;
+  for(i = 0; i < ks.length; i++){ $("mb-" + ks[i]).className = (ks[i] === menuSel) ? "sel" : ""; }
+}
+
+
+function loadMenu() {
+  var k = menuSel;
+
+  // Calcola il giorno effettivamente selezionato
+  var selectedDay = todayNum() + MENUOFF[k];
+  var selectedDate = dateOfDayNum(selectedDay);
+  var day = selectedDate.getUTCDay();
+
+  // Se il giorno selezionato è sabato o domenica
+  if (day === 0 || day === 6) {
+    renderMenuWeekend();
+    return;
+  }
+
+  setText($("menuStatus"), "Caricamento...");
+
+  getJson([CONFIG.base + MENUF[k], MENUF[k]], function(err, d) {
+    if (k !== menuSel) {
+      return;
     }
 
-    function renderMenu(data, day) {
-      platesElement.replaceChildren();
-
-      if (!data || data.available === false) {
-        showStatus("Il menu per questo giorno non è disponibile.");
-        return;
-      }
-
-      if (!Array.isArray(data.plates) || data.plates.length === 0) {
-        showStatus("Non ci sono piatti disponibili per questo giorno.");
-        return;
-      }
-
-      let displayedCount = 0;
-
-      data.plates.forEach(function (dish) {
-        if (!dish || typeof dish !== "object") {
-          return;
-        }
-
-        const dishName = String(dish.name || "").trim();
-        const dishCode = String(dish.dishCode || "").trim();
-
-        if (!dishName) {
-          return;
-        }
-
-        displayedCount++;
-
-        const category = classifyDish(dishName);
-
-        // Sul sito non sono disponibili foto per pane e frutta.
-        const hasPhoto =
-          Boolean(dishCode) &&
-          category.key !== "frutta" &&
-          category.key !== "pane";
-
-        const plate = document.createElement("div");
-        plate.className = "plate";
-        plate.dataset.category = category.key;
-
-        const icon = document.createElement("span");
-        icon.className = "plate-icon";
-        icon.setAttribute("aria-hidden", "true");
-        icon.textContent = category.icon;
-
-        const content = document.createElement("div");
-        content.className = "plate-content";
-
-        const categoryLabel = document.createElement("span");
-        categoryLabel.className = "plate-category";
-        categoryLabel.textContent = category.label;
-
-        const name = document.createElement("span");
-        name.className = "plate-name";
-        name.textContent = dishName;
-
-        content.appendChild(categoryLabel);
-        content.appendChild(name);
-
-        plate.appendChild(icon);
-        plate.appendChild(content);
-
-        if (hasPhoto) {
-          plate.classList.add("clickable");
-          plate.setAttribute("role", "button");
-          plate.setAttribute("tabindex", "0");
-          plate.setAttribute("aria-label", "Mostra la foto: " + dishName);
-
-          const arrow = document.createElement("span");
-          arrow.className = "plate-arrow";
-          arrow.setAttribute("aria-hidden", "true");
-          arrow.textContent = "›";
-          plate.appendChild(arrow);
-
-          plate.addEventListener("click", function () {
-            openModal(dishName, dishCode);
-          });
-
-          plate.addEventListener("keydown", function (event) {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              openModal(dishName, dishCode);
-            }
-          });
-        }
-
-        platesElement.appendChild(plate);
-      });
-
-      if (displayedCount === 0) {
-        showStatus("Non ci sono piatti disponibili per questo giorno.");
-      }
+    if (!err && d) {
+      menuSyncedAt = new Date();
+      menuUpdatedAt = parseIso(
+        d.generated_at || d.updated_at
+      );
     }
 
-    async function loadMenu(day) {
-      selectedDay = day;
-
-      dayButtons.forEach(function (button) {
-        const active = button.dataset.day === day;
-        button.classList.toggle("active", active);
-        button.setAttribute("aria-pressed", String(active));
-      });
-
-      menuHeading.textContent = DAY_LABELS[day];
-      dateLabel.textContent = formatDate(getExpectedDate(day));
-      showStatus("Caricamento del menu...", false);
-
-      const url = JSON_BASE + JSON_FILES[day] + "?t=" + Date.now();
-
-      try {
-        const response = await fetch(url, { cache: "no-store" });
-
-        if (!response.ok) {
-          throw new Error("HTTP " + response.status);
-        }
-
-        const data = await response.json();
-
-        if (!data || typeof data !== "object") {
-          throw new Error("Formato JSON non valido");
-        }
-
-        // Se il JSON contiene una data diversa, la mostriamo comunque
-        // per non nascondere il menu disponibile.
-        dateLabel.textContent =
-          formatDate(data.date) || formatDate(getExpectedDate(day));
-
-        renderMenu(data, day);
-      } catch (error) {
-        console.error("Errore caricamento menu:", error);
-        showStatus(
-          "Non riesco a caricare il menu. Controlla la connessione e riprova.",
-          true
-        );
-      }
-    }
-
-    function openModal(dishName, dishCode) {
-      lastFocusedElement = document.activeElement;
-
-      modalTitle.textContent = dishName;
-      modalImage.style.display = "none";
-      modalPlaceholder.style.display = "block";
-      modalPlaceholder.textContent = "Caricamento foto...";
-      modalImage.removeAttribute("src");
-      modalImage.alt = "Foto di " + dishName;
-
-      modal.classList.add("visible");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.classList.add("modal-open");
-      modalClose.focus();
-
-      if (!dishCode) {
-        modalPlaceholder.textContent = "Foto non disponibile";
-        return;
-      }
-
-      // PC: foto Large. Cellulare: foto Small.
-      const prefix = window.matchMedia("(max-width: 600px)").matches
-        ? "S_"
-        : "L_";
-
-      modalImage.onload = function () {
-        modalImage.style.display = "block";
-        modalPlaceholder.style.display = "none";
-      };
-
-      modalImage.onerror = function () {
-        modalImage.style.display = "none";
-        modalPlaceholder.style.display = "block";
-        modalPlaceholder.textContent = "Foto non disponibile";
-      };
-
-      modalImage.src =
-        "https://www.milanoristorazione.it/foto-piatti/" +
-        prefix + dishCode + "-40.jpg";
-    }
-
-    function closeModal() {
-      modal.classList.remove("visible");
-      modal.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("modal-open");
-
-      modalImage.onload = null;
-      modalImage.onerror = null;
-      modalImage.removeAttribute("src");
-      modalImage.style.display = "none";
-      modalPlaceholder.style.display = "block";
-
-      if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
-        lastFocusedElement.focus();
-      }
-    }
-
-    dayButtons.forEach(function (button) {
-      button.addEventListener("click", function () {
-        loadMenu(button.dataset.day);
-      });
+    safe(function() {
+      renderMenu(k, err, d);
     });
+  });
+}
 
-    modalClose.addEventListener("click", closeModal);
+function renderMenuWeekend(){
+  var phrases = [
+    "Evviva! Oggi niente scuola: si gioca!",
+    "Sabato: missione divertimento attivata!",
+    "Domenica: vietato svegliarsi di fretta!",
+    "Oggi il menu prevede giochi, risate e coccole!",
+    "La scuola riposa, i bambini no!",
+    "Weekend! Due giorni da piccoli campioni!",
+    "Oggi la maestra è in vacanza… e anche noi!",
+    "Niente mensa: oggi comanda la fantasia!",
+    "Attenzione: piccolo esploratore in libertà!",
+    "Oggi si mangia, si gioca e si fa festa!",
+    "Weekend: abbracci extra e compiti zero!",
+    "La scuola può aspettare: oggi si fa baldoria!"
+  ];
 
-    modal.addEventListener("click", function (event) {
-      if (event.target === modal) {
-        closeModal();
+  var list = $("menuList");
+  clear(list);
+
+  setText($("menuDate"), "");
+  setText($("menuStatus"), "");
+
+  var buttons = ["mb-ieri", "mb-oggi", "mb-domani", "mb-refresh"];
+  var i, el;
+
+  for(i = 0; i < buttons.length; i++){
+    el = $(buttons[i]);
+    if(el){
+      el.style.display = "";
+    }
+  }
+
+  updateMenuButtons();
+
+  var phrase = phrases[Math.floor(Math.random() * phrases.length)];
+  var message = mk("div", "weekend-message", phrase);
+
+  list.appendChild(message);
+
+  scheduleBoxAlignment();
+}
+
+function renderMenu(k, err, d){
+  var list = $("menuList"), i;
+  clear(list);
+
+  $("menuTitle").innerHTML = "MENU SCUOLA";
+
+  var times = "";
+
+  if(menuUpdatedAt !== null){
+    times += "upd time: " + hhmmRome(menuUpdatedAt) + "<br>";
+  }
+
+  if(menuSyncedAt !== null){
+    times += "sync time: " +
+      hhmmRome(menuSyncedAt.getTime());
+  }
+
+  if(err){
+    times += "<br>sync error";
+  }
+
+  $("menuTimes").innerHTML = times;
+
+  var label = fullDateText(todayNum() + MENUOFF[k]);
+  setText($("menuDate"), label);
+
+  var buttons = ["mb-ieri", "mb-oggi", "mb-domani", "mb-refresh"];
+
+  for(i = 0; i < buttons.length; i++){
+    var el = $(buttons[i]);
+    if(el){
+      el.style.display = "";
+    }
+  }
+
+  updateMenuButtons();
+
+  if(err){
+    setText(list, "Menu non disponibile.");
+    setText($("menuStatus"), "File non raggiungibile.");
+    scheduleBoxAlignment();
+    return;
+  }
+
+  var dishes = collectMenu(d);
+
+  if(!dishes.length){
+    setText(list, "Menu non disponibile per questo giorno.");
+    setText($("menuStatus"), "");
+    scheduleBoxAlignment();
+    return;
+  }
+
+  var ul = mk("ul");
+
+  for(i = 0; i < dishes.length; i++){
+    ul.appendChild(mk("li", "", dishes[i]));
+  }
+
+  list.appendChild(ul);
+
+  var now = toRome(new Date().getTime());
+
+  setText(
+    $("menuStatus"),
+    "Caricato alle " +
+    p2(now.getUTCHours()) + ":" +
+    p2(now.getUTCMinutes())
+  );
+
+  scheduleBoxAlignment();
+}
+
+
+/* ===== AVVIO: ogni blocco è indipendente ===== */
+if(IS_KINDLE){ document.body.className = "k"; }
+safe(updateClock);
+safe(loadAgenda);
+safe(loadWeather);
+safe(loadSunTimes);
+safe(loadRoutes);
+safe(loadMenu);
+safe(loadTodo);
+safe(updateMenuButtons);
+
+initTasks();
+startDailyUpdates();
+
+setInterval(function(){
+  safe(loadSunTimes);
+}, 3600000);
+
+function alignBottomBoxes(){
+
+  /* Sul cellulare non allineare i riquadri */
+  if(window.innerWidth <= 560){
+    var allBoxes = document.querySelectorAll(".box");
+    for(var n = 0; n < allBoxes.length; n++){
+      allBoxes[n].style.minHeight = "";
+    }
+    return;
+  }
+
+  var cols = document.querySelectorAll(".col");
+  var i, j, boxes, last;
+  var heights = [];
+  var maxHeight = 0;
+
+  /* Azzera le altezze precedenti */
+  for(i = 0; i < cols.length; i++){
+    boxes = cols[i].querySelectorAll(".box");
+
+    for(j = 0; j < boxes.length; j++){
+      boxes[j].style.minHeight = "";
+    }
+  }
+
+  /* Misura le colonne */
+  for(i = 0; i < cols.length; i++){
+    heights[i] = cols[i].offsetHeight;
+
+    if(heights[i] > maxHeight){
+      maxHeight = heights[i];
+    }
+  }
+
+  /* Allunga l'ultimo riquadro della colonna più corta */
+  for(i = 0; i < cols.length; i++){
+    var diff = maxHeight - heights[i];
+
+    if(diff > 0){
+      boxes = cols[i].querySelectorAll(".box");
+
+      if(boxes.length){
+        last = boxes[boxes.length - 1];
+        last.style.minHeight = (last.offsetHeight + diff) + "px";
       }
-    });
+    }
+  }
+}
 
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Escape" && modal.classList.contains("visible")) {
-        closeModal();
-      }
-    });
+function scheduleBoxAlignment(){
+  setTimeout(alignBottomBoxes, 100);
+}
 
-    // All'apertura mostra il menu di oggi.
-    loadMenu("oggi");
-  </script>
+window.onresize = function(){
+  alignBottomBoxes();
+};
+
+
+window.setTimeout(alignBottomBoxes, 500);
+window.setTimeout(alignBottomBoxes, 2000);
+
+</script>
 </body>
 </html>
