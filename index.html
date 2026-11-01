@@ -1081,10 +1081,12 @@ function renderAgenda(){
 
 	  row.style.cursor = "pointer";
 
-		row.onclick = function(){
-		  alert("CLICK OK: " + item.title);
-		};
-
+		row.onclick = (function(eventItem){
+		  return function(){
+			openEventTasks(eventItem);
+		  };
+		})(item);
+	
 	  row.appendChild(mk("span", "t", item.time));
 	  row.appendChild(mk("span", "tt", item.title));
 
