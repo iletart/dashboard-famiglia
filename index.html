@@ -1744,6 +1744,16 @@ function renderEventTasksInline(eventItem, taskContainer){
   }, url);
 }
 
+function clearTasksOnly(container, hasDetails){
+
+  var children = container.childNodes;
+  var keep = hasDetails ? 1 : 0;
+
+  while(container.childNodes.length > keep){
+    container.removeChild(container.lastChild);
+  }
+}
+
 function addEventDetailsLink(eventItem, taskContainer){
 
   var link = mk(
