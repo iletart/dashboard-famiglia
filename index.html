@@ -2810,7 +2810,7 @@ function renderMenu(k, err, d){
   var list = $("menuList"), i;
   clear(list);
 
-  $("menuTitle").innerHTML = "MENU SCUOLA";
+  $("menuTimes").innerHTML = "";
 
   var times = "";
 
@@ -2832,6 +2832,13 @@ function renderMenu(k, err, d){
 
   var label = fullDateText(todayNum() + MENUOFF[k]);
   setText($("menuDate"), label);
+  
+  setText(
+  $("menuStatus"),
+  menuUpdatedAt !== null
+    ? "upd time: " + hhmmRome(menuUpdatedAt)
+    : ""
+);
 
   var buttons = ["mb-ieri", "mb-oggi", "mb-domani", "mb-refresh"];
 
@@ -2869,8 +2876,6 @@ function renderMenu(k, err, d){
   }
 
   list.appendChild(ul);
-
-  setText($("menuStatus"), "");
 
   scheduleBoxAlignment();
 }
