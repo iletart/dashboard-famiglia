@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-01T01:30:02.328163+01:00",
+  "generated_at": "2026-11-01T02:00:02.364033+01:00",
   "period_days": 14,
   "events": [
     {
@@ -16,7 +16,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": ""
+      "description": "- calze antiscivolo"
     },
     {
       "id": "01guhquf80r3kbvobnkb9hv1pk_20261027T161500Z",
@@ -91,7 +91,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": ""
+      "description": "- calze antiscivolo"
     },
     {
       "id": "01guhquf80r3kbvobnkb9hv1pk_20261103T161500Z",
