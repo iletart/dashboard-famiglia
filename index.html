@@ -876,9 +876,12 @@ function loadAgenda() {
       }
 
       safe(renderAgenda);
-		setTimeout(function(){
-			safe(loadWeather);
-		}, CONFIG.agendaMin * 60000);
+
+      setTimeout(function() {
+        safe(loadAgenda);
+      }, CONFIG.agendaMin * 60000);
+
+    }
   );
 }
 
