@@ -1,0 +1,169 @@
+{
+  "generated_at": "2026-11-01T22:59:23.361154+01:00",
+  "site": "U003128",
+  "siteType": "02",
+  "menus": {
+    "2026-11-02": {
+      "P102032": {
+        "dishCode": "P102032",
+        "name": "Gnocchi al pomodoro",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "GNOCCHI",
+            "quantity": "130",
+            "unit": "Gr"
+          },
+          {
+            "name": "POLPA DI POMODORO",
+            "quantity": "33",
+            "unit": "Gr"
+          },
+          {
+            "name": "CAROTE",
+            "quantity": "3,3",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "3,6",
+            "unit": "Gr"
+          },
+          {
+            "name": "PARMIGIANO REGGIANO",
+            "quantity": "3",
+            "unit": "Gr"
+          },
+          {
+            "name": "CIPOLLE",
+            "quantity": "2,8",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P100571": {
+        "dishCode": "P100571",
+        "name": "Burger con legumi con maionese 100% vegetale biologica",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PATATE",
+            "quantity": "11,95",
+            "unit": "Gr"
+          },
+          {
+            "name": "ASIAGO E/O CACIOTTA BIOLOGICA",
+            "quantity": "6,72",
+            "unit": "Gr"
+          },
+          {
+            "name": "LENTICCHIE SECCHE DECORTICATE",
+            "quantity": "7,13",
+            "unit": "Gr"
+          },
+          {
+            "name": "PANE GRATTUGIATO",
+            "quantity": "4,98",
+            "unit": "Gr"
+          },
+          {
+            "name": "CAROTE",
+            "quantity": "3,32",
+            "unit": "Gr"
+          },
+          {
+            "name": "CIPOLLE",
+            "quantity": "2,32",
+            "unit": "Gr"
+          },
+          {
+            "name": "PARMIGIANO REGGIANO",
+            "quantity": "2,16",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "1,99",
+            "unit": "Gr"
+          },
+          {
+            "name": "UOVA BIOLOGICHE",
+            "quantity": "1,49",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          },
+          {
+            "name": "MAIONESE 100% VEGETALE BIOLOGICA",
+            "quantity": "10",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P01991": {
+        "dishCode": "P01991",
+        "name": "Carote julienne",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "CAROTE",
+            "quantity": "32",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "3,4",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P00005": {
+        "dishCode": "P00005",
+        "name": "Frutta fresca di stagione",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PERA",
+            "quantity": "145",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P01889": {
+        "dishCode": "P01889",
+        "name": "Pane tipo 0",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PANE",
+            "quantity": "30",
+            "unit": "Gr"
+          }
+        ]
+      }
+    }
+  }
+}
