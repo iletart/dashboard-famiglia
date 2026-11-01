@@ -223,9 +223,12 @@ h3 {
 
 #menuTimes {
   display: block;
-  clear: both;
-  margin: 4px 0;
-  text-align: left;
+  float: right;
+  clear: none;
+  margin: 0;
+  text-align: right;
+  font-size: 0.65em;
+  color: #888;
 }
 
 /* ==================================================
@@ -2906,19 +2909,15 @@ function renderMenu(k, err, d){
   var list = $("menuList"), i;
   clear(list);
 
-	var times = [];
+	var times = "";
 
-	if(menuSyncedAt !== null){
-	  times.push("sync time: " + hhmmRome(menuSyncedAt));
+	if (menuUpdatedAt !== null) {
+	  times = "upd time: " + hhmmRome(menuUpdatedAt);
 	}
 
-	if(menuUpdatedAt !== null){
-	  times.push("upd time: " + hhmmRome(menuUpdatedAt));
+	if ($("menuTimes")) {
+	  setText($("menuTimes"), times);
 	}
-
-	if($("menuTimes")){
-	  setText($("menuTimes"), times.join(" | "));
-}
 
   var label = fullDateText(todayNum() + MENUOFF[k]);
   setText($("menuDate"), label);
