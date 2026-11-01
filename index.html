@@ -102,22 +102,6 @@ h3{
     max-width: 100%;
 }
 
-#codeUpdated{
-  position:absolute;
-  top:4px;
-  right:8px;
-  width:45%;
-  max-width:45%;
-  box-sizing:border-box;
-  font-size:10px;
-  color:#888;
-  line-height:1.2;
-  text-align:right;
-  white-space:normal;
-  overflow-wrap:break-word;
-  word-wrap:break-word;
-}
-
 /* BOX SUPERIORE */
 
 #head{
@@ -408,7 +392,6 @@ body.k #menuList li {
 <div class="box cf" id="head">
   <div id="clock">--:--</div>
   <div id="clockWeather"></div>
-  <div id="codeUpdated"></div>
   <div id="info">
     <div id="wday"></div>
     <div id="fulldate"></div>
@@ -2806,34 +2789,6 @@ function renderMenu(k, err, d){
   scheduleBoxAlignment();
 }
 
-function loadCodeUpdated(){
-  var x = new XMLHttpRequest();
-  var url = "https://api.github.com/repos/iletart/menu-scuola/commits?path=index.html&per_page=1";
-
-  x.open("GET", url, true);
-  x.onreadystatechange = function(){
-    if(x.readyState !== 4) return;
-
-    if(x.status >= 200 && x.status < 300){
-      try {
-        var data = JSON.parse(x.responseText);
-        var date = new Date(data[0].commit.committer.date);
-
-        var formatted = new Intl.DateTimeFormat("it-IT", {
-          timeZone: "Europe/Rome",
-          day: "2-digit",
-          month: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit"
-        }).format(date);
-
-        document.getElementById("codeUpdated").textContent =
-          "codice: " + formatted;
-      } catch(e){}
-    }
-  };
-  x.send();
-}
 
 
 /* ===== AVVIO: ogni blocco è indipendente ===== */
@@ -2850,7 +2805,6 @@ safe(updateMenuButtons);
 
 initTasks();
 startDailyUpdates();
-loadCodeUpdated();
 
 setInterval(function(){
   safe(loadSunTimes);
