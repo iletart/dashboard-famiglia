@@ -3045,42 +3045,42 @@ setInterval(function(){
   safe(loadSunTimes);
 }, 3600000);
 
-function alignBottomBoxes(){
+/* Kindle: allinea Spostamenti a Menu scuola */
+if(IS_KINDLE){
 
-  /* Kindle: allinea Spostamenti a Menu scuola */
-  if(IS_KINDLE){
+  var row = document.querySelector(".row.cf");
+  if(!row) return;
 
-    var row = document.querySelector(".row.cf");
-    if(!row) return;
-
-    var cols = row.querySelectorAll(":scope > .col");
-    if(cols.length < 2) return;
-
-    var leftBoxes = cols[0].querySelectorAll(":scope > .box");
-    if(leftBoxes.length < 2) return;
-
-    var routes = leftBoxes[1];
-
-    routes.style.minHeight = "";
-
-    var diff = cols[1].offsetHeight - cols[0].offsetHeight;
-
-    if(diff > 0){
-      routes.style.minHeight =
-        (routes.offsetHeight + diff) + "px";
+  var cols = [];
+  for(var c = 0; c < row.children.length; c++){
+    if(row.children[c].className.indexOf("col") !== -1){
+      cols.push(row.children[c]);
     }
-
-    return;
   }
 
-  /* Sul cellulare non allineare i riquadri */
-  if(window.innerWidth <= 560){
-    var allBoxes = document.querySelectorAll(".box");
-    for(var n = 0; n < allBoxes.length; n++){
-      allBoxes[n].style.minHeight = "";
+  if(cols.length < 2) return;
+
+  var leftBoxes = [];
+  for(var b = 0; b < cols[0].children.length; b++){
+    if(cols[0].children[b].className.indexOf("box") !== -1){
+      leftBoxes.push(cols[0].children[b]);
     }
-    return;
   }
+
+  if(leftBoxes.length < 2) return;
+
+  var routes = leftBoxes[1];
+  routes.style.minHeight = "";
+
+  var diff = cols[1].offsetHeight - cols[0].offsetHeight;
+
+  if(diff > 0){
+    routes.style.minHeight =
+      (routes.offsetHeight + diff) + "px";
+  }
+
+  return;
+}
 
   var cols = document.querySelectorAll(".col");
   var i, j, boxes, last;
