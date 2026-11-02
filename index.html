@@ -1809,7 +1809,10 @@ function renderPersonalTasks(){
     found = true;
     var taskContainer = mk("div", "personal-event-tasks");
     box.appendChild(taskContainer);
-    renderEventTasksInline(eventItem, taskContainer, owner);
+    renderEventTasksInline({
+    eventId: eventItem.id || eventItem.eventId || "",
+    description: eventItem.description
+	}, taskContainer, owner);
   }
 
   if(!found){
