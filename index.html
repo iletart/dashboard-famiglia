@@ -1159,6 +1159,61 @@ body.k .todo-actions {
     text-align: right !important;
 }
 
+/* RIGHE TASK AGENDA - GENERALE */
+
+.agenda-task-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 2px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.agenda-task-check {
+    flex: 0 0 20px;
+    margin: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.agenda-task-text {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+}
+
+/* KINDLE */
+
+body.k .agenda-task-row {
+    display: table !important;
+    table-layout: fixed !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+body.k .agenda-task-check {
+    display: table-cell !important;
+    width: 23px !important;
+    min-width: 23px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    vertical-align: middle !important;
+}
+
+body.k .agenda-task-text {
+    display: table-cell !important;
+    width: auto !important;
+    vertical-align: middle !important;
+    text-align: left !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+}
+
 </style>
 
 
@@ -2640,32 +2695,17 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
         var taskKey = index + ":" + tasks[index];
         var visibleTask = ownerFilter ? tasks[index].replace(/^[WI]\s*:\s*/i, "") : tasks[index];
 
-        var label = mk("label", "");
-        label.style.display = "flex";
-        label.style.alignItems = "center";
-        label.style.gap = "8px";
-        label.style.width = "100%";
-        label.style.boxSizing = "border-box";
-        label.style.padding = "5px 2px";
-        label.style.fontSize = "16px";
-        label.style.cursor = "pointer";
+		 var label = mk("label", "agenda-task-row");
 
-        var checkbox = document.createElement("input");
+		var checkbox = document.createElement("input");
+		checkbox.type = "checkbox";
+		checkbox.className = "agenda-task-check";
+		checkbox.checked = completed[taskKey] === true;
 
-        checkbox.type = "checkbox";
-        checkbox.style.flex = "0 0 20px";
-        checkbox.style.margin = "0";
-        checkbox.style.width = "20px";
-        checkbox.style.height = "20px";
-        checkbox.checked = completed[taskKey] === true;
-
-        var taskText = document.createElement("span");
-        taskText.style.display = "block";
-        taskText.style.flex = "1 1 auto";
-        taskText.style.minWidth = "0";
-        taskText.style.textAlign = "left";
-        taskText.className = checkbox.checked ? "done" : "";
-        taskText.appendChild(document.createTextNode(visibleTask));
+		var taskText = document.createElement("span");
+		taskText.className = checkbox.checked ?
+		  "agenda-task-text done" : "agenda-task-text";
+		taskText.appendChild(document.createTextNode(visibleTask));
 
         label.appendChild(checkbox);
         label.appendChild(taskText);
