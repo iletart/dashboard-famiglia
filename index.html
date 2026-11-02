@@ -4077,6 +4077,14 @@ setInterval(function(){
   safe(loadSunTimes);
 }, 3600000);
 
+setInterval(function() {
+  safe(loadRoutes);
+}, 5 * 60 * 1000);
+
+scheduleDailyAt(0, 2, function() {
+  loadRoutes();
+});
+
 function alignBottomBoxes(){
 
   var cols;
