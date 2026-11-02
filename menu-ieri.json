@@ -1,32 +1,33 @@
 {
   "available": true,
-  "date": "2026-10-30",
+  "date": "2026-11-02",
   "site": "U003128",
+  "generated_at": "2026-11-03T00:01:02.211010+01:00",
   "plates": [
     {
-      "position": "3532",
-      "dishCode": "P100902",
-      "name": "Pasta biologica al sugo di pomodoro con peperoni"
+      "position": "4132",
+      "dishCode": "P102032",
+      "name": "Gnocchi al pomodoro"
     },
     {
-      "position": "3533",
-      "dishCode": "P100194",
-      "name": "Frittata"
+      "position": "4133",
+      "dishCode": "P100571",
+      "name": "Burger con legumi con maionese 100% vegetale biologica"
     },
     {
-      "position": "3536",
-      "dishCode": "P100455",
-      "name": "Fagiolini all'olio"
+      "position": "4136",
+      "dishCode": "P01991",
+      "name": "Carote julienne"
     },
     {
-      "position": "3537",
-      "dishCode": "P00031",
+      "position": "4137",
+      "dishCode": "P00005",
       "name": "Frutta fresca di stagione"
     },
     {
-      "position": "3539",
-      "dishCode": "P01891",
-      "name": "Pane ai cereali"
+      "position": "4139",
+      "dishCode": "P01889",
+      "name": "Pane tipo 0"
     }
   ]
 }
