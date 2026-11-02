@@ -406,10 +406,7 @@ input {
 body.k #taskCtl,
 body.k #todoCtl {
     position: relative !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 6px !important;
+    display: block !important;
     width: 100% !important;
     height: 32px !important;
     box-sizing: border-box !important;
@@ -417,11 +414,11 @@ body.k #todoCtl {
 
 body.k #taskInput,
 body.k #todoInput {
-    position: static !important;
     display: block !important;
-    flex: 1 1 0 !important;
-    width: 0 !important;
-    min-width: 0 !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 70px !important;
+    width: auto !important;
     height: 32px !important;
     box-sizing: border-box !important;
     margin: 0 !important;
@@ -429,15 +426,17 @@ body.k #todoInput {
 
 body.k #taskAddButton,
 body.k #todoCtl button {
-    position: static !important;
     display: block !important;
-    flex: 0 0 85px !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
     width: 85px !important;
     min-width: 85px !important;
     max-width: 85px !important;
     height: 32px !important;
     box-sizing: border-box !important;
     margin: 0 !important;
+    padding: 5px 2px !important;
     white-space: nowrap !important;
 }
 
@@ -582,27 +581,6 @@ body:not(.k) #menuDayButtons button {
 
 #personalGlobalTaskBox {
     display: block;
-}
-
-.personal-period-switch {
-    display: flex;
-    gap: 8px;
-    margin: 8px 0 12px;
-}
-
-.personal-period-switch button {
-    flex: 1;
-    padding: 8px;
-    background: #fff;
-    color: #000;
-    border: 1px solid #000;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.personal-period-switch button.active {
-    background: #000;
-    color: #fff;
 }
 
 /* ==================================================
@@ -1027,19 +1005,14 @@ body.k .agenda-task-text {
 	</div>
 </div>
 
-<div class="box" id="personalTasksBox">
-  <div class="section-heading">
-    <h2 id="personalTasksTitle">TASK DI WALTER</h2>
+<div id="personalView" style="display:none;">
+  <div class="box" id="personalTasksBox">
+    <div class="section-heading">
+      <h2 id="personalTasksTitle">TASK DI WALTER</h2>
+    </div>
+    <div class="agenda-period" id="personalTasksDate" style="display:none;"></div>
+    <div id="personalTasks">Caricamento...</div>
   </div>
-
-  <div class="personal-period-switch">
-    <button type="button" id="personalTasksToday" class="active">OGGI</button>
-    <button type="button" id="personalTasksTomorrow">DOMANI</button>
-  </div>
-
-  <div class="agenda-period" id="personalTasksDate" style="display:none;"></div>
-  <div id="personalTasks">Caricamento...</div>
-</div>
 
   <div class="box" id="personalGlobalTaskBox">
     <div class="section-heading">
