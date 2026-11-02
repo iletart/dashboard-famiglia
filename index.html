@@ -406,7 +406,10 @@ input {
 body.k #taskCtl,
 body.k #todoCtl {
     position: relative !important;
-    display: block !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
     width: 100% !important;
     height: 32px !important;
     box-sizing: border-box !important;
@@ -414,11 +417,11 @@ body.k #todoCtl {
 
 body.k #taskInput,
 body.k #todoInput {
+    position: static !important;
     display: block !important;
-    position: absolute !important;
-    left: 0 !important;
-    right: 72px !important;
-    width: auto !important;
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
     height: 32px !important;
     box-sizing: border-box !important;
     margin: 0 !important;
@@ -426,17 +429,15 @@ body.k #todoInput {
 
 body.k #taskAddButton,
 body.k #todoCtl button {
+    position: static !important;
     display: block !important;
-    position: absolute !important;
-    right: 0 !important;
-    top: 0 !important;
+    flex: 0 0 85px !important;
     width: 85px !important;
     min-width: 85px !important;
     max-width: 85px !important;
     height: 32px !important;
     box-sizing: border-box !important;
     margin: 0 !important;
-    padding: 5px 2px !important;
     white-space: nowrap !important;
 }
 
