@@ -368,9 +368,40 @@ input {
     box-sizing: border-box;
 }
 
+
+
 /* ==================================================
    CAMPI INSERIMENTO ATTIVITÀ
    ================================================== */
+
+@media screen and (min-width: 801px) {
+    #todoCtl,
+    #taskCtl {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        width: 100% !important;
+        gap: 8px;
+        box-sizing: border-box;
+    }
+
+    #todoInput,
+    #taskInput {
+        flex: 1 1 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    #todoCtl button,
+    #taskAddButton {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+    }
+}
 
 body.k #taskCtl,
 body.k #todoCtl {
