@@ -13,38 +13,34 @@
    ================================================== */
 
 html, body {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  background: #fff;
-  color: #111;
-  font-family: "Trebuchet MS", Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.3;
-}
-
-body.k {
-  font-size: 16px;
+    background: #fff;
+    color: #111;
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.3;
 }
 
 .wrap {
-  padding: 4px;
-}
-
-body.k .wrap {
-  padding-right: 14px;
+    padding: 4px;
 }
 
 .box {
-  border: 2px solid #000;
-  border-radius: 5px;
-  padding: 8px;
-  margin: 3px;
-  overflow: hidden;
-  box-sizing: border-box;
+    border: 2px solid #000;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 3px;
+    overflow: hidden;
+    box-sizing: border-box;
 }
+
+/* ==================================================
+   INTESTAZIONI DEI BOX
+   ================================================== */
 
 .section-heading {
     display: flex;
@@ -67,7 +63,6 @@ body.k .wrap {
     flex: 0 1 auto;
 }
 
-
 .section-heading .sync-label {
     align-self: flex-start;
     margin-top: 0 !important;
@@ -84,8 +79,631 @@ body.k .wrap {
     text-transform: none;
 }
 
-/* KINDLE - TITOLO E ORARIO SULLA STESSA RIGA */
+/* ==================================================
+   TITOLI
+   ================================================== */
 
+h2 {
+    font-size: 1.05em;
+    margin: 0 0 6px;
+    padding: 0 0 3px;
+    border-bottom: 2px solid #000;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-size: 1em;
+    margin: 8px 0 2px;
+    text-transform: capitalize;
+}
+
+#agendaTitle {
+    text-transform: none;
+}
+
+/* ==================================================
+   LAYOUT COLONNE
+   ================================================== */
+
+.row {
+    display: block;
+    margin: 0;
+}
+
+.row::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.col {
+    float: left;
+    width: 50%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* ==================================================
+   HEADER: OROLOGIO, DATA E METEO
+   ================================================== */
+
+#head {
+    display: block;
+    position: relative;
+    min-height: 0;
+    height: auto;
+    overflow: visible !important;
+}
+
+#clock {
+    float: left;
+    width: 80px;
+    margin: 0;
+    font-size: 2.5em;
+    font-weight: bold;
+    line-height: 1;
+    text-align: left;
+    position: relative;
+    left: 5px;
+    top: 20px;
+    margin-left: 42px !important;
+}
+
+#info {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr) 64px max-content;
+    grid-template-rows: auto auto;
+    column-gap: 5px;
+    align-items: center;
+    margin-left: 120px;
+    padding-left: 8px;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+#wday {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 1.25em;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+#fulldate {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 1em;
+}
+
+#weatherIcon {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0;
+    position: relative;
+    left: -3px;
+    top: 14px;
+}
+
+#weather {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+    margin: 0;
+    text-align: left;
+    align-self: center;
+    justify-self: start;
+    min-width: 0;
+    position: relative;
+    left: -2px;
+}
+
+#syncBox {
+    display: none;
+}
+
+/* ==================================================
+   MENU SCOLASTICO
+   ================================================== */
+
+#menuList ul {
+    list-style: none;
+    margin: 4px 0;
+    padding: 0;
+    text-align: left;
+}
+
+#menuList li {
+    margin: 3px 0;
+}
+
+.dish-icon {
+    display: inline;
+    margin-right: 4px;
+}
+
+#mb-refresh {
+    display: none !important;
+}
+
+/* ==================================================
+   AGENDA
+   ================================================== */
+
+.ev {
+    margin: 2px 0;
+}
+
+.t {
+    display: inline-block;
+    width: 5.2em;
+    font-weight: bold;
+    vertical-align: top;
+}
+
+.tt {
+    display: inline-block;
+    vertical-align: top;
+}
+
+/* ==================================================
+   SPOSTAMENTI
+   ================================================== */
+
+.rt {
+    margin: 0 0 10px;
+}
+
+/* ==================================================
+   TASK E ATTIVITÀ
+   ================================================== */
+
+.todo {
+    display: flex !important;
+    align-items: center !important;
+    width: 100%;
+    margin: 3px 0;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+.todo-check {
+    flex: 0 0 20px;
+    width: 20px !important;
+    height: 20px;
+    margin: 0 2px 0 0 !important;
+    padding: 0;
+}
+
+.todo-text {
+    display: block !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    vertical-align: middle;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
+.todo-actions {
+    display: flex !important;
+    flex: 0 0 34px;
+    width: 34px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-left: auto;
+}
+
+.todo-delete {
+    min-width: 28px;
+    width: 28px;
+    margin: 0 !important;
+    padding: 2px !important;
+}
+
+.done {
+    text-decoration: line-through;
+}
+
+/* ==================================================
+   TASK DELL'AGENDA
+   ================================================== */
+
+.agenda-task-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 2px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.agenda-task-check {
+    flex: 0 0 20px !important;
+    width: 20px;
+    height: 20px;
+    margin: 0 !important;
+}
+
+.agenda-task-text {
+    display: block !important;
+    flex: 1 1 0 !important;
+    min-width: 0;
+    text-align: left !important;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+/* ==================================================
+   PULSANTI E INPUT
+   ================================================== */
+
+button {
+    font-family: inherit;
+    font-size: 1em;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    padding: 4px 10px;
+    margin: 2px 4px 2px 0;
+}
+
+button.sel {
+    background: #000;
+    color: #fff;
+}
+
+input {
+    font-family: inherit;
+    font-size: 1em;
+    border: 1px solid #000;
+    padding: 4px;
+    width: 60%;
+    box-sizing: border-box;
+}
+
+/* ==================================================
+   CAMPI INSERIMENTO ATTIVITÀ
+   ================================================== */
+
+#taskCtl,
+#todoCtl {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#taskInput,
+#todoInput {
+    display: block;
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#taskAddButton,
+#todoCtl button {
+    display: block;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    white-space: nowrap;
+    margin: 0 !important;
+}
+
+/* ==================================================
+   TESTI SECONDARI ED ERRORI
+   ================================================== */
+
+.small {
+    font-size: 0.8em;
+    color: #333;
+    margin-top: 6px;
+}
+
+#taskStatus,
+#todoStatus {
+    font-size: 0.65em;
+    color: #555;
+    margin-top: 3px;
+}
+
+#err {
+    color: #000;
+    font-size: 0.8em;
+    margin: 4px 3px;
+}
+
+/* ==================================================
+   NAVIGAZIONE PC E SMARTPHONE
+   ================================================== */
+
+body:not(.k) .agenda-nav,
+body:not(.k) #taskDayButtons,
+body:not(.k) #menuDayButtons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    gap: 5px;
+    box-sizing: border-box;
+}
+
+body:not(.k) .agenda-nav button,
+body:not(.k) #taskDayButtons button,
+body:not(.k) #menuDayButtons button {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    margin: 2px 0;
+    padding: 8px 3px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* ==================================================
+   MENU VISTE FAMIGLIA
+   ================================================== */
+
+#viewMenu {
+    position: absolute;
+    left: 7px;
+    top: 7px;
+    z-index: 1000;
+}
+
+#viewMenuToggle {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    padding: 5px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 4px;
+}
+
+#viewMenuToggle span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: #000;
+}
+
+#viewMenuPanel {
+    position: absolute;
+    top: 34px;
+    left: 0;
+    width: 142px;
+    padding: 4px;
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#viewMenuPanel[hidden] {
+    display: none !important;
+}
+
+#viewMenuPanel button {
+    display: block;
+    width: 100%;
+    margin: 2px 0;
+    padding: 8px 5px;
+    text-align: left;
+    font-weight: bold;
+}
+
+/* ==================================================
+   PAGINE PERSONALI
+   ================================================== */
+
+#personalView {
+    width: 100%;
+}
+
+#personalTasksDate {
+    margin: 0 0 6px 0;
+}
+
+#personalTasks label {
+    display: block;
+    padding: 7px 2px;
+    font-size: 16px;
+    line-height: 1.35;
+    cursor: pointer;
+}
+
+#personalTasks input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0 10px 0 0;
+    vertical-align: middle;
+}
+
+#personalTasks .personal-task-empty {
+    padding: 4px 0;
+}
+
+#personalGlobalTaskBox {
+    display: block;
+}
+
+/* ==================================================
+   HEADER DESKTOP
+   ================================================== */
+
+@media screen and (min-width: 801px) {
+
+    body:not(.k) #head {
+        padding: 4px 5px !important;
+    }
+
+    body:not(.k) #clock {
+        margin-left: 36px !important;
+        left: 2px !important;
+        top: 10px !important;
+    }
+
+    body:not(.k) #info {
+        margin-left: 146px !important;
+        padding: 5px 0 0 8px !important;
+    }
+
+    body:not(.k) #weatherIcon {
+        top: 9px;
+    }
+}
+
+/* ==================================================
+   TABLET E SMARTPHONE
+   ================================================== */
+
+@media screen and (max-width: 800px) {
+
+    .col {
+        float: none;
+        display: block;
+        width: 100%;
+    }
+
+    body:not(.k) #head {
+        display: grid;
+        grid-template-columns: 145px minmax(0, 1fr) !important;
+        align-items: center;
+        column-gap: 5px !important;
+        padding: 4px !important;
+    }
+
+    body:not(.k) #clock {
+        float: none;
+        width: 85px;
+        font-size: 2em;
+        grid-column: 1;
+        grid-row: 1;
+        top: 1px !important;
+        margin-left: 38px !important;
+    }
+
+    body:not(.k) #info {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr) !important;
+        grid-template-rows: auto auto;
+        column-gap: 3px !important;
+        align-items: center;
+        min-width: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        grid-column: 2;
+        grid-row: 1;
+        box-sizing: border-box;
+    }
+
+    body:not(.k) #wday,
+    body:not(.k) #fulldate {
+        grid-column: 1 !important;
+        white-space: normal !important;
+        min-width: 0 !important;
+    }
+
+    body:not(.k) #wday {
+        grid-row: 1;
+        font-size: 0.95em;
+    }
+
+    body:not(.k) #fulldate {
+        grid-row: 2;
+        font-size: 0.85em;
+    }
+
+    body:not(.k) #weatherIcon {
+        grid-column: 2 !important;
+        grid-row: 1 / span 2 !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 32px !important;
+        height: 36px !important;
+        justify-content: center !important;
+    }
+
+    body:not(.k) #weatherIcon svg {
+        width: 32px !important;
+        height: 32px !important;
+        position: relative;
+        top: 0 !important;
+    }
+
+    body:not(.k) #weather {
+        grid-column: 3 !important;
+        grid-row: 1 / span 2 !important;
+        position: static !important;
+        left: auto !important;
+        width: auto !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow-wrap: anywhere !important;
+        font-size: 0.72em !important;
+        line-height: 1.15 !important;
+        text-align: left;
+        white-space: normal !important;
+    }
+
+    body:not(.k) #clockWeather {
+        display: none;
+    }
+
+    .agenda-nav button,
+    #taskDayButtons button {
+        font-size: 1.05em;
+        padding: 8px 18px;
+        margin-right: 6px;
+    }
+}
+
+/* ==================================================
+   SMARTPHONE MOLTO STRETTI
+   ================================================== */
+
+@media screen and (max-width: 380px) {
+
+    body:not(.k) #wday {
+        font-size: 0.8em;
+    }
+
+    body:not(.k) #fulldate {
+        font-size: 0.75em;
+    }
+}
+
+/* ==================================================
+   PERSONALIZZAZIONI KINDLE
+   ================================================== */
+
+body.k {
+    font-size: 16px;
+}
+
+body.k .wrap {
+    padding-right: 14px;
+}
+
+/* Intestazioni */
 body.k .section-heading {
     display: block !important;
     width: 100% !important;
@@ -116,943 +734,107 @@ body.k .section-heading .sync-label {
     top: -2px !important;
 }
 
-/* ==================================================
-   TITOLI
-   ================================================== */
-
-h2 {
-  font-size: 1.05em;
-  margin: 0 0 6px;
-  padding: 0 0 3px;
-  border-bottom: 2px solid #000;
-  text-transform: uppercase;
-}
-
-h3 {
-  font-size: 1em;
-  margin: 8px 0 2px;
-  text-transform: capitalize;
-}
-
-#agendaTitle {
-  text-transform: none;
-}
-
-/* ==================================================
-   LAYOUT COLONNE
-   ================================================== */
-
-.row {
-  display: block;
-  margin: 0;
-}
-
-.row::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-.col {
-  float: left;
-  width: 50%;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-/* ==================================================
-   BOX SUPERIORE: OROLOGIO, DATA E METEO
-   ================================================== */
-
-#head {
-  display: block;
-  position: relative;
-  min-height: 0;
-  height: auto;
-  overflow: hidden;
-}
-
-#clock {
-  float: left;
-  width: 80px;
-  margin-left: 34px;
-  font-size: 2.5em;
-  font-weight: bold;
-  line-height: 1;
-  margin: 0;
-  text-align: left;
-  position: relative;
-  left: 5px;
-  top: 20px;
-}
-
-#info {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr) 64px max-content;
-  grid-template-rows: auto auto;
-  column-gap: 5px;
-  align-items: center;
-  margin-left: 120px;
-  padding-left: 8px;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-#wday {
-  grid-column: 1;
-  grid-row: 1;
-  font-size: 1.25em;
-  font-weight: bold;
-  text-transform: capitalize;
-}
-
-#fulldate {
-  grid-column: 1;
-  grid-row: 2;
-  font-size: 1em;
-}
-
-#weatherIcon {
-  grid-column: 3;
-  grid-row: 1 / span 2;
-  width: 64px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin: 0;
-  position: relative;
-  left: -3px;
-  top: 14px;
-}
-
-#weather {
-  grid-column: 4;
-  grid-row: 1 / span 2;
-  margin: 0;
-  text-align: left;
-  align-self: center;
-  justify-self: start;
-  min-width: 0;
-  position: relative;
-  left: -2px;
-}
-
-#syncBox {
-  display: none;
-}
-
-/* ==================================================
-   HEADER PC
-   ================================================== */
-
-@media screen and (min-width: 801px) {
-
-  body:not(.k) #clock {
-    position: relative;
-    left: 5px;
-    top: 4px;
-  }
-
-  body:not(.k) #weatherIcon {
-    position: relative;
-    left: -3px;
-    top: 9px;
-  }
-
-  body:not(.k) #weather {
-    position: relative;
-    left: -2px;
-  }
-}
-
-/* ==================================================
-   TABLET E CELLULARI
-   ================================================== */
-
-@media screen and (max-width: 800px) {
-
-  .col {
-    float: none;
-    display: block;
-    width: 100%;
-  }
-
-  body:not(.k) #head {
-    display: grid;
-    grid-template-columns: 120px minmax(0, 1fr);
-    align-items: center;
-    column-gap: 8px;
-  }
-
-  body:not(.k) #clock {
-    float: none;
-    width: 85px;
-    font-size: 2em;
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  body:not(.k) #info {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr) 40px max-content;
-    grid-template-rows: auto auto;
-    column-gap: 5px;
-    align-items: center;
-    min-width: 0;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  body:not(.k) #wday {
-    grid-column: 1;
-    grid-row: 1;
-    font-size: 0.95em;
-    white-space: nowrap;
-  }
-
-  body:not(.k) #fulldate {
-    grid-column: 1;
-    grid-row: 2;
-    font-size: 0.85em;
-    white-space: nowrap;
-  }
-
-  body:not(.k) #weatherIcon {
-    grid-column: 3;
-    grid-row: 1 / span 2;
-    width: 48px;
-    height: 48px;
-    justify-content: flex-end;
-    position: relative;
-    left: 5px;
-    top: 5px;
-  }
-
-  body:not(.k) #weatherIcon svg {
-    width: 48px;
-    height: 48px;
-    position: relative;
-    top: 3px;
-  }
-
-  body:not(.k) #weather {
-    grid-column: 4;
-    grid-row: 1 / span 2;
-    font-size: 0.8em;
-    line-height: 1.3;
-    text-align: left;
-    white-space: normal;
-    min-width: 0;
-  }
-
-  body:not(.k) #clockWeather {
-    display: none;
-  }
-}
-
-/* ==================================================
-   CELLULARI MOLTO STRETTI
-   ================================================== */
-
-@media screen and (max-width: 380px) {
-
-  body:not(.k) #head {
-    grid-template-columns: 110px minmax(0, 1fr);
-    column-gap: 5px;
-  }
-
-  body:not(.k) #clock {
-    width: 72px;
-    font-size: 1.7em;
-  }
-
-  body:not(.k) #info {
-    grid-template-columns: max-content minmax(0, 1fr) 32px max-content;
-    column-gap: 3px;
-  }
-
-  body:not(.k) #wday {
-    font-size: 0.8em;
-  }
-
-  body:not(.k) #fulldate {
-    font-size: 0.75em;
-  }
-
-  body:not(.k) #weatherIcon {
-    width: 38px;
-    height: 38px;
-  }
-
-  body:not(.k) #weatherIcon svg {
-    width: 38px;
-    height: 38px;
-    top: 3px;
-  }
-
-  body:not(.k) #weatherIcon {
-    grid-column: 3;
-    grid-row: 1 / span 2;
-    justify-content: flex-end;
-  }
-
-  body:not(.k) #weather {
-    grid-column: 4;
-    grid-row: 1 / span 2;
-    font-size: 0.7em;
-    text-align: left;
-    white-space: normal;
-    min-width: 0;
-  }
-}
-
-/* ==================================================
-   MENU SCOLASTICO
-   ================================================== */
-
-#menuList ul {
-  list-style: none;
-  margin: 4px 0;
-  padding: 0;
-  text-align: left;
-}
-
-#menuList li {
-  margin: 3px 0;
-}
-
-.dish-icon {
-  display: inline;
-  margin-right: 4px;
-}
-
-#mb-refresh {
-  display: none !important;
-}
-
-/* ==================================================
-   AGENDA
-   ================================================== */
-
-.ev {
-  margin: 2px 0;
-}
-
-.t {
-  display: inline-block;
-  width: 5.2em;
-  font-weight: bold;
-  vertical-align: top;
-}
-
-.tt {
-  display: inline-block;
-  vertical-align: top;
-}
-
-/* ==================================================
-   SPOSTAMENTI
-   ================================================== */
-
-.rt {
-  margin: 0 0 10px;
-}
-
-/* ==================================================
-   DA FARE
-   ================================================== */
-
-.todo {
-  display: table;
-  width: 100%;
-  margin: 3px 0;
-  table-layout: fixed;
-}
-
-.todo-text {
-  display: table-cell;
-  vertical-align: middle;
-  text-align: left;
-  word-wrap: break-word;
-}
-
-.todo-actions {
-  display: table-cell;
-  width: 65px;
-  vertical-align: middle;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.todo-actions button {
-  padding: 2px;
-  margin-left: 3px;
-  min-width: 24px;
-}
-
-.done {
-  text-decoration: line-through;
-}
-
-/* ==================================================
-   PULSANTI E INPUT
-   ================================================== */
-
-button {
-  font-family: inherit;
-  font-size: 1em;
-  border: 1px solid #000;
-  background: #fff;
-  color: #000;
-  padding: 4px 10px;
-  margin: 2px 4px 2px 0;
-}
-
-button.sel {
-  background: #000;
-  color: #fff;
-}
-
-input {
-  font-family: inherit;
-  font-size: 1em;
-  border: 1px solid #000;
-  padding: 4px;
-  width: 60%;
-  box-sizing: border-box;
-}
-
-/* ==================================================
-   TESTI SECONDARI ED ERRORI
-   ================================================== */
-
-.small {
-  font-size: 0.8em;
-  color: #333;
-  margin-top: 6px;
-}
-
-#taskStatus,
-#todoStatus {
-  font-size: 0.65em;
-  color: #555;
-  margin-top: 3px;
-}
-
-#err {
-  color: #000;
-  font-size: 0.8em;
-  margin: 4px 3px;
-}
-
-/* ==================================================
-   PULSANTI NAVIGAZIONE PC E SMARTPHONE
-   ================================================== */
-
-body:not(.k) .agenda-nav,
-body:not(.k) #taskDayButtons,
-body:not(.k) #menuDayButtons {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  width: 100%;
-  gap: 5px;
-  box-sizing: border-box;
-}
-
-body:not(.k) .agenda-nav button,
-body:not(.k) #taskDayButtons button,
-body:not(.k) #menuDayButtons button {
-  flex: 1 1 0;
-  min-width: 0;
-  width: auto;
-  margin: 2px 0;
-  padding: 8px 3px;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-/* ==================================================
-   TABLET E CELLULARI
-   ================================================== */
-
-@media screen and (max-width: 800px) {
-
-  /* Colonne una sotto l'altra */
-  .col {
-    float: none;
-    display: block;
-    width: 100%;
-  }
-
-  /* Header */
-  body:not(.k) #head {
-    display: grid;
-    grid-template-columns: 85px minmax(0, 1fr);
-    align-items: center;
-    column-gap: 8px;
-  }
-
-  body:not(.k) #clock {
-    float: none;
-    width: 85px;
-    font-size: 2em;
-    grid-column: 1;
-    grid-row: 1;
-  }
-  
-  body:not(.k) #info {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr) 40px max-content;
-    grid-template-rows: auto auto;
-    column-gap: 5px;
-    align-items: center;
-    min-width: 0;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  body:not(.k) #wday {
-    grid-column: 1;
-    grid-row: 1;
-    font-size: 0.95em;
-    white-space: nowrap;
-  }
-
-  body:not(.k) #fulldate {
-    grid-column: 1;
-    grid-row: 2;
-    font-size: 0.85em;
-    white-space: nowrap;
-  }
-
-  body:not(.k) #weatherIcon {
-    grid-column: 3;
-    grid-row: 1 / span 2;
-    width: 48px;
-    height: 48px;
-    justify-content: flex-end;
-    position: relative;
-    left: 5px;
-    top: 5px;
-  }
-  
-  body:not(.k) #weatherIcon svg {
-	  width: 48px;
-	  height: 48px;
-	  position: relative;
-	  top: 3px;
-  }
-
-  body:not(.k) #weather {
-    grid-column: 4;
-    grid-row: 1 / span 2;
-    font-size: 0.8em;
-    line-height: 1.3;
-    text-align: left;
-    white-space: normal;
-    min-width: 0;
-  }
-
-  body:not(.k) #clockWeather {
-    display: none;
-  }
-
-  /* Navigazione agenda */
-  .agenda-nav button {
-      font-size: 1.05em;
-      padding: 8px 18px;
-      margin-right: 6px;
-  }
-
-  /* Navigazione task: Ieri, Oggi, Domani */
-  #taskDayButtons button {
-      font-size: 1.05em;
-      padding: 8px 18px;
-      margin-right: 6px;
-  }
-}
-
-/* ==================================================
-   CELLULARI MOLTO STRETTI
-   ================================================== */
-
-@media screen and (max-width: 380px) {
-
-  body:not(.k) #head {
-    grid-template-columns: 72px minmax(0, 1fr);
-    column-gap: 5px;
-  }
-
-  body:not(.k) #clock {
-    width: 72px;
-    font-size: 1.7em;
-  }
-
-  body:not(.k) #info {
-    grid-template-columns: max-content minmax(0, 1fr) 32px max-content;
-    column-gap: 3px;
-  }
-
-  body:not(.k) #wday {
-    font-size: 0.8em;
-  }
-
-  body:not(.k) #fulldate {
-    font-size: 0.75em;
-  }
-
-  body:not(.k) #weatherIcon,
-  body:not(.k) #weatherIcon svg {
-    width: 38px;
-    height: 38px;
-    position: relative;
-    top: 5px;
-  }
-  
-  body:not(.k) #weatherIcon {
-    grid-column: 3;
-    grid-row: 1 / span 2;
-    justify-content: flex-end;
-  }
-  
-  body:not(.k) #weather {
-    grid-column: 4;
-    grid-row: 1 / span 2;
-    font-size: 0.7em;
-    text-align: left;
-    white-space: normal;
-    min-width: 0;
-  }
-}
-
-/* ==================================================
-   PERSONALIZZAZIONI KINDLE
-   ================================================== */
-
+/* Colonne */
 body.k .col {
-  float: left;
-  display: block;
-  width: 50%;
-  min-width: 0;
-  box-sizing: border-box;
+    float: left;
+    display: block;
+    width: 50%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
+/* Header */
 body.k #head {
-  display: block;
-  position: relative;
-  height: auto;
-  min-height: 0;
-  padding-bottom: 2px;
-  padding-right: 2px;
-  overflow: hidden;
+    display: block;
+    position: relative;
+    height: auto;
+    min-height: 0;
+    padding: 0 2px 2px 0;
+    overflow: hidden !important;
 }
 
 body.k #clock {
-  float: left;
-  width: 110px;
-  margin-left: 34px;
-  font-size: 2em;
-  line-height: 1;
-  margin: 0;
-  position: relative;
-  top: 1px;
-  left: 3px;
+    float: left;
+    width: 110px;
+    margin: 0 0 0 42px !important;
+    font-size: 2em;
+    line-height: 1;
+    position: relative;
+    top: 1px;
+    left: 3px;
 }
 
 body.k #info {
-  display: block;
-  position: relative;
-  margin-left: 158px;
-  margin-right: -6px;
-  padding: 0;
-  min-height: 42px;
+    display: block;
+    position: relative;
+    margin: 0 -6px 0 158px !important;
+    padding: 0;
+    min-height: 42px;
 }
 
 body.k #wday,
 body.k #fulldate {
-  display: block;
-  width: 135px;
-  margin: 0;
-  line-height: 1.1;
+    display: block;
+    width: 135px;
+    margin: 0;
+    line-height: 1.1;
 }
 
 body.k #wday {
-  font-size: 1.2em;
-  margin-left: -30px;
+    font-size: 1.2em;
+    margin-left: -30px;
 }
 
 body.k #fulldate {
-  font-size: 0.8em;
-  margin-left: -30px;
-  position: relative;
-  top: 2px;
+    font-size: 0.8em;
+    margin-left: -30px;
+    position: relative;
+    top: 2px;
 }
 
 body.k #weatherIcon {
-  position: absolute;
-  right: 98px;
-  left: auto;
-  top: 6px;
-  width: 48px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin: 0;
+    position: absolute;
+    right: 98px;
+    left: auto;
+    top: 6px;
+    width: 48px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0;
 }
 
 body.k #weatherIcon svg {
-  width: 40px;
-  height: 40px;
+    width: 40px;
+    height: 40px;
 }
 
 body.k #weather {
-  position: absolute;
-  right: -21px;
-  left: auto;
-  top: 2px;
-  width: 130px;
-  font-size: 0.9em;
-  line-height: 1.2;
-  text-align: left;
-  white-space: normal;
-  margin: 0;
+    position: absolute;
+    right: -21px;
+    left: auto;
+    top: 2px;
+    width: 130px;
+    font-size: 0.9em;
+    line-height: 1.2;
+    text-align: left;
+    white-space: normal;
+    margin: 0;
 }
 
+/* Menu scolastico */
 body.k #menuList .menu-icon {
-  display: none !important;
+    display: none !important;
 }
 
 body.k #menuList ul,
 body.k #menuList li {
-  list-style: none !important;
-  list-style-type: none !important;
+    list-style: none !important;
+    list-style-type: none !important;
 }
 
-/* ===== MENU VISTE FAMIGLIA ===== */
-#head { overflow: visible !important; }
-
-#viewMenu {
-  position: absolute;
-  left: 7px;
-  top: 7px;
-  z-index: 1000;
-}
-#viewMenuToggle {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
-  padding: 5px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: stretch;
-  background: #fff;
-  border: 1px solid #000;
-  border-radius: 4px;
-}
-#viewMenuToggle span {
-  display: block;
-  height: 2px;
-  width: 100%;
-  background: #000;
-}
-#viewMenuPanel {
-  position: absolute;
-  top: 34px;
-  left: 0;
-  width: 142px;
-  padding: 4px;
-  background: #fff;
-  border: 2px solid #000;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-#viewMenuPanel[hidden] { display: none !important; }
-#viewMenuPanel button {
-  display: block;
-  width: 100%;
-  margin: 2px 0;
-  padding: 8px 5px;
-  text-align: left;
-  font-weight: bold;
-}
-#personalView { width: 100%; }
-#personalTasksDate { margin: 0 0 6px 0; }
-#personalTasks label {
-  display: block;
-  padding: 7px 2px;
-  font-size: 16px;
-  line-height: 1.35;
-  cursor: pointer;
-}
-#personalTasks input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  margin: 0 10px 0 0;
-  vertical-align: middle;
-}
-#personalTasks .personal-task-empty { padding: 4px 0; }
-
-
-/* Orologio posizionato subito a destra del menu hamburger */
-#clock {
-  margin-left: 42px !important;
-}
-
-@media screen and (min-width: 801px) {
-  body:not(.k) #info {
-    margin-left: 135px !important;
-  }
-}
-
-@media screen and (max-width: 800px) {
-  body:not(.k) #head {
-    grid-template-columns: 145px minmax(0, 1fr) !important;
-  }
-}
-
-body.k #info {
-  margin-left: 158px !important;
-}
-
-
-/* ===== ULTIMO LAYOUT HEADER / PAGINE PERSONALI ===== */
-#personalGlobalTaskBox { display:block; }
-
-@media screen and (min-width:801px) {
-  body:not(.k) #info {
-    margin-left:135px !important;
-    padding-top:18px !important;
-  }
-}
-
-@media screen and (max-width:800px) {
-  body:not(.k) #clock {
-    top:11px !important;
-  }
-}
-
-
-/* ===== CORREZIONI RESPONSIVE FINALI ===== */
-.todo {
-  display: flex !important;
-  align-items: center !important;
-  width: 100%;
-  table-layout: auto;
-  gap: 8px;
-  box-sizing: border-box;
-}
-.todo-check {
-  flex: 0 0 20px;
-  width: 20px !important;
-  height: 20px;
-  margin: 0 2px 0 0 !important;
-  padding: 0;
-}
-.todo-text {
-  display: block !important;
-  flex: 1 1 auto;
-  min-width: 0;
-  vertical-align: middle;
-}
-.todo-actions {
-  display: flex !important;
-  flex: 0 0 34px;
-  width: 34px;
-  justify-content: flex-end;
-  align-items: center;
-  margin-left: auto;
-}
-.todo-delete {
-  min-width: 28px;
-  width: 28px;
-  margin: 0 !important;
-  padding: 2px !important;
-}
-
-@media screen and (min-width:801px) {
-  body:not(.k) #head {
-    padding: 4px 5px !important;
-  }
-  body:not(.k) #clock {
-    margin-left: 36px !important;
-    left: 2px !important;
-    top: 10px !important;
-  }
-  body:not(.k) #info {
-    margin-left: 146px !important;
-    padding-top: 5px !important;
-    padding-left: 8px !important;
-  }
-}
-
-@media screen and (max-width:800px) {
-  body:not(.k) #head {
-    grid-template-columns: 145px minmax(0,1fr) !important;
-    column-gap: 5px !important;
-    padding: 4px !important;
-  }
-  body:not(.k) #clock {
-    top: 1px !important;
-    margin-left: 38px !important;
-  }
-  body:not(.k) #info {
-    grid-template-columns: minmax(0,1fr) 32px minmax(0,1fr) !important;
-    column-gap: 3px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-  body:not(.k) #wday,
-  body:not(.k) #fulldate {
-    grid-column: 1 !important;
-    white-space: normal !important;
-    min-width: 0 !important;
-  }
-  body:not(.k) #weatherIcon {
-    grid-column: 2 !important;
-    grid-row: 1 / span 2 !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 32px !important;
-    height: 36px !important;
-    justify-content: center !important;
-  }
-  body:not(.k) #weatherIcon svg {
-    width: 32px !important;
-    height: 32px !important;
-    top: 0 !important;
-  }
-  body:not(.k) #weather {
-    grid-column: 3 !important;
-    grid-row: 1 / span 2 !important;
-    position: static !important;
-    left: auto !important;
-    width: auto !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    overflow-wrap: anywhere !important;
-    font-size: 0.72em !important;
-    line-height: 1.15 !important;
-    white-space: normal !important;
-  }
-}
-
-/* ==================================================
-   NAVIGAZIONE GIORNI KINDLE
-   ================================================== */
-
+/* Navigazione giorni */
 body.k .agenda-nav,
 body.k #taskDayButtons,
 body.k #menuDayButtons {
@@ -1085,41 +867,7 @@ body.k #menuDayButtons #mb-refresh {
     display: none !important;
 }
 
-/* KINDLE - TASK CONDIVISI */
-
-body.k #personalGlobalTaskList .todo {
-    display: table !important;
-    table-layout: fixed !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-body.k #personalGlobalTaskList .todo-check-cell {
-    display: table-cell !important;
-    width: 23px !important;
-    vertical-align: middle !important;
-    text-align: left !important;
-}
-
-body.k #personalGlobalTaskList .todo-text {
-    display: table-cell !important;
-    width: auto !important;
-    vertical-align: middle !important;
-    text-align: left !important;
-    padding: 0 !important;
-    white-space: normal !important;
-    overflow-wrap: break-word !important;
-}
-
-body.k #personalGlobalTaskList .todo-actions {
-    display: table-cell !important;
-    width: 34px !important;
-    vertical-align: middle !important;
-    text-align: right !important;
-}
-
-/* KINDLE - ALLINEAMENTO RIGHE TASK */
-
+/* Task condivisi e personali */
 body.k .todo {
     display: table !important;
     table-layout: fixed !important;
@@ -1159,53 +907,13 @@ body.k .todo-actions {
     text-align: right !important;
 }
 
-/* RIGHE TASK AGENDA - GENERALE */
-
-.agenda-task-row {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 8px;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 5px 2px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.agenda-task-check {
-    flex: 0 0 20px !important;
-    width: 20px;
-    height: 20px;
-    margin: 0 !important;
-}
-
-.agenda-task-text {
-    display: block !important;
-    flex: 1 1 0 !important;
-    min-width: 0;
-    text-align: left !important;
-    white-space: normal;
-    overflow-wrap: break-word;
-}
-
-/* KINDLE */
-
+/* Task dell'agenda */
 body.k .agenda-task-row {
     width: 100% !important;
     text-align: left !important;
     margin-left: 0 !important;
     padding-left: 0 !important;
     float: none !important;
-}
-
-body.k .agenda-task-row .agenda-task-text {
-    text-align: left !important;
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-    float: none !important;
-    width: auto !important;
 }
 
 body.k .agenda-task-check {
@@ -1221,49 +929,10 @@ body.k .agenda-task-text {
     width: auto !important;
     vertical-align: middle !important;
     text-align: left !important;
+    margin: 0 !important;
     padding: 0 !important;
     white-space: normal !important;
     word-wrap: break-word !important;
-}
-
-/* CAMPI INSERIMENTO - TUTTI I DISPOSITIVI */
-
-#taskCtl,
-#todoCtl {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center;
-    gap: 6px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-#taskInput,
-#todoInput {
-    display: block;
-    flex: 1 1 0 !important;
-    width: 0 !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-}
-
-#taskAddButton,
-#todoCtl button {
-    display: block;
-    flex: 0 0 auto !important;
-    width: auto !important;
-    white-space: nowrap;
-    margin: 0 !important;
-}
-
-body.k #taskInput,
-body.k #todoInput {
-    display: inline-block !important;
-    width: 75% !important;
-    max-width: 75% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
 }
 
 
