@@ -836,6 +836,7 @@ body.k #menuList li {
   list-style-type: none !important;
 }
 
+
 body.k .agenda-nav {
     display: flex;
     flex-wrap: nowrap;
@@ -1088,59 +1089,6 @@ body.k #info {
   }
 }
 
-/* Sul Kindle i tre gruppi di navigazione restano sempre su una sola riga. */
-body.k .agenda-nav,
-body.k #taskDayButtons,
-body.k #menuDayButtons {
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  gap: 3px !important;
-  box-sizing: border-box !important;
-}
-body.k .agenda-nav button,
-body.k #taskDayButtons button,
-body.k #menuDayButtons button {
-  flex: 1 1 0 !important;
-  min-width: 0 !important;
-  width: 0 !important;
-  padding: 5px 2px !important;
-  margin: 1px 0 !important;
-  font-size: 0.78em !important;
-  white-space: nowrap !important;
-  box-sizing: border-box !important;
-}
-body.k #menuDayButtons #mb-refresh { display:none !important; }
-
-/* Kindle: distribuisce i pulsanti in tutta la larghezza del rispettivo box. */
-body.k .agenda-nav,
-body.k #taskDayButtons,
-body.k #menuDayButtons {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  justify-content: stretch !important;
-  align-items: stretch !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  gap: 4px !important;
-  box-sizing: border-box !important;
-}
-body.k .agenda-nav button,
-body.k #taskDayButtons button,
-body.k #menuDayButtons button {
-  display: block !important;
-  flex: 1 1 0% !important;
-  width: auto !important;
-  min-width: 0 !important;
-  max-width: none !important;
-  margin: 1px 0 !important;
-  padding: 7px 2px !important;
-  box-sizing: border-box !important;
-  white-space: nowrap !important;
-  text-align: center !important;
-}
 
 /* Kindle: checkbox e testo dei Task condivisi sempre affiancati. */
 body.k #personalGlobalTaskList .todo {
@@ -1171,33 +1119,6 @@ body.k #personalGlobalTaskList .todo-actions {
   width: 34px !important;
   justify-content: flex-end !important;
   margin-left: auto !important;
-}
-
-/* KINDLE - NAVIGAZIONE */
-
-body.k .agenda-nav,
-body.k #taskDayButtons,
-body.k #menuDayButtons {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  width: 100% !important;
-  gap: 4px !important;
-  box-sizing: border-box !important;
-}
-
-body.k .agenda-nav button,
-body.k #taskDayButtons button,
-body.k #menuDayButtons button {
-  flex: 1 1 0 !important;
-  width: 0 !important;
-  min-width: 0 !important;
-  max-width: none !important;
-  margin: 1px 0 !important;
-  padding: 6px 2px !important;
-  white-space: nowrap !important;
-  text-align: center !important;
-  box-sizing: border-box !important;
 }
 
 /* KINDLE - CAMPI E PULSANTI */
