@@ -84,6 +84,34 @@ body.k .wrap {
     text-transform: none;
 }
 
+/* Kindle: titolo e aggiornamento sempre sulla stessa riga */
+body.k .section-heading {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
+}
+
+body.k .section-heading h2 {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    font-size: 0.95em !important;
+}
+
+body.k .section-heading .sync-label {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    white-space: nowrap !important;
+    text-align: right !important;
+    font-size: 0.55em !important;
+    margin: 0 !important;
+    position: relative !important;
+    top: -2px !important;
+}
+
 /* ==================================================
    TITOLI
    ================================================== */
