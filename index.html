@@ -375,7 +375,7 @@ input {
 body.k #taskCtl,
 body.k #todoCtl {
     display: table !important;
-    table-layout: auto !important;
+    table-layout: fixed !important;
     width: 100% !important;
     border-spacing: 4px 0;
 }
@@ -383,23 +383,22 @@ body.k #todoCtl {
 body.k #taskInput,
 body.k #todoInput {
     display: table-cell !important;
-    width: 100% !important;
+    width: auto !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
+    vertical-align: middle !important;
 }
 
 body.k #taskAddButton,
 body.k #todoCtl button {
-    display: inline-block !important;
-    flex: 0 0 85px !important;
+    display: table-cell !important;
     width: 85px !important;
     min-width: 85px !important;
     max-width: 85px !important;
     padding: 5px 2px !important;
     white-space: nowrap !important;
-    overflow: visible !important;
-    margin: 0 !important;
     box-sizing: border-box !important;
+    vertical-align: middle !important;
 }
 
 /* ==================================================
