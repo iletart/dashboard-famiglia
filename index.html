@@ -1224,22 +1224,25 @@ body.k .agenda-task-text {
 
 /* CAMPI INSERIMENTO - TUTTI I DISPOSITIVI */
 
-#taskCtl {
-    display: flex !important;
+#taskCtl,
+#todoCtl {
+    display: flex;
     align-items: center;
     gap: 6px;
     width: 100%;
     box-sizing: border-box;
 }
 
-#taskInput {
+#taskInput,
+#todoInput {
     flex: 1 1 auto;
     min-width: 0;
     width: 0;
     box-sizing: border-box;
 }
 
-#taskAddButton {
+#taskAddButton,
+#todoCtl button {
     flex: 0 0 auto;
     margin-left: auto;
     white-space: nowrap;
