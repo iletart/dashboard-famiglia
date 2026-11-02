@@ -374,10 +374,12 @@ input {
 
 body.k #taskCtl,
 body.k #todoCtl {
-    display: table !important;
-    table-layout: fixed !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
     width: 100% !important;
-    border-spacing: 4px 0;
+    gap: 4px !important;
 }
 
 body.k #taskInput,
