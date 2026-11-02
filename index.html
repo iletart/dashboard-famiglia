@@ -907,6 +907,139 @@ body.k #info {
     top:11px !important;
   }
 }
+
+
+/* ===== CORREZIONI RESPONSIVE FINALI ===== */
+.todo {
+  display: flex !important;
+  align-items: center !important;
+  width: 100%;
+  table-layout: auto;
+  gap: 8px;
+  box-sizing: border-box;
+}
+.todo-check {
+  flex: 0 0 20px;
+  width: 20px !important;
+  height: 20px;
+  margin: 0 2px 0 0 !important;
+  padding: 0;
+}
+.todo-text {
+  display: block !important;
+  flex: 1 1 auto;
+  min-width: 0;
+  vertical-align: middle;
+}
+.todo-actions {
+  display: flex !important;
+  flex: 0 0 34px;
+  width: 34px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: auto;
+}
+.todo-delete {
+  min-width: 28px;
+  width: 28px;
+  margin: 0 !important;
+  padding: 2px !important;
+}
+
+@media screen and (min-width:801px) {
+  body:not(.k) #head {
+    padding: 4px 5px !important;
+  }
+  body:not(.k) #clock {
+    margin-left: 36px !important;
+    left: 2px !important;
+    top: 10px !important;
+  }
+  body:not(.k) #info {
+    margin-left: 146px !important;
+    padding-top: 5px !important;
+    padding-left: 8px !important;
+  }
+}
+
+@media screen and (max-width:800px) {
+  body:not(.k) #head {
+    grid-template-columns: 145px minmax(0,1fr) !important;
+    column-gap: 5px !important;
+    padding: 4px !important;
+  }
+  body:not(.k) #clock {
+    top: 1px !important;
+    margin-left: 38px !important;
+  }
+  body:not(.k) #info {
+    grid-template-columns: minmax(0,1fr) 32px minmax(0,1fr) !important;
+    column-gap: 3px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  body:not(.k) #wday,
+  body:not(.k) #fulldate {
+    grid-column: 1 !important;
+    white-space: normal !important;
+    min-width: 0 !important;
+  }
+  body:not(.k) #weatherIcon {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 32px !important;
+    height: 36px !important;
+    justify-content: center !important;
+  }
+  body:not(.k) #weatherIcon svg {
+    width: 32px !important;
+    height: 32px !important;
+    top: 0 !important;
+  }
+  body:not(.k) #weather {
+    grid-column: 3 !important;
+    grid-row: 1 / span 2 !important;
+    position: static !important;
+    left: auto !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
+    font-size: 0.72em !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+  }
+}
+
+/* Sul Kindle i tre gruppi di navigazione restano sempre su una sola riga. */
+body.k .agenda-nav,
+body.k #taskDayButtons,
+body.k #menuDayButtons {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  gap: 3px !important;
+  box-sizing: border-box !important;
+}
+body.k .agenda-nav button,
+body.k #taskDayButtons button,
+body.k #menuDayButtons button {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  width: 0 !important;
+  padding: 5px 2px !important;
+  margin: 1px 0 !important;
+  font-size: 0.78em !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+}
+body.k #menuDayButtons #mb-refresh { display:none !important; }
+
 </style>
 
 
@@ -1024,7 +1157,7 @@ body.k #info {
 			<h2 id="menuTitle">Menu scuola</h2>
 			<div class="sync-label" id="menuTimes"></div>
 		</div>
-		<div>
+		<div id="menuDayButtons">
 			<button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
 		</div>
 
@@ -1465,7 +1598,7 @@ function renderPersonalTasks(){
 
   var owner = currentView === "ilenia" ? "I" : "W";
   var ownerName = owner === "W" ? "WALTER" : "ILENIA";
-  setText($("personalTasksTitle"), "TASK DI " + ownerName);
+  setText($("personalTasksTitle"), "TASK CONDIVISI");
   setText($("personalTasksDate"), dayLabel(todayNum(), todayNum()));
 
   if(!agendaData || !agendaData.events){
@@ -2181,6 +2314,25 @@ function todoCanEdit(){
   return todoConnected && !todoBusy;
 }
 
+function getSavedTodoPin(){
+  var pin = "";
+  try { pin = window.localStorage.getItem("todoPin") || ""; } catch(e) {}
+  if(pin) return pin;
+  var match = document.cookie.match(/(?:^|; )todoPin=([^;]*)/);
+  if(match){
+    try { return decodeURIComponent(match[1]); } catch(e) { return match[1]; }
+  }
+  return "";
+}
+
+function saveTodoPin(pin){
+  try { window.localStorage.setItem("todoPin", pin); } catch(e) {}
+  try {
+    document.cookie = "todoPin=" + encodeURIComponent(pin) + "; Max-Age=31536000; Path=/; SameSite=Lax" +
+      (location.protocol === "https:" ? "; Secure" : "");
+  } catch(e) {}
+}
+
 function todoRequest(method, data, callback, requestUrl){
 
   var x = new XMLHttpRequest();
@@ -2667,9 +2819,7 @@ function todoConnect(){
 	var pin = pinInput ? pinInput.value : "";
 
 	if(!pin){
-	  try {
-		pin = window.localStorage.getItem("todoPin") || "";
-	  } catch(e) {}
+	  pin = getSavedTodoPin();
 	}
 
 	if(!pin){
@@ -2687,12 +2837,8 @@ function todoConnect(){
 
 	if(err || !data || !data.items){
 	  todoConnected = false;
-	  todoPin = "";
-	  
-	    try {
-		window.localStorage.removeItem("todoPin");
-	  } catch(e) {}
-
+	  // Mantieni il PIN memorizzato: un redeploy o un errore di rete
+	  // non devono costringere a reinserirlo sul Kindle.
 	  var detail = data && data.detail ? data.detail : "";
 
 	  setText(
@@ -2710,7 +2856,7 @@ function todoConnect(){
 	  
 	  if(pinInput){
 	    pinInput.style.display = "";
-	    pinInput.value = "";
+	    pinInput.value = pin;
 	  }
 	  
 	  var connectButton = $("todoConnectButton");
@@ -2732,9 +2878,7 @@ function todoConnect(){
 	  syncBox.style.display = "none";
 	}
 
-	try {
-	  window.localStorage.setItem("todoPin", todoPin);
-	} catch(e) {}
+	saveTodoPin(todoPin);
 
     renderTodo();
 
@@ -2910,40 +3054,28 @@ function todoRow(i){
   var it = todoItems[i];
   var row = mk("div", "todo");
 
-  var txt = mk(
-    "span",
-    it.done ? "todo-text done" : "todo-text",
-    (i + 1) + ". " + it.text
-  );
+  var checkbox = mk("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = !!it.done;
+  checkbox.disabled = todoBusy;
+  checkbox.className = "todo-check";
+  checkbox.setAttribute("aria-label", it.done ? "Segna come da fare" : "Segna come completata");
+  checkbox.onchange = function(){ todoToggle(i); };
+  row.appendChild(checkbox);
 
+  var txt = mk("span", it.done ? "todo-text done" : "todo-text", it.text);
   row.appendChild(txt);
 
   if(todoConnected){
     var actions = mk("span", "todo-actions");
-
-    var b = mk("button", "", "✓");
-    b.type = "button";
-    b.disabled = todoBusy;
-    b.title = it.done ? "Segna come da fare" : "Segna come completata";
-
-    b.onclick = function(){
-      todoToggle(i);
-    };
-
-    var del = mk("button", "", "🗑");
+    var del = mk("button", "todo-delete", "🗑");
     del.type = "button";
     del.disabled = todoBusy;
     del.title = "Elimina attività";
-
-    del.onclick = function(){
-      todoDel(i);
-    };
-
-    actions.appendChild(b);
+    del.onclick = function(){ todoDel(i); };
     actions.appendChild(del);
     row.appendChild(actions);
   }
-
   return row;
 }
 
@@ -2982,11 +3114,7 @@ function loadTodo(){
     }
   };
 
-  var savedPin = "";
-
-  try {
-    savedPin = window.localStorage.getItem("todoPin") || "";
-  } catch(e) {}
+  var savedPin = getSavedTodoPin();
 
   if(savedPin){
     pinInput.value = savedPin;
@@ -3217,38 +3345,26 @@ function renderTasks(){
 function taskRow(index, item){
   var row = mk("div", "todo");
 
-  var txt = mk(
-    "span",
-    item.done ? "todo-text done" : "todo-text",
-    (index + 1) + ". " + item.text
-  );
+  var checkbox = mk("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = !!item.done;
+  checkbox.disabled = taskBusy;
+  checkbox.className = "todo-check";
+  checkbox.setAttribute("aria-label", item.done ? "Segna come da fare" : "Segna come completata");
+  checkbox.onchange = function(){ changeTask("toggle", index); };
+  row.appendChild(checkbox);
 
+  var txt = mk("span", item.done ? "todo-text done" : "todo-text", item.text);
   row.appendChild(txt);
 
   var actions = mk("span", "todo-actions");
-
-  var b = mk("button", "", "✓");
-  b.type = "button";
-  b.disabled = taskBusy;
-  b.title = item.done ? "Segna come da fare" : "Completa";
-
-  b.onclick = function(){
-    changeTask("toggle", index);
-  };
-
-  var del = mk("button", "", "🗑");
+  var del = mk("button", "todo-delete", "🗑");
   del.type = "button";
   del.disabled = taskBusy;
   del.title = "Elimina attività";
-
-  del.onclick = function(){
-    changeTask("delete", index);
-  };
-
-  actions.appendChild(b);
+  del.onclick = function(){ changeTask("delete", index); };
   actions.appendChild(del);
   row.appendChild(actions);
-
   return row;
 }
 
