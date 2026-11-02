@@ -1029,10 +1029,10 @@ body.k .agenda-task-text {
 <div id="personalView" style="display:none;">
   <div class="box" id="personalTasksBox">
     <div class="section-heading">
-		<div class="personal-period-switch">
-		  <button type="button" id="personalTasksToday" class="active">OGGI</button>
-		  <button type="button" id="personalTasksTomorrow">DOMANI</button>
-		</div>
+      <div class="personal-period-switch">
+        <button type="button" id="personalTasksToday" class="active">OGGI</button>
+        <button type="button" id="personalTasksTomorrow">DOMANI</button>
+      </div>
       <h2 id="personalTasksTitle">TASK DI WALTER</h2>
     </div>
     <div class="agenda-period" id="personalTasksDate" style="display:none;"></div>
@@ -1047,6 +1047,7 @@ body.k .agenda-task-text {
     <div id="personalGlobalTaskList">Caricamento...</div>
     <div class="small" id="personalGlobalTaskStatus"></div>
   </div>
+
   <div class="box" id="personalRoutesBox" style="display:none;">
     <div class="section-heading">
       <h2>SPOSTAMENTI</h2>
@@ -1054,6 +1055,15 @@ body.k .agenda-task-text {
     </div>
     <div id="personalRoutes"></div>
     <div class="small" id="personalRoutesStatus"></div>
+  </div>
+
+  <div class="box" id="ileniaAgendaBox" style="display:none;">
+    <div class="section-heading">
+      <h2>AGENDA ILENIA</h2>
+      <div class="sync-label" id="ileniaAgendaTimes"></div>
+    </div>
+    <div id="ileniaAgenda">Caricamento...</div>
+    <div class="small" id="ileniaAgendaStatus"></div>
   </div>
 </div>
 
@@ -1455,6 +1465,139 @@ var agendaErr = false;
 var agendaWeekOffset = 0;
 var agendaTodayOnly = true;
 
+var ileniaAgendaData = null;
+var ileniaAgendaErr = false;
+var ileniaAgendaSyncedAt = null;
+
+function loadIleniaAgenda() {
+  getJson(
+    [CONFIG.base + "agenda_ilenia.json", "agenda_ilenia.json"],
+    function(err, d) {
+
+      if (!err && d && d.events) {
+        ileniaAgendaData = d;
+        ileniaAgendaErr = false;
+        ileniaAgendaSyncedAt = new Date();
+      } else {
+        ileniaAgendaErr = true;
+      }
+
+      safe(renderIleniaAgenda);
+    }
+  );
+}
+
+function renderIleniaAgenda() {
+  var box = $("ileniaAgenda");
+  var status = $("ileniaAgendaStatus");
+  var times = $("ileniaAgendaTimes");
+
+  if(!box) return;
+
+  clear(box);
+  setText(status, "");
+
+  if(!ileniaAgendaData || !ileniaAgendaData.events) {
+    setText(
+      box,
+      ileniaAgendaErr
+        ? "Agenda non disponibile."
+        : "Caricamento..."
+    );
+    return;
+  }
+
+  var today = todayNum();
+  var events = ileniaAgendaData.events;
+  var found = false;
+
+  for(var day = 0; day < 7; day++) {
+
+    var dayNum = today + day;
+    var dayEvents = [];
+
+    for(var i = 0; i < events.length; i++) {
+      var e = events[i];
+
+      if(e.all_day) {
+        var startDate = e.start && (e.start.date || e.start.dateTime);
+        var endDate = e.end && (e.end.date || e.end.dateTime);
+
+        var sd = dateOnlyNum(startDate);
+        var ed = dateOnlyNum(endDate);
+
+        if(sd === null) continue;
+
+        var last = (ed !== null && ed > sd) ? ed - 1 : sd;
+
+        if(dayNum >= sd && dayNum <= last) {
+          dayEvents.push({
+            key: 0,
+            time: "Tutto il giorno",
+            title: e.title || "(senza titolo)"
+          });
+        }
+
+      } else {
+        var startDateTime = e.start && (e.start.dateTime || e.start.date);
+        var ms = parseIso(startDateTime);
+
+        if(ms === null) continue;
+
+        var eventDay = dayNumOfRome(toRome(ms));
+
+        if(eventDay === dayNum) {
+          dayEvents.push({
+            key: ms,
+            time: hhmmRome(ms),
+            title: e.title || "(senza titolo)"
+          });
+        }
+      }
+    }
+
+    if(!dayEvents.length) continue;
+
+    found = true;
+
+    dayEvents.sort(function(a, b) {
+      return a.key - b.key;
+    });
+
+    box.appendChild(
+      mk("h3", "", dayLabel(dayNum, today))
+    );
+
+    for(var j = 0; j < dayEvents.length; j++) {
+      var row = mk("div", "ev");
+
+      row.appendChild(mk("span", "t", dayEvents[j].time));
+      row.appendChild(mk("span", "tt", dayEvents[j].title));
+
+      box.appendChild(row);
+    }
+  }
+
+  if(!found) {
+    box.appendChild(
+      mk("div", "", "Nessun impegno nei prossimi giorni.")
+    );
+  }
+
+  if(ileniaAgendaSyncedAt) {
+    setText(
+      times,
+      "Aggiornato " +
+      ileniaAgendaSyncedAt.toLocaleTimeString("it-IT", {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    );
+  }
+
+  scheduleBoxAlignment();
+}
+
 function scheduleAgendaRefresh() {
   var now = new Date();
   var next = new Date(now.getTime());
@@ -1503,7 +1646,16 @@ function setView(view){
   } else {
     safe(renderAgenda);
     safe(renderPersonalTasks);
-    if(view === "ilenia") syncPersonalRoutes();
+  
+    var ileniaAgendaBox = $("ileniaAgendaBox");
+    if(ileniaAgendaBox) {
+      ileniaAgendaBox.style.display = view === "ilenia" ? "block" : "none";
+    }
+  
+    if(view === "ilenia") {
+      syncPersonalRoutes();
+      safe(renderIleniaAgenda);
+    }
   }
 
   closeViewMenu();
@@ -1696,6 +1848,8 @@ function loadAgenda() {
 
       safe(renderAgenda);
       if(currentView !== "shared") safe(renderPersonalTasks);
+
+      loadIleniaAgenda();
 
       scheduleAgendaRefresh();
     }
