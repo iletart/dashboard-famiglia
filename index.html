@@ -1180,10 +1180,11 @@ body.k .todo-actions {
 }
 
 .agenda-task-text {
-    display: block;
-    flex: 1 1 auto;
-    min-width: 0;
+    display: inline !important;
     text-align: left;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 /* KINDLE */
@@ -1248,29 +1249,7 @@ body.k .agenda-task-text {
     white-space: nowrap;
 }
 
-body.k .agenda-task-row {
-    display: block !important;
-    width: 100% !important;
-    text-align: left !important;
-    margin: 0 !important;
-    padding-left: 0 !important;
-    float: none !important;
-}
 
-body.k .agenda-task-check {
-    display: inline-block !important;
-    vertical-align: middle !important;
-    margin: 0 3px 0 0 !important;
-}
-
-body.k .agenda-task-text {
-    display: inline !important;
-    width: auto !important;
-    text-align: left !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    vertical-align: middle !important;
-}
 
 </style>
 
