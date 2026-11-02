@@ -84,30 +84,34 @@ body.k .wrap {
     text-transform: none;
 }
 
-/* Kindle: titolo e aggiornamento sempre sulla stessa riga */
+/* KINDLE - TITOLO E ORARIO SULLA STESSA RIGA */
+
 body.k .section-heading {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    justify-content: space-between !important;
-    align-items: flex-start !important;
-    gap: 3px !important;
+    display: block !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
 }
 
 body.k .section-heading h2 {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
+    float: left !important;
+    width: 62% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
     white-space: nowrap !important;
     font-size: 0.95em !important;
 }
 
 body.k .section-heading .sync-label {
-    flex: 0 0 auto !important;
-    width: auto !important;
-    white-space: nowrap !important;
-    text-align: right !important;
-    font-size: 0.55em !important;
+    float: right !important;
+    width: 36% !important;
+    box-sizing: border-box !important;
     margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0.55em !important;
+    line-height: 1.2 !important;
+    text-align: right !important;
+    white-space: nowrap !important;
     position: relative !important;
     top: -2px !important;
 }
