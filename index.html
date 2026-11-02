@@ -583,6 +583,27 @@ body:not(.k) #menuDayButtons button {
     display: block;
 }
 
+.personal-period-switch {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0 12px;
+}
+
+.personal-period-switch button {
+    flex: 1;
+    padding: 8px;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.personal-period-switch button.active {
+    background: #000;
+    color: #fff;
+}
+
 /* ==================================================
    HEADER DESKTOP
    ================================================== */
@@ -1009,6 +1030,10 @@ body.k .agenda-task-text {
   <div class="box" id="personalTasksBox">
     <div class="section-heading">
       <h2 id="personalTasksTitle">TASK DI WALTER</h2>
+	  <div class="personal-period-switch">
+		  <button type="button" id="personalTasksToday" class="active">OGGI</button>
+		  <button type="button" id="personalTasksTomorrow">DOMANI</button>
+		</div>
     </div>
     <div class="agenda-period" id="personalTasksDate" style="display:none;"></div>
     <div id="personalTasks">Caricamento...</div>
