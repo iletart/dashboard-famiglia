@@ -1072,7 +1072,7 @@ body.k #menuDayButtons #mb-refresh { display:none !important; }
     <div class="section-heading">
       <h2 id="personalTasksTitle">TASK DI WALTER</h2>
     </div>
-    <div class="agenda-period" id="personalTasksDate"></div>
+    <div class="agenda-period" id="personalTasksDate" style="display:none;"></div>
     <div id="personalTasks">Caricamento...</div>
   </div>
 
@@ -1531,7 +1531,7 @@ function setView(view){
 
   var personalGlobalTitle = $("personalGlobalTaskTitle");
   if(personalGlobalTitle){
-    setText(personalGlobalTitle, view === "ilenia" ? "Task di Ilenia" : "Task di Walter");
+    setText(personalGlobalTitle, "TASK CONDIVISI");
   }
 
   if(view === "shared") {
@@ -1598,8 +1598,8 @@ function renderPersonalTasks(){
 
   var owner = currentView === "ilenia" ? "I" : "W";
   var ownerName = owner === "W" ? "WALTER" : "ILENIA";
-  setText($("personalTasksTitle"), "TASK CONDIVISI");
-  setText($("personalTasksDate"), dayLabel(todayNum(), todayNum()));
+  setText($("personalTasksTitle"), owner === "W" ? "TASK DI WALTER" : "TASK DI ILENIA");
+  setText($("personalTasksDate"), "");
 
   if(!agendaData || !agendaData.events){
     setText(box, agendaErr ? "Agenda non disponibile." : "Caricamento compiti...");
@@ -2522,7 +2522,11 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
         var visibleTask = ownerFilter ? tasks[index].replace(/^[WI]\s*:\s*/i, "") : tasks[index];
 
         var label = mk("label", "");
-        label.style.display = "block";
+        label.style.display = "flex";
+        label.style.alignItems = "center";
+        label.style.gap = "8px";
+        label.style.width = "100%";
+        label.style.boxSizing = "border-box";
         label.style.padding = "5px 2px";
         label.style.fontSize = "16px";
         label.style.cursor = "pointer";
@@ -2530,15 +2534,21 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
         var checkbox = document.createElement("input");
 
         checkbox.type = "checkbox";
-        checkbox.style.marginRight = "10px";
+        checkbox.style.flex = "0 0 20px";
+        checkbox.style.margin = "0";
         checkbox.style.width = "20px";
         checkbox.style.height = "20px";
         checkbox.checked = completed[taskKey] === true;
 
+        var taskText = document.createElement("span");
+        taskText.style.display = "block";
+        taskText.style.flex = "1 1 auto";
+        taskText.style.minWidth = "0";
+        taskText.style.textAlign = "left";
+        taskText.appendChild(document.createTextNode(visibleTask));
+
         label.appendChild(checkbox);
-        label.appendChild(
-          document.createTextNode(visibleTask)
-        );
+        label.appendChild(taskText);
 
         taskContainer.appendChild(label);
 
