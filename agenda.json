@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-02T01:46:02.640911+01:00",
+  "generated_at": "2026-11-02T01:47:02.684724+01:00",
   "period_days": 14,
   "events": [
     {
@@ -82,22 +82,6 @@
       "location": "",
       "description": "- calze antiscivolo",
       "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTEwNlQxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
-    },
-    {
-      "id": "5j5579fki4gvskcm87tm5r2jj5",
-      "title": "MERENDA MOTRICITA",
-      "start": {
-        "dateTime": "2026-11-09T08:00:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-09T08:00:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "- sacchetto merenda",
-      "htmlLink": "https://www.google.com/calendar/event?eid=NWo1NTc5ZmtpNGd2c2tjbTg3dG01cjJqajUgZmFtaWx5MDI3MjI5Nzk3MDg3MjgwNTUzNzRAZw"
     },
     {
       "id": "12ug354gtoq95bjhtvc2lbvafc_20261109T163000Z",
