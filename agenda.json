@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-02T13:13:02.931612+01:00",
+  "generated_at": "2026-11-02T13:14:02.937378+01:00",
   "period_days": 14,
   "events": [
     {
@@ -48,7 +48,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "- zaino\n- borraccia\n- maglietta\n- scarpe",
+      "description": "- W: zaino\n- W: borraccia\n- W: maglietta\n- W: scarpe\n- I: merenda",
       "htmlLink": "https://www.google.com/calendar/event?eid=MzRlYzlka2JvbXBidGpmczlvYTlmMmFwamJfMjAyNjExMDRUMTY0NTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
@@ -80,7 +80,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "- calze antiscivolo",
+      "description": "- W: calze antiscivolo\n- I: merenda",
       "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTEwNlQxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
     },
     {
@@ -144,7 +144,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "- zaino\n- borraccia\n- maglietta\n- scarpe",
+      "description": "- W: zaino\n- W: borraccia\n- W: maglietta\n- W: scarpe\n- I: merenda",
       "htmlLink": "https://www.google.com/calendar/event?eid=MzRlYzlka2JvbXBidGpmczlvYTlmMmFwamJfMjAyNjExMTFUMTY0NTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
@@ -192,7 +192,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "- calze antiscivolo",
+      "description": "- W: calze antiscivolo\n- I: merenda",
       "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTExM1QxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
     }
   ]
