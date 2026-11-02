@@ -1127,7 +1127,7 @@ body.k .todo {
 
 body.k .todo-check-cell {
     display: table-cell !important;
-    width: 26px !important;
+    width: 20px !important;
     vertical-align: middle !important;
     text-align: left !important;
 }
@@ -1145,7 +1145,7 @@ body.k .todo-text {
     width: auto !important;
     vertical-align: middle !important;
     text-align: left !important;
-    padding: 0 3px !important;
+    padding: 0 !important;
     white-space: normal !important;
     overflow-wrap: break-word !important;
 }
@@ -3484,7 +3484,9 @@ function taskRow(index, item){
   checkbox.className = "todo-check";
   checkbox.setAttribute("aria-label", item.done ? "Segna come da fare" : "Segna come completata");
   checkbox.onchange = function(){ changeTask("toggle", index); };
-  row.appendChild(checkbox);
+  var checkCell = mk("span", "todo-check-cell");
+  checkCell.appendChild(checkbox);
+  row.appendChild(checkCell);
 
   var txt = mk("span", item.done ? "todo-text done" : "todo-text", item.text);
   row.appendChild(txt);
