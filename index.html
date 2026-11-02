@@ -733,13 +733,16 @@ body:not(.k) #menuDayButtons button {
         font-size: 1.05em;
         padding: 8px 18px;
         margin-right: 6px;
+		border-radius: 12px !important;
     }
 	
-	.agenda-nav button:disabled {
-	  background: #000 !important;
-	  color: #fff !important;
-	  border: 2px solid #000 !important;
-	  opacity: 1 !important;
+	.agenda-nav button:disabled,
+	.agenda-nav button.active,
+	.agenda-nav button.selected {
+		background: #000 !important;
+		color: #fff !important;
+		border: 2px solid #000 !important;
+		opacity: 1 !important;
 	}
 
 }
