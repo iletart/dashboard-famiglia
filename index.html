@@ -891,6 +891,22 @@ body.k #info {
   margin-left: 158px !important;
 }
 
+
+/* ===== ULTIMO LAYOUT HEADER / PAGINE PERSONALI ===== */
+#personalGlobalTaskBox { display:block; }
+
+@media screen and (min-width:801px) {
+  body:not(.k) #info {
+    margin-left:135px !important;
+    padding-top:18px !important;
+  }
+}
+
+@media screen and (max-width:800px) {
+  body:not(.k) #clock {
+    top:11px !important;
+  }
+}
 </style>
 
 
@@ -925,6 +941,15 @@ body.k #info {
     </div>
     <div class="agenda-period" id="personalTasksDate"></div>
     <div id="personalTasks">Caricamento...</div>
+  </div>
+
+  <div class="box" id="personalGlobalTaskBox">
+    <div class="section-heading">
+      <h2>Task di oggi</h2>
+      <div class="sync-label" id="personalGlobalTaskTimes"></div>
+    </div>
+    <div id="personalGlobalTaskList">Caricamento...</div>
+    <div class="small" id="personalGlobalTaskStatus"></div>
   </div>
   <div class="box" id="personalRoutesBox" style="display:none;">
     <div class="section-heading">
@@ -1428,6 +1453,7 @@ function eventOccursToday(eventItem, today){
 }
 
 function renderPersonalTasks(){
+  renderPersonalGlobalTasks();
   var box = $("personalTasks");
   if(!box) return;
   clear(box);
@@ -1467,6 +1493,43 @@ function renderPersonalTasks(){
   if(!found){
     box.appendChild(mk("div", "personal-task-empty", "Nessun compito assegnato a " + ownerName + " per oggi."));
   }
+}
+
+function renderPersonalGlobalTasks(){
+  taskSel = "oggi";
+  var box = $("personalGlobalTaskList");
+  if(!box) return;
+  clear(box);
+
+  if(!taskReady){
+    setText(box, taskSyncError ? "Task non disponibili." : "Caricamento...");
+    setText($("personalGlobalTaskTimes"), "");
+    return;
+  }
+
+  var key = taskDateKey(0);
+  var items = taskDays[key] || [];
+  var i;
+
+  if(!items.length){
+    box.appendChild(mk("div", "", "Nessuna attività."));
+  } else {
+    for(i = 0; i < items.length; i++){
+      box.appendChild(taskRow(i, items[i]));
+    }
+  }
+
+  if(!todoConnected){
+    setText($("personalGlobalTaskTimes"), "non connesso");
+  } else if(taskSyncError){
+    setText($("personalGlobalTaskTimes"), "sync error");
+  } else if(taskSyncedAt !== null){
+    setText($("personalGlobalTaskTimes"), "sync time: " + hhmmRome(taskSyncedAt.getTime()));
+  } else {
+    setText($("personalGlobalTaskTimes"), "sync in attesa");
+  }
+
+  setText($("personalGlobalTaskStatus"), "");
 }
 
 function syncPersonalRoutes(){
@@ -3134,6 +3197,7 @@ function taskSchedulePoll(){
 
 function renderTasks(){
   updateTaskButtons();
+  if(currentView !== "shared") renderPersonalGlobalTasks();
 
   var list = $("taskList");
   clear(list);
