@@ -2474,12 +2474,9 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
     return;
   }
 
-  if(!tasks.length && !details){
-    taskContainer.appendChild(
-      mk("div", "", "Nessun compito indicato.")
-    );
-    return;
-  }
+	if(!tasks.length && !details){
+	  return;
+	}
 
   if(!tasks.length){
     addEventDetailsLink(eventItem, taskContainer);
@@ -2677,7 +2674,7 @@ function openEventTasks(eventItem){
     );
     return;
   }
-
+  
   if(!tasks.length){
     taskContainer.appendChild(
       mk("div", "", "Nessun compito indicato.")
