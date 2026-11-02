@@ -372,33 +372,35 @@ input {
    CAMPI INSERIMENTO ATTIVITÀ
    ================================================== */
 
-#taskCtl,
-#todoCtl {
+body.k #taskCtl,
+body.k #todoCtl {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    align-items: center;
-    gap: 6px;
-    width: 100%;
-    box-sizing: border-box;
+    align-items: center !important;
+    gap: 5px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-#taskInput,
-#todoInput {
-    display: block;
-    flex: 1 1 0 !important;
-    width: 0 !important;
+body.k #taskInput,
+body.k #todoInput {
+    display: block !important;
+    flex: 1 1 auto !important;
+    width: auto !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
 }
 
-#taskAddButton,
-#todoCtl button {
-    display: block;
-    flex: 0 0 auto !important;
-    width: auto !important;
-    white-space: nowrap;
+body.k #taskAddButton,
+body.k #todoCtl button {
+    display: block !important;
+    flex: 0 0 65px !important;
+    width: 65px !important;
+    min-width: 65px !important;
+    white-space: nowrap !important;
     margin: 0 !important;
+    box-sizing: border-box !important;
 }
 
 /* ==================================================
