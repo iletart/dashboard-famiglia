@@ -47,38 +47,35 @@ body.k .wrap {
 }
 
 .section-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  border-bottom: 1px solid #000;
-  padding-bottom: 5px;
-  margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    gap: 8px;
 }
 
 .section-heading h2 {
-  flex: 1 1 auto;
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  text-align: left;
+    float: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    text-align: left;
+    flex: 0 1 auto;
 }
 
 .section-heading .sync-label {
-  flex: 0 1 48%;
-  min-width: 0;
-  max-width: 48%;
-  margin: 0;
-  font-size: 0.65em;
-  line-height: 1.2;
-  color: #888;
-  text-align: right;
-  white-space: normal;
-  overflow-wrap: anywhere;
+    float: none;
+    flex: 0 0 auto;
+    font-size: 0.65em;
+    line-height: 1.4;
+    color: #888;
+    text-align: right;
+    white-space: normal;
+    margin: 0;
 }
 
 .sync-label {
@@ -87,24 +84,6 @@ body.k .wrap {
     color: #888;
     font-weight: normal;
     text-transform: none;
-}
-
-.agenda-nav {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 4px;
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-.agenda-nav button {
-  flex: 1 1 0;
-  min-width: 0;
-  white-space: nowrap;
-  font-size: 0.9em;
-  padding: 4px 5px;
-  margin: 2px 0;
 }
 
 /* ==================================================
@@ -166,6 +145,7 @@ h3 {
 #clock {
   float: left;
   width: 80px;
+  margin-left: 34px;
   font-size: 2.5em;
   font-weight: bold;
   line-height: 1;
@@ -173,7 +153,7 @@ h3 {
   text-align: left;
   position: relative;
   left: 5px;
-  top: 10px;
+  top: 20px;
 }
 
 #info {
@@ -239,10 +219,9 @@ h3 {
 @media screen and (min-width: 801px) {
 
   body:not(.k) #clock {
-      position: relative;
-      left: 5px;
-      top: 10px;
-      transform: none;
+    position: relative;
+    left: 5px;
+    top: 4px;
   }
 
   body:not(.k) #weatherIcon {
@@ -271,21 +250,17 @@ h3 {
 
   body:not(.k) #head {
     display: grid;
-    grid-template-columns: 85px minmax(0, 1fr);
+    grid-template-columns: 120px minmax(0, 1fr);
     align-items: center;
     column-gap: 8px;
   }
 
   body:not(.k) #clock {
-      float: none;
-      width: 90px;
-      font-size: 2.1em;
-      grid-column: 1;
-      grid-row: 1;
-      position: relative;
-      left: -3px;
-      top: 10px;
-      transform: none;
+    float: none;
+    width: 85px;
+    font-size: 2em;
+    grid-column: 1;
+    grid-row: 1;
   }
 
   body:not(.k) #info {
@@ -347,11 +322,6 @@ h3 {
   body:not(.k) #clockWeather {
     display: none;
   }
-
-  body:not(.k)  #clock {
-    transform: translateY(-10px);
-  }
-	
 }
 
 /* ==================================================
@@ -361,7 +331,7 @@ h3 {
 @media screen and (max-width: 380px) {
 
   body:not(.k) #head {
-    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-columns: 110px minmax(0, 1fr);
     column-gap: 5px;
   }
 
@@ -452,11 +422,6 @@ h3 {
 .tt {
   display: inline-block;
   vertical-align: top;
-}
-
-#agenda input[type="checkbox"],
-#taskContainer input[type="checkbox"] {
-    vertical-align: middle;
 }
 
 /* ==================================================
@@ -554,7 +519,162 @@ input {
   margin: 4px 3px;
 }
 
+/* ==================================================
+   TABLET E CELLULARI
+   ================================================== */
 
+@media screen and (max-width: 800px) {
+
+  /* Colonne una sotto l'altra */
+  .col {
+    float: none;
+    display: block;
+    width: 100%;
+  }
+
+  /* Header */
+  body:not(.k) #head {
+    display: grid;
+    grid-template-columns: 85px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 8px;
+  }
+
+  body:not(.k) #clock {
+    float: none;
+    width: 85px;
+    font-size: 2em;
+    grid-column: 1;
+    grid-row: 1;
+  }
+  
+  body:not(.k) #info {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr) 40px max-content;
+    grid-template-rows: auto auto;
+    column-gap: 5px;
+    align-items: center;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  body:not(.k) #wday {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 0.95em;
+    white-space: nowrap;
+  }
+
+  body:not(.k) #fulldate {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 0.85em;
+    white-space: nowrap;
+  }
+
+  body:not(.k) #weatherIcon {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    width: 48px;
+    height: 48px;
+    justify-content: flex-end;
+    position: relative;
+    left: 5px;
+    top: 5px;
+  }
+  
+  body:not(.k) #weatherIcon svg {
+	  width: 48px;
+	  height: 48px;
+	  position: relative;
+	  top: 3px;
+  }
+
+  body:not(.k) #weather {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+    font-size: 0.8em;
+    line-height: 1.3;
+    text-align: left;
+    white-space: normal;
+    min-width: 0;
+  }
+
+  body:not(.k) #clockWeather {
+    display: none;
+  }
+
+  /* Navigazione agenda */
+  .agenda-nav button {
+      font-size: 1.05em;
+      padding: 8px 18px;
+      margin-right: 6px;
+  }
+
+  /* Navigazione task: Ieri, Oggi, Domani */
+  #taskDayButtons button {
+      font-size: 1.05em;
+      padding: 8px 18px;
+      margin-right: 6px;
+  }
+}
+
+/* ==================================================
+   CELLULARI MOLTO STRETTI
+   ================================================== */
+
+@media screen and (max-width: 380px) {
+
+  body:not(.k) #head {
+    grid-template-columns: 72px minmax(0, 1fr);
+    column-gap: 5px;
+  }
+
+  body:not(.k) #clock {
+    width: 72px;
+    font-size: 1.7em;
+  }
+
+  body:not(.k) #info {
+    grid-template-columns: max-content minmax(0, 1fr) 32px max-content;
+    column-gap: 3px;
+  }
+
+  body:not(.k) #wday {
+    font-size: 0.8em;
+  }
+
+  body:not(.k) #fulldate {
+    font-size: 0.75em;
+  }
+
+  body:not(.k) #weatherIcon,
+  body:not(.k) #weatherIcon svg {
+    width: 38px;
+    height: 38px;
+    position: relative;
+    top: 5px;
+  }
+  
+  body:not(.k) #weatherIcon {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    justify-content: flex-end;
+  }
+  
+  body:not(.k) #weather {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+    font-size: 0.7em;
+    text-align: left;
+    white-space: normal;
+    min-width: 0;
+  }
+}
 
 /* ==================================================
    PERSONALIZZAZIONI KINDLE
@@ -581,6 +701,7 @@ body.k #head {
 body.k #clock {
   float: left;
   width: 110px;
+  margin-left: 34px;
   font-size: 2em;
   line-height: 1;
   margin: 0;
@@ -592,7 +713,7 @@ body.k #clock {
 body.k #info {
   display: block;
   position: relative;
-  margin-left: 126px;
+  margin-left: 158px;
   margin-right: -6px;
   padding: 0;
   min-height: 42px;
@@ -667,6 +788,13 @@ body.k .agenda-nav {
     box-sizing: border-box;
 }
 
+/* Pulsanti navigazione agenda */
+body.k .agenda-nav button {
+    font-size: 1.05em;
+    padding: 8px 12px;
+    margin-right: 4px;
+}
+
 /* Pulsanti navigazione task */
 body.k #taskDayButtons button {
     font-size: 1.05em;
@@ -674,38 +802,73 @@ body.k #taskDayButtons button {
     margin-right: 4px;
 }
 
-body.k .section-heading {
-    position: relative !important;
-    display: block !important;
-    padding: 0 !important;
-    margin: 0 0 4px 0 !important;
-    border-bottom: 1px solid #000 !important;
-    min-height: 0 !important;
-    height: auto !important;
-	padding-bottom: 3px !important;
-}
 
-body.k .section-heading h2 {
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    line-height: 1 !important;
-}
+/* ===== MENU VISTE FAMIGLIA ===== */
+#head { overflow: visible !important; }
 
-body.k .section-heading .sync-label {
-    position: absolute !important;
-    right: 0 !important;
-    top: 0 !important;
-    width: auto !important;
-    max-width: 48% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: .55em !important;
-    line-height: 1 !important;
-    text-align: right !important;
-    white-space: normal !important;
+#viewMenu {
+  position: absolute;
+  left: 7px;
+  top: 7px;
+  z-index: 1000;
 }
+#viewMenuToggle {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  padding: 5px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 4px;
+}
+#viewMenuToggle span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: #000;
+}
+#viewMenuPanel {
+  position: absolute;
+  top: 34px;
+  left: 0;
+  width: 142px;
+  padding: 4px;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+#viewMenuPanel[hidden] { display: none !important; }
+#viewMenuPanel button {
+  display: block;
+  width: 100%;
+  margin: 2px 0;
+  padding: 8px 5px;
+  text-align: left;
+  font-weight: bold;
+}
+#personalView { width: 100%; }
+#personalTasksDate { margin: 0 0 6px 0; }
+#personalTasks label {
+  display: block;
+  padding: 7px 2px;
+  font-size: 16px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+#personalTasks input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0 10px 0 0;
+  vertical-align: middle;
+}
+#personalTasks .personal-task-empty { padding: 4px 0; }
+
 
 </style>
 
@@ -715,6 +878,16 @@ body.k .section-heading .sync-label {
 <div class="wrap">
 
 <div class="box cf" id="head">
+  <div id="viewMenu">
+    <button type="button" id="viewMenuToggle" aria-label="Apri menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div id="viewMenuPanel" hidden>
+      <button type="button" data-view="shared">CONDIVISA</button>
+      <button type="button" data-view="walter">WALTER</button>
+      <button type="button" data-view="ilenia">ILENIA</button>
+    </div>
+  </div>
   <div id="clock">--:--</div>
 	<div id="info">
 	  <div id="wday"></div>
@@ -724,13 +897,31 @@ body.k .section-heading .sync-label {
 	</div>
 </div>
 
+<div id="personalView" style="display:none;">
+  <div class="box" id="personalTasksBox">
+    <div class="section-heading">
+      <h2 id="personalTasksTitle">TASK DI WALTER</h2>
+    </div>
+    <div class="agenda-period" id="personalTasksDate"></div>
+    <div id="personalTasks">Caricamento...</div>
+  </div>
+  <div class="box" id="personalRoutesBox" style="display:none;">
+    <div class="section-heading">
+      <h2>SPOSTAMENTI</h2>
+      <div class="sync-label" id="personalRoutesTimes"></div>
+    </div>
+    <div id="personalRoutes"></div>
+    <div class="small" id="personalRoutesStatus"></div>
+  </div>
+</div>
+
 <div class="box" id="syncBox">
   <h2>Sincronizzazione</h2>
   <div id="syncCtl"></div>
   <div class="small" id="syncStatus"></div>
 </div>
 
-<div class="row cf">
+<div class="row cf" id="dashboardContent">
     <div class="col">
         <div class="box">
             <div class="section-heading">
@@ -1139,6 +1330,134 @@ function scheduleAgendaRefresh() {
   }, delay);
 }
 
+var currentView = "walter";
+
+function closeViewMenu(){
+  var panel = $("viewMenuPanel");
+  var toggle = $("viewMenuToggle");
+  if(panel) panel.hidden = true;
+  if(toggle) toggle.setAttribute("aria-expanded", "false");
+}
+
+function setView(view){
+  currentView = view;
+  var personal = view !== "shared";
+  var row = $("dashboardContent");
+  var personalBox = $("personalView");
+  var routesBox = $("personalRoutesBox");
+
+  if(row) row.style.display = personal ? "none" : "block";
+  if(personalBox) personalBox.style.display = personal ? "block" : "none";
+  if(routesBox) routesBox.style.display = view === "ilenia" ? "block" : "none";
+
+  if(view === "shared") {
+    safe(renderAgenda);
+  } else {
+    safe(renderAgenda);
+    safe(renderPersonalTasks);
+    if(view === "ilenia") syncPersonalRoutes();
+  }
+
+  closeViewMenu();
+  scheduleBoxAlignment();
+}
+
+function initViewMenu(){
+  var toggle = $("viewMenuToggle");
+  var panel = $("viewMenuPanel");
+  if(!toggle || !panel) return;
+
+  toggle.onclick = function(){
+    panel.hidden = !panel.hidden;
+    toggle.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
+  };
+
+  var buttons = panel.querySelectorAll("button[data-view]");
+  for(var i = 0; i < buttons.length; i++){
+    buttons[i].onclick = function(){
+      setView(this.getAttribute("data-view"));
+    };
+  }
+
+  document.addEventListener("click", function(ev){
+    if(!$("viewMenu").contains(ev.target)) closeViewMenu();
+  });
+
+  document.addEventListener("keydown", function(ev){
+    if(ev.key === "Escape") closeViewMenu();
+  });
+
+  setView("walter");
+}
+
+function eventOccursToday(eventItem, today){
+  if(eventItem.all_day){
+    var startDate = eventItem.start && (eventItem.start.date || eventItem.start.dateTime);
+    var endDate = eventItem.end && (eventItem.end.date || eventItem.end.dateTime);
+    var startNum = dateOnlyNum(startDate);
+    var endNum = dateOnlyNum(endDate);
+    if(startNum === null) return false;
+    var lastNum = (endNum !== null && endNum > startNum) ? endNum - 1 : startNum;
+    return today >= startNum && today <= lastNum;
+  }
+
+  var startDateTime = eventItem.start && (eventItem.start.dateTime || eventItem.start.date);
+  var ms = parseIso(startDateTime);
+  return ms !== null && dayNumOfRome(toRome(ms)) === today;
+}
+
+function renderPersonalTasks(){
+  var box = $("personalTasks");
+  if(!box) return;
+  clear(box);
+
+  var owner = currentView === "ilenia" ? "I" : "W";
+  var ownerName = owner === "W" ? "WALTER" : "ILENIA";
+  setText($("personalTasksTitle"), "TASK DI " + ownerName);
+  setText($("personalTasksDate"), dayLabel(todayNum(), todayNum()));
+
+  if(!agendaData || !agendaData.events){
+    setText(box, agendaErr ? "Agenda non disponibile." : "Caricamento compiti...");
+    return;
+  }
+
+  var today = todayNum();
+  var events = agendaData.events;
+  var found = false;
+
+  for(var i = 0; i < events.length; i++){
+    var eventItem = events[i];
+    if(!eventOccursToday(eventItem, today)) continue;
+
+    var data = getEventTaskData(eventItem.description);
+    var owners = data.taskOwners || [];
+    var hasOwnerTask = false;
+    for(var j = 0; j < data.tasks.length; j++){
+      if(owners[j] === owner){ hasOwnerTask = true; break; }
+    }
+    if(!hasOwnerTask) continue;
+
+    found = true;
+    var taskContainer = mk("div", "personal-event-tasks");
+    box.appendChild(taskContainer);
+    renderEventTasksInline(eventItem, taskContainer, owner);
+  }
+
+  if(!found){
+    box.appendChild(mk("div", "personal-task-empty", "Nessun compito assegnato a " + ownerName + " per oggi."));
+  }
+}
+
+function syncPersonalRoutes(){
+  var source = $("routes");
+  var target = $("personalRoutes");
+  if(!source || !target) return;
+  target.innerHTML = source.innerHTML;
+  setText($("personalRoutesTimes"), "");
+  $("personalRoutesTimes").innerHTML = $("routesTimes") ? $("routesTimes").innerHTML : "";
+  setText($("personalRoutesStatus"), $("routesStatus") ? $("routesStatus").textContent : "");
+}
+
 function loadAgenda() {
   getJson(
     [CONFIG.base + "agenda.json", "agenda.json"],
@@ -1153,6 +1472,7 @@ function loadAgenda() {
       }
 
       safe(renderAgenda);
+      if(currentView !== "shared") safe(renderPersonalTasks);
 
       scheduleAgendaRefresh();
     }
@@ -1363,18 +1683,18 @@ function renderAgenda(){
 
       if(agendaTodayOnly){
 
-        // In Today, mostra direttamente i compiti
+        // In Today, mostra i compiti solo nella vista Condivisa.
         row.style.cursor = "default";
         box.appendChild(row);
 
-        var taskContainer = mk("div", "event-task-inline");
-        taskContainer.style.margin = "2px 0 12px 25px";
-        taskContainer.style.padding = "4px 8px";
-        taskContainer.style.borderLeft = "2px solid #999";
-
-        box.appendChild(taskContainer);
-
-        renderEventTasksInline(item, taskContainer);
+        if(currentView === "shared"){
+          var taskContainer = mk("div", "event-task-inline");
+          taskContainer.style.margin = "2px 0 12px 25px";
+          taskContainer.style.padding = "4px 8px";
+          taskContainer.style.borderLeft = "2px solid #999";
+          box.appendChild(taskContainer);
+          renderEventTasksInline(item, taskContainer);
+        }
 
       } else {
 
@@ -1644,6 +1964,7 @@ function renderRoutes(){
 
     box.appendChild(mk("div", "weekend-message", phrase));
     setText($("routesStatus"), "");
+    syncPersonalRoutes();
     scheduleBoxAlignment();
     return;
   }
@@ -1651,6 +1972,7 @@ function renderRoutes(){
   /* Giorni feriali */
   if(!CONFIG.routesUrl){
     setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
+    syncPersonalRoutes();
     scheduleBoxAlignment();
     return;
   }
@@ -1715,6 +2037,7 @@ function renderRoutes(){
   }
 
   setText($("routesStatus"), st);
+  syncPersonalRoutes();
 
   scheduleBoxAlignment();
 }
@@ -1848,6 +2171,7 @@ function getEventTaskData(description){
 
   var lines = String(description || "").split(/\r?\n/);
   var tasks = [];
+  var taskOwners = [];
   var details = [];
   var start = false;
   var hasMarker = false;
@@ -1882,7 +2206,9 @@ function getEventTaskData(description){
       line = line.replace(/^[-*]\s+/, "").replace(/\s+$/g, "");
 
       if(line){
+        var ownerMatch = line.match(/^([WI])\s*:\s*(.*)$/i);
         tasks.push(line);
+        taskOwners.push(ownerMatch ? ownerMatch[1].toUpperCase() : "");
       }
 
     } else {
@@ -1892,16 +2218,30 @@ function getEventTaskData(description){
 
   return {
     tasks: tasks,
+    taskOwners: taskOwners,
     details: details.join("\n")
   };
 }
 
 
-function renderEventTasksInline(eventItem, taskContainer){
+function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
 
   var data = getEventTaskData(eventItem.description);
   var tasks = data.tasks;
-  var details = data.details;
+  var owners = data.taskOwners || [];
+  var details = ownerFilter ? "" : data.details;
+  var selectedIndexes = [];
+  var taskIndex;
+
+  for(taskIndex = 0; taskIndex < tasks.length; taskIndex++){
+    if(!ownerFilter || owners[taskIndex] === ownerFilter){
+      selectedIndexes.push(taskIndex);
+    }
+  }
+
+  if(ownerFilter && !selectedIndexes.length){
+    return;
+  }
 
   if(!tasks.length && !details){
     taskContainer.appendChild(
@@ -1944,11 +2284,12 @@ function renderEventTasksInline(eventItem, taskContainer){
 
     var i;
 
-    for(i = 0; i < tasks.length; i++){
+    for(i = 0; i < selectedIndexes.length; i++){
 
       (function(index){
 
         var taskKey = index + ":" + tasks[index];
+        var visibleTask = ownerFilter ? tasks[index].replace(/^[WI]\s*:\s*/i, "") : tasks[index];
 
         var label = mk("label", "");
         label.style.display = "block";
@@ -1966,7 +2307,7 @@ function renderEventTasksInline(eventItem, taskContainer){
 
         label.appendChild(checkbox);
         label.appendChild(
-          document.createTextNode(tasks[index])
+          document.createTextNode(visibleTask)
         );
 
         taskContainer.appendChild(label);
@@ -1994,7 +2335,7 @@ function renderEventTasksInline(eventItem, taskContainer){
           }, url);
         };
 
-      })(i);
+      })(selectedIndexes[i]);
     }
 
     // Collegamento aggiunto dopo tutte le checkbox.
@@ -3155,6 +3496,7 @@ function renderMenu(k, err, d){
 /* ===== AVVIO: ogni blocco è indipendente ===== */
 
 safe(startClock);
+safe(initViewMenu);
 safe(loadAgenda);
 safe(loadWeather);
 safe(loadSunTimes);
