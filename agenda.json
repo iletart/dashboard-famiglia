@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-02T21:50:02.533274+01:00",
+  "generated_at": "2026-11-02T21:51:02.567419+01:00",
   "period_days": 14,
   "events": [
     {
@@ -18,6 +18,22 @@
       "location": "",
       "description": "- W: calze antiscivolo",
       "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDJUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "3jjsqeviviikbd3qrh4kgmp1j1_20261102T163000Z",
+      "title": "Motricità",
+      "start": {
+        "dateTime": "2026-11-02T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-03T04:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=M2pqc3Fldml2aWlrYmQzcXJoNGtnbXAxajFfMjAyNjExMDJUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
       "id": "01guhquf80r3kbvobnkb9hv1pk_20261103T161500Z",
@@ -114,6 +130,22 @@
       "location": "",
       "description": "- W: calze antiscivolo",
       "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDlUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "3jjsqeviviikbd3qrh4kgmp1j1_20261109T163000Z",
+      "title": "Motricità",
+      "start": {
+        "dateTime": "2026-11-09T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-10T04:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=M2pqc3Fldml2aWlrYmQzcXJoNGtnbXAxajFfMjAyNjExMDlUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
       "id": "01guhquf80r3kbvobnkb9hv1pk_20261110T161500Z",
