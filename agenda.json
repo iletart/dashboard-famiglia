@@ -1,8 +1,24 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-02T21:51:02.567419+01:00",
+  "generated_at": "2026-11-02T21:52:02.600966+01:00",
   "period_days": 14,
   "events": [
+    {
+      "id": "0vuksn5psqtumh3be9lkn65q49_20261102T073000Z",
+      "title": "Motricità",
+      "start": {
+        "dateTime": "2026-11-02T07:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-02T07:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "- W: calze antiscivolo",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MHZ1a3NuNXBzcXR1bWgzYmU5bGtuNjVxNDlfMjAyNjExMDJUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
     {
       "id": "12ug354gtoq95bjhtvc2lbvafc_20261102T073000Z",
       "title": "Motricità",
@@ -18,22 +34,6 @@
       "location": "",
       "description": "- W: calze antiscivolo",
       "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDJUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "3jjsqeviviikbd3qrh4kgmp1j1_20261102T163000Z",
-      "title": "Motricità",
-      "start": {
-        "dateTime": "2026-11-02T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-03T04:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "",
-      "htmlLink": "https://www.google.com/calendar/event?eid=M2pqc3Fldml2aWlrYmQzcXJoNGtnbXAxajFfMjAyNjExMDJUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
       "id": "01guhquf80r3kbvobnkb9hv1pk_20261103T161500Z",
@@ -116,6 +116,22 @@
       "htmlLink": "https://www.google.com/calendar/event?eid=NzBzM2FvOWs2b3MzNmI5cGNsaTMyYjlrY2RnajRiYjFjbGo2MmJiMTZoaDY4cDFvNjFpNjhjMzU2cyBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
+      "id": "0vuksn5psqtumh3be9lkn65q49_20261109T073000Z",
+      "title": "Motricità",
+      "start": {
+        "dateTime": "2026-11-09T07:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-09T07:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "- W: calze antiscivolo",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MHZ1a3NuNXBzcXR1bWgzYmU5bGtuNjVxNDlfMjAyNjExMDlUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
       "id": "12ug354gtoq95bjhtvc2lbvafc_20261109T073000Z",
       "title": "Motricità",
       "start": {
@@ -130,22 +146,6 @@
       "location": "",
       "description": "- W: calze antiscivolo",
       "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDlUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "3jjsqeviviikbd3qrh4kgmp1j1_20261109T163000Z",
-      "title": "Motricità",
-      "start": {
-        "dateTime": "2026-11-09T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-10T04:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "",
-      "htmlLink": "https://www.google.com/calendar/event?eid=M2pqc3Fldml2aWlrYmQzcXJoNGtnbXAxajFfMjAyNjExMDlUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
       "id": "01guhquf80r3kbvobnkb9hv1pk_20261110T161500Z",
