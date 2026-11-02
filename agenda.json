@@ -1,13 +1,13 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-02T16:40:02.534087+01:00",
+  "generated_at": "2026-11-02T16:41:02.551562+01:00",
   "period_days": 14,
   "events": [
     {
-      "id": "12ug354gtoq95bjhtvc2lbvafc_20261102T163000Z",
+      "id": "12ug354gtoq95bjhtvc2lbvafc_20261102T073000Z",
       "title": "Motricità",
       "start": {
-        "dateTime": "2026-11-02T16:30:00Z",
+        "dateTime": "2026-11-02T07:30:00Z",
         "timeZone": "Europe/Rome"
       },
       "end": {
@@ -17,7 +17,7 @@
       "all_day": false,
       "location": "",
       "description": "- W: calze antiscivolo",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDJUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDJUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
       "id": "01guhquf80r3kbvobnkb9hv1pk_20261103T161500Z",
@@ -100,10 +100,10 @@
       "htmlLink": "https://www.google.com/calendar/event?eid=NzBzM2FvOWs2b3MzNmI5cGNsaTMyYjlrY2RnajRiYjFjbGo2MmJiMTZoaDY4cDFvNjFpNjhjMzU2cyBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
-      "id": "12ug354gtoq95bjhtvc2lbvafc_20261109T163000Z",
+      "id": "12ug354gtoq95bjhtvc2lbvafc_20261109T073000Z",
       "title": "Motricità",
       "start": {
-        "dateTime": "2026-11-09T16:30:00Z",
+        "dateTime": "2026-11-09T07:30:00Z",
         "timeZone": "Europe/Rome"
       },
       "end": {
@@ -113,7 +113,7 @@
       "all_day": false,
       "location": "",
       "description": "- W: calze antiscivolo",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDlUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDlUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
       "id": "01guhquf80r3kbvobnkb9hv1pk_20261110T161500Z",
