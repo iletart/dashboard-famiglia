@@ -844,6 +844,7 @@ body.k #taskDayButtons button {
   box-sizing: border-box;
 }
 #viewMenuPanel[hidden] { display: none !important; }
+
 #viewMenuPanel button {
   display: block;
   width: 100%;
@@ -853,14 +854,31 @@ body.k #taskDayButtons button {
   font-weight: bold;
 }
 #personalView { width: 100%; }
+
 #personalTasksDate { margin: 0 0 6px 0; }
+
 #personalTasks label {
-  display: block;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  width: 100%;
   padding: 7px 2px;
   font-size: 16px;
   line-height: 1.35;
   cursor: pointer;
+  box-sizing: border-box;
 }
+
+#personalTasks label input[type="checkbox"] {
+  flex: 0 0 20px;
+  width: 20px !important;
+  min-width: 20px;
+  height: 20px;
+  margin: 0 8px 0 0 !important;
+  padding: 0;
+}
+
 #personalTasks input[type="checkbox"] {
   width: 20px;
   height: 20px;
@@ -1098,6 +1116,62 @@ body.k #personalGlobalTaskList .todo-actions {
   width: 34px !important;
   justify-content: flex-end !important;
   margin-left: auto !important;
+}
+
+/* KINDLE - NAVIGAZIONE */
+
+body.k .agenda-nav,
+body.k #taskDayButtons,
+body.k #menuDayButtons {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  width: 100% !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+}
+
+body.k .agenda-nav button,
+body.k #taskDayButtons button,
+body.k #menuDayButtons button {
+  flex: 1 1 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 1px 0 !important;
+  padding: 6px 2px !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+/* KINDLE - CAMPI E PULSANTI */
+
+body.k #taskCtl,
+body.k #todoCtl {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  gap: 6px !important;
+  box-sizing: border-box !important;
+}
+
+body.k #taskCtl input,
+body.k #todoCtl input {
+  flex: 1 1 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body.k #taskCtl button,
+body.k #todoCtl button {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 64px !important;
+  margin: 0 !important;
 }
 
 </style>
