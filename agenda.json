@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-02T22:48:02.831446+01:00",
+  "generated_at": "2026-11-02T22:49:02.805983+01:00",
   "period_days": 14,
   "events": [
     {
@@ -27,7 +27,7 @@
         "timeZone": "Europe/Rome"
       },
       "end": {
-        "dateTime": "2026-11-02T16:30:00Z",
+        "dateTime": "2026-11-02T07:30:00Z",
         "timeZone": "Europe/Rome"
       },
       "all_day": false,
@@ -139,7 +139,7 @@
         "timeZone": "Europe/Rome"
       },
       "end": {
-        "dateTime": "2026-11-09T16:30:00Z",
+        "dateTime": "2026-11-09T07:30:00Z",
         "timeZone": "Europe/Rome"
       },
       "all_day": false,
