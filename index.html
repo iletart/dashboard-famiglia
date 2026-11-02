@@ -583,6 +583,27 @@ body:not(.k) #menuDayButtons button {
     display: block;
 }
 
+.personal-period-switch {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0 12px;
+}
+
+.personal-period-switch button {
+    flex: 1;
+    padding: 8px;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.personal-period-switch button.active {
+    background: #000;
+    color: #fff;
+}
+
 /* ==================================================
    HEADER DESKTOP
    ================================================== */
@@ -1008,6 +1029,10 @@ body.k .agenda-task-text {
 <div id="personalView" style="display:none;">
   <div class="box" id="personalTasksBox">
     <div class="section-heading">
+		<div class="personal-period-switch">
+		  <button type="button" id="personalTasksToday" class="active">OGGI</button>
+		  <button type="button" id="personalTasksTomorrow">DOMANI</button>
+		</div>
       <h2 id="personalTasksTitle">TASK DI WALTER</h2>
     </div>
     <div class="agenda-period" id="personalTasksDate" style="display:none;"></div>
@@ -1146,7 +1171,7 @@ var routesSyncedAt = null;
 var todoSyncedAt = null;
 var taskSyncedAt = null;
 var menuSyncedAt = null;
-
+var personalTasksDayOffset = 0;
 var routesErr = false;
 var menuUpdatedAt = null;
 
@@ -1448,6 +1473,7 @@ function scheduleAgendaRefresh() {
 }
 
 var currentView = "walter";
+var personalTasksDayOffset = 0;
 
 function closeViewMenu(){
   var panel = $("viewMenuPanel");
@@ -1529,47 +1555,81 @@ function eventOccursToday(eventItem, today){
 
 function renderPersonalTasks(){
   renderPersonalGlobalTasks();
+
   var box = $("personalTasks");
   if(!box) return;
   clear(box);
 
   var owner = currentView === "ilenia" ? "I" : "W";
   var ownerName = owner === "W" ? "WALTER" : "ILENIA";
-  setText($("personalTasksTitle"), owner === "W" ? "TASK DI WALTER" : "TASK DI ILENIA");
+
+  var targetDay = todayNum() + personalTasksDayOffset;
+  var dayLabel = personalTasksDayOffset === 0 ? "oggi" : "domani";
+
+  setText($("personalTasksTitle"), "TASK DI " + ownerName);
   setText($("personalTasksDate"), "");
+
+  var btnToday = $("personalTasksToday");
+  var btnTomorrow = $("personalTasksTomorrow");
+
+  if(btnToday){
+    btnToday.className = personalTasksDayOffset === 0 ? "active" : "";
+    btnToday.onclick = function(){
+      personalTasksDayOffset = 0;
+      renderPersonalTasks();
+    };
+  }
+
+  if(btnTomorrow){
+    btnTomorrow.className = personalTasksDayOffset === 1 ? "active" : "";
+    btnTomorrow.onclick = function(){
+      personalTasksDayOffset = 1;
+      renderPersonalTasks();
+    };
+  }
 
   if(!agendaData || !agendaData.events){
     setText(box, agendaErr ? "Agenda non disponibile." : "Caricamento compiti...");
     return;
   }
 
-  var today = todayNum();
   var events = agendaData.events;
   var found = false;
 
   for(var i = 0; i < events.length; i++){
     var eventItem = events[i];
-    if(!eventOccursToday(eventItem, today)) continue;
+
+    if(!eventOccursToday(eventItem, targetDay)) continue;
 
     var data = getEventTaskData(eventItem.description);
     var owners = data.taskOwners || [];
     var hasOwnerTask = false;
+
     for(var j = 0; j < data.tasks.length; j++){
-      if(owners[j] === owner){ hasOwnerTask = true; break; }
+      if(owners[j] === owner){
+        hasOwnerTask = true;
+        break;
+      }
     }
+
     if(!hasOwnerTask) continue;
 
     found = true;
+
     var taskContainer = mk("div", "personal-event-tasks");
     box.appendChild(taskContainer);
+
     renderEventTasksInline({
-    eventId: eventItem.id || eventItem.eventId || "",
-    description: eventItem.description
-	}, taskContainer, owner);
+      eventId: eventItem.id || eventItem.eventId || "",
+      description: eventItem.description
+    }, taskContainer, owner);
   }
 
   if(!found){
-    box.appendChild(mk("div", "personal-task-empty", "Nessun compito assegnato a " + ownerName + " per oggi."));
+    box.appendChild(
+      mk("div", "personal-task-empty",
+        "Nessun compito assegnato a " + ownerName + " per " + dayLabel + ".")
+    );
   }
 }
 
