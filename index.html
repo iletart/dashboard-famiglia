@@ -870,6 +870,27 @@ body.k #taskDayButtons button {
 #personalTasks .personal-task-empty { padding: 4px 0; }
 
 
+/* Orologio posizionato subito a destra del menu hamburger */
+#clock {
+  margin-left: 42px !important;
+}
+
+@media screen and (min-width: 801px) {
+  body:not(.k) #info {
+    margin-left: 135px !important;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  body:not(.k) #head {
+    grid-template-columns: 145px minmax(0, 1fr) !important;
+  }
+}
+
+body.k #info {
+  margin-left: 158px !important;
+}
+
 </style>
 
 
