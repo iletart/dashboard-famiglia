@@ -2457,14 +2457,6 @@ function renderRoutes(){
 
   var st = "";
 
-  if(routesData && routesData.generated_at){
-    var g = parseIso(routesData.generated_at);
-
-    if(g !== null){
-      st = "Aggiornato alle " + hhmmRome(g);
-    }
-  }
-
   if(routesErr){
     st = st ? st + " - rete non disponibile" :
       "Tempi non raggiungibili.";
