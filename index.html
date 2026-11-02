@@ -488,6 +488,7 @@ body:not(.k) #menuDayButtons button {
     padding: 8px 3px;
     box-sizing: border-box;
     text-align: center;
+	border-radius: 12px !important;
 }
 
 /* ==================================================
@@ -992,30 +993,33 @@ body.k .todo-actions {
 
 /* Task dell'agenda */
 body.k .agenda-task-row {
+    display: block !important;
     width: 100% !important;
     text-align: left !important;
-    margin-left: 0 !important;
-    padding-left: 0 !important;
+    margin: 0 0 8px 0 !important;
+    padding: 0 !important;
     float: none !important;
+    clear: both !important;
+    white-space: normal !important;
 }
 
 body.k .agenda-task-check {
     display: inline-block !important;
     width: 20px !important;
     height: 20px !important;
-    margin: 0 3px 0 0 !important;
-    vertical-align: middle !important;
+    margin: 0 5px 0 0 !important;
+    vertical-align: top !important;
 }
 
 body.k .agenda-task-text {
     display: inline !important;
     width: auto !important;
-    vertical-align: middle !important;
+    vertical-align: top !important;
     text-align: left !important;
     margin: 0 !important;
     padding: 0 !important;
     white-space: normal !important;
-    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
 }
 
 
