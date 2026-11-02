@@ -1,6 +1,6 @@
 {
   "calendar": "Ilenia Tartamella",
-  "generated_at": "2026-11-02T23:55:02.335336+01:00",
+  "generated_at": "2026-11-02T23:56:02.375378+01:00",
   "period_days": 14,
   "events": [
     {
@@ -16,22 +16,6 @@
       "location": "",
       "description": "",
       "htmlLink": "https://www.google.com/calendar/event?eid=M2drNWFhNmdidWxmYTBiaG03cjRlMXU4azIgaWxldGFydGFAbQ"
-    },
-    {
-      "id": "12ug354gtoq95bjhtvc2lbvafc_20261102T163000Z",
-      "title": "Motricità",
-      "start": {
-        "dateTime": "2026-11-02T17:30:00+01:00",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-02T17:30:00+01:00",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDJUMTYzMDAwWiBpbGV0YXJ0YUBt"
     },
     {
       "id": "5ftui5186dleqh91q1nrbm67ok_20261102T173000Z",
@@ -80,22 +64,6 @@
       "location": "",
       "description": "",
       "htmlLink": "https://www.google.com/calendar/event?eid=MGYxam80amtoYWQ1cWY3aTBwdnUybmpqZjVfMjAyNjExMDZUMTM0NTAwWiBpbGV0YXJ0YUBt"
-    },
-    {
-      "id": "12ug354gtoq95bjhtvc2lbvafc_20261109T163000Z",
-      "title": "Motricità",
-      "start": {
-        "dateTime": "2026-11-09T17:30:00+01:00",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-09T17:30:00+01:00",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDlUMTYzMDAwWiBpbGV0YXJ0YUBt"
     },
     {
       "id": "5ftui5186dleqh91q1nrbm67ok_20261109T173000Z",
