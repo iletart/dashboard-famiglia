@@ -520,6 +520,33 @@ input {
 }
 
 /* ==================================================
+   PULSANTI NAVIGAZIONE PC E SMARTPHONE
+   ================================================== */
+
+body:not(.k) .agenda-nav,
+body:not(.k) #taskDayButtons,
+body:not(.k) #menuDayButtons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: 100%;
+  gap: 5px;
+  box-sizing: border-box;
+}
+
+body:not(.k) .agenda-nav button,
+body:not(.k) #taskDayButtons button,
+body:not(.k) #menuDayButtons button {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  margin: 2px 0;
+  padding: 8px 3px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* ==================================================
    TABLET E CELLULARI
    ================================================== */
 
@@ -677,62 +704,6 @@ input {
 }
 
 /* ==================================================
-   PULSANTI NAVIGAZIONE
-   ================================================== */
-
-/* PC, tablet e smartphone */
-body:not(.k) .agenda-nav,
-body:not(.k) #taskDayButtons,
-body:not(.k) #menuDayButtons {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  width: 100%;
-  gap: 5px;
-  box-sizing: border-box;
-}
-
-body:not(.k) .agenda-nav button,
-body:not(.k) #taskDayButtons button,
-body:not(.k) #menuDayButtons button {
-  flex: 1 1 0;
-  min-width: 0;
-  width: auto;
-  margin: 2px 0;
-  padding: 8px 3px;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-/* Kindle */
-body.k .agenda-nav,
-body.k #taskDayButtons,
-body.k #menuDayButtons {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-    gap: 4px !important;
-}
-
-body.k .agenda-nav button,
-body.k #taskDayButtons button,
-body.k #menuDayButtons button {
-    display: block !important;
-    flex: 1 1 0 !important;
-    width: 0 !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    margin: 2px 0 !important;
-    padding: 8px 2px !important;
-    box-sizing: border-box !important;
-    white-space: nowrap !important;
-    text-align: center !important;
-}
-
-/* ==================================================
    PERSONALIZZAZIONI KINDLE
    ================================================== */
 
@@ -836,6 +807,29 @@ body.k #menuList li {
   list-style-type: none !important;
 }
 
+body.k .agenda-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Pulsanti navigazione agenda */
+body.k .agenda-nav button {
+    font-size: 1.05em;
+    padding: 8px 12px;
+    margin-right: 4px;
+}
+
+/* Pulsanti navigazione task */
+body.k #taskDayButtons button {
+    font-size: 1.05em;
+    padding: 8px 12px;
+    margin-right: 4px;
+}
+
+
 /* ===== MENU VISTE FAMIGLIA ===== */
 #head { overflow: visible !important; }
 
@@ -877,7 +871,6 @@ body.k #menuList li {
   box-sizing: border-box;
 }
 #viewMenuPanel[hidden] { display: none !important; }
-
 #viewMenuPanel button {
   display: block;
   width: 100%;
@@ -887,31 +880,14 @@ body.k #menuList li {
   font-weight: bold;
 }
 #personalView { width: 100%; }
-
 #personalTasksDate { margin: 0 0 6px 0; }
-
 #personalTasks label {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  width: 100%;
+  display: block;
   padding: 7px 2px;
   font-size: 16px;
   line-height: 1.35;
   cursor: pointer;
-  box-sizing: border-box;
 }
-
-#personalTasks label input[type="checkbox"] {
-  flex: 0 0 20px;
-  width: 20px !important;
-  min-width: 20px;
-  height: 20px;
-  margin: 0 8px 0 0 !important;
-  padding: 0;
-}
-
 #personalTasks input[type="checkbox"] {
   width: 20px;
   height: 20px;
@@ -944,6 +920,7 @@ body.k #info {
 
 
 /* ===== ULTIMO LAYOUT HEADER / PAGINE PERSONALI ===== */
+#personalGlobalTaskBox { display:block; }
 
 @media screen and (min-width:801px) {
   body:not(.k) #info {
@@ -1065,6 +1042,59 @@ body.k #info {
   }
 }
 
+/* Sul Kindle i tre gruppi di navigazione restano sempre su una sola riga. */
+body.k .agenda-nav,
+body.k #taskDayButtons,
+body.k #menuDayButtons {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  gap: 3px !important;
+  box-sizing: border-box !important;
+}
+body.k .agenda-nav button,
+body.k #taskDayButtons button,
+body.k #menuDayButtons button {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  width: 0 !important;
+  padding: 5px 2px !important;
+  margin: 1px 0 !important;
+  font-size: 0.78em !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+}
+body.k #menuDayButtons #mb-refresh { display:none !important; }
+
+/* Kindle: distribuisce i pulsanti in tutta la larghezza del rispettivo box. */
+body.k .agenda-nav,
+body.k #taskDayButtons,
+body.k #menuDayButtons {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: stretch !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+}
+body.k .agenda-nav button,
+body.k #taskDayButtons button,
+body.k #menuDayButtons button {
+  display: block !important;
+  flex: 1 1 0% !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 1px 0 !important;
+  padding: 7px 2px !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
 
 /* Kindle: checkbox e testo dei Task condivisi sempre affiancati. */
 body.k #personalGlobalTaskList .todo {
@@ -1095,35 +1125,6 @@ body.k #personalGlobalTaskList .todo-actions {
   width: 34px !important;
   justify-content: flex-end !important;
   margin-left: auto !important;
-}
-
-/* KINDLE - CAMPI E PULSANTI */
-
-body.k #taskCtl,
-body.k #todoCtl {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  align-items: stretch !important;
-  width: 100% !important;
-  gap: 6px !important;
-  box-sizing: border-box !important;
-}
-
-body.k #taskCtl input,
-body.k #todoCtl input {
-  flex: 1 1 0 !important;
-  width: 0 !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-}
-
-body.k #taskCtl button,
-body.k #todoCtl button {
-  flex: 0 0 auto !important;
-  width: auto !important;
-  min-width: 64px !important;
-  margin: 0 !important;
 }
 
 </style>
