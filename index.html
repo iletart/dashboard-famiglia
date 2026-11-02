@@ -677,9 +677,10 @@ input {
 }
 
 /* ==================================================
-   PULSANTI NAVIGAZIONE PC E SMARTPHONE
+   PULSANTI NAVIGAZIONE
    ================================================== */
 
+/* PC, tablet e smartphone */
 body:not(.k) .agenda-nav,
 body:not(.k) #taskDayButtons,
 body:not(.k) #menuDayButtons {
@@ -701,6 +702,34 @@ body:not(.k) #menuDayButtons button {
   padding: 8px 3px;
   box-sizing: border-box;
   text-align: center;
+}
+
+/* Kindle */
+body.k .agenda-nav,
+body.k #taskDayButtons,
+body.k #menuDayButtons {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+}
+
+body.k .agenda-nav button,
+body.k #taskDayButtons button,
+body.k #menuDayButtons button {
+  display: block !important;
+  flex: 1 1 0% !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 1px 0 !important;
+  padding: 6px 2px !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
 }
 
 /* ==================================================
