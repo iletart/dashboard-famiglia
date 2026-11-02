@@ -374,31 +374,30 @@ input {
 
 body.k #taskCtl,
 body.k #todoCtl {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    gap: 5px !important;
+    display: table !important;
+    table-layout: auto !important;
     width: 100% !important;
-    box-sizing: border-box !important;
+    border-spacing: 4px 0;
 }
 
 body.k #taskInput,
 body.k #todoInput {
-    display: block !important;
-    flex: 1 1 auto !important;
-    width: auto !important;
+    display: table-cell !important;
+    width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
 }
 
 body.k #taskAddButton,
 body.k #todoCtl button {
-    display: block !important;
-    flex: 0 0 65px !important;
-    width: 65px !important;
-    min-width: 65px !important;
+    display: inline-block !important;
+    flex: 0 0 85px !important;
+    width: 85px !important;
+    min-width: 85px !important;
+    max-width: 85px !important;
+    padding: 5px 2px !important;
     white-space: nowrap !important;
+    overflow: visible !important;
     margin: 0 !important;
     box-sizing: border-box !important;
 }
@@ -939,30 +938,7 @@ body.k .agenda-task-text {
     word-wrap: break-word !important;
 }
 
-body.k #taskCtl,
-body.k #todoCtl {
-    display: table !important;
-    table-layout: auto !important;
-    width: 100% !important;
-    border-spacing: 4px 0;
-}
 
-body.k #taskInput,
-body.k #todoInput {
-    display: table-cell !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-}
-
-body.k #taskAddButton,
-body.k #todoCtl button {
-    display: table-cell !important;
-    width: 1% !important;
-    white-space: nowrap !important;
-    box-sizing: border-box !important;
-    vertical-align: middle !important;
-}
 
 </style>
 
