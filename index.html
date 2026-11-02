@@ -1469,6 +1469,9 @@ var ileniaAgendaData = null;
 var ileniaAgendaErr = false;
 var ileniaAgendaSyncedAt = null;
 
+var ileniaAgendaWeekOffset = 0;
+var ileniaAgendaTodayOnly = true;
+
 function loadIleniaAgenda() {
   getJson(
     [CONFIG.base + "agenda_ilenia.json", "agenda_ilenia.json"],
@@ -1509,70 +1512,142 @@ function renderIleniaAgenda() {
 
   var today = todayNum();
   var events = ileniaAgendaData.events;
-  var found = false;
+  var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
 
-  for(var day = 0; day < 7; day++) {
+  monday += ileniaAgendaWeekOffset * 7;
 
-    var dayNum = today + day;
-    var dayEvents = [];
+  var viewStart = ileniaAgendaTodayOnly ? today : monday;
+  var viewDays = ileniaAgendaTodayOnly ? 1 : 7;
+  var weekEnd = viewStart + viewDays - 1;
 
-    for(var i = 0; i < events.length; i++) {
-      var e = events[i];
+  // Pulsanti navigazione
+  var nav = mk("div", "agenda-nav");
 
-      if(e.all_day) {
-        var startDate = e.start && (e.start.date || e.start.dateTime);
-        var endDate = e.end && (e.end.date || e.end.dateTime);
+  var btnToday = mk("button", "", "Today");
+  btnToday.type = "button";
+  btnToday.disabled = ileniaAgendaTodayOnly;
 
-        var sd = dateOnlyNum(startDate);
-        var ed = dateOnlyNum(endDate);
+  btnToday.onclick = function() {
+    ileniaAgendaTodayOnly = true;
+    safe(renderIleniaAgenda);
+  };
 
-        if(sd === null) continue;
+  var btnCurrent = mk("button", "", "This week");
+  btnCurrent.type = "button";
+  btnCurrent.disabled = !ileniaAgendaTodayOnly && ileniaAgendaWeekOffset === 0;
 
-        var last = (ed !== null && ed > sd) ? ed - 1 : sd;
+  btnCurrent.onclick = function() {
+    ileniaAgendaTodayOnly = false;
+    ileniaAgendaWeekOffset = 0;
+    safe(renderIleniaAgenda);
+  };
 
-        if(dayNum >= sd && dayNum <= last) {
-          dayEvents.push({
+  var btnNext = mk("button", "", "Next Week");
+  btnNext.type = "button";
+  btnNext.disabled = !ileniaAgendaTodayOnly && ileniaAgendaWeekOffset === 1;
+
+  btnNext.onclick = function() {
+    ileniaAgendaTodayOnly = false;
+    ileniaAgendaWeekOffset = 1;
+    safe(renderIleniaAgenda);
+  };
+
+  nav.appendChild(btnToday);
+  nav.appendChild(btnCurrent);
+  nav.appendChild(btnNext);
+
+  box.appendChild(nav);
+
+  // Date del periodo
+  function weekDateText(num) {
+    var d = dateOfDayNum(num);
+    var day = GIORNI[d.getUTCDay()];
+
+    return day.charAt(0).toUpperCase() + day.substring(1) +
+      " " + p2(d.getUTCDate()) + "/" + p2(d.getUTCMonth() + 1);
+  }
+
+  var period = mk(
+    "div",
+    "agenda-period",
+    ileniaAgendaTodayOnly
+      ? weekDateText(today)
+      : weekDateText(monday) + " – " + weekDateText(weekEnd)
+  );
+
+  period.style.fontWeight = "bold";
+  box.appendChild(period);
+
+  var buckets = [];
+
+  for(var i = 0; i < viewDays; i++) {
+    buckets.push([]);
+  }
+
+  // Raggruppamento eventi per giorno
+  for(var i = 0; i < events.length; i++) {
+    var e = events[i];
+
+    if(e.all_day) {
+      var startDate = e.start && (e.start.date || e.start.dateTime);
+      var endDate = e.end && (e.end.date || e.end.dateTime);
+
+      var sd = dateOnlyNum(startDate);
+      var ed = dateOnlyNum(endDate);
+
+      if(sd === null) continue;
+
+      var last = (ed !== null && ed > sd) ? ed - 1 : sd;
+
+      for(var n = sd; n <= last; n++) {
+        if(n >= viewStart && n < viewStart + viewDays) {
+          buckets[n - viewStart].push({
             key: 0,
             time: "Tutto il giorno",
             title: e.title || "(senza titolo)"
           });
         }
+      }
 
-      } else {
-        var startDateTime = e.start && (e.start.dateTime || e.start.date);
-        var ms = parseIso(startDateTime);
+    } else {
+      var startDateTime = e.start && (e.start.dateTime || e.start.date);
+      var ms = parseIso(startDateTime);
 
-        if(ms === null) continue;
+      if(ms === null) continue;
 
-        var eventDay = dayNumOfRome(toRome(ms));
+      var eventDay = dayNumOfRome(toRome(ms));
 
-        if(eventDay === dayNum) {
-          dayEvents.push({
-            key: ms,
-            time: hhmmRome(ms),
-            title: e.title || "(senza titolo)"
-          });
-        }
+      if(eventDay >= viewStart && eventDay < viewStart + viewDays) {
+        buckets[eventDay - viewStart].push({
+          key: ms,
+          time: hhmmRome(ms),
+          title: e.title || "(senza titolo)"
+        });
       }
     }
+  }
 
-    if(!dayEvents.length) continue;
+  // Visualizzazione eventi
+  var found = false;
+
+  for(var i = 0; i < viewDays; i++) {
+    if(!buckets[i].length) continue;
 
     found = true;
 
-    dayEvents.sort(function(a, b) {
+    buckets[i].sort(function(a, b) {
       return a.key - b.key;
     });
 
     box.appendChild(
-      mk("h3", "", dayLabel(dayNum, today))
+      mk("h3", "", dayLabel(viewStart + i, today))
     );
 
-    for(var j = 0; j < dayEvents.length; j++) {
+    for(var j = 0; j < buckets[i].length; j++) {
       var row = mk("div", "ev");
 
-      row.appendChild(mk("span", "t", dayEvents[j].time));
-      row.appendChild(mk("span", "tt", dayEvents[j].title));
+      row.appendChild(mk("span", "t", buckets[i][j].time));
+      row.appendChild(mk("span", "tt", buckets[i][j].title));
 
       box.appendChild(row);
     }
@@ -1580,10 +1655,11 @@ function renderIleniaAgenda() {
 
   if(!found) {
     box.appendChild(
-      mk("div", "", "Nessun impegno nei prossimi giorni.")
+      mk("div", "", "Nessun impegno nel periodo selezionato.")
     );
   }
 
+  // Ultimo aggiornamento
   if(ileniaAgendaSyncedAt) {
     setText(
       times,
