@@ -1189,23 +1189,22 @@ body.k .todo-actions {
 /* KINDLE */
 
 body.k .agenda-task-row {
-    display: table !important;
-    table-layout: fixed !important;
+    display: block !important;
     width: 100% !important;
-    box-sizing: border-box !important;
+    text-align: left !important;
+    overflow: hidden !important;
 }
 
 body.k .agenda-task-check {
-    display: table-cell !important;
-    width: 23px !important;
-    min-width: 23px !important;
+    display: inline-block !important;
+    width: 20px !important;
     height: 20px !important;
-    margin: 0 !important;
+    margin: 0 3px 0 0 !important;
     vertical-align: middle !important;
 }
 
 body.k .agenda-task-text {
-    display: table-cell !important;
+    display: inline !important;
     width: auto !important;
     vertical-align: middle !important;
     text-align: left !important;
@@ -1227,7 +1226,7 @@ body.k .agenda-task-text {
       <span></span><span></span><span></span>
     </button>
     <div id="viewMenuPanel" hidden>
-      <button type="button" data-view="shared">CONDIVISA</button>
+      <button type="button" data-view="shared">FAMIGLIA</button>
       <button type="button" data-view="walter">WALTER</button>
       <button type="button" data-view="ilenia">ILENIA</button>
     </div>
