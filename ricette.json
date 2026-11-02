@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T00:01:01.991163+01:00",
+  "generated_at": "2026-11-02T20:33:34.053653+01:00",
   "site": "U003128",
   "siteType": "02",
   "menus": {
@@ -146,6 +146,138 @@
           {
             "name": "PERA",
             "quantity": "145",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P01889": {
+        "dishCode": "P01889",
+        "name": "Pane tipo 0",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PANE",
+            "quantity": "30",
+            "unit": "Gr"
+          }
+        ]
+      }
+    },
+    "2026-11-03": {
+      "P10095": {
+        "dishCode": "P10095",
+        "name": "Risotto alla parmigiana",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "RISO",
+            "quantity": "50",
+            "unit": "Gr"
+          },
+          {
+            "name": "PARMIGIANO REGGIANO",
+            "quantity": "9",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "2,1",
+            "unit": "Gr"
+          },
+          {
+            "name": "ESTRATTO PER BRODO VEGETALE",
+            "quantity": "2,1",
+            "unit": "Gr"
+          },
+          {
+            "name": "BURRO",
+            "quantity": "1,8",
+            "unit": "Gr"
+          },
+          {
+            "name": "CIPOLLE",
+            "quantity": "1,1",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P100194": {
+        "dishCode": "P100194",
+        "name": "Frittata",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "UOVA BIOLOGICHE",
+            "quantity": "50",
+            "unit": "Gr"
+          },
+          {
+            "name": "LATTE INTERO",
+            "quantity": "7",
+            "unit": "Gr"
+          },
+          {
+            "name": "PARMIGIANO REGGIANO",
+            "quantity": "3,33",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "0,83",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P00439": {
+        "dishCode": "P00439",
+        "name": "Erbette all'olio",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "ERBETTE",
+            "quantity": "80",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "2,8",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P00001": {
+        "dishCode": "P00001",
+        "name": "Frutta fresca di stagione",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "MELE",
+            "quantity": "150",
             "unit": "Gr"
           }
         ]
