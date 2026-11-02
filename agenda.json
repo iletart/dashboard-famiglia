@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-02T01:48:02.692950+01:00",
+  "generated_at": "2026-11-02T01:49:02.701827+01:00",
   "period_days": 14,
   "events": [
     {
@@ -146,6 +146,22 @@
       "location": "",
       "description": "- zaino\n- borraccia\n- maglietta\n- scarpe",
       "htmlLink": "https://www.google.com/calendar/event?eid=MzRlYzlka2JvbXBidGpmczlvYTlmMmFwamJfMjAyNjExMTFUMTY0NTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "6som8e1k65j3gb9gcdhjgb9kclim8bb2cgsmcbb2cdimcdpo64rj6e1n60",
+      "title": "Merenda inglese",
+      "start": {
+        "dateTime": "2026-11-12T07:00:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-12T08:00:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "- sacchetto merenda",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NnNvbThlMWs2NWozZ2I5Z2NkaGpnYjlrY2xpbThiYjJjZ3NtY2JiMmNkaW1jZHBvNjRyajZlMW42MCBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
       "id": "072ngfmhkv80b5s5n8h83qgatj_20261112T163000Z",
