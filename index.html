@@ -1521,9 +1521,10 @@ function initViewMenu(){
 
   var buttons = panel.querySelectorAll("button[data-view]");
   for(var i = 0; i < buttons.length; i++){
-    buttons[i].onclick = function(){
-      setView(this.getAttribute("data-view"));
-    };
+	buttons[i].onclick = function(){
+	  personalTasksDayOffset = 0;
+	  setView(this.getAttribute("data-view"));
+	};
   }
 
   document.addEventListener("click", function(ev){
