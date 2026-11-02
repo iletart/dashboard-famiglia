@@ -1455,22 +1455,16 @@ function closeViewMenu(){
   if(panel) panel.hidden = true;
   if(toggle) toggle.setAttribute("aria-expanded", "false");
 }
-
 function setView(view){
   currentView = view;
-  console.log("CAMBIO VISTA:", view);
-console.log("personalView:", $("personalView").style.display);
+
   var personal = view !== "shared";
- console.log("VIEW:", view);
-console.log("PERSONAL:", personal);
-console.log("ELEMENTO:", personalBox);
   var row = $("dashboardContent");
   var personalBox = $("personalView");
   var routesBox = $("personalRoutesBox");
 
   if(row) row.style.display = personal ? "none" : "block";
   if(personalBox) personalBox.style.display = personal ? "block" : "none";
-  console.log("DISPLAY DOPO:", personalBox.style.display);
   if(routesBox) routesBox.style.display = view === "ilenia" ? "block" : "none";
 
   var personalGlobalTitle = $("personalGlobalTaskTitle");
