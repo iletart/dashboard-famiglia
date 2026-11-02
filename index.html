@@ -1162,8 +1162,10 @@ body.k .todo-actions {
 /* RIGHE TASK AGENDA - GENERALE */
 
 .agenda-task-row {
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
     gap: 8px;
     width: 100%;
     box-sizing: border-box;
@@ -1173,16 +1175,17 @@ body.k .todo-actions {
 }
 
 .agenda-task-check {
-    flex: 0 0 20px;
-    margin: 0;
+    flex: 0 0 20px !important;
     width: 20px;
     height: 20px;
+    margin: 0 !important;
 }
 
 .agenda-task-text {
-    display: inline !important;
-    text-align: left;
+    display: block !important;
+    flex: 1 1 0 !important;
     min-width: 0;
+    text-align: left !important;
     white-space: normal;
     overflow-wrap: break-word;
 }
