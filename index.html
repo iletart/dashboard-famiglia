@@ -2258,11 +2258,6 @@ function renderWeather() {
 
 /* ===== SPOSTAMENTI ===== */
 
-var ROUTES = [
-  {id: "mattina", da: "Casa", a: "Lavoro"},
-  {id: "pomeriggio", da: "Lavoro", a: "Asilo"}
-];
-
 var WEEKEND_PHRASES = [
   "Weekend! Oggi niente lavoro, goditi la giornata!",
   "Traffico? Oggi non è un nostro problema!",
@@ -2294,15 +2289,16 @@ function loadRoutes() {
 }
 
 function renderRoutes(){
+
   var box = $("routes");
-  var i, r, data, departure, calculated, today, line;
+  var i, data, departure, arrival;
+  var line, heading, details;
 
   clear(box);
 
   var now = new Date();
   var day = now.getDay();
 
-  // Titolo separato dai timestamp
   if ($("routesTitle")) {
     $("routesTitle").innerHTML = "SPOSTAMENTI";
   }
@@ -2335,6 +2331,7 @@ function renderRoutes(){
 
   /* Weekend */
   if(day === 0 || day === 6){
+
     var phrase = WEEKEND_PHRASES[
       Math.floor(Math.random() * WEEKEND_PHRASES.length)
     ];
@@ -2346,7 +2343,7 @@ function renderRoutes(){
     return;
   }
 
-  /* Giorni feriali */
+  /* Configurazione */
   if(!CONFIG.routesUrl){
     setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
     syncPersonalRoutes();
@@ -2361,48 +2358,108 @@ function renderRoutes(){
     p2(todayDate.getUTCMonth() + 1) + "-" +
     p2(todayDate.getUTCDate());
 
-  for(i = 0; i < ROUTES.length; i++){
-    r = ROUTES[i];
-    data = routesData && routesData.routes ?
-      routesData.routes[r.id] : null;
+  var weekdayNames = [
+    "domenica",
+    "lunedi",
+    "martedi",
+    "mercoledi",
+    "giovedi",
+    "venerdi",
+    "sabato"
+  ];
 
-    if(!data || !data.departure || !data.calculated_at){
-      line = r.da + " \u2192 " + r.a + ": in attesa del calcolo";
-      box.appendChild(mk("div", "rt", line));
-      continue;
+  var todayName = weekdayNames[day];
+
+  /* Verifica che il JSON sia quello di oggi */
+  if (
+    !routesData ||
+    routesData.day !== todayName ||
+    !routesData.routes
+  ) {
+    box.appendChild(
+      mk("div", "rt", "Percorsi non ancora calcolati per oggi.")
+    );
+
+  } else {
+
+    var found = false;
+
+    /* Le tratte vengono lette direttamente dal JSON */
+    for (var routeId in routesData.routes) {
+
+      if (!Object.prototype.hasOwnProperty.call(
+        routesData.routes, routeId
+      )) {
+        continue;
+      }
+
+      data = routesData.routes[routeId];
+
+      if (!data || !data.departure || !data.arrival) {
+        continue;
+      }
+
+      /* Verifica che il calcolo sia di oggi */
+      var calculated = parseIso(data.calculated_at);
+
+      if (calculated === null) continue;
+
+      var calculatedRome = toRome(calculated);
+
+      var calculatedDate =
+        calculatedRome.getUTCFullYear() + "-" +
+        p2(calculatedRome.getUTCMonth() + 1) + "-" +
+        p2(calculatedRome.getUTCDate());
+
+      if (calculatedDate !== today) continue;
+
+      departure = parseIso(data.departure);
+      arrival = parseIso(data.arrival);
+
+      if (departure === null || arrival === null) continue;
+
+      found = true;
+
+      /* Prima riga: percorso in grassetto */
+      line = mk("div", "rt");
+
+      heading = mk(
+        "strong",
+        "",
+        data.from + " \u2192 " + data.to
+      );
+
+      heading.style.display = "block";
+
+      /* Seconda riga: orari e durata normali */
+      details = mk(
+        "div",
+        "",
+        "partenza " + hhmmRome(departure) +
+        " arrivo " + hhmmRome(arrival) +
+        " · " + data.duration_minutes + " min"
+      );
+
+      details.style.fontWeight = "normal";
+
+      line.appendChild(heading);
+      line.appendChild(details);
+
+      box.appendChild(line);
     }
 
-    calculated = parseIso(data.calculated_at);
-
-    if (calculated === null) continue;
-
-    var calculatedRome = toRome(calculated);
-
-    if (
-      calculatedRome.getUTCFullYear() + "-" +
-      p2(calculatedRome.getUTCMonth() + 1) + "-" +
-      p2(calculatedRome.getUTCDate()) !== today
-    ) {
-      continue;
+    if (!found) {
+      box.appendChild(
+        mk("div", "rt", "Nessun percorso disponibile per oggi.")
+      );
     }
-
-    departure = parseIso(data.departure);
-
-    if(departure === null){
-      continue;
-    }
-
-    line = r.da + " \u2192 " + r.a +
-      ": partenza " + hhmmRome(departure) +
-      " · " + data.duration_minutes + " min";
-
-    box.appendChild(mk("div", "rt", line));
   }
 
   var st = "";
 
   if(routesData && routesData.generated_at){
     var g = parseIso(routesData.generated_at);
+
     if(g !== null){
       st = "Aggiornato alle " + hhmmRome(g);
     }
@@ -2414,12 +2471,13 @@ function renderRoutes(){
   }
 
   setText($("routesStatus"), st);
-  syncPersonalRoutes();
 
+  syncPersonalRoutes();
   scheduleBoxAlignment();
 }
 
 /* ===== FINE SPOSTAMENTI ===== */
+
 
 
 /* ===== AGGIORNAMENTI AUTOMATICI ===== */
