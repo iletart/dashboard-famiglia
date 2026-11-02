@@ -939,25 +939,27 @@ body.k .agenda-task-text {
 
 body.k #taskCtl,
 body.k #todoCtl {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
+    display: table !important;
+    table-layout: auto !important;
     width: 100% !important;
+    border-spacing: 4px 0;
 }
 
 body.k #taskInput,
 body.k #todoInput {
-    flex: 1 1 0 !important;
-    width: 0 !important;
+    display: table-cell !important;
+    width: 100% !important;
     min-width: 0 !important;
+    box-sizing: border-box !important;
 }
 
 body.k #taskAddButton,
 body.k #todoCtl button {
-    flex: 0 0 auto !important;
-    width: auto !important;
+    display: table-cell !important;
+    width: 1% !important;
     white-space: nowrap !important;
+    box-sizing: border-box !important;
+    vertical-align: middle !important;
 }
 
 </style>
