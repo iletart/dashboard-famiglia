@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-02T13:12:02.900214+01:00",
+  "generated_at": "2026-11-02T13:13:02.931612+01:00",
   "period_days": 14,
   "events": [
     {
@@ -32,7 +32,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "",
+      "description": "- I: merenda post piscina\n- I: zaino con tutto",
       "htmlLink": "https://www.google.com/calendar/event?eid=MDFndWhxdWY4MHIza2J2b2Jua2I5aHYxcGtfMjAyNjExMDNUMTYxNTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
@@ -128,7 +128,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "",
+      "description": "- I: merenda post piscina\n- I: zaino con tutto",
       "htmlLink": "https://www.google.com/calendar/event?eid=MDFndWhxdWY4MHIza2J2b2Jua2I5aHYxcGtfMjAyNjExMTBUMTYxNTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
