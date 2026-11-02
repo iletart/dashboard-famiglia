@@ -1040,6 +1040,66 @@ body.k #menuDayButtons button {
 }
 body.k #menuDayButtons #mb-refresh { display:none !important; }
 
+/* Kindle: distribuisce i pulsanti in tutta la larghezza del rispettivo box. */
+body.k .agenda-nav,
+body.k #taskDayButtons,
+body.k #menuDayButtons {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: stretch !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+}
+body.k .agenda-nav button,
+body.k #taskDayButtons button,
+body.k #menuDayButtons button {
+  display: block !important;
+  flex: 1 1 0% !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 1px 0 !important;
+  padding: 7px 2px !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+/* Kindle: checkbox e testo dei Task condivisi sempre affiancati. */
+body.k #personalGlobalTaskList .todo {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+body.k #personalGlobalTaskList .todo-check {
+  display: block !important;
+  flex: 0 0 20px !important;
+  width: 20px !important;
+  min-width: 20px !important;
+}
+body.k #personalGlobalTaskList .todo-text {
+  display: block !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+body.k #personalGlobalTaskList .todo-actions {
+  display: flex !important;
+  flex: 0 0 34px !important;
+  width: 34px !important;
+  justify-content: flex-end !important;
+  margin-left: auto !important;
+}
+
 </style>
 
 
@@ -2545,6 +2605,7 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
         taskText.style.flex = "1 1 auto";
         taskText.style.minWidth = "0";
         taskText.style.textAlign = "left";
+        taskText.className = checkbox.checked ? "done" : "";
         taskText.appendChild(document.createTextNode(visibleTask));
 
         label.appendChild(checkbox);
@@ -2567,9 +2628,11 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
 
             if(saveErr){
               checkbox.checked = !newValue;
+              taskText.className = checkbox.checked ? "done" : "";
               alert("Errore nel salvataggio: " + saveErr);
             } else {
               completed[taskKey] = newValue;
+              taskText.className = newValue ? "done" : "";
             }
 
           }, url);
