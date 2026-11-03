@@ -1088,17 +1088,20 @@ body.k .event-task-inline .agenda-task-text {
 </div>
 
 <div id="personalView" style="display:none;">
-  <div class="box" id="personalTasksBox">
-    <div class="section-heading">
-      <div class="personal-period-switch">
-        <button type="button" id="personalTasksToday" class="active">OGGI</button>
-        <button type="button" id="personalTasksTomorrow">DOMANI</button>
-      </div>
-      <h2 id="personalTasksTitle">TASK DI WALTER</h2>
-    </div>
-    <div class="agenda-period" id="personalTasksDate" style="display:none;"></div>
-    <div id="personalTasks">Caricamento...</div>
-  </div>
+	<div class="box" id="personalTasksBox">
+	  <div class="section-heading">
+		<h2 id="personalTasksTitle">TASK DI WALTER</h2>
+		<div class="sync-label" id="personalTasksTimes"></div>
+	  </div>
+
+	  <div class="personal-period-switch">
+		<button type="button" id="personalTasksToday" class="active">OGGI</button>
+		<button type="button" id="personalTasksTomorrow">DOMANI</button>
+	  </div>
+
+	  <div class="agenda-period" id="personalTasksDate" style="display:none;"></div>
+	  <div id="personalTasks">Caricamento...</div>
+	</div>
 
   <div class="box" id="personalGlobalTaskBox">
     <div class="section-heading">
@@ -1898,6 +1901,30 @@ function renderPersonalTasks(){
 
   setText($("personalTasksTitle"), "TASK DI " + ownerName);
   setText($("personalTasksDate"), "");
+
+  var times = "";
+  var gen = agendaData
+    ? parseIso(agendaData.generated_at || agendaData.updated_at)
+    : null;
+  
+  if(gen !== null){
+    times += "upd time: " + hhmmRome(gen) + "<br>";
+  }
+  
+  if(agendaSyncedAt !== null){
+    times += "sync time: " + hhmmRome(agendaSyncedAt.getTime());
+  }
+  
+  if(agendaErr){
+    times += "<br>rete non disponibile";
+  }
+  
+  if(gen !== null && new Date().getTime() - gen > 3 * 3600000){
+    times += "<br>dati vecchi";
+  }
+  
+  setText($("personalTasksTimes"), "");
+  $("personalTasksTimes").innerHTML = times;
 
   var btnToday = $("personalTasksToday");
   var btnTomorrow = $("personalTasksTomorrow");
