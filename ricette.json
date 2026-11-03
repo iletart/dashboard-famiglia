@@ -1,170 +1,8 @@
 {
-  "generated_at": "2026-11-03T23:40:36.877888+01:00",
+  "generated_at": "2026-11-04T00:01:02.432428+01:00",
   "site": "U003128",
   "siteType": "02",
   "menus": {
-    "2026-11-02": {
-      "P102032": {
-        "dishCode": "P102032",
-        "name": "Gnocchi al pomodoro",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "GNOCCHI",
-            "quantity": "130",
-            "unit": "Gr"
-          },
-          {
-            "name": "POLPA DI POMODORO",
-            "quantity": "33",
-            "unit": "Gr"
-          },
-          {
-            "name": "CAROTE",
-            "quantity": "3,3",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "3,6",
-            "unit": "Gr"
-          },
-          {
-            "name": "PARMIGIANO REGGIANO",
-            "quantity": "3",
-            "unit": "Gr"
-          },
-          {
-            "name": "CIPOLLE",
-            "quantity": "2,8",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P100571": {
-        "dishCode": "P100571",
-        "name": "Burger con legumi con maionese 100% vegetale biologica",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PATATE",
-            "quantity": "11,95",
-            "unit": "Gr"
-          },
-          {
-            "name": "ASIAGO E/O CACIOTTA BIOLOGICA",
-            "quantity": "6,72",
-            "unit": "Gr"
-          },
-          {
-            "name": "LENTICCHIE SECCHE DECORTICATE",
-            "quantity": "7,13",
-            "unit": "Gr"
-          },
-          {
-            "name": "PANE GRATTUGIATO",
-            "quantity": "4,98",
-            "unit": "Gr"
-          },
-          {
-            "name": "CAROTE",
-            "quantity": "3,32",
-            "unit": "Gr"
-          },
-          {
-            "name": "CIPOLLE",
-            "quantity": "2,32",
-            "unit": "Gr"
-          },
-          {
-            "name": "PARMIGIANO REGGIANO",
-            "quantity": "2,16",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "1,99",
-            "unit": "Gr"
-          },
-          {
-            "name": "UOVA BIOLOGICHE",
-            "quantity": "1,49",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          },
-          {
-            "name": "MAIONESE 100% VEGETALE BIOLOGICA",
-            "quantity": "10",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P01991": {
-        "dishCode": "P01991",
-        "name": "Carote julienne",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "CAROTE",
-            "quantity": "32",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "3,4",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P00005": {
-        "dishCode": "P00005",
-        "name": "Frutta fresca di stagione",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PERA",
-            "quantity": "145",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P01889": {
-        "dishCode": "P01889",
-        "name": "Pane tipo 0",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PANE",
-            "quantity": "30",
-            "unit": "Gr"
-          }
-        ]
-      }
-    },
     "2026-11-03": {
       "P10095": {
         "dishCode": "P10095",
@@ -408,6 +246,133 @@
         "ingredients": [
           {
             "name": "PANE DI FARINA INTEGRALE BIOLOGICA",
+            "quantity": "30",
+            "unit": "Gr"
+          }
+        ]
+      }
+    },
+    "2026-11-05": {
+      "P100202": {
+        "dishCode": "P100202",
+        "name": "Ravioli di magro olio parmigiano",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "RAVIOLI DI MAGRO",
+            "quantity": "79",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "5",
+            "unit": "Gr"
+          },
+          {
+            "name": "PARMIGIANO REGGIANO",
+            "quantity": "3",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P100196": {
+        "dishCode": "P100196",
+        "name": "Rustichelle di pollo biologico",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "SOVRACOSCE DI POLLO BIOLOGICO",
+            "quantity": "67",
+            "unit": "Gr"
+          },
+          {
+            "name": "PANE GRATTUGIATO",
+            "quantity": "8",
+            "unit": "Gr"
+          },
+          {
+            "name": "UOVA BIOLOGICHE",
+            "quantity": "5,3",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "3,5",
+            "unit": "Gr"
+          },
+          {
+            "name": "AMIDO DI MAIS",
+            "quantity": "2",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P101207": {
+        "dishCode": "P101207",
+        "name": "Pomodori e cetrioli",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "POMODORI",
+            "quantity": "60,2",
+            "unit": "Gr"
+          },
+          {
+            "name": "CETRIOLI",
+            "quantity": "13",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "4,4",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P00959": {
+        "dishCode": "P00959",
+        "name": "Frutta fresca di stagione",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "BANANA",
+            "quantity": "94",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P01889": {
+        "dishCode": "P01889",
+        "name": "Pane tipo 0",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PANE",
             "quantity": "30",
             "unit": "Gr"
           }
