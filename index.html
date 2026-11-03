@@ -533,20 +533,24 @@ body:not(.k) #menuDayButtons button {
     background: #000;
 }
 
-#viewMenuPanel {
-    position: absolute;
-    top: 34px;
-    left: 0;
-    width: 142px;
-    padding: 4px;
-    background: #fff;
-    border: 2px solid #000;
-    border-radius: 5px;
+#viewMenuPanel button {
+    display: block;
+    width: 100%;
+    margin: 3px 0;
+    padding: 8px 8px;
+    text-align: left;
+    font-weight: bold;
+    border-radius: 8px !important;
     box-sizing: border-box;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
 }
 
-#viewMenuPanel[hidden] {
-    display: none !important;
+#viewMenuPanel button.active {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #000 !important;
 }
 
 #viewMenuPanel button {
@@ -1800,6 +1804,13 @@ function setView(view, manual) {
   }
 
   currentView = view;
+
+  var viewButtons = document.querySelectorAll("#viewMenuPanel button[data-view]");
+  
+  for (var i = 0; i < viewButtons.length; i++) {
+      viewButtons[i].className =
+          viewButtons[i].getAttribute("data-view") === view ? "active" : "";
+  }
 
   var personal = view !== "shared";
   var row = $("dashboardContent");
