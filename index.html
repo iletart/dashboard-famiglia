@@ -642,27 +642,32 @@ body:not(.k) #menuDayButtons button {
 
 @media screen and (min-width: 801px) {
 
+    /* Header PC più compatto: riduce l'altezza del box e riallinea i contenuti */
     body:not(.k) #head {
-        padding: 4px 5px !important;
+        padding: 2px 5px !important;
     }
 
     body:not(.k) #clock {
         margin-left: 36px !important;
         left: 2px !important;
-        top: 10px !important;
+        top: 2px !important;
     }
 
     body:not(.k) #info {
         margin-left: 146px !important;
-        padding: 5px 0 0 8px !important;
+        padding: 0 0 0 8px !important;
+        grid-template-columns: max-content minmax(0, 1fr) 48px max-content !important;
     }
 
     body:not(.k) #weatherIcon {
-        top: 9px;
+        width: 48px !important;
+        height: 48px !important;
+        top: 0 !important;
     }
-	
-	body.echo #weatherIcon {
-        left: -8px !important;
+
+    body:not(.k) #weatherIcon svg {
+        width: 48px !important;
+        height: 48px !important;
     }
 }
 
