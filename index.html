@@ -533,14 +533,21 @@ body:not(.k) #menuDayButtons button {
     background: #000;
 }
 
+/* CONTENITORE DEL MENU */
 #viewMenuPanel {
+    display: block;
     width: 142px;
     margin-top: 5px;
     padding: 6px;
-    background: #fff;
-    border: 2px solid #000;
+    background-color: #fff !important;
+    border: 2px solid #000 !important;
     border-radius: 6px;
     box-sizing: border-box;
+}
+
+/* NASCONDE IL MENU QUANDO CHIUSO */
+#viewMenuPanel[hidden] {
+    display: none !important;
 }
 
 #viewMenuPanel button {
@@ -652,6 +659,10 @@ body:not(.k) #menuDayButtons button {
 
     body:not(.k) #weatherIcon {
         top: 9px;
+    }
+	
+	body.echo #weatherIcon {
+        left: -8px !important;
     }
 }
 
@@ -1218,14 +1229,20 @@ body.k .event-task-inline .agenda-task-text {
 <script>
 /* ===== CONFIGURAZIONE ===== */
 
+var q = window.location.search;
+
+var IS_ECHO = q.indexOf("echo=1") >= 0;
+
 var IS_KINDLE = (function(){
-  var q = window.location.search;
-
   if(q.indexOf("kindle=1") >= 0){ return true; }
-  if(q.indexOf("kindle=0") >= 0){ return false; }
+  if(q.indexOf("kindle=0") >= 0 || IS_ECHO){ return false; }
 
-  return /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
+  return /Kindle|KF[A-Z]{2,5}/i.test(navigator.userAgent);
 })();
+
+if(IS_ECHO){
+  document.body.className += " echo";
+}
 
 if(IS_KINDLE){
   document.body.className += " k";
