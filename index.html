@@ -2070,6 +2070,53 @@ function syncPersonalRoutes(){
   setText($("personalRoutesStatus"), $("routesStatus") ? $("routesStatus").textContent : "");
 }
 
+function loadShoppingList(){
+  var box = $("shoppingList");
+  if(!box) return;
+
+  getJson(
+    [CONFIG.base + "shopping.json", "shopping.json"],
+    function(err, d){
+      clear(box);
+
+      if(err || !d || !d.items){
+        setText(box, "Lista della spesa non disponibile.");
+        return;
+      }
+
+      var pending = [];
+      var completed = [];
+
+      for(var i = 0; i < d.items.length; i++){
+        if(d.items[i].completed){
+          completed.push(d.items[i]);
+        } else {
+          pending.push(d.items[i]);
+        }
+      }
+
+      function addItems(items, done){
+        for(var j = 0; j < items.length; j++){
+          var row = document.createElement("div");
+          row.className = done ? "shopping-item completed" : "shopping-item";
+          row.textContent = (done ? "✓ " : "□ ") + items[j].name;
+          box.appendChild(row);
+        }
+      }
+
+      addItems(pending, false);
+      addItems(completed, true);
+
+      if(d.updated_at){
+        var info = document.createElement("div");
+        info.className = "small";
+        info.textContent = "Aggiornata: " + d.updated_at;
+        box.appendChild(info);
+      }
+    }
+  );
+}
+
 function loadAgenda() {
   getJson(
     [CONFIG.base + "agenda.json", "agenda.json"],
@@ -4133,6 +4180,7 @@ function renderMenu(k, err, d){
 safe(startClock);
 safe(initViewMenu);
 safe(loadAgenda);
+safe(loadShoppingList);
 safe(loadWeather);
 safe(loadSunTimes);
 safe(loadRoutes);
