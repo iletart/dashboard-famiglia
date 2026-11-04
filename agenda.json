@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-04T01:31:02.456017+01:00",
+  "generated_at": "2026-11-04T01:32:02.466744+01:00",
   "period_days": 14,
   "events": [
     {
@@ -52,6 +52,22 @@
       "htmlLink": "https://www.google.com/calendar/event?eid=MDFndWhxdWY4MHIza2J2b2Jua2I5aHYxcGtfMjAyNjExMDNUMTYxNTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
+      "id": "75j3ec9icli3cbb669gjgb9k6pi3gb9p6tijib9p68q34d336hi3ccplco",
+      "title": "Walter / Ilenia",
+      "start": {
+        "dateTime": "2026-11-04T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-04T17:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NzVqM2VjOWljbGkzY2JiNjY5Z2pnYjlrNnBpM2diOXA2dGlqaWI5cDY4cTM0ZDMzNmhpM2NjcGxjbyBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
       "id": "34ec9dkbompbtjfs9oa9f2apjb_20261104T164500Z",
       "title": "Atletica",
       "start": {
@@ -64,7 +80,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "- W: zaino\n- W: borraccia\n- W: maglietta\n- W: scarpe\n- I: merenda",
+      "description": "- W: zaino giallo con maglietta e scarpe \n- W: borraccia (col ghiaccio)\n- I: merenda",
       "htmlLink": "https://www.google.com/calendar/event?eid=MzRlYzlka2JvbXBidGpmczlvYTlmMmFwamJfMjAyNjExMDRUMTY0NTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
@@ -176,7 +192,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "- W: zaino\n- W: borraccia\n- W: maglietta\n- W: scarpe\n- I: merenda",
+      "description": "- W: zaino giallo con maglietta e scarpe \n- W: borraccia (col ghiaccio)\n- I: merenda",
       "htmlLink": "https://www.google.com/calendar/event?eid=MzRlYzlka2JvbXBidGpmczlvYTlmMmFwamJfMjAyNjExMTFUMTY0NTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
