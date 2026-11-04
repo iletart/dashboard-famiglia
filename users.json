@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "id": "walter",
+      "name": "WALTER",
+      "enabled": true,
+      "taskOwner": "W"
+    },
+    {
+      "id": "ilenia",
+      "name": "ILENIA",
+      "enabled": true,
+      "taskOwner": "I"
+    }
+  ]
+}
