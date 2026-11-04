@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "boxes": {
+    "agenda": "agendaBox",
+    "shopping": "shoppingBox",
+    "sharedTasks": "sharedTasksBox",
+    "todo": "todoBox",
+    "schoolMenu": "schoolMenuBox",
+    "personalTasks": "personalTasksBox",
+    "personalGlobalTasks": "personalGlobalTaskBox",
+    "personalRoutes": "personalRoutesBox",
+    "ileniaAgenda": "ileniaAgendaBox"
+  },
+  "views": {
+    "shared": {
+      "enabled": true,
+      "columns": [
+        ["agenda", "shopping"],
+        ["sharedTasks", "todo", "schoolMenu"]
+      ]
+    },
+    "walter": {
+      "enabled": true,
+      "columns": [
+        ["personalTasks", "personalGlobalTasks"]
+      ]
+    },
+    "ilenia": {
+      "enabled": true,
+      "columns": [
+        ["personalTasks", "personalGlobalTasks"],
+        ["personalRoutes", "ileniaAgenda"]
+      ]
+    }
+  }
+}
