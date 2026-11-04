@@ -9,7 +9,7 @@
 
 <style>
 /* ==================================================
-   IMPOSTAZIONI GENERALI
+   1. IMPOSTAZIONI GENERALI
    ================================================== */
 
 html, body {
@@ -39,8 +39,26 @@ body {
 }
 
 /* ==================================================
-   INTESTAZIONI DEI BOX
+   2. TITOLI E INTESTAZIONI
    ================================================== */
+
+h2 {
+    font-size: 1.05em;
+    margin: 0 0 6px;
+    padding: 0 0 3px;
+    border-bottom: 2px solid #000;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-size: 1em;
+    margin: 8px 0 2px;
+    text-transform: capitalize;
+}
+
+#agendaTitle {
+    text-transform: none;
+}
 
 .section-heading {
     display: flex;
@@ -80,29 +98,7 @@ body {
 }
 
 /* ==================================================
-   TITOLI
-   ================================================== */
-
-h2 {
-    font-size: 1.05em;
-    margin: 0 0 6px;
-    padding: 0 0 3px;
-    border-bottom: 2px solid #000;
-    text-transform: uppercase;
-}
-
-h3 {
-    font-size: 1em;
-    margin: 8px 0 2px;
-    text-transform: capitalize;
-}
-
-#agendaTitle {
-    text-transform: none;
-}
-
-/* ==================================================
-   LAYOUT COLONNE
+   3. LAYOUT A COLONNE
    ================================================== */
 
 .row {
@@ -124,7 +120,7 @@ h3 {
 }
 
 /* ==================================================
-   HEADER: OROLOGIO, DATA E METEO
+   4. HEADER: OROLOGIO, DATA E METEO
    ================================================== */
 
 #head {
@@ -139,6 +135,7 @@ h3 {
     float: left;
     width: 80px;
     margin: 0;
+    margin-left: 42px !important;
     font-size: 2.5em;
     font-weight: bold;
     line-height: 1;
@@ -146,7 +143,6 @@ h3 {
     position: relative;
     left: 5px;
     top: 20px;
-    margin-left: 42px !important;
 }
 
 #info {
@@ -206,7 +202,7 @@ h3 {
 }
 
 /* ==================================================
-   MENU SCOLASTICO
+   5. MENU SCOLASTICO
    ================================================== */
 
 #menuList ul {
@@ -230,7 +226,7 @@ h3 {
 }
 
 /* ==================================================
-   AGENDA
+   6. AGENDA
    ================================================== */
 
 .ev {
@@ -250,7 +246,7 @@ h3 {
 }
 
 /* ==================================================
-   SPOSTAMENTI
+   7. SPOSTAMENTI
    ================================================== */
 
 .rt {
@@ -258,7 +254,7 @@ h3 {
 }
 
 /* ==================================================
-   TASK E ATTIVITÀ
+   8. TASK E ATTIVITÀ
    ================================================== */
 
 .todo {
@@ -308,7 +304,7 @@ h3 {
 }
 
 /* ==================================================
-   TASK DELL'AGENDA
+   9. TASK DELL'AGENDA
    ================================================== */
 
 .agenda-task-row {
@@ -341,7 +337,7 @@ h3 {
 }
 
 /* ==================================================
-   PULSANTI E INPUT
+   10. PULSANTI E INPUT
    ================================================== */
 
 button {
@@ -368,10 +364,8 @@ input {
     box-sizing: border-box;
 }
 
-
-
 /* ==================================================
-   CAMPI INSERIMENTO ATTIVITÀ
+   11. CAMPI INSERIMENTO ATTIVITÀ
    ================================================== */
 
 @media screen and (min-width: 801px) {
@@ -403,45 +397,8 @@ input {
     }
 }
 
-body.k #taskCtl,
-body.k #todoCtl {
-    position: relative !important;
-    display: block !important;
-    width: 100% !important;
-    height: 32px !important;
-    box-sizing: border-box !important;
-}
-
-body.k #taskInput,
-body.k #todoInput {
-    display: block !important;
-    position: absolute !important;
-    left: 0 !important;
-    right: 90px !important;
-    width: auto !important;
-    height: 32px !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-}
-
-body.k #taskAddButton,
-body.k #todoCtl button {
-    display: block !important;
-    position: absolute !important;
-    right: 0 !important;
-    top: 0 !important;
-    width: 85px !important;
-    min-width: 85px !important;
-    max-width: 85px !important;
-    height: 32px !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 5px 2px !important;
-    white-space: nowrap !important;
-}
-
 /* ==================================================
-   TESTI SECONDARI ED ERRORI
+   12. TESTI SECONDARI ED ERRORI
    ================================================== */
 
 .small {
@@ -464,7 +421,7 @@ body.k #todoCtl button {
 }
 
 /* ==================================================
-   NAVIGAZIONE PC E SMARTPHONE
+   13. NAVIGAZIONE AGENDA E MENU
    ================================================== */
 
 body:not(.k) .agenda-nav,
@@ -488,7 +445,7 @@ body:not(.k) #menuDayButtons button {
     padding: 8px 3px;
     box-sizing: border-box;
     text-align: center;
-	border-radius: 4px !important;
+    border-radius: 4px !important;
 }
 
 .agenda-nav button:disabled,
@@ -501,7 +458,7 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   MENU VISTE FAMIGLIA
+   14. MENU VISTE FAMIGLIA
    ================================================== */
 
 #viewMenu {
@@ -533,7 +490,6 @@ body:not(.k) #menuDayButtons button {
     background: #000;
 }
 
-/* CONTENITORE DEL MENU */
 #viewMenuPanel {
     display: block;
     width: 142px;
@@ -545,7 +501,6 @@ body:not(.k) #menuDayButtons button {
     box-sizing: border-box;
 }
 
-/* NASCONDE IL MENU QUANDO CHIUSO */
 #viewMenuPanel[hidden] {
     display: none !important;
 }
@@ -570,10 +525,6 @@ body:not(.k) #menuDayButtons button {
     border: 1px solid #000 !important;
 }
 
-#menuDayButtons button {
-    border-radius: 4px !important;
-}
-
 #menuDayButtons button.sel {
     background: #000 !important;
     color: #fff !important;
@@ -581,7 +532,7 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   PAGINE PERSONALI
+   15. PAGINE PERSONALI
    ================================================== */
 
 #personalView {
@@ -637,12 +588,11 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   HEADER DESKTOP
+   16. HEADER DESKTOP
    ================================================== */
 
 @media screen and (min-width: 801px) {
 
-    /* Header PC più compatto: riduce l'altezza del box e riallinea i contenuti */
     body:not(.k) #head {
         padding: 2px 5px !important;
     }
@@ -672,16 +622,10 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   TABLET E SMARTPHONE
+   17. TABLET E SMARTPHONE
    ================================================== */
 
 @media screen and (max-width: 800px) {
-
-    .col {
-        float: none;
-        display: block;
-        width: 100%;
-    }
 
     body:not(.k) #head {
         display: grid;
@@ -774,22 +718,12 @@ body:not(.k) #menuDayButtons button {
         font-size: 1.05em;
         padding: 8px 18px;
         margin-right: 6px;
-		border-radius: 4px !important;
+        border-radius: 4px !important;
     }
-	
-	.agenda-nav button:disabled,
-	.agenda-nav button.active,
-	.agenda-nav button.selected {
-		background: #000 !important;
-		color: #fff !important;
-		border: 2px solid #000 !important;
-		opacity: 1 !important;
-	}
-
 }
 
 /* ==================================================
-   SMARTPHONE MOLTO STRETTI
+   18. SMARTPHONE MOLTO STRETTI
    ================================================== */
 
 @media screen and (max-width: 380px) {
@@ -804,7 +738,7 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   PERSONALIZZAZIONI KINDLE
+   19. PERSONALIZZAZIONI KINDLE
    ================================================== */
 
 body.k {
@@ -815,7 +749,8 @@ body.k .wrap {
     padding-right: 14px;
 }
 
-/* Intestazioni */
+/* Header box */
+
 body.k .section-heading {
     display: block !important;
     width: 100% !important;
@@ -846,16 +781,8 @@ body.k .section-heading .sync-label {
     top: -2px !important;
 }
 
-/* Colonne */
-body.k .col {
-    float: left;
-    display: block;
-    width: 50%;
-    min-width: 0;
-    box-sizing: border-box;
-}
+/* Header pagina */
 
-/* Header */
 body.k #head {
     display: block;
     position: relative;
@@ -938,6 +865,7 @@ body.k #weather {
 }
 
 /* Menu scolastico */
+
 body.k #menuList .menu-icon {
     display: none !important;
 }
@@ -948,7 +876,47 @@ body.k #menuList li {
     list-style-type: none !important;
 }
 
+/* Campi inserimento attività */
+
+body.k #taskCtl,
+body.k #todoCtl {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+}
+
+body.k #taskInput,
+body.k #todoInput {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 90px !important;
+    width: auto !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+
+body.k #taskAddButton,
+body.k #todoCtl button {
+    display: block !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    width: 85px !important;
+    min-width: 85px !important;
+    max-width: 85px !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 5px 2px !important;
+    white-space: nowrap !important;
+}
+
 /* Navigazione giorni */
+
 body.k .agenda-nav,
 body.k #taskDayButtons,
 body.k #menuDayButtons {
@@ -975,7 +943,7 @@ body.k #menuDayButtons button {
     text-align: center !important;
     white-space: nowrap !important;
     box-sizing: border-box !important;
-	border-radius: 4px !important;
+    border-radius: 4px !important;
 }
 
 body.k #menuDayButtons #mb-refresh {
@@ -983,6 +951,7 @@ body.k #menuDayButtons #mb-refresh {
 }
 
 /* Task condivisi e personali */
+
 body.k .todo {
     display: table !important;
     table-layout: fixed !important;
@@ -1023,18 +992,28 @@ body.k .todo-actions {
 }
 
 /* Task dell'agenda */
-body.k .agenda-task-row {
+
+body.k .event-task-inline {
+    display: block !important;
+    width: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+}
+
+body.k .event-task-inline .agenda-task-row {
     display: block !important;
     width: 100% !important;
-    text-align: left !important;
-    margin: 0 0 8px 0 !important;
+    box-sizing: border-box !important;
+    margin: 6px 0 !important;
     padding: 0 !important;
+    text-align: left !important;
     float: none !important;
     clear: both !important;
     white-space: normal !important;
 }
 
-body.k .agenda-task-check {
+body.k .event-task-inline .agenda-task-check {
     display: inline-block !important;
     width: 20px !important;
     height: 20px !important;
@@ -1042,7 +1021,7 @@ body.k .agenda-task-check {
     vertical-align: top !important;
 }
 
-body.k .agenda-task-text {
+body.k .event-task-inline .agenda-task-text {
     display: inline !important;
     width: auto !important;
     vertical-align: top !important;
@@ -1051,34 +1030,48 @@ body.k .agenda-task-text {
     padding: 0 !important;
     white-space: normal !important;
     overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
 }
 
-body.k .event-task-inline {
-    display: block !important;
-    width: 100% !important;
-    white-space: normal !important;
-    box-sizing: border-box !important;
+/* Icona cestino */
+.todo-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-body.k .event-task-inline .agenda-task-row {
-    display: block !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    margin: 6px 0 !important;
-    white-space: normal !important;
-    float: none !important;
-    clear: both !important;
+.trash-icon {
+  position: relative;
+  display: block;
+  width: 10px;
+  height: 12px;
+  border: 1px solid currentColor;
+  border-top: 0;
+  box-sizing: border-box;
+  margin-top: 3px;
 }
 
-body.k .event-task-inline .agenda-task-check {
-    display: inline-block !important;
-    vertical-align: top !important;
+.trash-icon:before {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 2px;
+  border: 1px solid currentColor;
+  box-sizing: border-box;
+  left: -2px;
+  top: -4px;
 }
 
-body.k .event-task-inline .agenda-task-text {
-    display: inline !important;
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
+.trash-icon:after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 2px;
+  border: 1px solid currentColor;
+  border-bottom: 0;
+  box-sizing: border-box;
+  left: 2px;
+  top: -6px;
 }
 
 </style>
@@ -1829,6 +1822,199 @@ function closeViewMenu(){
   if(toggle) toggle.setAttribute("aria-expanded", "false");
 }
 
+/* NUOVA FUNZIONE PER LAYOUT DINAMICO */
+
+var DASHBOARD_CONFIG = null;
+
+function buildConfiguredLayout(view){
+
+  if(!DASHBOARD_CONFIG || !DASHBOARD_CONFIG.views) return;
+
+  var viewConfig = DASHBOARD_CONFIG.views[view];
+
+  if(!viewConfig || !viewConfig.enabled) return;
+
+  var shared = view === "shared";
+
+  var host = shared
+    ? $("dashboardContent")
+    : $("personalView");
+
+  if(!host) return;
+
+  var row;
+
+  if(shared){
+
+    row = host;
+
+  } else {
+
+    row = $("personalLayoutRow");
+
+    if(!row){
+      row = document.createElement("div");
+      row.id = "personalLayoutRow";
+      row.className = "row cf";
+      host.appendChild(row);
+    }
+  }
+
+  /* Individua le vecchie strutture generate */
+  var oldLayouts = [];
+
+  for(var i = 0; i < row.children.length; i++){
+
+    var child = row.children[i];
+    var cls = " " + child.className + " ";
+
+    if(cls.indexOf(" col ") !== -1 ||
+       cls.indexOf(" layout-row ") !== -1){
+
+      oldLayouts.push(child);
+    }
+  }
+
+  /* Recupera tutti i box */
+  var boxElements = {};
+
+  for(var key in DASHBOARD_CONFIG.boxes){
+
+    if(!DASHBOARD_CONFIG.boxes.hasOwnProperty(key)) continue;
+
+    var id = DASHBOARD_CONFIG.boxes[key];
+    var element = $(id);
+
+    if(element){
+      boxElements[key] = element;
+    }
+  }
+
+  var layout = viewConfig.rows || viewConfig.columns;
+
+  if(!layout) return;
+
+  var isRows = !!viewConfig.rows;
+
+  /* Nasconde i box personali non previsti nella vista */
+  if(!shared){
+
+    for(var key in boxElements){
+
+      if(!boxElements.hasOwnProperty(key)) continue;
+
+      if(key === "agenda" ||
+         key === "shopping" ||
+         key === "sharedTasks" ||
+         key === "todo" ||
+         key === "schoolMenu") continue;
+
+      boxElements[key].style.display = "none";
+    }
+  }
+
+  /* Crea la nuova struttura */
+  for(var i = 0; i < layout.length; i++){
+
+    var container;
+
+    if(isRows){
+
+      /* Ogni elemento di rows rappresenta una riga */
+      container = document.createElement("div");
+      container.className = "row cf layout-row";
+
+      row.appendChild(container);
+
+    } else {
+
+      /* Ogni elemento di columns rappresenta una colonna */
+      container = document.createElement("div");
+      container.className = "col";
+
+      row.appendChild(container);
+    }
+
+    var keys = layout[i];
+
+    /* Le righe possono contenere al massimo due box */
+    if(isRows && keys.length > 2){
+      console.warn("Massimo due box per riga:", keys);
+    }
+
+    var maxBoxes = isRows ? Math.min(keys.length, 2) : keys.length;
+
+    for(var j = 0; j < maxBoxes; j++){
+
+      var box = boxElements[keys[j]];
+
+      if(!box) continue;
+
+      if(isRows){
+
+        var col = document.createElement("div");
+        col.className = "col";
+
+        /* Un solo box nella riga: larghezza intera */
+        if(maxBoxes === 1){
+          col.style.width = "100%";
+          col.style.float = "none";
+        }
+
+        box.style.display = "block";
+
+        col.appendChild(box);
+        container.appendChild(col);
+
+      } else {
+
+        /* Più box impilati verticalmente nella stessa colonna */
+        box.style.display = "block";
+        container.appendChild(box);
+      }
+    }
+  }
+
+  /* Rimuove le vecchie strutture */
+  for(var i = 0; i < oldLayouts.length; i++){
+
+    if(oldLayouts[i].parentNode === row){
+      row.removeChild(oldLayouts[i]);
+    }
+  }
+
+  /* I box personali non utilizzati restano nascosti */
+  if(!shared){
+
+    for(var key in boxElements){
+
+      if(!boxElements.hasOwnProperty(key)) continue;
+
+      if(key === "agenda" ||
+         key === "shopping" ||
+         key === "sharedTasks" ||
+         key === "todo" ||
+         key === "schoolMenu") continue;
+
+      var included = false;
+
+      for(var i = 0; i < layout.length; i++){
+
+        if(layout[i].indexOf(key) !== -1){
+          included = true;
+          break;
+        }
+      }
+
+      if(!included){
+        boxElements[key].style.display = "none";
+        host.appendChild(boxElements[key]);
+      }
+    }
+  }
+}
+
+
 function setView(view, manual) {
   if (manual) {
     viewManualUntil = Date.now() + 10 * 60 * 1000;
@@ -1851,6 +2037,8 @@ function setView(view, manual) {
   if(row) row.style.display = personal ? "none" : "block";
   if(personalBox) personalBox.style.display = personal ? "block" : "none";
   if(routesBox) routesBox.style.display = view === "ilenia" ? "block" : "none";
+  
+  buildConfiguredLayout(view);
 
   var personalGlobalTitle = $("personalGlobalTaskTitle");
   if(personalGlobalTitle){
@@ -1876,11 +2064,8 @@ function setView(view, manual) {
 
   closeViewMenu();
   
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      scheduleBoxAlignment();
-    });
-  });
+scheduleBoxAlignment();
+
 }
 
 function initViewMenu(){
@@ -2626,13 +2811,13 @@ function loadRoutes() {
 
 function renderRoutes(){
 
-  var box = $("routes");
-
-  // La vista corrente non prevede il box degli spostamenti condivisi
-  if (!box) {
-    syncPersonalRoutes();
-    return;
-  }
+  var personal = currentView !== "shared";
+  
+  var box = $(personal ? "personalRoutes" : "routes");
+  var timesBox = $(personal ? "personalRoutesTimes" : "routesTimes");
+  var statusBox = $(personal ? "personalRoutesStatus" : "routesStatus");
+  
+  if (!box) return;
 
   var i, data, departure, arrival;
   var line, heading, details;
@@ -2668,8 +2853,8 @@ function renderRoutes(){
     times += "<br>sync error";
   }
 
-  if ($("routesTimes")) {
-    $("routesTimes").innerHTML = times;
+  if (timesBox) {
+    timesBox.innerHTML = times;
   }
 
   /* Weekend */
@@ -2680,16 +2865,14 @@ function renderRoutes(){
     ];
 
     box.appendChild(mk("div", "weekend-message", phrase));
-    setText($("routesStatus"), "");
-    syncPersonalRoutes();
+    setText(statusBox, "");
     scheduleBoxAlignment();
     return;
   }
 
   /* Configurazione */
   if(!CONFIG.routesUrl){
-    setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
-    syncPersonalRoutes();
+    setText(statusBox, "Tempi di percorrenza non ancora configurati.");
     scheduleBoxAlignment();
     return;
   }
@@ -2805,9 +2988,8 @@ function renderRoutes(){
       "Tempi non raggiungibili.";
   }
 
-  setText($("routesStatus"), st);
+  setText(statusBox, st);
 
-  syncPersonalRoutes();
   scheduleBoxAlignment();
 }
 
@@ -3002,6 +3184,7 @@ function getEventTaskData(description){
 }
 
 
+
 function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
 
   var data = getEventTaskData(eventItem.description);
@@ -3021,9 +3204,9 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
     return;
   }
 
-	if(!tasks.length && !details){
-	  return;
-	}
+  if(!tasks.length && !details){
+    return;
+  }
 
   if(!tasks.length){
     addEventDetailsLink(eventItem, taskContainer);
@@ -3051,6 +3234,7 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
         addEventDetailsLink(eventItem, taskContainer);
       }
 
+      scheduleBoxAlignment();
       return;
     }
 
@@ -3064,19 +3248,23 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
       (function(index){
 
         var taskKey = index + ":" + tasks[index];
-        var visibleTask = ownerFilter ? tasks[index].replace(/^[WI]\s*:\s*/i, "") : tasks[index];
+        var visibleTask = ownerFilter
+          ? tasks[index].replace(/^[WI]\s*:\s*/i, "")
+          : tasks[index];
 
-		 var label = mk("label", "agenda-task-row");
+        var label = mk("label", "agenda-task-row");
 
-		var checkbox = document.createElement("input");
-		checkbox.type = "checkbox";
-		checkbox.className = "agenda-task-check";
-		checkbox.checked = completed[taskKey] === true;
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "agenda-task-check";
+        checkbox.checked = completed[taskKey] === true;
 
-		var taskText = document.createElement("span");
-		taskText.className = checkbox.checked ?
-		  "agenda-task-text done" : "agenda-task-text";
-		taskText.appendChild(document.createTextNode(visibleTask));
+        var taskText = document.createElement("span");
+        taskText.className = checkbox.checked
+          ? "agenda-task-text done"
+          : "agenda-task-text";
+
+        taskText.appendChild(document.createTextNode(visibleTask));
 
         label.appendChild(checkbox);
         label.appendChild(taskText);
@@ -3111,13 +3299,15 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
       })(selectedIndexes[i]);
     }
 
-    // Collegamento aggiunto dopo tutte le checkbox.
     if(details){
       addEventDetailsLink(eventItem, taskContainer);
     }
 
+    scheduleBoxAlignment();
+
   }, url);
 }
+
 
 function clearTasksOnly(container, hasDetails){
   clear(container);
@@ -3613,7 +3803,15 @@ function todoRow(i){
 
   if(todoConnected){
     var actions = mk("span", "todo-actions");
-    var del = mk("button", "todo-delete", "🗑");
+    var del = mk("button", "todo-delete", "");
+    del.type = "button";
+    
+    if(document.body.classList.contains("k")){
+      del.appendChild(mk("span", "trash-icon"));
+    } else {
+      del.textContent = "🗑";
+    }
+	
     del.type = "button";
     del.disabled = todoBusy;
     del.title = "Elimina attività";
@@ -4237,7 +4435,22 @@ function renderMenu(k, err, d){
 /* ===== AVVIO: ogni blocco è indipendente ===== */
 
 safe(startClock);
-safe(initViewMenu);
+getJson(
+  [CONFIG.base + "dashboard-config.json", "dashboard-config.json"],
+  function(err, data){
+
+    if(!err && data && data.views && data.boxes){
+
+      DASHBOARD_CONFIG = data;
+
+    } else {
+
+      console.log("Configurazione dashboard non disponibile.");
+    }
+
+    safe(initViewMenu);
+  }
+);
 safe(loadAgenda);
 safe(loadShoppingList);
 safe(loadWeather);
@@ -4262,145 +4475,216 @@ scheduleDailyAt(0, 2, function() {
   loadRoutes();
 });
 
+
+
+
 function alignBottomBoxes(){
 
-  var cols = [];
-  var boxes;
-  var i, j;
-  var maxHeight = 0;
-  var heights = [];
+  var container = currentView === "shared"
+    ? $("dashboardContent")
+    : $("personalLayoutRow");
 
-  /* =========================================
-     KINDLE
-     Recupera le colonne della riga principale
-     ========================================= */
+  if(!container) return;
 
-  if(IS_KINDLE){
-
-    var row = document.querySelector(".row.cf");
-    if(!row) return;
-
-    for(i = 0; i < row.children.length; i++){
-
-      var child = row.children[i];
-
-      if(child.className &&
-         (" " + child.className + " ").indexOf(" col ") !== -1){
-
-        if(child.getBoundingClientRect().height > 0){
-          cols.push(child);
-        }
-      }
-    }
-
-  } else {
-
-    /* =========================================
-       PC ED ECHO SHOW
-       Recupera tutte le colonne visibili
-       ========================================= */
-
-    var allCols = document.querySelectorAll(".col");
-
-    for(i = 0; i < allCols.length; i++){
-
-      if(allCols[i].getBoundingClientRect().height > 0){
-        cols.push(allCols[i]);
-      }
-    }
+  function hasClass(element, name){
+    return (" " + (element.className || "") + " ")
+      .indexOf(" " + name + " ") !== -1;
   }
 
-  /* =========================================
-     CELLULARE
-     Mantiene il comportamento attuale
-     ========================================= */
+  function getBoxes(column){
 
-  if(!IS_KINDLE && window.innerWidth <= 560){
+    var result = [];
 
-    var allBoxes = document.querySelectorAll(".box");
+    for(var i = 0; i < column.children.length; i++){
 
-    for(i = 0; i < allBoxes.length; i++){
-      allBoxes[i].style.minHeight = "";
+      var child = column.children[i];
+
+      if(hasClass(child, "box")){
+        result.push(child);
+      }
     }
+
+    return result;
+  }
+
+  function getTotalHeight(boxes){
+
+    var total = 0;
+
+    for(var i = 0; i < boxes.length; i++){
+
+      var box = boxes[i];
+      var style = window.getComputedStyle(box);
+
+      total += box.offsetHeight;
+      total += parseFloat(style.marginTop) || 0;
+      total += parseFloat(style.marginBottom) || 0;
+    }
+
+    return total;
+  }
+
+  /* Ripristina le altezze naturali */
+  var allBoxes = container.querySelectorAll(".box");
+
+  for(var i = 0; i < allBoxes.length; i++){
+    allBoxes[i].style.minHeight = "";
+  }
+
+  if(!DASHBOARD_CONFIG || !DASHBOARD_CONFIG.views) return;
+  
+  var config = DASHBOARD_CONFIG.views[currentView];
+  
+  if(!config) return;
+
+  /* ==================================
+     LAYOUT A COLONNE
+     ================================== */
+
+  if(config.columns){
+
+    var columns = [];
+
+    for(var i = 0; i < container.children.length; i++){
+
+      var column = container.children[i];
+
+      if(!hasClass(column, "col")) continue;
+
+      var boxes = getBoxes(column);
+
+      if(boxes.length === 0) continue;
+
+      columns.push({
+        boxes: boxes,
+        height: getTotalHeight(boxes)
+      });
+    }
+
+    if(columns.length < 2) return;
+
+    var maxHeight = 0;
+
+    for(var i = 0; i < columns.length; i++){
+      maxHeight = Math.max(maxHeight, columns[i].height);
+    }
+
+    /* Distribuisce equamente lo spazio residuo */
+    for(var i = 0; i < columns.length; i++){
+
+      var column = columns[i];
+      var extra = maxHeight - column.height;
+
+      if(extra <= 1) continue;
+
+      var increment = extra / column.boxes.length;
+
+      for(var j = 0; j < column.boxes.length; j++){
+
+        var box = column.boxes[j];
+
+        box.style.minHeight =
+          (box.offsetHeight + increment) + "px";
+      }
+    }
+
+  /* Corregge eventuali arrotondamenti sub-pixel */
+  var finalHeights = [];
+  
+  for(var i = 0; i < columns.length; i++){
+    finalHeights.push(getTotalHeight(columns[i].boxes));
+  }
+  
+  var tallest = Math.max.apply(null, finalHeights);
+  
+  for(var i = 0; i < columns.length; i++){
+  
+    var difference = tallest - finalHeights[i];
+  
+    if(difference > 0 && difference <= 2){
+  
+      var lastBox = columns[i].boxes[
+        columns[i].boxes.length - 1
+      ];
+  
+      lastBox.style.minHeight =
+        (lastBox.offsetHeight + difference) + "px";
+    }
+  }
 
     return;
   }
 
-  if(cols.length < 2) return;
+  /* ==================================
+     LAYOUT A RIGHE
+     ================================== */
 
-  /* =========================================
-     AZZERA LE ALTEZZE PRECEDENTI
-     ========================================= */
+  if(config.rows){
 
-  for(i = 0; i < cols.length; i++){
+    for(var r = 0; r < container.children.length; r++){
 
-    boxes = cols[i].querySelectorAll(".box");
+      var row = container.children[r];
 
-    for(j = 0; j < boxes.length; j++){
-      boxes[j].style.minHeight = "";
-    }
-  }
+      if(!hasClass(row, "layout-row")) continue;
 
-  /* =========================================
-     MISURA LE COLONNE
-     ========================================= */
+      var boxes = [];
 
-  for(i = 0; i < cols.length; i++){
+      for(var c = 0; c < row.children.length; c++){
 
-    heights[i] = cols[i].offsetHeight;
+        var column = row.children[c];
 
-    if(heights[i] > maxHeight){
-      maxHeight = heights[i];
-    }
-  }
+        if(!hasClass(column, "col")) continue;
 
-  /* =========================================
-     DISTRIBUISCE LO SPAZIO AGGIUNTIVO
-     TRA TUTTI I BOX DELLE COLONNE PIÙ CORTE
-     ========================================= */
+        var rowBoxes = getBoxes(column);
 
-  for(i = 0; i < cols.length; i++){
+        if(rowBoxes.length){
+          boxes.push(rowBoxes[0]);
+        }
+      }
 
-    var difference = maxHeight - heights[i];
+      if(boxes.length < 2) continue;
 
-    if(difference <= 0) continue;
+      var maxHeight = 0;
 
-    boxes = cols[i].querySelectorAll(".box");
+      for(var i = 0; i < boxes.length; i++){
+        maxHeight = Math.max(
+          maxHeight,
+          boxes[i].offsetHeight
+        );
+      }
 
-    if(!boxes.length) continue;
+      for(var i = 0; i < boxes.length; i++){
 
-    var extraPerBox = difference / boxes.length;
+        var extra = maxHeight - boxes[i].offsetHeight;
 
-    for(j = 0; j < boxes.length; j++){
-
-      var box = boxes[j];
-      var style = window.getComputedStyle(box);
-
-      var padding =
-        parseFloat(style.paddingTop) +
-        parseFloat(style.paddingBottom);
-
-      var border =
-        parseFloat(style.borderTopWidth) +
-        parseFloat(style.borderBottomWidth);
-
-      var newHeight = box.offsetHeight + extraPerBox;
-
-      if(style.boxSizing === "border-box"){
-
-        box.style.minHeight = newHeight + "px";
-
-      } else {
-
-        box.style.minHeight =
-          (newHeight - padding - border) + "px";
+        if(extra > 1){
+          boxes[i].style.minHeight =
+            (boxes[i].offsetHeight + extra) + "px";
+        }
       }
     }
   }
 }
 
+
 function scheduleBoxAlignment(){
-  setTimeout(alignBottomBoxes, 100);
+
+  var raf = window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame;
+
+  if(typeof raf === "function"){
+
+    raf.call(window, function(){
+      raf.call(window, alignBottomBoxes);
+    });
+
+  } else {
+
+    window.setTimeout(alignBottomBoxes, 100);
+  }
 }
 
 window.onresize = function(){
