@@ -447,6 +447,7 @@ body:not(.k) #menuDayButtons {
 
 body:not(.k) .agenda-nav button,
 body:not(.k) #taskDayButtons button,
+body:not(.k) #personalGlobalTaskCtl button,
 body:not(.k) #menuDayButtons button {
     flex: 1 1 0;
     min-width: 0;
@@ -816,6 +817,7 @@ body.k .section-heading .sync-label {
     position: relative !important;
     top: -2px !important;
 }
+
 
 /* HAMBURGER KINDLE */
 body.k #viewMenuToggle {
@@ -1226,6 +1228,10 @@ body.k .trash-icon:after {
 		<button type="button" id="personalGlobalTbOggi" class="sel">Oggi</button>
 		<button type="button" id="personalGlobalTbDomani">Domani</button>
 	  </div>
+	  
+	<div id="personalGlobalTaskList">Caricamento...</div>
+		<div class="small" id="personalGlobalTaskStatus"></div>
+	</div>
 
 	<div class="box" id="personalTasksBox">
 	  <div class="section-heading">
