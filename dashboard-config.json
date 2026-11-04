@@ -16,23 +16,23 @@
     "shared": {
       "enabled": true,
       "columns": [
-        ["sharedTasks", "todo", "schoolMenu"],
-        ["agenda", "shopping"]
+        ["agenda", "sharedTasks", "schoolMenu"],
+        ["shopping", "todo"]
       ]
     },
     "walter": {
       "enabled": true,
       "columns": [
-        ["personalTasks"],
-        ["personalGlobalTasks"]
+        ["personalGlobalTasks"],
+        ["personalTasks"]
       ]
     },
     "ilenia": {
       "enabled": true,
       "rows": [
-        ["ileniaAgenda"],
-        ["personalGlobalTasks", "personalTasks"],
-        ["personalRoutes"]
+        ["personalRoutes"],
+        ["personalTasks", "personalGlobalTasks"],
+        ["ileniaAgenda"]
       ]
     }
   }
