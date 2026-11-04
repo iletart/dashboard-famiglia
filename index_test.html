@@ -2169,10 +2169,10 @@ function setView(view, manual) {
       ileniaAgendaBox.style.display = view === "ilenia" ? "block" : "none";
     }
 
-    if(view === "ilenia") {
-      syncPersonalRoutes();
-      safe(renderIleniaAgenda);
-    }
+	if(view === "ilenia") {
+	  safe(loadRoutes);
+	  safe(renderIleniaAgenda);
+	}
   }
 
   closeViewMenu();
