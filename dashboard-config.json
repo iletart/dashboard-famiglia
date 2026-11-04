@@ -12,13 +12,13 @@
     "ileniaAgenda": "ileniaAgendaBox"
   },
   "views": {
-    "shared": {
-      "enabled": true,
-      "columns": [
-        ["agenda", "shopping"],
-        ["sharedTasks", "todo", "schoolMenu"]
-      ]
-    },
+  "shared": {
+    "enabled": true,
+    "columns": [
+      ["schoolMenu", "agenda", "todo"],
+      ["shopping", "sharedTasks"]
+    ]
+  },
     "walter": {
       "enabled": true,
       "columns": [
