@@ -4480,7 +4480,6 @@ scheduleDailyAt(0, 2, function() {
 
 
 
-
 function alignBottomBoxes(){
 
   var row = currentView === "shared"
@@ -4489,66 +4488,35 @@ function alignBottomBoxes(){
 
   if(!row) return;
 
-  var layoutRows = [];
+  /* Ripristina le altezze naturali */
+  var columns = [];
 
   for(var i = 0; i < row.children.length; i++){
 
     var child = row.children[i];
 
-    if((" " + child.className + " ").indexOf(" layout-row ") !== -1){
-      layoutRows.push(child);
+    if((" " + child.className + " ").indexOf(" col ") !== -1){
+      child.style.minHeight = "";
+      columns.push(child);
     }
   }
 
-  if(layoutRows.length === 0){
-    layoutRows.push(row);
-  }
+  /* In presenza di layout a righe, non usare questo allineamento */
+  if(columns.length !== 2) return;
 
-  for(var r = 0; r < layoutRows.length; r++){
+  var rect0 = columns[0].getBoundingClientRect();
+  var rect1 = columns[1].getBoundingClientRect();
 
-    var currentRow = layoutRows[r];
-    var boxes = [];
+  /* Devono essere effettivamente affiancate */
+  if(Math.abs(rect0.left - rect1.left) < 2) return;
 
-    for(var i = 0; i < currentRow.children.length; i++){
+  /* Altezza complessiva maggiore */
+  var maxHeight = Math.max(rect0.height, rect1.height);
 
-      var col = currentRow.children[i];
-
-      if((" " + col.className + " ").indexOf(" col ") === -1) continue;
-      if(col.getBoundingClientRect().width === 0) continue;
-
-      for(var j = 0; j < col.children.length; j++){
-
-        var box = col.children[j];
-
-        if((" " + box.className + " ").indexOf(" box ") !== -1){
-
-          /* Ripristina l'altezza naturale */
-          box.style.height = "";
-          box.style.minHeight = "";
-
-          boxes.push(box);
-        }
-      }
-    }
-
-    if(boxes.length !== 2) continue;
-
-    var rect0 = boxes[0].getBoundingClientRect();
-    var rect1 = boxes[1].getBoundingClientRect();
-
-    /* Devono essere affiancati */
-    if(Math.abs(rect0.left - rect1.left) < 2) continue;
-
-    /* Individua l'altezza maggiore */
-    var maxHeight = Math.max(rect0.height, rect1.height);
-
-    /* Uniforma l'altezza minima dei due box */
-    for(var i = 0; i < boxes.length; i++){
-
-      boxes[i].style.minHeight = maxHeight + "px";
-    }
-  }
+  columns[0].style.minHeight = maxHeight + "px";
+  columns[1].style.minHeight = maxHeight + "px";
 }
+
 
 
 function scheduleBoxAlignment(){
