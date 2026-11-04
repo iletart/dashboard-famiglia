@@ -9,7 +9,7 @@
 
 <style>
 /* ==================================================
-   IMPOSTAZIONI GENERALI
+   1. IMPOSTAZIONI GENERALI
    ================================================== */
 
 html, body {
@@ -39,8 +39,26 @@ body {
 }
 
 /* ==================================================
-   INTESTAZIONI DEI BOX
+   2. TITOLI E INTESTAZIONI
    ================================================== */
+
+h2 {
+    font-size: 1.05em;
+    margin: 0 0 6px;
+    padding: 0 0 3px;
+    border-bottom: 2px solid #000;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-size: 1em;
+    margin: 8px 0 2px;
+    text-transform: capitalize;
+}
+
+#agendaTitle {
+    text-transform: none;
+}
 
 .section-heading {
     display: flex;
@@ -80,29 +98,7 @@ body {
 }
 
 /* ==================================================
-   TITOLI
-   ================================================== */
-
-h2 {
-    font-size: 1.05em;
-    margin: 0 0 6px;
-    padding: 0 0 3px;
-    border-bottom: 2px solid #000;
-    text-transform: uppercase;
-}
-
-h3 {
-    font-size: 1em;
-    margin: 8px 0 2px;
-    text-transform: capitalize;
-}
-
-#agendaTitle {
-    text-transform: none;
-}
-
-/* ==================================================
-   LAYOUT COLONNE
+   3. LAYOUT A COLONNE
    ================================================== */
 
 .row {
@@ -124,7 +120,7 @@ h3 {
 }
 
 /* ==================================================
-   HEADER: OROLOGIO, DATA E METEO
+   4. HEADER: OROLOGIO, DATA E METEO
    ================================================== */
 
 #head {
@@ -139,6 +135,7 @@ h3 {
     float: left;
     width: 80px;
     margin: 0;
+    margin-left: 42px !important;
     font-size: 2.5em;
     font-weight: bold;
     line-height: 1;
@@ -146,7 +143,6 @@ h3 {
     position: relative;
     left: 5px;
     top: 20px;
-    margin-left: 42px !important;
 }
 
 #info {
@@ -206,7 +202,7 @@ h3 {
 }
 
 /* ==================================================
-   MENU SCOLASTICO
+   5. MENU SCOLASTICO
    ================================================== */
 
 #menuList ul {
@@ -230,7 +226,7 @@ h3 {
 }
 
 /* ==================================================
-   AGENDA
+   6. AGENDA
    ================================================== */
 
 .ev {
@@ -250,7 +246,7 @@ h3 {
 }
 
 /* ==================================================
-   SPOSTAMENTI
+   7. SPOSTAMENTI
    ================================================== */
 
 .rt {
@@ -258,7 +254,7 @@ h3 {
 }
 
 /* ==================================================
-   TASK E ATTIVITÀ
+   8. TASK E ATTIVITÀ
    ================================================== */
 
 .todo {
@@ -308,7 +304,7 @@ h3 {
 }
 
 /* ==================================================
-   TASK DELL'AGENDA
+   9. TASK DELL'AGENDA
    ================================================== */
 
 .agenda-task-row {
@@ -341,7 +337,7 @@ h3 {
 }
 
 /* ==================================================
-   PULSANTI E INPUT
+   10. PULSANTI E INPUT
    ================================================== */
 
 button {
@@ -368,10 +364,8 @@ input {
     box-sizing: border-box;
 }
 
-
-
 /* ==================================================
-   CAMPI INSERIMENTO ATTIVITÀ
+   11. CAMPI INSERIMENTO ATTIVITÀ
    ================================================== */
 
 @media screen and (min-width: 801px) {
@@ -403,45 +397,8 @@ input {
     }
 }
 
-body.k #taskCtl,
-body.k #todoCtl {
-    position: relative !important;
-    display: block !important;
-    width: 100% !important;
-    height: 32px !important;
-    box-sizing: border-box !important;
-}
-
-body.k #taskInput,
-body.k #todoInput {
-    display: block !important;
-    position: absolute !important;
-    left: 0 !important;
-    right: 90px !important;
-    width: auto !important;
-    height: 32px !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-}
-
-body.k #taskAddButton,
-body.k #todoCtl button {
-    display: block !important;
-    position: absolute !important;
-    right: 0 !important;
-    top: 0 !important;
-    width: 85px !important;
-    min-width: 85px !important;
-    max-width: 85px !important;
-    height: 32px !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 5px 2px !important;
-    white-space: nowrap !important;
-}
-
 /* ==================================================
-   TESTI SECONDARI ED ERRORI
+   12. TESTI SECONDARI ED ERRORI
    ================================================== */
 
 .small {
@@ -464,7 +421,7 @@ body.k #todoCtl button {
 }
 
 /* ==================================================
-   NAVIGAZIONE PC E SMARTPHONE
+   13. NAVIGAZIONE AGENDA E MENU
    ================================================== */
 
 body:not(.k) .agenda-nav,
@@ -488,7 +445,7 @@ body:not(.k) #menuDayButtons button {
     padding: 8px 3px;
     box-sizing: border-box;
     text-align: center;
-	border-radius: 4px !important;
+    border-radius: 4px !important;
 }
 
 .agenda-nav button:disabled,
@@ -501,7 +458,7 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   MENU VISTE FAMIGLIA
+   14. MENU VISTE FAMIGLIA
    ================================================== */
 
 #viewMenu {
@@ -533,7 +490,6 @@ body:not(.k) #menuDayButtons button {
     background: #000;
 }
 
-/* CONTENITORE DEL MENU */
 #viewMenuPanel {
     display: block;
     width: 142px;
@@ -545,7 +501,6 @@ body:not(.k) #menuDayButtons button {
     box-sizing: border-box;
 }
 
-/* NASCONDE IL MENU QUANDO CHIUSO */
 #viewMenuPanel[hidden] {
     display: none !important;
 }
@@ -570,10 +525,6 @@ body:not(.k) #menuDayButtons button {
     border: 1px solid #000 !important;
 }
 
-#menuDayButtons button {
-    border-radius: 4px !important;
-}
-
 #menuDayButtons button.sel {
     background: #000 !important;
     color: #fff !important;
@@ -581,7 +532,7 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   PAGINE PERSONALI
+   15. PAGINE PERSONALI
    ================================================== */
 
 #personalView {
@@ -637,12 +588,11 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   HEADER DESKTOP
+   16. HEADER DESKTOP
    ================================================== */
 
 @media screen and (min-width: 801px) {
 
-    /* Header PC più compatto: riduce l'altezza del box e riallinea i contenuti */
     body:not(.k) #head {
         padding: 2px 5px !important;
     }
@@ -672,18 +622,10 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   TABLET E SMARTPHONE
+   17. TABLET E SMARTPHONE
    ================================================== */
 
 @media screen and (max-width: 800px) {
-
-    .col {
-        float: left;
-        display: block;
-        width: 50%;
-        min-width: 0;
-        box-sizing: border-box;
-    }
 
     body:not(.k) #head {
         display: grid;
@@ -776,22 +718,12 @@ body:not(.k) #menuDayButtons button {
         font-size: 1.05em;
         padding: 8px 18px;
         margin-right: 6px;
-		border-radius: 4px !important;
+        border-radius: 4px !important;
     }
-	
-	.agenda-nav button:disabled,
-	.agenda-nav button.active,
-	.agenda-nav button.selected {
-		background: #000 !important;
-		color: #fff !important;
-		border: 2px solid #000 !important;
-		opacity: 1 !important;
-	}
-
 }
 
 /* ==================================================
-   SMARTPHONE MOLTO STRETTI
+   18. SMARTPHONE MOLTO STRETTI
    ================================================== */
 
 @media screen and (max-width: 380px) {
@@ -806,7 +738,7 @@ body:not(.k) #menuDayButtons button {
 }
 
 /* ==================================================
-   PERSONALIZZAZIONI KINDLE
+   19. PERSONALIZZAZIONI KINDLE
    ================================================== */
 
 body.k {
@@ -817,7 +749,8 @@ body.k .wrap {
     padding-right: 14px;
 }
 
-/* Intestazioni */
+/* Header box */
+
 body.k .section-heading {
     display: block !important;
     width: 100% !important;
@@ -848,16 +781,8 @@ body.k .section-heading .sync-label {
     top: -2px !important;
 }
 
-/* Colonne */
-body.k .col {
-    float: left;
-    display: block;
-    width: 50%;
-    min-width: 0;
-    box-sizing: border-box;
-}
+/* Header pagina */
 
-/* Header */
 body.k #head {
     display: block;
     position: relative;
@@ -940,6 +865,7 @@ body.k #weather {
 }
 
 /* Menu scolastico */
+
 body.k #menuList .menu-icon {
     display: none !important;
 }
@@ -950,7 +876,47 @@ body.k #menuList li {
     list-style-type: none !important;
 }
 
+/* Campi inserimento attività */
+
+body.k #taskCtl,
+body.k #todoCtl {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+}
+
+body.k #taskInput,
+body.k #todoInput {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 90px !important;
+    width: auto !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+
+body.k #taskAddButton,
+body.k #todoCtl button {
+    display: block !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    width: 85px !important;
+    min-width: 85px !important;
+    max-width: 85px !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 5px 2px !important;
+    white-space: nowrap !important;
+}
+
 /* Navigazione giorni */
+
 body.k .agenda-nav,
 body.k #taskDayButtons,
 body.k #menuDayButtons {
@@ -977,7 +943,7 @@ body.k #menuDayButtons button {
     text-align: center !important;
     white-space: nowrap !important;
     box-sizing: border-box !important;
-	border-radius: 4px !important;
+    border-radius: 4px !important;
 }
 
 body.k #menuDayButtons #mb-refresh {
@@ -985,6 +951,7 @@ body.k #menuDayButtons #mb-refresh {
 }
 
 /* Task condivisi e personali */
+
 body.k .todo {
     display: table !important;
     table-layout: fixed !important;
@@ -1025,18 +992,28 @@ body.k .todo-actions {
 }
 
 /* Task dell'agenda */
-body.k .agenda-task-row {
+
+body.k .event-task-inline {
+    display: block !important;
+    width: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+}
+
+body.k .event-task-inline .agenda-task-row {
     display: block !important;
     width: 100% !important;
-    text-align: left !important;
-    margin: 0 0 8px 0 !important;
+    box-sizing: border-box !important;
+    margin: 6px 0 !important;
     padding: 0 !important;
+    text-align: left !important;
     float: none !important;
     clear: both !important;
     white-space: normal !important;
 }
 
-body.k .agenda-task-check {
+body.k .event-task-inline .agenda-task-check {
     display: inline-block !important;
     width: 20px !important;
     height: 20px !important;
@@ -1044,7 +1021,7 @@ body.k .agenda-task-check {
     vertical-align: top !important;
 }
 
-body.k .agenda-task-text {
+body.k .event-task-inline .agenda-task-text {
     display: inline !important;
     width: auto !important;
     vertical-align: top !important;
@@ -1053,51 +1030,7 @@ body.k .agenda-task-text {
     padding: 0 !important;
     white-space: normal !important;
     overflow-wrap: break-word !important;
-}
-
-body.k .event-task-inline {
-    display: block !important;
-    width: 100% !important;
-    white-space: normal !important;
-    box-sizing: border-box !important;
-}
-
-body.k .event-task-inline .agenda-task-row {
-    display: block !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    margin: 6px 0 !important;
-    white-space: normal !important;
-    float: none !important;
-    clear: both !important;
-}
-
-body.k .event-task-inline .agenda-task-check {
-    display: inline-block !important;
-    vertical-align: top !important;
-}
-
-body.k .event-task-inline .agenda-task-text {
-    display: inline !important;
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
-}
-
-/* Evita lo sbordamento delle stringhe lunghe */
-#agendaBox,
-#agendaBox * {
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-}
-
-/* Larghezza uniforme delle colonne */
-#dashboardContent > .col,
-#personalLayoutRow > .col {
-    width: 50%;
-    box-sizing: border-box;
-    min-width: 0;
+    word-wrap: break-word !important;
 }
 
 </style>
