@@ -1084,7 +1084,7 @@ body.k .todo-delete {
 body.k .trash-icon {
   position: relative;
   left: 2px;
-  top: 5px;
+  top: 6px;
   display: block;
   width: 11px;
   height: 12px;
@@ -4146,7 +4146,14 @@ function taskRow(index, item){
   row.appendChild(txt);
 
   var actions = mk("span", "todo-actions");
-  var del = mk("button", "todo-delete", "🗑");
+  var del = mk("button", "todo-delete", "");
+
+  if(document.body.classList.contains("k")){
+    del.appendChild(mk("span", "trash-icon"));
+  } else {
+    del.textContent = "🗑";
+  }
+  
   del.type = "button";
   del.disabled = taskBusy;
   del.title = "Elimina attività";
