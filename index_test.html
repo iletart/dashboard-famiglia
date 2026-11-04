@@ -4467,6 +4467,7 @@ scheduleDailyAt(0, 2, function() {
 
 
 
+
 function alignBottomBoxes(){
 
   var row = currentView === "shared"
@@ -4507,8 +4508,11 @@ function alignBottomBoxes(){
         var box = col.children[j];
 
         if((" " + box.className + " ").indexOf(" box ") !== -1){
+
+          /* Ripristina l'altezza naturale */
           box.style.height = "";
           box.style.minHeight = "";
+
           boxes.push(box);
         }
       }
@@ -4522,33 +4526,20 @@ function alignBottomBoxes(){
     /* Devono essere affiancati */
     if(Math.abs(rect0.left - rect1.left) < 2) continue;
 
+    /* Individua l'altezza maggiore */
     var maxHeight = Math.max(rect0.height, rect1.height);
 
+    /* Uniforma l'altezza minima dei due box */
     for(var i = 0; i < boxes.length; i++){
 
-      var box = boxes[i];
-      var style = window.getComputedStyle(box);
-
-      var padding =
-        parseFloat(style.paddingTop) +
-        parseFloat(style.paddingBottom);
-
-      var border =
-        parseFloat(style.borderTopWidth) +
-        parseFloat(style.borderBottomWidth);
-
-      if(style.boxSizing === "border-box"){
-        box.style.height = maxHeight + "px";
-      } else {
-        box.style.height = (maxHeight - padding - border) + "px";
-      }
+      boxes[i].style.minHeight = maxHeight + "px";
     }
   }
 }
 
 
 function scheduleBoxAlignment(){
-  setTimeout(alignBottomBoxes, 300);
+  setTimeout(alignBottomBoxes, 100);
 }
 
 window.onresize = function(){
