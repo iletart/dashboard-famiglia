@@ -1869,7 +1869,12 @@ function setView(view, manual) {
   }
 
   closeViewMenu();
-  scheduleBoxAlignment();
+  
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      scheduleBoxAlignment();
+    });
+  });
 }
 
 function initViewMenu(){
