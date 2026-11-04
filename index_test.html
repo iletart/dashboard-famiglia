@@ -781,34 +781,44 @@ body.k .section-heading .sync-label {
     top: -2px !important;
 }
 
-/* Hamburger Kindle */
+/* HAMBURGER KINDLE */
 body.k #viewMenuToggle {
+    position: relative;
     width: 28px;
     height: 28px;
     min-width: 28px;
-    padding: 0;
+    padding: 0 !important;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
+    display: block;
+    box-sizing: border-box;
     background: #fff;
     border: 1px solid #000;
     border-radius: 4px;
-    box-sizing: border-box;
 }
 
 body.k #viewMenuToggle span {
+    position: absolute;
     display: block;
-    width: 17px;
+    left: 4px;
+    width: 18px;
     height: 2px;
-    min-height: 2px;
-    flex: 0 0 2px;
-    background: #000;
-    border: 0;
+    min-height: 0;
     padding: 0;
     margin: 0;
+    background: #000;
+    border: 0;
+}
+
+body.k #viewMenuToggle span:nth-child(1) {
+    top: 6px;
+}
+
+body.k #viewMenuToggle span:nth-child(2) {
+    top: 13px;
+}
+
+body.k #viewMenuToggle span:nth-child(3) {
+    top: 20px;
 }
 
 /* Header pagina */
@@ -1080,7 +1090,7 @@ body.k .trash-icon {
   border-top: 0;
   box-sizing: border-box;
   margin-top: 4px;
-  transform: translateY(2px);
+  transform: translate(2px, 4px);
 }
 
 body.k .trash-icon:before {
