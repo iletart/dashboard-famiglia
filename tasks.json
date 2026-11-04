@@ -18,6 +18,11 @@
         "done": true
       }
     ],
-    "2026-11-04": []
+    "2026-11-04": [
+      {
+        "text": "Asciugatrice",
+        "done": false
+      }
+    ]
   }
 }
