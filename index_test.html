@@ -781,6 +781,36 @@ body.k .section-heading .sync-label {
     top: -2px !important;
 }
 
+/* Hamburger Kindle */
+body.k #viewMenuToggle {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+body.k #viewMenuToggle span {
+    display: block;
+    width: 17px;
+    height: 2px;
+    min-height: 2px;
+    flex: 0 0 2px;
+    background: #000;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
 /* Header pagina */
 
 body.k #head {
@@ -1049,7 +1079,8 @@ body.k .trash-icon {
   border: 1px solid #000;
   border-top: 0;
   box-sizing: border-box;
-  margin-top: 6px;
+  margin-top: 4px;
+  transform: translateY(2px);
 }
 
 body.k .trash-icon:before {
