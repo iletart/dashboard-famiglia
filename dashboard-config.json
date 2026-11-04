@@ -1,4 +1,3 @@
-
 {
   "version": 1,
   "boxes": {
@@ -16,23 +15,23 @@
     "shared": {
       "enabled": true,
       "columns": [
-        ["agenda", "sharedTasks", "schoolMenu"],
-        ["shopping", "todo"]
+        ["agenda", "shopping"],
+        ["sharedTasks", "todo", "schoolMenu"]
       ]
     },
     "walter": {
       "enabled": true,
       "columns": [
-        ["personalGlobalTasks"],
-        ["personalTasks"]
+        ["personalTasks"],
+        ["personalGlobalTasks"]
       ]
     },
     "ilenia": {
       "enabled": true,
       "rows": [
-        ["personalRoutes"],
-        ["personalTasks", "personalGlobalTasks"],
-        ["ileniaAgenda"]
+        ["ileniaAgenda"],
+        ["personalGlobalTasks", "personalTasks"],
+        ["personalRoutes"]
       ]
     }
   }
