@@ -4483,39 +4483,162 @@ scheduleDailyAt(0, 2, function() {
 
 function alignBottomBoxes(){
 
-  var row = currentView === "shared"
+  var container = currentView === "shared"
     ? $("dashboardContent")
     : $("personalLayoutRow");
 
-  if(!row) return;
+  if(!container) return;
 
-  /* Ripristina le altezze naturali */
-  var columns = [];
-
-  for(var i = 0; i < row.children.length; i++){
-
-    var child = row.children[i];
-
-    if((" " + child.className + " ").indexOf(" col ") !== -1){
-      child.style.minHeight = "";
-      columns.push(child);
-    }
+  function hasClass(element, name){
+    return (" " + (element.className || "") + " ")
+      .indexOf(" " + name + " ") !== -1;
   }
 
-  /* In presenza di layout a righe, non usare questo allineamento */
-  if(columns.length !== 2) return;
+  function getBoxes(column){
 
-  var rect0 = columns[0].getBoundingClientRect();
-  var rect1 = columns[1].getBoundingClientRect();
+    var result = [];
 
-  /* Devono essere effettivamente affiancate */
-  if(Math.abs(rect0.left - rect1.left) < 2) return;
+    for(var i = 0; i < column.children.length; i++){
 
-  /* Altezza complessiva maggiore */
-  var maxHeight = Math.max(rect0.height, rect1.height);
+      var child = column.children[i];
 
-  columns[0].style.minHeight = maxHeight + "px";
-  columns[1].style.minHeight = maxHeight + "px";
+      if(hasClass(child, "box")){
+        result.push(child);
+      }
+    }
+
+    return result;
+  }
+
+  /* Rimuove i dimensionamenti precedenti */
+  var allBoxes = container.querySelectorAll(".box");
+
+  for(var i = 0; i < allBoxes.length; i++){
+    allBoxes[i].style.minHeight = "";
+  }
+
+  /* Rimuove eventuali dimensionamenti precedenti delle colonne */
+  var allColumns = container.querySelectorAll(".col");
+
+  for(var i = 0; i < allColumns.length; i++){
+    allColumns[i].style.minHeight = "";
+  }
+
+  var viewConfig = DASHBOARD_CONFIG.views[currentView];
+
+  if(!viewConfig) return;
+
+  /* ==================================
+     LAYOUT A COLONNE
+     ================================== */
+
+  if(viewConfig.columns){
+
+    var columns = [];
+
+    for(var i = 0; i < container.children.length; i++){
+
+      var child = container.children[i];
+
+      if(!hasClass(child, "col")) continue;
+
+      var boxes = getBoxes(child);
+
+      if(boxes.length === 0) continue;
+
+      if(child.getBoundingClientRect().width === 0) continue;
+
+      columns.push({
+        element: child,
+        boxes: boxes,
+        height: child.getBoundingClientRect().height
+      });
+    }
+
+    if(columns.length < 2) return;
+
+    /* Altezza massima delle colonne */
+    var maxHeight = 0;
+
+    for(var i = 0; i < columns.length; i++){
+      maxHeight = Math.max(maxHeight, columns[i].height);
+    }
+
+    /* Distribuisce equamente lo spazio aggiuntivo */
+    for(var i = 0; i < columns.length; i++){
+
+      var column = columns[i];
+      var extra = maxHeight - column.height;
+
+      if(extra <= 1) continue;
+
+      var increment = extra / column.boxes.length;
+
+      for(var j = 0; j < column.boxes.length; j++){
+
+        var box = column.boxes[j];
+        var naturalHeight = box.getBoundingClientRect().height;
+
+        box.style.minHeight =
+          (naturalHeight + increment) + "px";
+      }
+    }
+
+    return;
+  }
+
+  /* ==================================
+     LAYOUT A RIGHE
+     ================================== */
+
+  if(viewConfig.rows){
+
+    for(var r = 0; r < container.children.length; r++){
+
+      var currentRow = container.children[r];
+
+      if(!hasClass(currentRow, "layout-row")) continue;
+
+      var boxes = [];
+
+      for(var c = 0; c < currentRow.children.length; c++){
+
+        var column = currentRow.children[c];
+
+        if(!hasClass(column, "col")) continue;
+
+        var rowBoxes = getBoxes(column);
+
+        if(rowBoxes.length > 0 &&
+           column.getBoundingClientRect().width > 0){
+
+          boxes.push(rowBoxes[0]);
+        }
+      }
+
+      if(boxes.length < 2) continue;
+
+      var heights = [];
+      var maxHeight = 0;
+
+      for(var i = 0; i < boxes.length; i++){
+
+        heights[i] = boxes[i].getBoundingClientRect().height;
+
+        maxHeight = Math.max(maxHeight, heights[i]);
+      }
+
+      for(var i = 0; i < boxes.length; i++){
+
+        var extra = maxHeight - heights[i];
+
+        if(extra > 1){
+          boxes[i].style.minHeight =
+            (heights[i] + extra) + "px";
+        }
+      }
+    }
+  }
 }
 
 
