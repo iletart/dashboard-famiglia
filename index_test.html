@@ -2071,11 +2071,8 @@ function setView(view, manual) {
 
   closeViewMenu();
   
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      scheduleBoxAlignment();
-    });
-  });
+scheduleBoxAlignment();
+
 }
 
 function initViewMenu(){
@@ -4521,12 +4518,15 @@ function alignBottomBoxes(){
 function scheduleBoxAlignment(){
 
   var raf = window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame;
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame;
 
-  if(raf){
+  if(typeof raf === "function"){
 
-    raf(function(){
-      raf(alignBottomBoxes);
+    raf.call(window, function(){
+      raf.call(window, alignBottomBoxes);
     });
 
   } else {
