@@ -1083,7 +1083,22 @@ body.k .event-task-inline .agenda-task-text {
     overflow-wrap: anywhere !important;
 }
 
+/* Evita lo sbordamento delle stringhe lunghe */
+#agendaBox,
+#agendaBox * {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
 
+/* Larghezza uniforme delle colonne */
+#dashboardContent > .col,
+#personalLayoutRow > .col {
+    width: 50%;
+    box-sizing: border-box;
+    min-width: 0;
+}
 
 </style>
 
@@ -4588,6 +4603,30 @@ function alignBottomBoxes(){
           (box.offsetHeight + increment) + "px";
       }
     }
+
+  /* Corregge eventuali arrotondamenti sub-pixel */
+  var finalHeights = [];
+  
+  for(var i = 0; i < columns.length; i++){
+    finalHeights.push(getTotalHeight(columns[i].boxes));
+  }
+  
+  var tallest = Math.max.apply(null, finalHeights);
+  
+  for(var i = 0; i < columns.length; i++){
+  
+    var difference = tallest - finalHeights[i];
+  
+    if(difference > 0 && difference <= 2){
+  
+      var lastBox = columns[i].boxes[
+        columns[i].boxes.length - 1
+      ];
+  
+      lastBox.style.minHeight =
+        (lastBox.offsetHeight + difference) + "px";
+    }
+  }
 
     return;
   }
