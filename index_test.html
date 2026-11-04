@@ -1081,6 +1081,105 @@ body.k .event-task-inline .agenda-task-text {
     overflow-wrap: anywhere !important;
 }
 
+/* =========================================
+   MOTORE GENERICO LAYOUT DASHBOARD
+   ========================================= */
+
+/* Layout a colonne */
+.configured-layout.layout-as-columns {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-box-align: stretch;
+    -webkit-align-items: stretch;
+    align-items: stretch;
+
+    width: 100%;
+}
+
+/* Ogni colonna occupa la stessa larghezza */
+.configured-layout.layout-as-columns > .col {
+    float: none;
+    width: auto;
+    min-width: 0;
+
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 0;
+    flex: 1 1 0;
+
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-box-orient: vertical;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+
+/* I box condividono equamente lo spazio verticale aggiuntivo */
+.configured-layout.layout-as-columns > .col > .box {
+    width: 100%;
+    min-width: 0;
+
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+
+/* =========================================
+   LAYOUT A RIGHE
+   ========================================= */
+
+.configured-layout.layout-as-rows {
+    display: block;
+    width: 100%;
+}
+
+.configured-layout.layout-as-rows > .layout-row {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-box-align: stretch;
+    -webkit-align-items: stretch;
+    align-items: stretch;
+
+    width: 100%;
+}
+
+/* Box affiancati */
+.configured-layout.layout-as-rows > .layout-row > .col {
+    float: none;
+    width: auto;
+    min-width: 0;
+
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 0;
+    flex: 1 1 0;
+
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+}
+
+/* Il box occupa tutta l'altezza disponibile */
+.configured-layout.layout-as-rows > .layout-row > .col > .box {
+    width: 100%;
+
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+/* Elimina il clearfix nei contenitori flex */
+.configured-layout::after,
+.configured-layout .layout-row::after {
+    display: none;
+    content: none;
+}
+
 </style>
 
 
@@ -1902,6 +2001,14 @@ function buildConfiguredLayout(view){
   if(!layout) return;
 
   var isRows = !!viewConfig.rows;
+  
+  /* Identifica il tipo di layout per il motore grafico */
+  row.className = (row.className || "")
+    .replace(/\bconfigured-layout\b/g, "")
+    .replace(/\blayout-as-(rows|columns)\b/g, "");
+  
+  row.className += " configured-layout " +
+    (isRows ? "layout-as-rows" : "layout-as-columns");
 
   /* Nasconde i box personali non previsti nella vista */
   if(!shared){
@@ -4475,43 +4582,8 @@ scheduleDailyAt(0, 2, function() {
 });
 
 
-
-
 function alignBottomBoxes(){
-
-  var row = currentView === "shared"
-    ? $("dashboardContent")
-    : $("personalLayoutRow");
-
-  if(!row) return;
-
-  /* Ripristina le altezze naturali */
-  var columns = [];
-
-  for(var i = 0; i < row.children.length; i++){
-
-    var child = row.children[i];
-
-    if((" " + child.className + " ").indexOf(" col ") !== -1){
-      child.style.minHeight = "";
-      columns.push(child);
-    }
-  }
-
-  /* In presenza di layout a righe, non usare questo allineamento */
-  if(columns.length !== 2) return;
-
-  var rect0 = columns[0].getBoundingClientRect();
-  var rect1 = columns[1].getBoundingClientRect();
-
-  /* Devono essere effettivamente affiancate */
-  if(Math.abs(rect0.left - rect1.left) < 2) return;
-
-  /* Altezza complessiva maggiore */
-  var maxHeight = Math.max(rect0.height, rect1.height);
-
-  columns[0].style.minHeight = maxHeight + "px";
-  columns[1].style.minHeight = maxHeight + "px";
+  /* L'allineamento è gestito dal CSS flexbox */
 }
 
 
