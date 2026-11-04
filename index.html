@@ -2154,15 +2154,16 @@ function loadAgenda() {
     function(err, d) {
 
       var eventsChanged = false;
+      var hadAgenda = !!agendaData;
 
       if (!err && d && d.events) {
 
-        var oldEvents = agendaData ?
+        var oldEvents = hadAgenda ?
           JSON.stringify(agendaData.events || []) : "";
 
         var newEvents = JSON.stringify(d.events || []);
 
-        eventsChanged = oldEvents !== newEvents;
+        eventsChanged = !hadAgenda || oldEvents !== newEvents;
 
         agendaData = d;
         agendaErr = false;
@@ -2172,7 +2173,7 @@ function loadAgenda() {
         agendaErr = true;
       }
 
-      if(eventsChanged || !agendaData) {
+      if(eventsChanged || !hadAgenda || err) {
         safe(renderAgenda);
       }
 
