@@ -1034,44 +1034,44 @@ body.k .event-task-inline .agenda-task-text {
 }
 
 /* Icona cestino */
-.todo-delete {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+body.k .todo-delete {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 2px !important;
 }
 
-.trash-icon {
+body.k .trash-icon {
   position: relative;
   display: block;
-  width: 10px;
+  width: 11px;
   height: 12px;
-  border: 1px solid currentColor;
+  border: 1px solid #000;
   border-top: 0;
   box-sizing: border-box;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 
-.trash-icon:before {
+body.k .trash-icon:before {
   content: "";
   position: absolute;
-  width: 12px;
-  height: 2px;
-  border: 1px solid currentColor;
-  box-sizing: border-box;
+  width: 13px;
+  height: 1px;
+  background: #000;
   left: -2px;
-  top: -4px;
+  top: -3px;
 }
 
-.trash-icon:after {
+body.k .trash-icon:after {
   content: "";
   position: absolute;
-  width: 4px;
+  width: 5px;
   height: 2px;
-  border: 1px solid currentColor;
+  border: 1px solid #000;
   border-bottom: 0;
   box-sizing: border-box;
   left: 2px;
-  top: -6px;
+  top: -5px;
 }
 
 </style>
