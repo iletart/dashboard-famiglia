@@ -552,7 +552,7 @@ body:not(.k) #menuDayButtons button {
     margin: 0 0 6px 0;
 }
 
-/* TASK PERSONALI - WALTER E ILENIA */
+/* TASK PERSONALI */
 
 #personalTasks label {
     display: flex !important;
@@ -1115,7 +1115,7 @@ body.k .event-task-inline .agenda-task-text {
     word-wrap: break-word !important;
 }
 
-/* TASK PERSONALI WALTER */
+/* TASK PERSONALI */
 body.k .personal-agenda-task-row {
     display: block !important;
     position: relative !important;
@@ -1199,11 +1199,8 @@ body.k .trash-icon:after {
     <button type="button" id="viewMenuToggle" aria-label="Apri menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
-    <div id="viewMenuPanel" hidden>
-      <button type="button" data-view="shared">FAMIGLIA</button>
-      <button type="button" data-view="walter">WALTER</button>
-      <button type="button" data-view="ilenia">ILENIA</button>
-    </div>
+		<div id="viewMenuPanel" hidden>
+		</div>
   </div>
   <div id="clock">--:--</div>
 	<div id="info">
@@ -1390,6 +1387,8 @@ var menuUpdatedAt = null;
 
 var taskPollTimer = null;
 var taskSyncError = false;
+
+var USERS = [];
 
 /* ===== UTILITÀ ===== */
 function $(id) {
@@ -2184,23 +2183,21 @@ scheduleBoxAlignment();
 function initViewMenu(){
   var toggle = $("viewMenuToggle");
   var panel = $("viewMenuPanel");
+
   if(!toggle || !panel) return;
 
   toggle.onclick = function(){
     panel.hidden = !panel.hidden;
-    toggle.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
+    toggle.setAttribute(
+      "aria-expanded",
+      panel.hidden ? "false" : "true"
+    );
   };
 
-  var buttons = panel.querySelectorAll("button[data-view]");
-  for(var i = 0; i < buttons.length; i++){
-    buttons[i].onclick = function(){
-      personalTasksDayOffset = 0;
-      setView(this.getAttribute("data-view"), true);
-    };
-  }
-
   document.addEventListener("click", function(ev){
-    if(!$("viewMenu").contains(ev.target)) closeViewMenu();
+    if(!$("viewMenu").contains(ev.target)) {
+      closeViewMenu();
+    }
   });
 
   document.addEventListener("keydown", function(ev){
@@ -2208,11 +2205,66 @@ function initViewMenu(){
   });
 
   viewManualUntil = 0;
-  setView(getScheduledView(), false);
 
-  if(viewAutoInterval) clearInterval(viewAutoInterval);
+  getJson(
+    [CONFIG.base + "users.json", "users.json"],
+    function(err, d){
 
-  viewAutoInterval = setInterval(checkScheduledView, 15000);
+      if(err || !d || !Array.isArray(d.users)){
+        console.error("Errore caricamento users.json");
+        USERS = [];
+      } else {
+        USERS = d.users.filter(function(user){
+          return user &&
+            user.id &&
+            user.name &&
+            user.enabled === true;
+        });
+      }
+
+      // Ricostruisce il menu
+      clear(panel);
+
+      // Voce FAMIGLIA, sempre presente
+      var sharedButton = mk("button", "", "FAMIGLIA");
+      sharedButton.type = "button";
+      sharedButton.setAttribute("data-view", "shared");
+
+      sharedButton.onclick = function(){
+        personalTasksDayOffset = 0;
+        setView("shared", true);
+      };
+
+      panel.appendChild(sharedButton);
+
+      // Voci personali ricavate da users.json
+      USERS.forEach(function(user){
+
+        var button = mk("button", "", user.name);
+        button.type = "button";
+        button.setAttribute("data-view", user.id);
+
+        button.onclick = function(){
+          personalTasksDayOffset = 0;
+          setView(user.id, true);
+        };
+
+        panel.appendChild(button);
+      });
+
+      // Inizializza la vista prevista
+      if(viewAutoInterval) {
+        clearInterval(viewAutoInterval);
+      }
+
+      setView(getScheduledView(), false);
+
+      viewAutoInterval = setInterval(
+        checkScheduledView,
+        15000
+      );
+    }
+  );
 }
 
 function eventOccursToday(eventItem, today){
