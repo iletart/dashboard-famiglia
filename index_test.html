@@ -3189,6 +3189,7 @@ function getEventTaskData(description){
 }
 
 
+
 function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
 
   var data = getEventTaskData(eventItem.description);
@@ -3208,9 +3209,9 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
     return;
   }
 
-	if(!tasks.length && !details){
-	  return;
-	}
+  if(!tasks.length && !details){
+    return;
+  }
 
   if(!tasks.length){
     addEventDetailsLink(eventItem, taskContainer);
@@ -3238,6 +3239,7 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
         addEventDetailsLink(eventItem, taskContainer);
       }
 
+      scheduleBoxAlignment();
       return;
     }
 
@@ -3251,19 +3253,23 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
       (function(index){
 
         var taskKey = index + ":" + tasks[index];
-        var visibleTask = ownerFilter ? tasks[index].replace(/^[WI]\s*:\s*/i, "") : tasks[index];
+        var visibleTask = ownerFilter
+          ? tasks[index].replace(/^[WI]\s*:\s*/i, "")
+          : tasks[index];
 
-		 var label = mk("label", "agenda-task-row");
+        var label = mk("label", "agenda-task-row");
 
-		var checkbox = document.createElement("input");
-		checkbox.type = "checkbox";
-		checkbox.className = "agenda-task-check";
-		checkbox.checked = completed[taskKey] === true;
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "agenda-task-check";
+        checkbox.checked = completed[taskKey] === true;
 
-		var taskText = document.createElement("span");
-		taskText.className = checkbox.checked ?
-		  "agenda-task-text done" : "agenda-task-text";
-		taskText.appendChild(document.createTextNode(visibleTask));
+        var taskText = document.createElement("span");
+        taskText.className = checkbox.checked
+          ? "agenda-task-text done"
+          : "agenda-task-text";
+
+        taskText.appendChild(document.createTextNode(visibleTask));
 
         label.appendChild(checkbox);
         label.appendChild(taskText);
@@ -3298,13 +3304,15 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
       })(selectedIndexes[i]);
     }
 
-    // Collegamento aggiunto dopo tutte le checkbox.
     if(details){
       addEventDetailsLink(eventItem, taskContainer);
     }
 
+    scheduleBoxAlignment();
+
   }, url);
 }
+
 
 function clearTasksOnly(container, hasDetails){
   clear(container);
@@ -4539,7 +4547,9 @@ function alignBottomBoxes(){
 
 
 function scheduleBoxAlignment(){
-  setTimeout(alignBottomBoxes, 100);
+  requestAnimationFrame(function(){
+    requestAnimationFrame(alignBottomBoxes);
+  });
 }
 
 window.onresize = function(){
