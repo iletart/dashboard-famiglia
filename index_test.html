@@ -2517,11 +2517,14 @@ function renderAgenda(){
 
         if(n >= viewStart && n < viewStart + viewDays){
 
-			buckets[n - viewStart].push({
-			  key: 0,
-			  time: "Tutto\u00A0il\u00A0giorno",
-			  title: e.title || "(senza titolo)"
-			});
+		buckets[n - viewStart].push({
+		  key: e.id || (startDate + "|" + titleEv),
+		  eventId: e.id || "",
+		  time: "Tutto il giorno",
+		  title: titleEv,
+		  description: e.description || "",
+		  htmlLink: e.htmlLink || ""
+		});
 
         }
       }
