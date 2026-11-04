@@ -1160,7 +1160,8 @@ body.k .event-task-inline .agenda-task-text {
 
 <div class="row cf" id="dashboardContent">
     <div class="col">
-        <div class="box">
+        <!-- AGENDA FAMIGLIA -->
+        <div class="box" id="agendaBox">
             <div class="section-heading">
                 <h2 id="agendaTitle">Agenda famiglia</h2>
                 <div class="sync-label" id="agendaTimes"></div>
@@ -1169,65 +1170,70 @@ body.k .event-task-inline .agenda-task-text {
             <div class="small" id="agendaStatus"></div>
         </div>
 
-	<div class="box">
-		<div class="section-heading">
-			<h2>Lista della spesa</h2>
-			<div class="sync-label" id="shoppingTimes"></div>
-		</div>
-		<div id="shoppingList"></div>
-	</div>
-	</div>
+        <!-- LISTA DELLA SPESA -->
+        <div class="box" id="shoppingBox">
+            <div class="section-heading">
+                <h2>Lista della spesa</h2>
+                <div class="sync-label" id="shoppingTimes"></div>
+            </div>
+            <div id="shoppingList"></div>
+        </div>
+    </div>
 
-	<div class="col">
-		<div class="box">
-			<div class="section-heading">
-			<h2 id="taskDateTitle">Task</h2>
-			<div class="sync-label" id="taskTimes"></div>
-		</div>
+    <div class="col">
+        <!-- TASK CONDIVISI -->
+        <div class="box" id="sharedTasksBox">
+            <div class="section-heading">
+                <h2 id="taskDateTitle">Task</h2>
+                <div class="sync-label" id="taskTimes"></div>
+            </div>
 
-		  <div id="taskDayButtons">
-			<button type="button" id="tb-ieri">Ieri</button>
-			<button type="button" id="tb-oggi" class="sel">Oggi</button>
-			<button type="button" id="tb-domani">Domani</button>
-		  </div>
+            <div id="taskDayButtons">
+                <button type="button" id="tb-ieri">Ieri</button>
+                <button type="button" id="tb-oggi" class="sel">Oggi</button>
+                <button type="button" id="tb-domani">Domani</button>
+            </div>
 
-		  <div id="taskCtl" style="display:none;">
-			  <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
-			  <button type="button" id="taskAddButton">Aggiungi</button>
-			</div>
-		  <div id="taskList"></div>
-		  <div class="small" id="taskStatus"></div>
-		</div>
+            <div id="taskCtl" style="display:none;">
+                <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
+                <button type="button" id="taskAddButton">Aggiungi</button>
+            </div>
+            <div id="taskList"></div>
+            <div class="small" id="taskStatus"></div>
+        </div>
 
-		<div class="box">
-		  <div class="section-heading">
-			<h2>Da fare</h2>
-			<div id="todoSyncLabel" class="sync-label">(non connesso)</div>
-		</div>
-		  <div id="todoCtl" style="display:none;"></div>
-		  <div id="todoList"></div>
-		  <div class="small" id="todoStatus"></div>
-		</div>
+        <!-- TO-DO -->
+        <div class="box" id="todoBox">
+            <div class="section-heading">
+                <h2>Da fare</h2>
+                <div id="todoSyncLabel" class="sync-label">(non connesso)</div>
+            </div>
+            <div id="todoCtl" style="display:none;"></div>
+            <div id="todoList"></div>
+            <div class="small" id="todoStatus"></div>
+        </div>
 
-		<div class="box">
-			<div class="section-heading">
-			<h2 id="menuTitle">Menu scuola</h2>
-			<div class="sync-label" id="menuTimes"></div>
-		</div>
-		<div id="menuDayButtons">
-			<button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
-		</div>
+        <!-- MENU SCUOLA -->
+        <div class="box" id="schoolMenuBox">
+            <div class="section-heading">
+                <h2 id="menuTitle">Menu scuola</h2>
+                <div class="sync-label" id="menuTimes"></div>
+            </div>
 
-		<div style="display:flex; justify-content:space-between; align-items:center;">
-		<h3 id="menuDate" style="margin:10px 0;"></h3>
-		<div class="small" id="menuStatus"></div>
-	</div>
+            <div id="menuDayButtons">
+                <button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
+            </div>
 
-		<div id="menuList"></div>
-	</div>
-</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="menuDate" style="margin:10px 0;"></h3>
+                <div class="small" id="menuStatus"></div>
+            </div>
 
-<div id="err"></div>
+            <div id="menuList"></div>
+        </div>
+    </div>
+
+    <div id="err"></div>
 </div>
 
 <script>
@@ -4258,7 +4264,7 @@ scheduleDailyAt(0, 2, function() {
 
 function alignBottomBoxes(){
 
-  var cols;
+  var cols = [];
   var boxes;
   var i, j;
   var maxHeight = 0;
@@ -4266,74 +4272,50 @@ function alignBottomBoxes(){
 
   /* =========================================
      KINDLE
-     Allinea Spostamenti con Menu Scuola
+     Recupera le colonne della riga principale
      ========================================= */
 
   if(IS_KINDLE){
-  
+
     var row = document.querySelector(".row.cf");
     if(!row) return;
-  
-    var cols = [];
-  
-    for(var i = 0; i < row.children.length; i++){
+
+    for(i = 0; i < row.children.length; i++){
+
       var child = row.children[i];
-  
+
       if(child.className &&
          (" " + child.className + " ").indexOf(" col ") !== -1){
-        cols.push(child);
+
+        if(child.getBoundingClientRect().height > 0){
+          cols.push(child);
+        }
       }
     }
-  
-    if(cols.length < 2) return;
-  
-    var leftBoxes = [];
-    var rightBoxes = [];
-  
-    for(var i = 0; i < cols[0].children.length; i++){
-      var child = cols[0].children[i];
-  
-      if(child.className &&
-         (" " + child.className + " ").indexOf(" box ") !== -1){
-        leftBoxes.push(child);
+
+  } else {
+
+    /* =========================================
+       PC ED ECHO SHOW
+       Recupera tutte le colonne visibili
+       ========================================= */
+
+    var allCols = document.querySelectorAll(".col");
+
+    for(i = 0; i < allCols.length; i++){
+
+      if(allCols[i].getBoundingClientRect().height > 0){
+        cols.push(allCols[i]);
       }
     }
-  
-    for(var i = 0; i < cols[1].children.length; i++){
-      var child = cols[1].children[i];
-  
-      if(child.className &&
-         (" " + child.className + " ").indexOf(" box ") !== -1){
-        rightBoxes.push(child);
-      }
-    }
-  
-    if(leftBoxes.length < 2 || rightBoxes.length < 1) return;
-  
-    var routes = leftBoxes[1];
-    var menu = rightBoxes[rightBoxes.length - 1];
-  
-    routes.style.minHeight = "";
-  
-    var routesBottom = routes.getBoundingClientRect().bottom;
-    var menuBottom = menu.getBoundingClientRect().bottom;
-  
-    var diff = menuBottom - routesBottom;
-  
-    if(diff > 0){
-      routes.style.minHeight =
-        (routes.offsetHeight + diff) + "px";
-    }
-  
-    return;
   }
-  
+
   /* =========================================
      CELLULARE
-     Nessun allineamento
+     Mantiene il comportamento attuale
      ========================================= */
 
-  if(window.innerWidth <= 560){
+  if(!IS_KINDLE && window.innerWidth <= 560){
 
     var allBoxes = document.querySelectorAll(".box");
 
@@ -4344,14 +4326,12 @@ function alignBottomBoxes(){
     return;
   }
 
+  if(cols.length < 2) return;
+
   /* =========================================
-     PC
-     Allineamento originale
+     AZZERA LE ALTEZZE PRECEDENTI
      ========================================= */
 
-  cols = document.querySelectorAll(".col");
-
-  /* Azzera le altezze precedenti */
   for(i = 0; i < cols.length; i++){
 
     boxes = cols[i].querySelectorAll(".box");
@@ -4361,7 +4341,10 @@ function alignBottomBoxes(){
     }
   }
 
-  /* Misura le colonne */
+  /* =========================================
+     MISURA LE COLONNE
+     ========================================= */
+
   for(i = 0; i < cols.length; i++){
 
     heights[i] = cols[i].offsetHeight;
@@ -4371,21 +4354,46 @@ function alignBottomBoxes(){
     }
   }
 
-  /* Allunga l'ultimo box della colonna più corta */
+  /* =========================================
+     DISTRIBUISCE LO SPAZIO AGGIUNTIVO
+     TRA TUTTI I BOX DELLE COLONNE PIÙ CORTE
+     ========================================= */
+
   for(i = 0; i < cols.length; i++){
 
     var difference = maxHeight - heights[i];
 
-    if(difference > 0){
+    if(difference <= 0) continue;
 
-      boxes = cols[i].querySelectorAll(".box");
+    boxes = cols[i].querySelectorAll(".box");
 
-      if(boxes.length){
+    if(!boxes.length) continue;
 
-        var last = boxes[boxes.length - 1];
+    var extraPerBox = difference / boxes.length;
 
-        last.style.minHeight =
-          (last.offsetHeight + difference) + "px";
+    for(j = 0; j < boxes.length; j++){
+
+      var box = boxes[j];
+      var style = window.getComputedStyle(box);
+
+      var padding =
+        parseFloat(style.paddingTop) +
+        parseFloat(style.paddingBottom);
+
+      var border =
+        parseFloat(style.borderTopWidth) +
+        parseFloat(style.borderBottomWidth);
+
+      var newHeight = box.offsetHeight + extraPerBox;
+
+      if(style.boxSizing === "border-box"){
+
+        box.style.minHeight = newHeight + "px";
+
+      } else {
+
+        box.style.minHeight =
+          (newHeight - padding - border) + "px";
       }
     }
   }
