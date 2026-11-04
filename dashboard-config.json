@@ -26,13 +26,13 @@
         ["personalGlobalTasks"]
       ]
     },
-    "ilenia": {
-      "enabled": true,
-      "columns": [
-        ["ileniaAgenda"],
-        ["personalGlobalTasks", "personalTasks"],
-        ["personalRoutes"]
-      ]
-    }
+  "ilenia": {
+    "enabled": true,
+    "rows": [
+      ["ileniaAgenda"],
+      ["personalGlobalTasks", "personalTasks"],
+      ["personalRoutes"]
+    ]
+  }
   }
 }
