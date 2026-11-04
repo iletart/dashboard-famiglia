@@ -1097,6 +1097,33 @@ body.k .event-task-inline .agenda-task-text {
     word-wrap: break-word !important;
 }
 
+/* TASK PERSONALI WALTER */
+body.k .personal-agenda-task-row {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0 0 0 30px !important;
+    min-height: 24px;
+}
+
+body.k .personal-agenda-task-row .agenda-task-check {
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    margin: 0 !important;
+}
+
+body.k .personal-agenda-task-row .agenda-task-text {
+    display: block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    text-align: left !important;
+    white-space: normal !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
 
 /* Icona cestino */
 body.k .todo-delete {
@@ -3320,24 +3347,28 @@ function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
           ? tasks[index].replace(/^[WI]\s*:\s*/i, "")
           : tasks[index];
 
-        var label = mk("label", "agenda-task-row");
-
-        var checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.className = "agenda-task-check";
-        checkbox.checked = completed[taskKey] === true;
-
-        var taskText = document.createElement("span");
-        taskText.className = checkbox.checked
-          ? "agenda-task-text done"
-          : "agenda-task-text";
-
-        taskText.appendChild(document.createTextNode(visibleTask));
-
-        label.appendChild(checkbox);
-        label.appendChild(taskText);
-
-        taskContainer.appendChild(label);
+		  var label = mk("label",
+		    ownerFilter
+		  	? "agenda-task-row personal-agenda-task-row"
+		  	: "agenda-task-row"
+		  );
+		     
+		  var checkbox = document.createElement("input");
+		  checkbox.type = "checkbox";
+		  checkbox.className = "agenda-task-check";
+		  checkbox.checked = completed[taskKey] === true;
+		     
+		  var taskText = document.createElement("span");
+		  taskText.className = checkbox.checked
+		    ? "agenda-task-text done"
+		    : "agenda-task-text";
+		     
+		  taskText.appendChild(document.createTextNode(visibleTask));
+		     
+		  label.appendChild(checkbox);
+		  label.appendChild(taskText);
+		     
+		  taskContainer.appendChild(label);
 
         checkbox.onchange = function(){
 
