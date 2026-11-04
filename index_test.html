@@ -1033,47 +1033,6 @@ body.k .event-task-inline .agenda-task-text {
     word-wrap: break-word !important;
 }
 
-/* Icona cestino */
-.todo-delete {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.trash-icon {
-  position: relative;
-  display: block;
-  width: 10px;
-  height: 12px;
-  border: 1px solid currentColor;
-  border-top: 0;
-  box-sizing: border-box;
-  margin-top: 3px;
-}
-
-.trash-icon:before {
-  content: "";
-  position: absolute;
-  width: 12px;
-  height: 2px;
-  border: 1px solid currentColor;
-  box-sizing: border-box;
-  left: -2px;
-  top: -4px;
-}
-
-.trash-icon:after {
-  content: "";
-  position: absolute;
-  width: 4px;
-  height: 2px;
-  border: 1px solid currentColor;
-  border-bottom: 0;
-  box-sizing: border-box;
-  left: 2px;
-  top: -6px;
-}
-
 </style>
 
 
@@ -3803,15 +3762,7 @@ function todoRow(i){
 
   if(todoConnected){
     var actions = mk("span", "todo-actions");
-    var del = mk("button", "todo-delete", "");
-    del.type = "button";
-    
-    if(document.body.classList.contains("k")){
-      del.appendChild(mk("span", "trash-icon"));
-    } else {
-      del.textContent = "🗑";
-    }
-	
+    var del = mk("button", "todo-delete", "🗑");
     del.type = "button";
     del.disabled = todoBusy;
     del.title = "Elimina attività";
