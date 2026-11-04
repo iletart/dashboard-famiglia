@@ -1829,6 +1829,144 @@ function closeViewMenu(){
   if(toggle) toggle.setAttribute("aria-expanded", "false");
 }
 
+/* NUOVA FUNZIONE PER LAYOUT DINAMICO */
+
+var DASHBOARD_CONFIG = null;
+
+function buildConfiguredLayout(view){
+
+  if(!DASHBOARD_CONFIG || !DASHBOARD_CONFIG.views) return;
+
+  var viewConfig = DASHBOARD_CONFIG.views[view];
+
+  if(!viewConfig || !viewConfig.enabled) return;
+
+  var shared = view === "shared";
+  var host = shared
+    ? $("dashboardContent")
+    : $("personalView");
+
+  if(!host) return;
+
+  var row;
+
+  if(shared){
+
+    row = host;
+
+  } else {
+
+    row = $("personalLayoutRow");
+
+    if(!row){
+      row = document.createElement("div");
+      row.id = "personalLayoutRow";
+      row.className = "row cf";
+      host.appendChild(row);
+    }
+  }
+
+  /* Recupera le colonne precedenti */
+  var oldCols = [];
+
+  for(var i = 0; i < row.children.length; i++){
+
+    var child = row.children[i];
+
+    if(child.className &&
+       (" " + child.className + " ").indexOf(" col ") !== -1){
+
+      oldCols.push(child);
+    }
+  }
+
+  /* Recupera tutti i box configurati */
+  var boxElements = {};
+
+  for(var key in DASHBOARD_CONFIG.boxes){
+
+    if(!DASHBOARD_CONFIG.boxes.hasOwnProperty(key)) continue;
+
+    var id = DASHBOARD_CONFIG.boxes[key];
+    var element = $(id);
+
+    if(element){
+      boxElements[key] = element;
+    }
+  }
+
+  /* Nasconde i box personali non previsti nella vista */
+  if(!shared){
+
+    for(var key in boxElements){
+
+      if(!boxElements.hasOwnProperty(key)) continue;
+
+      if(key === "agenda" ||
+         key === "shopping" ||
+         key === "sharedTasks" ||
+         key === "todo" ||
+         key === "schoolMenu") continue;
+
+      boxElements[key].style.display = "none";
+    }
+  }
+
+  /* Crea le nuove colonne e vi sposta i box */
+  for(var i = 0; i < viewConfig.columns.length; i++){
+
+    var col = document.createElement("div");
+    col.className = "col";
+
+    var keys = viewConfig.columns[i];
+
+    for(var j = 0; j < keys.length; j++){
+
+      var box = boxElements[keys[j]];
+
+      if(box){
+        col.appendChild(box);
+      }
+    }
+
+    row.appendChild(col);
+  }
+
+  /* Rimuove le vecchie colonne */
+  for(var i = 0; i < oldCols.length; i++){
+    row.removeChild(oldCols[i]);
+  }
+
+  /* I box personali non utilizzati restano nascosti fuori dalle colonne */
+  if(!shared){
+
+    for(var key in boxElements){
+
+      if(!boxElements.hasOwnProperty(key)) continue;
+
+      if(key === "agenda" ||
+         key === "shopping" ||
+         key === "sharedTasks" ||
+         key === "todo" ||
+         key === "schoolMenu") continue;
+
+      var included = false;
+
+      for(var i = 0; i < viewConfig.columns.length; i++){
+
+        if(viewConfig.columns[i].indexOf(key) !== -1){
+          included = true;
+          break;
+        }
+      }
+
+      if(!included){
+        host.appendChild(boxElements[key]);
+      }
+    }
+  }
+}
+
 function setView(view, manual) {
   if (manual) {
     viewManualUntil = Date.now() + 10 * 60 * 1000;
@@ -1851,6 +1989,8 @@ function setView(view, manual) {
   if(row) row.style.display = personal ? "none" : "block";
   if(personalBox) personalBox.style.display = personal ? "block" : "none";
   if(routesBox) routesBox.style.display = view === "ilenia" ? "block" : "none";
+  
+  buildConfiguredLayout(view);
 
   var personalGlobalTitle = $("personalGlobalTaskTitle");
   if(personalGlobalTitle){
@@ -4237,7 +4377,22 @@ function renderMenu(k, err, d){
 /* ===== AVVIO: ogni blocco è indipendente ===== */
 
 safe(startClock);
-safe(initViewMenu);
+getJson(
+  [CONFIG.base + "dashboard-config.json", "dashboard-config.json"],
+  function(err, data){
+
+    if(!err && data && data.views && data.boxes){
+
+      DASHBOARD_CONFIG = data;
+
+    } else {
+
+      console.log("Configurazione dashboard non disponibile.");
+    }
+
+    safe(initViewMenu);
+  }
+);
 safe(loadAgenda);
 safe(loadShoppingList);
 safe(loadWeather);
