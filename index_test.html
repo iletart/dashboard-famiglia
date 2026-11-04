@@ -4518,11 +4518,21 @@ function alignBottomBoxes(){
 }
 
 
-
 function scheduleBoxAlignment(){
-  requestAnimationFrame(function(){
-    requestAnimationFrame(alignBottomBoxes);
-  });
+
+  var raf = window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame;
+
+  if(raf){
+
+    raf(function(){
+      raf(alignBottomBoxes);
+    });
+
+  } else {
+
+    window.setTimeout(alignBottomBoxes, 100);
+  }
 }
 
 window.onresize = function(){
