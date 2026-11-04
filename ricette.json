@@ -1,140 +1,8 @@
 {
-  "generated_at": "2026-11-04T00:01:02.432428+01:00",
+  "generated_at": "2026-11-05T00:01:01.911863+01:00",
   "site": "U003128",
   "siteType": "02",
   "menus": {
-    "2026-11-03": {
-      "P10095": {
-        "dishCode": "P10095",
-        "name": "Risotto alla parmigiana",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "RISO",
-            "quantity": "50",
-            "unit": "Gr"
-          },
-          {
-            "name": "PARMIGIANO REGGIANO",
-            "quantity": "9",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "2,1",
-            "unit": "Gr"
-          },
-          {
-            "name": "ESTRATTO PER BRODO VEGETALE",
-            "quantity": "2,1",
-            "unit": "Gr"
-          },
-          {
-            "name": "BURRO",
-            "quantity": "1,8",
-            "unit": "Gr"
-          },
-          {
-            "name": "CIPOLLE",
-            "quantity": "1,1",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P100194": {
-        "dishCode": "P100194",
-        "name": "Frittata",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "UOVA BIOLOGICHE",
-            "quantity": "50",
-            "unit": "Gr"
-          },
-          {
-            "name": "LATTE INTERO",
-            "quantity": "7",
-            "unit": "Gr"
-          },
-          {
-            "name": "PARMIGIANO REGGIANO",
-            "quantity": "3,33",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "0,83",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P00439": {
-        "dishCode": "P00439",
-        "name": "Erbette all'olio",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "ERBETTE",
-            "quantity": "80",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "2,8",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P00001": {
-        "dishCode": "P00001",
-        "name": "Frutta fresca di stagione",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "MELE",
-            "quantity": "150",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P01889": {
-        "dishCode": "P01889",
-        "name": "Pane tipo 0",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PANE",
-            "quantity": "30",
-            "unit": "Gr"
-          }
-        ]
-      }
-    },
     "2026-11-04": {
       "P02020": {
         "dishCode": "P02020",
@@ -239,7 +107,7 @@
       },
       "P01890": {
         "dishCode": "P01890",
-        "name": "Pane di farina integrale biologica",
+        "name": "Pane di farina integrale biologica ",
         "alternative": 40,
         "label": "Ricetta Infanzia",
         "photo": "band",
@@ -356,13 +224,7 @@
         "alternative": 40,
         "label": "Ricetta Infanzia",
         "photo": "band",
-        "ingredients": [
-          {
-            "name": "BANANA",
-            "quantity": "94",
-            "unit": "Gr"
-          }
-        ]
+        "ingredients": []
       },
       "P01889": {
         "dishCode": "P01889",
@@ -373,6 +235,138 @@
         "ingredients": [
           {
             "name": "PANE",
+            "quantity": "30",
+            "unit": "Gr"
+          }
+        ]
+      }
+    },
+    "2026-11-06": {
+      "P101197": {
+        "dishCode": "P101197",
+        "name": "Malloreddus biologici con ragù di pesce",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "MALLOREDDUS BIOLOGICI",
+            "quantity": "50",
+            "unit": "Gr"
+          },
+          {
+            "name": "POLPA DI POMODORO",
+            "quantity": "33",
+            "unit": "Gr"
+          },
+          {
+            "name": "MERLUZZO",
+            "quantity": "15",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "3,6",
+            "unit": "Gr"
+          },
+          {
+            "name": "CAROTE",
+            "quantity": "3,3",
+            "unit": "Gr"
+          },
+          {
+            "name": "CIPOLLE",
+            "quantity": "2,8",
+            "unit": "Gr"
+          },
+          {
+            "name": "PREZZEMOLO",
+            "quantity": "1,3",
+            "unit": "Gr"
+          },
+          {
+            "name": "AGLIO",
+            "quantity": "0,3",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P10401": {
+        "dishCode": "P10401",
+        "name": "Tonno",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "TONNO",
+            "quantity": "40",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P101205": {
+        "dishCode": "P101205",
+        "name": "Insalata, mais e carote julienne",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "CAROTE",
+            "quantity": "11",
+            "unit": "Gr"
+          },
+          {
+            "name": "INSALATA",
+            "quantity": "11",
+            "unit": "Gr"
+          },
+          {
+            "name": "MAIS",
+            "quantity": "11",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "3,3",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P00009": {
+        "dishCode": "P00009",
+        "name": "Frutta fresca di stagione",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "COCOMERO",
+            "quantity": "140,4",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P01891": {
+        "dishCode": "P01891",
+        "name": "Pane ai cereali ",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PANE AI CEREALI",
             "quantity": "30",
             "unit": "Gr"
           }
