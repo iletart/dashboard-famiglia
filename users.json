@@ -4,13 +4,21 @@
       "id": "walter",
       "name": "WALTER",
       "enabled": true,
-      "taskOwner": "W"
+      "taskOwner": "W",
+      "schedule": {
+        "start": "07:45",
+        "end": "17:00"
+      }
     },
     {
       "id": "ilenia",
       "name": "ILENIA",
       "enabled": true,
-      "taskOwner": "I"
+      "taskOwner": "I",
+      "schedule": {
+        "start": "06:40",
+        "end": "07:45"
+      }
     }
   ]
 }
