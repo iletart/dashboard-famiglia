@@ -22,7 +22,8 @@
     "walter": {
       "enabled": true,
       "columns": [
-        ["personalTasks", "personalGlobalTasks"]
+        ["personalTasks"],
+        ["personalGlobalTasks"]
       ]
     },
     "ilenia": {
