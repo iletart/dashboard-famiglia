@@ -1909,12 +1909,39 @@ function getScheduledView() {
   });
 
   var parts = time.split(":");
-  var minutes = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+  var minutes = parseInt(parts[0], 10) * 60 +
+                parseInt(parts[1], 10);
 
-  if (minutes >= 400 && minutes < 465) return "ilenia"; // 06:40-07:45
-  if (minutes >= 465 && minutes < 1020) return "walter"; // 07:45-17:00
+  for(var i = 0; i < USERS.length; i++) {
+    var user = USERS[i];
 
-  return "shared"; // 17:00-06:40
+    if(!user.schedule ||
+       !user.schedule.start ||
+       !user.schedule.end) {
+      continue;
+    }
+
+    var startParts = user.schedule.start.split(":");
+    var endParts = user.schedule.end.split(":");
+
+    var start = parseInt(startParts[0], 10) * 60 +
+                parseInt(startParts[1], 10);
+
+    var end = parseInt(endParts[0], 10) * 60 +
+              parseInt(endParts[1], 10);
+
+    var active;
+
+    if(start < end) {
+      active = minutes >= start && minutes < end;
+    } else {
+      active = minutes >= start || minutes < end;
+    }
+
+    if(active) return user.id;
+  }
+
+  return "shared";
 }
 
 function checkScheduledView() {
