@@ -1081,6 +1081,4563 @@ body.k .event-task-inline .agenda-task-text {
     overflow-wrap: anywhere !important;
 }
 
+
+
+</style>
+
+
+</head>
+<body>
+<div class="wrap">
+
+<div class="box cf" id="head">
+  <div id="viewMenu">
+    <button type="button" id="viewMenuToggle" aria-label="Apri menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div id="viewMenuPanel" hidden>
+      <button type="button" data-view="shared">FAMIGLIA</button>
+      <button type="button" data-view="walter">WALTER</button>
+      <button type="button" data-view="ilenia">ILENIA</button>
+    </div>
+  </div>
+  <div id="clock">--:--</div>
+	<div id="info">
+	  <div id="wday"></div>
+	  <div id="fulldate"></div>
+	  <div id="weatherIcon"></div>
+	  <div id="weather">Meteo: caricamento...</div>
+	</div>
+</div>
+
+<div id="personalView" style="display:none;">
+	<div class="box" id="personalTasksBox">
+	  <div class="section-heading">
+		<h2 id="personalTasksTitle">TASK DI WALTER</h2>
+		<div class="sync-label" id="personalTasksTimes"></div>
+	  </div>
+
+	  <div class="personal-period-switch">
+		<button type="button" id="personalTasksToday" class="active">OGGI</button>
+		<button type="button" id="personalTasksTomorrow">DOMANI</button>
+	  </div>
+
+	  <div class="agenda-period" id="personalTasksDate" style="display:none;"></div>
+	  <div id="personalTasks">Caricamento...</div>
+	</div>
+
+  <div class="box" id="personalGlobalTaskBox">
+    <div class="section-heading">
+      <h2 id="personalGlobalTaskTitle">Task di Walter</h2>
+      <div class="sync-label" id="personalGlobalTaskTimes"></div>
+    </div>
+    <div id="personalGlobalTaskList">Caricamento...</div>
+    <div class="small" id="personalGlobalTaskStatus"></div>
+  </div>
+
+  <div class="box" id="personalRoutesBox" style="display:none;">
+    <div class="section-heading">
+      <h2>SPOSTAMENTI</h2>
+      <div class="sync-label" id="personalRoutesTimes"></div>
+    </div>
+    <div id="personalRoutes"></div>
+    <div class="small" id="personalRoutesStatus"></div>
+  </div>
+
+  <div class="box" id="ileniaAgendaBox" style="display:none;">
+    <div class="section-heading">
+      <h2>AGENDA ILENIA</h2>
+      <div class="sync-label" id="ileniaAgendaTimes"></div>
+    </div>
+    <div id="ileniaAgenda">Caricamento...</div>
+    <div class="small" id="ileniaAgendaStatus"></div>
+  </div>
+</div>
+
+<div class="box" id="syncBox">
+  <h2>Sincronizzazione</h2>
+  <div id="syncCtl"></div>
+  <div class="small" id="syncStatus"></div>
+</div>
+
+<div class="row cf" id="dashboardContent">
+    <div class="col">
+        <!-- AGENDA FAMIGLIA -->
+        <div class="box" id="agendaBox">
+            <div class="section-heading">
+                <h2 id="agendaTitle">Agenda famiglia</h2>
+                <div class="sync-label" id="agendaTimes"></div>
+            </div>
+            <div id="agenda">Caricamento...</div>
+            <div class="small" id="agendaStatus"></div>
+        </div>
+
+        <!-- LISTA DELLA SPESA -->
+        <div class="box" id="shoppingBox">
+            <div class="section-heading">
+                <h2>Lista della spesa</h2>
+                <div class="sync-label" id="shoppingTimes"></div>
+            </div>
+            <div id="shoppingList"></div>
+        </div>
+    </div>
+
+    <div class="col">
+        <!-- TASK CONDIVISI -->
+        <div class="box" id="sharedTasksBox">
+            <div class="section-heading">
+                <h2 id="taskDateTitle">Task</h2>
+                <div class="sync-label" id="taskTimes"></div>
+            </div>
+
+            <div id="taskDayButtons">
+                <button type="button" id="tb-ieri">Ieri</button>
+                <button type="button" id="tb-oggi" class="sel">Oggi</button>
+                <button type="button" id="tb-domani">Domani</button>
+            </div>
+
+            <div id="taskCtl" style="display:none;">
+                <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
+                <button type="button" id="taskAddButton">Aggiungi</button>
+            </div>
+            <div id="taskList"></div>
+            <div class="small" id="taskStatus"></div>
+        </div>
+
+        <!-- TO-DO -->
+        <div class="box" id="todoBox">
+            <div class="section-heading">
+                <h2>Da fare</h2>
+                <div id="todoSyncLabel" class="sync-label">(non connesso)</div>
+            </div>
+            <div id="todoCtl" style="display:none;"></div>
+            <div id="todoList"></div>
+            <div class="small" id="todoStatus"></div>
+        </div>
+
+        <!-- MENU SCUOLA -->
+        <div class="box" id="schoolMenuBox">
+            <div class="section-heading">
+                <h2 id="menuTitle">Menu scuola</h2>
+                <div class="sync-label" id="menuTimes"></div>
+            </div>
+
+            <div id="menuDayButtons">
+                <button id="mb-ieri" onclick="selectMenu('ieri')">Ieri</button><button id="mb-oggi" class="sel" onclick="selectMenu('oggi')">Oggi</button><button id="mb-domani" onclick="selectMenu('domani')">Domani</button><button id="mb-refresh" onclick="loadMenu()" title="Aggiorna menu" aria-label="Aggiorna menu">&#8635;</button>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="menuDate" style="margin:10px 0;"></h3>
+                <div class="small" id="menuStatus"></div>
+            </div>
+
+            <div id="menuList"></div>
+        </div>
+    </div>
+
+    <div id="err"></div>
+</div>
+
+<script>
+/* ===== CONFIGURAZIONE ===== */
+
+var q = window.location.search;
+
+var IS_ECHO = q.indexOf("echo=1") >= 0;
+
+var IS_KINDLE = (function(){
+  if(q.indexOf("kindle=1") >= 0){ return true; }
+  if(q.indexOf("kindle=0") >= 0 || IS_ECHO){ return false; }
+
+  return /Kindle|KF[A-Z]{2,5}/i.test(navigator.userAgent);
+})();
+
+if(IS_ECHO){
+  document.body.className += " echo";
+}
+
+if(IS_KINDLE){
+  document.body.className += " k";
+}
+
+var CONFIG = {
+  base: "https://raw.githubusercontent.com/iletart/dashboard-famiglia/main/",
+  lat: 45.484, lon: 9.233,
+  agendaMin: 0.5,
+  weatherMin: 5,
+  //menuMin: 60,
+  todoWorkerUrl: "https://todo-sync.iletarta-633.workers.dev",
+  routesUrl: "https://raw.githubusercontent.com/iletart/dashboard-famiglia/main/routes.json"
+};
+
+var MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
+var GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
+
+
+var agendaSyncedAt = null;
+var routesSyncedAt = null;
+var todoSyncedAt = null;
+var taskSyncedAt = null;
+var menuSyncedAt = null;
+var shoppingSyncedAt = null;
+var personalTasksDayOffset = 0;
+var routesErr = false;
+var menuUpdatedAt = null;
+
+var taskPollTimer = null;
+var taskSyncError = false;
+
+/* ===== UTILITÀ ===== */
+function $(id) {
+  return document.getElementById(id);
+}
+
+function clear(el) {
+  if (!el) return;
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
+}
+
+function setText(el, t) {
+  if (!el) {
+    return;
+  }
+
+  clear(el);
+  el.appendChild(document.createTextNode(t));
+}
+
+function mk(tag, cls, txt) {
+  var e = document.createElement(tag);
+
+  if (cls) {
+    e.className = cls;
+  }
+
+  if (txt !== undefined && txt !== null) {
+    e.appendChild(document.createTextNode(txt));
+  }
+
+  return e;
+}
+
+function p2(n) {
+  return (n < 10 ? "0" : "") + n;
+}
+
+function showErr(m) {
+  var e = $("err");
+
+  if (e) {
+    e.appendChild(
+      mk("div", "", "Errore: " + m)
+    );
+  }
+}
+
+function safe(f) {
+  try {
+    f();
+  } catch (e) {
+    showErr(
+      e && e.message ? e.message : String(e)
+    );
+  }
+}
+
+window.onerror = function(m, u, l) {
+  showErr(
+    m + " (riga " + l + ")"
+  );
+
+  return true;
+};
+
+function parseJson(t){
+  if(typeof JSON !== "undefined" && JSON.parse){ return JSON.parse(t); }
+  return eval("(" + t + ")");
+}
+
+/* GET JSON con XMLHttpRequest, prova gli URL in ordine (fallback) */
+function getJson(urls, cb, nocb){
+  var i = 0;
+  function next(){
+    if(i >= urls.length){ cb("non raggiungibile", null); return; }
+    var u = urls[i++];
+    if(!nocb){ u += (u.indexOf("?") < 0 ? "?" : "&") + "t=" + (new Date().getTime()); }
+    var x, done = false, timer;
+    try{ x = new XMLHttpRequest(); }catch(e){ next(); return; }
+    function fin(ok, d){
+      if(done){ return; }
+      done = true; clearTimeout(timer);
+      if(ok){ cb(null, d); } else { next(); }
+    }
+    timer = setTimeout(function(){ try{ x.abort(); }catch(e){} fin(false); }, 20000);
+    x.onreadystatechange = function(){
+      if(x.readyState !== 4 || done){ return; }
+      if(x.status === 200){
+        var d;
+        try{ d = parseJson(x.responseText); }catch(e){ fin(false); return; }
+        fin(true, d);
+      } else { fin(false); }
+    };
+    try{ x.open("GET", u, true); x.send(null); }catch(e){ fin(false); }
+  }
+  next();
+}
+
+/* ===== DATE: UTC -> Europe/Rome senza Intl (ora legale automatica) ===== */
+function lastSunday1UTC(year, month0){
+  var last = new Date(Date.UTC(year, month0 + 1, 0));
+  return Date.UTC(year, month0, last.getUTCDate() - last.getUTCDay(), 1, 0, 0);
+}
+function romeOffsetHours(ms){
+  var y = new Date(ms).getUTCFullYear();
+  return (ms >= lastSunday1UTC(y, 2) && ms < lastSunday1UTC(y, 9)) ? 2 : 1;
+}
+/* restituisce una Date i cui campi getUTC* sono l'ora locale di Roma */
+function toRome(ms){ return new Date(ms + romeOffsetHours(ms) * 3600000); }
+function dayNum(y, m0, d){ return Math.round(Date.UTC(y, m0, d) / 86400000); }
+function dayNumOfRome(r){ return dayNum(r.getUTCFullYear(), r.getUTCMonth(), r.getUTCDate()); }
+function dateOfDayNum(n){ return new Date(n * 86400000); }
+function fullDateText(n){
+  var d = dateOfDayNum(n);
+  return GIORNI[d.getUTCDay()] + " " + d.getUTCDate() + " " + MESI[d.getUTCMonth()];
+}
+
+/* Parser ISO 8601 manuale (Z, +hh:mm, frazioni di secondo). Ritorna ms UTC o null */
+function parseIso(s){
+  if(typeof s !== "string"){ return null; }
+
+  var m = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?\s*(Z|[+-]\d{2}:?\d{2})?$/.exec(s);
+
+  if(!m){ return null; }
+
+  var ms = Date.UTC(
+    +m[1], +m[2] - 1, +m[3],
+    +m[4], +m[5], m[6] ? +m[6] : 0
+  );
+
+  var z = m[7];
+
+  if(z && z !== "Z"){
+    var sign = z.charAt(0) === "-" ? -1 : 1;
+    var digits = z.replace(/[^0-9]/g, "");
+
+    ms -= sign * (
+      parseInt(digits.substr(0, 2), 10) * 60 +
+      parseInt(digits.substr(2, 2), 10)
+    ) * 60000;
+  }
+
+  return ms;
+}
+
+function dateOnlyNum(s){
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));
+  return m ? dayNum(+m[1], +m[2] - 1, +m[3]) : null;
+}
+function hhmmRome(ms){ 
+	var r = toRome(ms); 
+	return p2(r.getUTCHours()) + ":" + p2(r.getUTCMinutes()); 
+}
+
+function scheduleDailyAt(hour, minute, fn) {
+  function scheduleNext() {
+    var nowMs = new Date().getTime();
+    var r = toRome(nowMs);
+
+    var localTarget = Date.UTC(
+      r.getUTCFullYear(),
+      r.getUTCMonth(),
+      r.getUTCDate(),
+      hour,
+      minute,
+      0,
+      0
+    );
+
+    var targetMs = localTarget -
+      romeOffsetHours(nowMs) * 3600000;
+
+    targetMs = localTarget -
+      romeOffsetHours(targetMs) * 3600000;
+
+    if (targetMs <= nowMs) {
+      localTarget += 86400000;
+
+      targetMs = localTarget -
+        romeOffsetHours(nowMs) * 3600000;
+
+      targetMs = localTarget -
+        romeOffsetHours(targetMs) * 3600000;
+    }
+
+    setTimeout(function() {
+      safe(fn);
+      scheduleNext();
+    }, Math.max(1000, targetMs - nowMs));
+  }
+
+  scheduleNext();
+}
+
+function todayNum(){ return dayNumOfRome(toRome(new Date().getTime())); }
+
+/* ===== OROLOGIO ===== */
+var lastDay = null;
+var clockTimer = null;
+
+function updateClock(){
+  var now = new Date().getTime();
+  var r = toRome(now);
+
+  setText($("clock"), p2(r.getUTCHours()) + ":" + p2(r.getUTCMinutes()));
+  setText($("wday"), GIORNI[r.getUTCDay()]);
+  setText($("fulldate"), r.getUTCDate() + " " + MESI[r.getUTCMonth()] + " " + r.getUTCFullYear());
+
+  var dn = dayNumOfRome(r);
+
+  if(lastDay !== null && dn !== lastDay){
+    safe(renderAgenda);
+    safe(loadMenu);
+  }
+
+  lastDay = dn;
+}
+
+/* Aggiornamento periodico ogni 10 secondi */
+function startClock(){
+  safe(updateClock);
+
+  if(clockTimer !== null){
+    clearInterval(clockTimer);
+  }
+
+  clockTimer = setInterval(function(){
+    safe(updateClock);
+  }, 10000);
+}
+
+/* Aggiorna subito quando si torna alla pagina */
+window.addEventListener("focus", function(){
+  safe(updateClock);
+});
+
+window.addEventListener("pageshow", function(){
+  safe(updateClock);
+});
+
+document.addEventListener("visibilitychange", function(){
+  if(!document.hidden){
+    safe(updateClock);
+  }
+});
+
+function syncLabelText(){
+  if(!todoConnected) return "non connesso";
+  if(todoSyncError || taskSyncError) return "sync error";
+  return "synced";
+}
+
+function updateTodoSyncLabel() {
+  var label = "";
+
+  if(!todoConnected){
+    label = "non connesso";
+  } else if(todoSyncError){
+    label = "sync error";
+  } else if(todoSyncedAt !== null){
+    label = "sync time: " +
+      hhmmRome(todoSyncedAt.getTime());
+  } else {
+    label = "sync in attesa";
+  }
+
+  setText($("todoSyncLabel"), label);
+}
+
+/* ===== AGENDA ===== */
+var agendaData = null;
+var agendaErr = false;
+
+var agendaWeekOffset = 0;
+var agendaTodayOnly = true;
+
+var ileniaAgendaData = null;
+var ileniaAgendaErr = false;
+var ileniaAgendaSyncedAt = null;
+
+var ileniaAgendaWeekOffset = 0;
+var ileniaAgendaTodayOnly = true;
+
+function loadIleniaAgenda() {
+  getJson(
+    [CONFIG.base + "agenda_ilenia.json", "agenda_ilenia.json"],
+    function(err, d) {
+
+      if (!err && d && d.events) {
+        ileniaAgendaData = d;
+        ileniaAgendaErr = false;
+        ileniaAgendaSyncedAt = new Date();
+      } else {
+        ileniaAgendaErr = true;
+      }
+
+      safe(renderIleniaAgenda);
+    }
+  );
+}
+
+function renderIleniaAgenda() {
+  var box = $("ileniaAgenda");
+  var status = $("ileniaAgendaStatus");
+  var times = $("ileniaAgendaTimes");
+
+  if(!box) return;
+
+  clear(box);
+  setText(status, "");
+
+  if(!ileniaAgendaData || !ileniaAgendaData.events) {
+    setText(
+      box,
+      ileniaAgendaErr
+        ? "Agenda non disponibile."
+        : "Caricamento..."
+    );
+    return;
+  }
+
+  var today = todayNum();
+  var events = ileniaAgendaData.events;
+  var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
+
+  monday += ileniaAgendaWeekOffset * 7;
+
+  var viewStart = ileniaAgendaTodayOnly ? today : monday;
+  var viewDays = ileniaAgendaTodayOnly ? 1 : 7;
+  var weekEnd = viewStart + viewDays - 1;
+
+  // Pulsanti navigazione
+  var nav = mk("div", "agenda-nav");
+
+  var btnToday = mk("button", "", "Today");
+  btnToday.type = "button";
+  btnToday.disabled = ileniaAgendaTodayOnly;
+
+  btnToday.onclick = function() {
+    ileniaAgendaTodayOnly = true;
+    safe(renderIleniaAgenda);
+  };
+
+  var btnCurrent = mk("button", "", "This week");
+  btnCurrent.type = "button";
+  btnCurrent.disabled = !ileniaAgendaTodayOnly && ileniaAgendaWeekOffset === 0;
+
+  btnCurrent.onclick = function() {
+    ileniaAgendaTodayOnly = false;
+    ileniaAgendaWeekOffset = 0;
+    safe(renderIleniaAgenda);
+  };
+
+  var btnNext = mk("button", "", "Next Week");
+  btnNext.type = "button";
+  btnNext.disabled = !ileniaAgendaTodayOnly && ileniaAgendaWeekOffset === 1;
+
+  btnNext.onclick = function() {
+    ileniaAgendaTodayOnly = false;
+    ileniaAgendaWeekOffset = 1;
+    safe(renderIleniaAgenda);
+  };
+
+  nav.appendChild(btnToday);
+  nav.appendChild(btnCurrent);
+  nav.appendChild(btnNext);
+
+  box.appendChild(nav);
+
+  // Date del periodo
+  function weekDateText(num) {
+    var d = dateOfDayNum(num);
+    var day = GIORNI[d.getUTCDay()];
+
+    return day.charAt(0).toUpperCase() + day.substring(1) +
+      " " + p2(d.getUTCDate()) + "/" + p2(d.getUTCMonth() + 1);
+  }
+
+  var period = mk(
+    "div",
+    "agenda-period",
+    ileniaAgendaTodayOnly
+      ? weekDateText(today)
+      : weekDateText(monday) + " – " + weekDateText(weekEnd)
+  );
+
+  period.style.fontWeight = "bold";
+  box.appendChild(period);
+
+  var buckets = [];
+
+  for(var i = 0; i < viewDays; i++) {
+    buckets.push([]);
+  }
+
+  // Raggruppamento eventi per giorno
+  for(var i = 0; i < events.length; i++) {
+    var e = events[i];
+
+    if(e.all_day) {
+      var startDate = e.start && (e.start.date || e.start.dateTime);
+      var endDate = e.end && (e.end.date || e.end.dateTime);
+
+      var sd = dateOnlyNum(startDate);
+      var ed = dateOnlyNum(endDate);
+
+      if(sd === null) continue;
+
+      var last = (ed !== null && ed > sd) ? ed - 1 : sd;
+
+      for(var n = sd; n <= last; n++) {
+        if(n >= viewStart && n < viewStart + viewDays) {
+          buckets[n - viewStart].push({
+            key: 0,
+            time: "Tutto il giorno",
+            title: e.title || "(senza titolo)"
+          });
+        }
+      }
+
+    } else {
+      var startDateTime = e.start && (e.start.dateTime || e.start.date);
+      var ms = parseIso(startDateTime);
+
+      if(ms === null) continue;
+
+      var eventDay = dayNumOfRome(toRome(ms));
+
+      if(eventDay >= viewStart && eventDay < viewStart + viewDays) {
+        buckets[eventDay - viewStart].push({
+          key: ms,
+          time: hhmmRome(ms),
+          title: e.title || "(senza titolo)"
+        });
+      }
+    }
+  }
+
+  // Visualizzazione eventi
+  var found = false;
+
+  for(var i = 0; i < viewDays; i++) {
+    if(!buckets[i].length) continue;
+
+    found = true;
+
+    buckets[i].sort(function(a, b) {
+      return a.key - b.key;
+    });
+
+    box.appendChild(
+      mk("h3", "", dayLabel(viewStart + i, today))
+    );
+
+    for(var j = 0; j < buckets[i].length; j++) {
+      var row = mk("div", "ev");
+
+      row.appendChild(mk("span", "t", buckets[i][j].time));
+      row.appendChild(mk("span", "tt", buckets[i][j].title));
+
+      box.appendChild(row);
+    }
+  }
+
+  if(!found) {
+    box.appendChild(
+      mk("div", "", "Nessun impegno nel periodo selezionato.")
+    );
+  }
+
+  // Ultimo aggiornamento
+  if(ileniaAgendaSyncedAt) {
+    setText(
+      times,
+      "Aggiornato " +
+      ileniaAgendaSyncedAt.toLocaleTimeString("it-IT", {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    );
+  }
+
+  scheduleBoxAlignment();
+}
+
+function scheduleAgendaRefresh() {
+  var now = new Date();
+  var next = new Date(now.getTime());
+
+  next.setSeconds(5, 0);
+
+  if (next.getTime() <= now.getTime()) {
+    next.setMinutes(next.getMinutes() + 1);
+  }
+
+  var delay = next.getTime() - now.getTime();
+
+  setTimeout(function() {
+    safe(loadAgenda);
+  }, delay);
+}
+
+var currentView = "walter";
+var personalTasksDayOffset = 0;
+
+var viewManualUntil = 0;
+var viewAutoInterval = null;
+
+function getScheduledView() {
+  var time = new Date().toLocaleTimeString("it-IT", {
+    timeZone: "Europe/Rome",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
+
+  var parts = time.split(":");
+  var minutes = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+
+  if (minutes >= 400 && minutes < 465) return "ilenia"; // 06:40-07:45
+  if (minutes >= 465 && minutes < 1020) return "walter"; // 07:45-17:00
+
+  return "shared"; // 17:00-06:40
+}
+
+function checkScheduledView() {
+  if (Date.now() < viewManualUntil) return;
+
+  var scheduledView = getScheduledView();
+
+  if (currentView !== scheduledView) {
+    setView(scheduledView, false);
+  }
+}
+
+function closeViewMenu(){
+  var panel = $("viewMenuPanel");
+  var toggle = $("viewMenuToggle");
+  if(panel) panel.hidden = true;
+  if(toggle) toggle.setAttribute("aria-expanded", "false");
+}
+
+/* NUOVA FUNZIONE PER LAYOUT DINAMICO */
+
+var DASHBOARD_CONFIG = null;
+
+function buildConfiguredLayout(view){
+
+  if(!DASHBOARD_CONFIG || !DASHBOARD_CONFIG.views) return;
+
+  var viewConfig = DASHBOARD_CONFIG.views[view];
+
+  if(!viewConfig || !viewConfig.enabled) return;
+
+  var shared = view === "shared";
+
+  var host = shared
+    ? $("dashboardContent")
+    : $("personalView");
+
+  if(!host) return;
+
+  var row;
+
+  if(shared){
+
+    row = host;
+
+  } else {
+
+    row = $("personalLayoutRow");
+
+    if(!row){
+      row = document.createElement("div");
+      row.id = "personalLayoutRow";
+      row.className = "row cf";
+      host.appendChild(row);
+    }
+  }
+
+  /* Individua le vecchie strutture generate */
+  var oldLayouts = [];
+
+  for(var i = 0; i < row.children.length; i++){
+
+    var child = row.children[i];
+    var cls = " " + child.className + " ";
+
+    if(cls.indexOf(" col ") !== -1 ||
+       cls.indexOf(" layout-row ") !== -1){
+
+      oldLayouts.push(child);
+    }
+  }
+
+  /* Recupera tutti i box */
+  var boxElements = {};
+
+  for(var key in DASHBOARD_CONFIG.boxes){
+
+    if(!DASHBOARD_CONFIG.boxes.hasOwnProperty(key)) continue;
+
+    var id = DASHBOARD_CONFIG.boxes[key];
+    var element = $(id);
+
+    if(element){
+      boxElements[key] = element;
+    }
+  }
+
+  var layout = viewConfig.rows || viewConfig.columns;
+
+  if(!layout) return;
+
+  var isRows = !!viewConfig.rows;
+  
+  /* Identifica il tipo di layout per il motore grafico */
+  row.className = (row.className || "")
+    .replace(/\bconfigured-layout\b/g, "")
+    .replace(/\blayout-as-(rows|columns)\b/g, "");
+  
+  row.className += " configured-layout " +
+    (isRows ? "layout-as-rows" : "layout-as-columns");
+
+  /* Nasconde i box personali non previsti nella vista */
+  if(!shared){
+
+    for(var key in boxElements){
+
+      if(!boxElements.hasOwnProperty(key)) continue;
+
+      if(key === "agenda" ||
+         key === "shopping" ||
+         key === "sharedTasks" ||
+         key === "todo" ||
+         key === "schoolMenu") continue;
+
+      boxElements[key].style.display = "none";
+    }
+  }
+
+  /* Crea la nuova struttura */
+  for(var i = 0; i < layout.length; i++){
+
+    var container;
+
+    if(isRows){
+
+      /* Ogni elemento di rows rappresenta una riga */
+      container = document.createElement("div");
+      container.className = "row cf layout-row";
+
+      row.appendChild(container);
+
+    } else {
+
+      /* Ogni elemento di columns rappresenta una colonna */
+      container = document.createElement("div");
+      container.className = "col";
+
+      row.appendChild(container);
+    }
+
+    var keys = layout[i];
+
+    /* Le righe possono contenere al massimo due box */
+    if(isRows && keys.length > 2){
+      console.warn("Massimo due box per riga:", keys);
+    }
+
+    var maxBoxes = isRows ? Math.min(keys.length, 2) : keys.length;
+
+    for(var j = 0; j < maxBoxes; j++){
+
+      var box = boxElements[keys[j]];
+
+      if(!box) continue;
+
+      if(isRows){
+
+        var col = document.createElement("div");
+        col.className = "col";
+
+        /* Un solo box nella riga: larghezza intera */
+        if(maxBoxes === 1){
+          col.style.width = "100%";
+          col.style.float = "none";
+        }
+
+        box.style.display = "block";
+
+        col.appendChild(box);
+        container.appendChild(col);
+
+      } else {
+
+        /* Più box impilati verticalmente nella stessa colonna */
+        box.style.display = "block";
+        container.appendChild(box);
+      }
+    }
+  }
+
+  /* Rimuove le vecchie strutture */
+  for(var i = 0; i < oldLayouts.length; i++){
+
+    if(oldLayouts[i].parentNode === row){
+      row.removeChild(oldLayouts[i]);
+    }
+  }
+
+  /* I box personali non utilizzati restano nascosti */
+  if(!shared){
+
+    for(var key in boxElements){
+
+      if(!boxElements.hasOwnProperty(key)) continue;
+
+      if(key === "agenda" ||
+         key === "shopping" ||
+         key === "sharedTasks" ||
+         key === "todo" ||
+         key === "schoolMenu") continue;
+
+      var included = false;
+
+      for(var i = 0; i < layout.length; i++){
+
+        if(layout[i].indexOf(key) !== -1){
+          included = true;
+          break;
+        }
+      }
+
+      if(!included){
+        boxElements[key].style.display = "none";
+        host.appendChild(boxElements[key]);
+      }
+    }
+  }
+}
+
+
+function setView(view, manual) {
+  if (manual) {
+    viewManualUntil = Date.now() + 10 * 60 * 1000;
+  }
+
+  currentView = view;
+
+  var viewButtons = document.querySelectorAll("#viewMenuPanel button[data-view]");
+  
+  for (var i = 0; i < viewButtons.length; i++) {
+      viewButtons[i].className =
+          viewButtons[i].getAttribute("data-view") === view ? "active" : "";
+  }
+
+  var personal = view !== "shared";
+  var row = $("dashboardContent");
+  var personalBox = $("personalView");
+  var routesBox = $("personalRoutesBox");
+
+  if(row) row.style.display = personal ? "none" : "block";
+  if(personalBox) personalBox.style.display = personal ? "block" : "none";
+  if(routesBox) routesBox.style.display = view === "ilenia" ? "block" : "none";
+  
+  buildConfiguredLayout(view);
+
+  var personalGlobalTitle = $("personalGlobalTaskTitle");
+  if(personalGlobalTitle){
+    setText(personalGlobalTitle, "TASK CONDIVISI");
+  }
+
+  if(view === "shared") {
+    safe(renderAgenda);
+  } else {
+    safe(renderAgenda);
+    safe(renderPersonalTasks);
+
+    var ileniaAgendaBox = $("ileniaAgendaBox");
+    if(ileniaAgendaBox) {
+      ileniaAgendaBox.style.display = view === "ilenia" ? "block" : "none";
+    }
+
+    if(view === "ilenia") {
+      syncPersonalRoutes();
+      safe(renderIleniaAgenda);
+    }
+  }
+
+  closeViewMenu();
+  
+scheduleBoxAlignment();
+
+}
+
+function initViewMenu(){
+  var toggle = $("viewMenuToggle");
+  var panel = $("viewMenuPanel");
+  if(!toggle || !panel) return;
+
+  toggle.onclick = function(){
+    panel.hidden = !panel.hidden;
+    toggle.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
+  };
+
+  var buttons = panel.querySelectorAll("button[data-view]");
+  for(var i = 0; i < buttons.length; i++){
+    buttons[i].onclick = function(){
+      personalTasksDayOffset = 0;
+      setView(this.getAttribute("data-view"), true);
+    };
+  }
+
+  document.addEventListener("click", function(ev){
+    if(!$("viewMenu").contains(ev.target)) closeViewMenu();
+  });
+
+  document.addEventListener("keydown", function(ev){
+    if(ev.key === "Escape") closeViewMenu();
+  });
+
+  viewManualUntil = 0;
+  setView(getScheduledView(), false);
+
+  if(viewAutoInterval) clearInterval(viewAutoInterval);
+
+  viewAutoInterval = setInterval(checkScheduledView, 15000);
+}
+
+function eventOccursToday(eventItem, today){
+  if(eventItem.all_day){
+    var startDate = eventItem.start && (eventItem.start.date || eventItem.start.dateTime);
+    var endDate = eventItem.end && (eventItem.end.date || eventItem.end.dateTime);
+    var startNum = dateOnlyNum(startDate);
+    var endNum = dateOnlyNum(endDate);
+    if(startNum === null) return false;
+    var lastNum = (endNum !== null && endNum > startNum) ? endNum - 1 : startNum;
+    return today >= startNum && today <= lastNum;
+  }
+
+  var startDateTime = eventItem.start && (eventItem.start.dateTime || eventItem.start.date);
+  var ms = parseIso(startDateTime);
+  return ms !== null && dayNumOfRome(toRome(ms)) === today;
+}
+
+function renderPersonalTasks(){
+  renderPersonalGlobalTasks();
+
+  var box = $("personalTasks");
+  if(!box) return;
+  clear(box);
+
+  var owner = currentView === "ilenia" ? "I" : "W";
+  var ownerName = owner === "W" ? "WALTER" : "ILENIA";
+
+  var targetDay = todayNum() + personalTasksDayOffset;
+  var dayLabel = personalTasksDayOffset === 0 ? "oggi" : "domani";
+
+  setText($("personalTasksTitle"), "TASK DI " + ownerName);
+  setText($("personalTasksDate"), "");
+
+  var times = "";
+  var gen = agendaData
+    ? parseIso(agendaData.generated_at || agendaData.updated_at)
+    : null;
+  
+  if(gen !== null){
+    times += "upd time: " + hhmmRome(gen) + "<br>";
+  }
+  
+  if(agendaSyncedAt !== null){
+    times += "sync time: " + hhmmRome(agendaSyncedAt.getTime());
+  }
+  
+  if(agendaErr){
+    times += "<br>rete non disponibile";
+  }
+  
+  if(gen !== null && new Date().getTime() - gen > 3 * 3600000){
+    times += "<br>dati vecchi";
+  }
+  
+  setText($("personalTasksTimes"), "");
+  $("personalTasksTimes").innerHTML = times;
+
+  var btnToday = $("personalTasksToday");
+  var btnTomorrow = $("personalTasksTomorrow");
+
+  if(btnToday){
+    btnToday.className = personalTasksDayOffset === 0 ? "active" : "";
+    btnToday.onclick = function(){
+      personalTasksDayOffset = 0;
+      renderPersonalTasks();
+    };
+  }
+
+  if(btnTomorrow){
+    btnTomorrow.className = personalTasksDayOffset === 1 ? "active" : "";
+    btnTomorrow.onclick = function(){
+      personalTasksDayOffset = 1;
+      renderPersonalTasks();
+    };
+  }
+
+  if(!agendaData || !agendaData.events){
+    setText(box, agendaErr ? "Agenda non disponibile." : "Caricamento compiti...");
+    return;
+  }
+
+  var events = agendaData.events;
+  var found = false;
+
+  for(var i = 0; i < events.length; i++){
+    var eventItem = events[i];
+
+    if(!eventOccursToday(eventItem, targetDay)) continue;
+
+    var data = getEventTaskData(eventItem.description);
+    var owners = data.taskOwners || [];
+    var hasOwnerTask = false;
+
+    for(var j = 0; j < data.tasks.length; j++){
+      if(owners[j] === owner){
+        hasOwnerTask = true;
+        break;
+      }
+    }
+
+    if(!hasOwnerTask) continue;
+
+    found = true;
+
+    var taskContainer = mk("div", "personal-event-tasks");
+    box.appendChild(taskContainer);
+
+    renderEventTasksInline({
+      eventId: eventItem.id || eventItem.eventId || "",
+      description: eventItem.description
+    }, taskContainer, owner);
+  }
+
+  if(!found){
+    box.appendChild(
+      mk("div", "personal-task-empty",
+        "Nessun compito assegnato a " + ownerName + " per " + dayLabel + ".")
+    );
+  }
+}
+
+function renderPersonalGlobalTasks(){
+  taskSel = "oggi";
+  var box = $("personalGlobalTaskList");
+  if(!box) return;
+  clear(box);
+
+  if(!taskReady){
+    setText(box, taskSyncError ? "Task non disponibili." : "Caricamento...");
+    setText($("personalGlobalTaskTimes"), "");
+    return;
+  }
+
+  var key = taskDateKey(0);
+  var items = taskDays[key] || [];
+  var i;
+
+  if(!items.length){
+    box.appendChild(mk("div", "", "Nessuna attività."));
+  } else {
+    for(i = 0; i < items.length; i++){
+      box.appendChild(taskRow(i, items[i]));
+    }
+  }
+
+  if(!todoConnected){
+    setText($("personalGlobalTaskTimes"), "non connesso");
+  } else if(taskSyncError){
+    setText($("personalGlobalTaskTimes"), "sync error");
+  } else if(taskSyncedAt !== null){
+    setText($("personalGlobalTaskTimes"), "sync time: " + hhmmRome(taskSyncedAt.getTime()));
+  } else {
+    setText($("personalGlobalTaskTimes"), "sync in attesa");
+  }
+
+  setText($("personalGlobalTaskStatus"), "");
+}
+
+function syncPersonalRoutes(){
+  var source = $("routes");
+  var target = $("personalRoutes");
+
+  if(!source || !target) return;
+
+  target.innerHTML = source.innerHTML;
+
+  setText($("personalRoutesTimes"), "");
+
+  $("personalRoutesTimes").innerHTML =
+    $("routesTimes") ? $("routesTimes").innerHTML : "";
+
+  setText(
+    $("personalRoutesStatus"),
+    $("routesStatus") ? $("routesStatus").textContent : ""
+  );
+}
+
+function loadShoppingList(){
+  var box = $("shoppingList");
+  if(!box) return;
+
+  getJson(
+    [CONFIG.base + "shopping.json", "shopping.json"],
+    function(err, d){
+      clear(box);
+
+      var times = "";
+      var gen = (!err && d)
+        ? parseIso(d.generated_at || d.updated_at)
+        : null;
+
+      if(gen !== null){
+        times += "upd time: " + hhmmRome(gen) + "<br>";
+      }
+
+      if(!err && d && d.items){
+        shoppingSyncedAt = new Date();
+
+        if(shoppingSyncedAt !== null){
+          times += "sync time: " + hhmmRome(shoppingSyncedAt.getTime());
+        }
+
+        var pending = [];
+        var completed = [];
+
+        for(var i = 0; i < d.items.length; i++){
+          if(d.items[i].completed){
+            completed.push(d.items[i]);
+          } else {
+            pending.push(d.items[i]);
+          }
+        }
+
+        function addItems(items, done){
+          for(var j = 0; j < items.length; j++){
+            var row = document.createElement("div");
+            row.className = done ? "shopping-item completed" : "shopping-item";
+            row.textContent = (done ? "✓ " : "□ ") + items[j].name;
+            box.appendChild(row);
+          }
+        }
+
+        addItems(pending, false);
+        addItems(completed, true);
+
+        if(gen !== null && new Date().getTime() - gen > 30 * 60000){
+          times += "<br>dati vecchi";
+        }
+
+      } else {
+        times += "<br>rete non disponibile";
+      }
+
+      $("shoppingTimes").innerHTML = times;
+    }
+  );
+}
+
+function loadAgenda() {
+  getJson(
+    [CONFIG.base + "agenda.json", "agenda.json"],
+    function(err, d) {
+
+      var eventsChanged = false;
+      var hadAgenda = !!agendaData;
+
+      if (!err && d && d.events) {
+
+        var oldEvents = hadAgenda ?
+          JSON.stringify(agendaData.events || []) : "";
+
+        var newEvents = JSON.stringify(d.events || []);
+
+        eventsChanged = !hadAgenda || oldEvents !== newEvents;
+
+        agendaData = d;
+        agendaErr = false;
+        agendaSyncedAt = new Date();
+
+      } else {
+        agendaErr = true;
+      }
+
+      if(eventsChanged || !hadAgenda || err) {
+        safe(renderAgenda);
+      }
+
+      if(currentView !== "shared") safe(renderPersonalTasks);
+
+      loadIleniaAgenda();
+
+      scheduleAgendaRefresh();
+    }
+  );
+}
+
+function dayLabel(n, today){
+  var base = fullDateText(n);
+  if(n === today){ return "Oggi - " + base; }
+  if(n === today + 1){ return "Domani - " + base; }
+  return base;
+}
+function cmpEv(a, b){ return a.key - b.key; }
+
+
+function renderAgenda(){
+  var box = $("agenda"), st = $("agendaStatus");
+  clear(box);
+
+  if(!agendaData){
+    setText(box, agendaErr ? "Agenda non disponibile (file non raggiungibile)." : "Caricamento...");
+    setText(st, "");
+    return;
+  }
+
+	var today = todayNum(), buckets = [], i, j, n;
+	var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7);
+	monday += agendaWeekOffset * 7;
+
+	var viewStart = agendaTodayOnly ? today : monday;
+	var viewDays = agendaTodayOnly ? 1 : 7;
+	var weekEnd = viewStart + viewDays - 1;
+
+  // Titolo e aggiornamenti
+  $("agendaTitle").innerHTML = "AGENDA FAMIGLIA";
+
+  var times = "";
+  var gen = parseIso(agendaData.generated_at || agendaData.updated_at);
+
+  if(gen !== null){
+    times += "upd time: " + hhmmRome(gen) + "<br>";
+  }
+
+  if(agendaSyncedAt !== null){
+    times += "sync time: " + hhmmRome(agendaSyncedAt.getTime());
+  }
+
+  if(agendaErr){
+    times += "<br>rete non disponibile";
+  }
+
+  if(gen !== null && new Date().getTime() - gen > 3 * 3600000){
+    times += "<br>dati vecchi";
+  }
+
+  setText($("agendaTimes"), "");
+  $("agendaTimes").innerHTML = times;
+
+	// Pulsanti navigazione
+	var nav = mk("div", "agenda-nav");
+
+	var btnToday = mk("button", "", "Today");
+	btnToday.type = "button";
+	btnToday.disabled = agendaTodayOnly;
+
+	btnToday.onclick = function(){
+	  agendaTodayOnly = true;
+	  safe(renderAgenda);
+	};
+
+	var btnCurrent = mk("button", "", "This week");
+	btnCurrent.type = "button";
+	btnCurrent.disabled = !agendaTodayOnly && agendaWeekOffset === 0;
+
+	btnCurrent.onclick = function(){
+	  agendaTodayOnly = false;
+	  agendaWeekOffset = 0;
+	  safe(renderAgenda);
+	};
+
+	var btnNext = mk("button", "", "Next Week");
+	btnNext.type = "button";
+	btnNext.disabled = !agendaTodayOnly && agendaWeekOffset === 1;
+
+	btnNext.onclick = function(){
+	  agendaTodayOnly = false;
+	  agendaWeekOffset = 1;
+	  safe(renderAgenda);
+	};
+
+	nav.appendChild(btnToday);
+	nav.appendChild(btnCurrent);
+	nav.appendChild(btnNext);
+
+	box.appendChild(nav);
+
+  // Date settimana
+  function weekDateText(num){
+    var d = dateOfDayNum(num);
+    var day = GIORNI[d.getUTCDay()];
+
+    return day.charAt(0).toUpperCase() + day.substring(1) +
+      " " + p2(d.getUTCDate()) + "/" + p2(d.getUTCMonth() + 1);
+  }
+
+  var period = mk("div", "agenda-period",
+    agendaTodayOnly ?
+	  weekDateText(today) :
+	  weekDateText(monday) + " – " + weekDateText(weekEnd)
+  );
+
+  period.style.fontWeight = "bold";
+  box.appendChild(period);
+
+	for(i = 0; i < viewDays; i++){
+	  buckets.push([]);
+	}
+
+  var ev = agendaData.events || [];
+
+  // Raggruppamento eventi per giorno
+  for(i = 0; i < ev.length; i++){
+
+    var e = ev[i];
+    var titleEv = e.title || "(senza titolo)";
+
+    if(e.all_day){
+
+      var startDate = e.start && (e.start.date || e.start.dateTime);
+      var endDate = e.end && (e.end.date || e.end.dateTime);
+
+      var sd = dateOnlyNum(startDate);
+      var ed = dateOnlyNum(endDate);
+
+      if(sd === null){
+        continue;
+      }
+
+      var last = (ed !== null && ed > sd) ? ed - 1 : sd;
+
+      for(n = sd; n <= last; n++){
+
+        if(n >= viewStart && n < viewStart + viewDays){
+
+		buckets[n - viewStart].push({
+		  key: e.id || (startDate + "|" + titleEv),
+		  eventId: e.id || "",
+		  time: "Tutto il giorno",
+		  title: titleEv,
+		  description: e.description || "",
+		  htmlLink: e.htmlLink || ""
+		});
+
+        }
+      }
+
+    } else {
+
+      var startDateTime = e.start && (e.start.dateTime || e.start.date);
+      var ms = parseIso(startDateTime);
+
+      if(ms === null){
+        continue;
+      }
+
+      n = dayNumOfRome(toRome(ms));
+
+      if(n >= viewStart && n < viewStart + viewDays){
+
+		buckets[n - viewStart].push({
+		  key: ms,
+		  eventId: e.id || "",
+		  time: hhmmRome(ms),
+		  title: titleEv,
+		  description: e.description || "",
+		  htmlLink: e.htmlLink || ""
+		});
+
+      }
+    }
+  }
+
+  // Visualizzazione eventi
+  var any = false;
+
+  for(i = 0; i < viewDays; i++){
+
+    if(!buckets[i].length){
+      continue;
+    }
+
+    any = true;
+    buckets[i].sort(cmpEv);
+
+    box.appendChild(
+      mk("h3", "", dayLabel(viewStart + i, today))
+    );
+
+    for(j = 0; j < buckets[i].length; j++){
+
+      var row = mk("div", "ev");
+      var item = buckets[i][j];
+
+      row.style.cursor = "pointer";
+
+      row.appendChild(mk("span", "t", item.time));
+      row.appendChild(mk("span", "tt", item.title));
+
+      if(agendaTodayOnly){
+
+        // In Today, mostra i compiti solo nella vista Condivisa.
+        row.style.cursor = "default";
+        box.appendChild(row);
+
+        if(currentView === "shared"){
+          var taskContainer = mk("div", "event-task-inline");
+          taskContainer.style.margin = "2px 0 12px 25px";
+          taskContainer.style.padding = "4px 8px";
+          taskContainer.style.borderLeft = "2px solid #999";
+          box.appendChild(taskContainer);
+          renderEventTasksInline(item, taskContainer);
+        }
+
+      } else {
+
+        // Nelle viste settimanali mantiene la finestra al clic
+        row.onclick = (function(eventItem){
+          return function(){
+            openEventTasks(eventItem);
+          };
+        })(item);
+
+        box.appendChild(row);
+      }
+    }
+  }
+
+  if(!any){
+    box.appendChild(mk("div", "",
+      agendaTodayOnly ?
+        "Nessun impegno nel giorno." :
+        "Nessun impegno nella settimana."
+    ));
+  }
+
+  setText(st, "");
+
+  scheduleBoxAlignment();
+}
+
+
+
+
+/* ===== METEO (Open-Meteo, nessuna chiave) ===== */
+
+var wData = null;
+var wTime = 0;
+var wErr = false;
+var sunData = null;
+var sunDate = "";
+
+function wcText(c){
+  if(c === 0){ return "Sereno"; }
+  if(c === 1){ return "Prevalentemente sereno"; }
+  if(c === 2){ return "Parzialmente nuvoloso"; }
+  if(c === 3){ return "Coperto"; }
+  if(c === 45 || c === 48){ return "Nebbia"; }
+  if(c >= 51 && c <= 57){ return "Pioggerella"; }
+  if(c >= 61 && c <= 67){ return "Pioggia"; }
+  if(c >= 71 && c <= 77){ return "Neve"; }
+  if(c >= 80 && c <= 82){ return "Rovesci"; }
+  if(c === 85 || c === 86){ return "Rovesci di neve"; }
+  if(c >= 95){ return "Temporale"; }
+  return "Meteo variabile";
+}
+
+function loadWeather(){
+  var u = "https://api.open-meteo.com/v1/forecast?latitude=" + CONFIG.lat + "&longitude=" + CONFIG.lon +
+          "&current=temperature_2m,apparent_temperature,weather_code&timezone=Europe%2FRome";
+  getJson([u], function(err, d){
+    if(!err && d && d.current && typeof d.current.temperature_2m === "number") {
+		wData = d.current; wTime = new Date().getTime(); wErr = false; 
+	}
+    else {
+		wErr = true; 
+	}
+	
+    safe(renderWeather);
+	
+	setTimeout(function(){
+		safe(loadWeather);
+	}, CONFIG.weatherMin * 60000);
+  }, true);
+}
+
+function loadSunTimes() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var day = now.getDate();
+
+  var dateKey = year + "-" + month + "-" + day;
+
+  var url = "https://sunrise.am/api/sun-month-data/milan/" +
+            year + "/" + month;
+
+  getJson([url], function(err, d) {
+    if (!err && d && d.days) {
+      sunData = null;
+
+      for (var i = 0; i < d.days.length; i++) {
+        if (d.days[i].day === day) {
+          sunData = d.days[i];
+          sunDate = dateKey;
+          break;
+        }
+      }
+
+      safe(renderWeather);
+    }
+  }, true);
+}
+function renderWeather() {
+  var el = $("weather");
+  var iconEl = $("weatherIcon");
+
+  if (!wData || wData.weather_code === undefined) {
+    el.innerHTML = wErr ? "Meteo non disponibile" : "Meteo in caricamento...";
+    if (iconEl) iconEl.innerHTML = "";
+    return;
+  }
+
+  var code = wData.weather_code;
+  var temp = Math.round(wData.temperature_2m);
+  var feels = Math.round(wData.apparent_temperature);
+
+  var now = toRome(new Date().getTime());
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var currentTime = hour * 60 + minute;
+
+  var today = now.getFullYear() + "-" +
+    (now.getMonth() + 1) + "-" +
+    now.getDate();
+
+  var night = (hour >= 17 || hour < 6);
+
+  if (sunData &&
+      sunDate === today &&
+      sunData.civil_twilight_start &&
+      sunData.civil_twilight_end) {
+
+    var dawn = sunData.civil_twilight_start.split(":");
+    var dusk = sunData.civil_twilight_end.split(":");
+
+    var dawnMinutes = parseInt(dawn[0], 10) * 60 + parseInt(dawn[1], 10);
+    var duskMinutes = parseInt(dusk[0], 10) * 60 + parseInt(dusk[1], 10);
+
+    night = currentTime < dawnMinutes || currentTime >= duskMinutes;
+  }
+
+  var svg = "";
+  var sun = "<circle cx='30' cy='27' r='11' fill='#FDB813'/>";
+  var moon = "<path d='M37 12 A15 15 0 1 0 49 34 A12 12 0 0 1 37 12' fill='#F5D76E'/>";
+  var cloud = "<path d='M18 48 H53 A12 12 0 0 0 53 24 A17 17 0 0 0 21 28 A10 10 0 0 0 18 48' fill='#A9C7DD' stroke='#7197B1' stroke-width='2'/>";
+  var rain = "<path d='M23 53 L19 62 M37 53 L33 62 M51 53 L47 62' stroke='#39A9DB' stroke-width='4' stroke-linecap='round'/>";
+  var snow = "<g stroke='#54BDE8' stroke-width='2.5' stroke-linecap='round'><path d='M23 54v12 M18 57l10 6 M28 57l-10 6 M42 54v12 M37 57l10 6 M47 57l-10 6'/></g>";
+  var lightning = "<path d='M37 48 L28 62 H37 L32 73 L49 55 H40 L45 48 Z' fill='#FFD43B' stroke='#E5A900' stroke-width='1.5'/>";
+  var fog = "<g stroke='#9AAAB5' stroke-width='3' stroke-linecap='round'><path d='M12 55 H55 M18 63 H49 M25 71 H58'/></g>";
+
+  if (code === 0) {
+    svg = night ? moon : sun;
+  } else if (code === 1 || code === 2) {
+    svg = (night ? moon : sun) + cloud;
+  } else if (code === 3) {
+    svg = cloud;
+  } else if (code === 45 || code === 48) {
+    svg = cloud + fog;
+  } else if (code >= 51 && code <= 57) {
+    svg = cloud + rain;
+  } else if (code >= 61 && code <= 67) {
+    svg = cloud + rain;
+  } else if (code >= 71 && code <= 77) {
+    svg = cloud + snow;
+  } else if (code >= 80 && code <= 82) {
+    svg = cloud + rain;
+  } else if (code === 85 || code === 86) {
+    svg = cloud + snow;
+  } else if (code >= 95) {
+    svg = cloud + lightning + rain;
+  } else {
+    svg = cloud;
+  }
+
+  if (iconEl) {
+    iconEl.innerHTML =
+      "<svg viewBox='0 0 80 80' width='64' height='64' xmlns='http://www.w3.org/2000/svg'>" +
+      svg +
+      "</svg>";
+  }
+
+  el.innerHTML =
+  "Milano " + temp + "°C" +
+  "<br>Percepita " + feels + "°C";
+}
+
+/* ===== SPOSTAMENTI ===== */
+
+var WEEKEND_PHRASES = [
+  "Weekend! Oggi niente lavoro, goditi la giornata!",
+  "Traffico? Oggi non è un nostro problema!",
+  "Nessuna sveglia, nessuna partenza. Buon relax!",
+  "Oggi si viaggia solo per piacere!",
+  "Modalità relax attivata. Buon weekend!",
+  "Oggi l'unico appuntamento è con il tempo libero!"
+];
+
+var routesData = null;
+
+function loadRoutes() {
+  if (!CONFIG.routesUrl) {
+    renderRoutes();
+    return;
+  }
+
+  getJson([CONFIG.routesUrl], function(err, d) {
+    if (!err && d && d.routes) {
+      routesData = d;
+      routesErr = false;
+      routesSyncedAt = new Date();
+    } else {
+      routesErr = true;
+    }
+
+    safe(renderRoutes);
+  });
+}
+
+function renderRoutes(){
+
+  var personal = currentView !== "shared";
+  
+  var box = $(personal ? "personalRoutes" : "routes");
+  var timesBox = $(personal ? "personalRoutesTimes" : "routesTimes");
+  var statusBox = $(personal ? "personalRoutesStatus" : "routesStatus");
+  
+  if (!box) return;
+
+  var i, data, departure, arrival;
+  var line, heading, details;
+
+  clear(box);
+
+  var now = new Date();
+  var day = now.getDay();
+
+  if ($("routesTitle")) {
+    $("routesTitle").innerHTML = "SPOSTAMENTI";
+  }
+
+  var times = "";
+  var routesGenerated = null;
+
+  if (routesData) {
+    routesGenerated = parseIso(
+      routesData.generated_at || routesData.updated_at
+    );
+  }
+
+  if (routesGenerated !== null) {
+    times += "upd time: " + hhmmRome(routesGenerated) + "<br>";
+  }
+
+  if (routesSyncedAt !== null) {
+    times += "sync time: " +
+      hhmmRome(routesSyncedAt.getTime());
+  }
+
+  if (routesErr) {
+    times += "<br>sync error";
+  }
+
+  if (timesBox) {
+    timesBox.innerHTML = times;
+  }
+
+  /* Weekend */
+  if(day === 0 || day === 6){
+
+    var phrase = WEEKEND_PHRASES[
+      Math.floor(Math.random() * WEEKEND_PHRASES.length)
+    ];
+
+    box.appendChild(mk("div", "weekend-message", phrase));
+    setText(statusBox, "");
+    scheduleBoxAlignment();
+    return;
+  }
+
+  /* Configurazione */
+  if(!CONFIG.routesUrl){
+    setText(statusBox, "Tempi di percorrenza non ancora configurati.");
+    scheduleBoxAlignment();
+    return;
+  }
+
+  var todayDate = toRome(new Date().getTime());
+
+  var today =
+    todayDate.getUTCFullYear() + "-" +
+    p2(todayDate.getUTCMonth() + 1) + "-" +
+    p2(todayDate.getUTCDate());
+
+  var weekdayNames = [
+    "domenica",
+    "lunedi",
+    "martedi",
+    "mercoledi",
+    "giovedi",
+    "venerdi",
+    "sabato"
+  ];
+
+  var todayName = weekdayNames[day];
+
+  /* Verifica che il JSON sia quello di oggi */
+  if (
+    !routesData ||
+    routesData.day !== todayName ||
+    !routesData.routes
+  ) {
+    box.appendChild(
+      mk("div", "rt", "Percorsi non ancora calcolati per oggi.")
+    );
+
+  } else {
+
+    var found = false;
+
+    /* Le tratte vengono lette direttamente dal JSON */
+    for (var routeId in routesData.routes) {
+
+      if (!Object.prototype.hasOwnProperty.call(
+        routesData.routes, routeId
+      )) {
+        continue;
+      }
+
+      data = routesData.routes[routeId];
+
+      if (!data || !data.departure || !data.arrival) {
+        continue;
+      }
+
+      /* Verifica che il calcolo sia di oggi */
+      var calculated = parseIso(data.calculated_at);
+
+      if (calculated === null) continue;
+
+      var calculatedRome = toRome(calculated);
+
+      var calculatedDate =
+        calculatedRome.getUTCFullYear() + "-" +
+        p2(calculatedRome.getUTCMonth() + 1) + "-" +
+        p2(calculatedRome.getUTCDate());
+
+      if (calculatedDate !== today) continue;
+
+      departure = parseIso(data.departure);
+      arrival = parseIso(data.arrival);
+
+      if (departure === null || arrival === null) continue;
+
+      found = true;
+
+      /* Prima riga: percorso in grassetto */
+      line = mk("div", "rt");
+
+      heading = mk(
+        "strong",
+        "",
+        data.from + " \u2192 " + data.to
+      );
+
+      heading.style.display = "block";
+
+      /* Seconda riga: orari e durata normali */
+      details = mk(
+        "div",
+        "",
+        "partenza " + hhmmRome(departure) +
+        " arrivo " + hhmmRome(arrival) +
+        " · " + data.duration_minutes + " min"
+      );
+
+      details.style.fontWeight = "normal";
+
+      line.appendChild(heading);
+      line.appendChild(details);
+
+      box.appendChild(line);
+    }
+
+    if (!found) {
+      box.appendChild(
+        mk("div", "rt", "Nessun percorso disponibile per oggi.")
+      );
+    }
+  }
+
+  var st = "";
+
+  if(routesErr){
+    st = st ? st + " - rete non disponibile" :
+      "Tempi non raggiungibili.";
+  }
+
+  setText(statusBox, st);
+
+  scheduleBoxAlignment();
+}
+
+/* ===== FINE SPOSTAMENTI ===== */
+
+
+
+/* ===== AGGIORNAMENTI AUTOMATICI ===== */
+
+function startDailyUpdates() {
+
+  scheduleDailyAt(0, 5, function() {
+    menuSel = "oggi";
+
+    if (typeof updateMenuButtons === "function") {
+      updateMenuButtons();
+    }
+
+    loadMenu();
+  });
+
+  scheduleDailyAt(7, 5, function() {
+    loadRoutes();
+  });
+
+  scheduleDailyAt(16, 5, function() {
+    loadRoutes();
+  });
+}
+
+/* ===== FINE AGGIORNAMENTI AUTOMATICI ===== */
+
+/* ===== LISTA DA FARE OGGI - SINCRONIZZATA ===== */
+
+function updateTaskDate(){
+  setText($("taskDateTitle"), "Task Condivisi");
+}
+
+updateTaskDate();
+
+
+/* ===== LISTA DA FARE - SINCRONIZZATA ===== */
+
+var todoItems = [];
+var todoPin = "";
+var todoConnected = false;
+var todoBusy = false;
+var todoPollTimer = null;
+var todoSyncError = false;
+
+function todoCanEdit(){
+  return todoConnected && !todoBusy;
+}
+
+function getSavedTodoPin(){
+  var pin = "";
+  try { pin = window.localStorage.getItem("todoPin") || ""; } catch(e) {}
+  if(pin) return pin;
+  var match = document.cookie.match(/(?:^|; )todoPin=([^;]*)/);
+  if(match){
+    try { return decodeURIComponent(match[1]); } catch(e) { return match[1]; }
+  }
+  return "";
+}
+
+function saveTodoPin(pin){
+  try { window.localStorage.setItem("todoPin", pin); } catch(e) {}
+  try {
+    document.cookie = "todoPin=" + encodeURIComponent(pin) + "; Max-Age=31536000; Path=/; SameSite=Lax" +
+      (location.protocol === "https:" ? "; Secure" : "");
+  } catch(e) {}
+}
+
+function todoRequest(method, data, callback, requestUrl){
+
+  var x = new XMLHttpRequest();
+  var url = requestUrl || CONFIG.todoWorkerUrl;
+  var finished = false;
+
+  x.open(method, url, true);
+  x.setRequestHeader("X-Todo-Pin", todoPin);
+
+  if(method === "POST"){
+    x.setRequestHeader("Content-Type", "application/json");
+  }
+
+  function finish(err, result){
+    if(finished){
+      return;
+    }
+
+    finished = true;
+    callback(err, result);
+  }
+
+  x.onreadystatechange = function(){
+
+    if(x.readyState !== 4 || finished){
+      return;
+    }
+
+    var result = null;
+
+    try {
+      result = parseJson(x.responseText);
+    } catch(e) {}
+
+    if(x.status >= 200 && x.status < 300){
+      finish(null, result);
+    } else {
+      finish(
+        result && result.error ?
+          result.error :
+          "Errore HTTP " + x.status,
+        result
+      );
+    }
+  };
+
+  x.onerror = function(){
+    finish("Errore di connessione", null);
+  };
+
+  x.ontimeout = function(){
+    finish("Timeout di connessione", null);
+  };
+
+  x.timeout = 20000;
+
+  try {
+    x.send(method === "POST" ? JSON.stringify(data) : null);
+  } catch(e) {
+    finish("Errore di invio richiesta", null);
+  }
+}
+
+/* Estrae i compiti dalla descrizione Google Calendar */
+function getEventTaskData(description){
+
+  var lines = String(description || "").split(/\r?\n/);
+  var tasks = [];
+  var taskOwners = [];
+  var details = [];
+  var start = false;
+  var hasMarker = false;
+  var i, line;
+
+  for(i = 0; i < lines.length; i++){
+    if(/^\s*TODO:\s*$/i.test(lines[i])){
+      hasMarker = true;
+      break;
+    }
+  }
+
+  for(i = 0; i < lines.length; i++){
+
+    line = lines[i].replace(/^\s+|\s+$/g, "");
+
+    if(/^TODO:\s*$/i.test(line)){
+      start = true;
+      continue;
+    }
+
+    if(hasMarker && !start){
+      continue;
+    }
+
+    if(!line){
+      continue;
+    }
+
+    if(/^[-*]\s+/.test(line)){
+
+      line = line.replace(/^[-*]\s+/, "").replace(/\s+$/g, "");
+
+      if(line){
+        var ownerMatch = line.match(/^([WI])\s*:\s*(.*)$/i);
+        tasks.push(line);
+        taskOwners.push(ownerMatch ? ownerMatch[1].toUpperCase() : "");
+      }
+
+    } else {
+      details.push(line);
+    }
+  }
+
+  return {
+    tasks: tasks,
+    taskOwners: taskOwners,
+    details: details.join("\n")
+  };
+}
+
+
+
+function renderEventTasksInline(eventItem, taskContainer, ownerFilter){
+
+  var data = getEventTaskData(eventItem.description);
+  var tasks = data.tasks;
+  var owners = data.taskOwners || [];
+  var details = ownerFilter ? "" : data.details;
+  var selectedIndexes = [];
+  var taskIndex;
+
+  for(taskIndex = 0; taskIndex < tasks.length; taskIndex++){
+    if(!ownerFilter || owners[taskIndex] === ownerFilter){
+      selectedIndexes.push(taskIndex);
+    }
+  }
+
+  if(ownerFilter && !selectedIndexes.length){
+    return;
+  }
+
+  if(!tasks.length && !details){
+    return;
+  }
+
+  if(!tasks.length){
+    addEventDetailsLink(eventItem, taskContainer);
+    return;
+  }
+
+  taskContainer.appendChild(
+    mk("div", "", "Caricamento compiti...")
+  );
+
+  var url = CONFIG.todoWorkerUrl +
+    "?list=event-tasks&eventId=" +
+    encodeURIComponent(eventItem.eventId);
+
+  todoRequest("GET", null, function(err, result){
+
+    clear(taskContainer);
+
+    if(err){
+      taskContainer.appendChild(
+        mk("div", "", "Errore caricamento: " + err)
+      );
+
+      if(details){
+        addEventDetailsLink(eventItem, taskContainer);
+      }
+
+      scheduleBoxAlignment();
+      return;
+    }
+
+    var completed = result && result.completed ?
+      result.completed : {};
+
+    var i;
+
+    for(i = 0; i < selectedIndexes.length; i++){
+
+      (function(index){
+
+        var taskKey = index + ":" + tasks[index];
+        var visibleTask = ownerFilter
+          ? tasks[index].replace(/^[WI]\s*:\s*/i, "")
+          : tasks[index];
+
+        var label = mk("label", "agenda-task-row");
+
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "agenda-task-check";
+        checkbox.checked = completed[taskKey] === true;
+
+        var taskText = document.createElement("span");
+        taskText.className = checkbox.checked
+          ? "agenda-task-text done"
+          : "agenda-task-text";
+
+        taskText.appendChild(document.createTextNode(visibleTask));
+
+        label.appendChild(checkbox);
+        label.appendChild(taskText);
+
+        taskContainer.appendChild(label);
+
+        checkbox.onchange = function(){
+
+          var newValue = checkbox.checked;
+          checkbox.disabled = true;
+
+          todoRequest("POST", {
+            action: "set",
+            taskKey: taskKey,
+            done: newValue
+          }, function(saveErr){
+
+            checkbox.disabled = false;
+
+            if(saveErr){
+              checkbox.checked = !newValue;
+              taskText.className = checkbox.checked ? "done" : "";
+              alert("Errore nel salvataggio: " + saveErr);
+            } else {
+              completed[taskKey] = newValue;
+              taskText.className = newValue ? "done" : "";
+            }
+
+          }, url);
+        };
+
+      })(selectedIndexes[i]);
+    }
+
+    if(details){
+      addEventDetailsLink(eventItem, taskContainer);
+    }
+
+    scheduleBoxAlignment();
+
+  }, url);
+}
+
+
+function clearTasksOnly(container, hasDetails){
+  clear(container);
+}
+
+function addEventDetailsLink(eventItem, taskContainer){
+
+  var link = mk(
+    "div",
+    "",
+    "Dettagli evento"
+  );
+
+  link.style.display = "block";
+  link.style.marginTop = "8px";
+  link.style.fontSize = "14px";
+  link.style.fontStyle = "italic";
+  link.style.textDecoration = "underline";
+  link.style.cursor = "pointer";
+  link.style.color = "#555";
+
+  link.onclick = function(){
+    openEventTasks(eventItem);
+  };
+
+  taskContainer.appendChild(link);
+}
+
+/* Apre la finestra dei compiti e dei dettagli associati all'evento */
+function openEventTasks(eventItem){
+
+  var old = $("eventTasksOverlay");
+
+  if(old && old.parentNode){
+    old.parentNode.removeChild(old);
+  }
+
+  var eventId = eventItem.eventId || "";
+
+  if(!eventId){
+    alert("ID evento non disponibile.");
+    return;
+  }
+
+  var data = getEventTaskData(eventItem.description);
+  var tasks = data.tasks;
+  var details = data.details;
+
+  var overlay = mk("div", "");
+  overlay.id = "eventTasksOverlay";
+
+  overlay.style.position = "fixed";
+  overlay.style.left = "0";
+  overlay.style.top = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "#fff";
+  overlay.style.zIndex = "9999";
+  overlay.style.overflowY = "auto";
+  overlay.style.padding = "20px";
+  overlay.style.boxSizing = "border-box";
+
+  var panel = mk("div", "");
+  panel.style.border = "2px solid #000";
+  panel.style.borderRadius = "12px";
+  panel.style.padding = "15px";
+  panel.style.backgroundColor = "#fff";
+
+  var header = mk("div", "");
+  header.style.overflow = "hidden";
+
+  var title = mk("h2", "", eventItem.title);
+  title.style.float = "left";
+  title.style.margin = "0 0 15px 0";
+
+  var close = mk("button", "", "Chiudi");
+  close.type = "button";
+  close.style.float = "right";
+
+  close.onclick = function(){
+    if(overlay.parentNode){
+      overlay.parentNode.removeChild(overlay);
+    }
+  };
+
+  header.appendChild(title);
+  header.appendChild(close);
+  panel.appendChild(header);
+
+  panel.appendChild(mk("hr", ""));
+
+  var taskContainer = mk("div", "");
+  panel.appendChild(taskContainer);
+
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
+
+  if(!tasks.length && !details){
+    taskContainer.appendChild(
+      mk("div", "", "Nessun compito o dettaglio indicato.")
+    );
+    return;
+  }
+  
+  if(!tasks.length){
+    taskContainer.appendChild(
+      mk("div", "", "Nessun compito indicato.")
+    );
+    addDetails();
+    return;
+  }
+
+  taskContainer.appendChild(
+    mk("div", "", "Caricamento compiti...")
+  );
+
+  var url = CONFIG.todoWorkerUrl +
+    "?list=event-tasks&eventId=" +
+    encodeURIComponent(eventId);
+
+  todoRequest("GET", null, function(err, result){
+
+    if(!$("eventTasksOverlay")){
+      return;
+    }
+
+    clear(taskContainer);
+
+    if(err){
+
+      taskContainer.appendChild(
+        mk("div", "", "Errore caricamento: " + err)
+      );
+
+    } else {
+
+      var completed = result && result.completed ?
+        result.completed : {};
+
+      var i;
+
+      for(i = 0; i < tasks.length; i++){
+
+        (function(index){
+
+          var taskKey = index + ":" + tasks[index];
+
+          var label = mk("label", "");
+          label.style.display = "block";
+          label.style.padding = "12px 5px";
+          label.style.borderBottom = "1px solid #ccc";
+          label.style.fontSize = "18px";
+          label.style.cursor = "pointer";
+
+          var checkbox = document.createElement("input");
+
+          checkbox.type = "checkbox";
+          checkbox.style.marginRight = "12px";
+          checkbox.style.width = "22px";
+          checkbox.style.height = "22px";
+          checkbox.checked = completed[taskKey] === true;
+
+          label.appendChild(checkbox);
+          label.appendChild(
+            document.createTextNode(tasks[index])
+          );
+
+          taskContainer.appendChild(label);
+
+          checkbox.onchange = function(){
+
+            var newValue = checkbox.checked;
+
+            checkbox.disabled = true;
+
+            todoRequest("POST", {
+              action: "set",
+              taskKey: taskKey,
+              done: newValue
+            }, function(saveErr){
+
+              if(!$("eventTasksOverlay")){
+                return;
+              }
+
+              checkbox.disabled = false;
+
+              if(saveErr){
+
+                checkbox.checked = !newValue;
+
+                alert("Errore nel salvataggio: " + saveErr);
+
+              } else {
+
+                completed[taskKey] = newValue;
+
+              }
+
+            }, url);
+
+          };
+
+        })(i);
+      }
+    }
+
+    addDetails();
+
+  }, url);
+
+
+  function addDetails(){
+
+    if(!details){
+      return;
+    }
+
+    var separator = mk("hr", "");
+    separator.style.marginTop = "20px";
+    taskContainer.appendChild(separator);
+
+    var heading = mk("div", "", "Altri dettagli");
+    heading.style.fontWeight = "bold";
+    heading.style.fontSize = "17px";
+    heading.style.marginBottom = "8px";
+
+    taskContainer.appendChild(heading);
+
+    var detailText = mk("div", "", details);
+    detailText.style.fontSize = "16px";
+    detailText.style.whiteSpace = "pre-line";
+    detailText.style.lineHeight = "1.5";
+
+    taskContainer.appendChild(detailText);
+  }
+
+}
+
+function todoConnect(){
+	var pinInput = $("todoPinInput");
+	var pin = pinInput ? pinInput.value : "";
+
+	if(!pin){
+	  pin = getSavedTodoPin();
+	}
+
+	if(!pin){
+	  setText($("todoStatus"), "Inserisci il PIN.");
+	  return;
+	}
+
+  todoPin = pin;
+  todoBusy = true;
+
+  setText($("syncStatus"), "Connessione in corso...");
+
+  todoRequest("GET", null, function(err, data){
+    todoBusy = false;
+
+	if(err || !data || !data.items){
+	  todoConnected = false;
+	  // Mantieni il PIN memorizzato: un redeploy o un errore di rete
+	  // non devono costringere a reinserirlo sul Kindle.
+	  var detail = data && data.detail ? data.detail : "";
+
+	  setText(
+	    $("syncStatus"),
+	    "Connessione non riuscita: " +
+	    (err || "risposta non valida") +
+	    (detail ? " - " + detail : "")
+	  );
+	  
+	  // Ripristina la richiesta del PIN
+	  var syncBox = $("syncBox");
+	  if(syncBox){
+	    syncBox.style.display = "";
+	  }
+	  
+	  if(pinInput){
+	    pinInput.style.display = "";
+	    pinInput.value = pin;
+	  }
+	  
+	  var connectButton = $("todoConnectButton");
+	  if(connectButton){
+	    connectButton.style.display = "";
+	  }
+	  
+	  return;
+	}
+	
+	todoItems = data.items;
+	todoConnected = true;
+	todoSyncedAt = new Date();
+	todoSyncError = false;
+	updateTodoSyncLabel();
+	
+	var syncBox = $("syncBox");
+	if(syncBox){
+	  syncBox.style.display = "none";
+	}
+
+	saveTodoPin(todoPin);
+
+    renderTodo();
+
+    if(pinInput){
+      pinInput.style.display = "none";
+    }
+
+	var connectButton = $("todoConnectButton");
+	if(connectButton){
+	  connectButton.style.display = "none";
+	}
+
+	/* Barra aggiunta attività */
+	var ctl = $("todoCtl");
+	clear(ctl);
+
+	var inp = mk("input");
+	inp.id = "todoInput";
+	inp.type = "text";
+	inp.maxLength = 200;
+	inp.placeholder = "Nuova attività";
+
+	inp.onkeydown = function(ev){
+	  ev = ev || window.event;
+	  if(ev.keyCode === 13){
+		todoAdd();
+	  }
+	};
+
+	var add = mk("button", "", "Aggiungi");
+	add.type = "button";
+	add.onclick = todoAdd;
+
+	ctl.appendChild(inp);
+	ctl.appendChild(document.createTextNode(" "));
+	ctl.appendChild(add);
+
+	/* Mostra insieme i campi di inserimento */
+	ctl.style.display = "";
+
+	var taskCtl = $("taskCtl");
+	if(taskCtl){
+	  taskCtl.style.display = "";
+	}
+
+	todoSchedulePoll();
+	initTasks();
+  });
+}
+
+function todoSchedulePoll(){
+  if(todoPollTimer){
+    clearTimeout(todoPollTimer);
+  }
+
+  todoPollTimer = setTimeout(function(){
+    if(!todoConnected || todoBusy) {
+      todoSchedulePoll();
+      return;
+    }
+
+    todoRequest("GET", null, function(err, data){
+      if(!err && data && data.items){
+        todoItems = data.items;
+        todoSyncedAt = new Date();
+        todoSyncError = false;
+
+        updateTodoSyncLabel();
+        updateTaskButtons();
+
+        renderTodo();
+        setText($("todoStatus"), "");
+      } else {
+        todoSyncError = true;
+
+        updateTodoSyncLabel();
+        updateTaskButtons();
+
+        setText($("todoStatus"), "Sincronizzazione temporaneamente non disponibile.");
+      }
+
+      todoSchedulePoll();
+    });
+  }, 30000);
+}
+
+function todoChange(action, index, text){
+  if(!todoConnected || todoBusy) return;
+
+  var data = {
+    action: action
+  };
+
+  if(action === "add"){
+    data.text = text;
+  } else {
+    data.index = index;
+  }
+
+  todoBusy = true;
+  renderTodo();
+  setText($("todoStatus"), "Salvataggio...");
+
+  todoRequest("POST", data, function(err, result){
+    todoBusy = false;
+
+    if(err || !result || !result.items){
+      todoSyncError = true;
+      updateTodoSyncLabel();
+      updateTaskButtons();
+
+      setText($("todoStatus"), "Salvataggio non riuscito: " + (err || "errore"));
+      renderTodo();
+      return;
+    }
+
+    todoItems = result.items;
+    todoSyncedAt = new Date();
+    todoSyncError = false;
+
+    updateTodoSyncLabel();
+    updateTaskButtons();
+
+    renderTodo();
+    setText($("todoStatus"), "");
+  });
+}
+
+function todoAdd(){
+  var inp = $("todoInput");
+  if(!inp) return;
+
+  var value = inp.value.replace(/^\s+|\s+$/g, "");
+
+  if(!value) return;
+
+  if(value.length > 200){
+    setText($("todoStatus"), "Massimo 200 caratteri.");
+    return;
+  }
+
+  todoChange("add", null, value);
+
+  inp.value = "";
+}
+
+function todoToggle(i){
+  todoChange("toggle", i);
+}
+
+function todoDel(i){
+  todoChange("delete", i);
+}
+
+function renderTodo(){
+  var box = $("todoList");
+  var i;
+
+  clear(box);
+
+  for(i = 0; i < todoItems.length; i++){
+    box.appendChild(todoRow(i));
+  }
+
+  if(!todoItems.length){
+    box.appendChild(mk("div", "", "Nessuna attività."));
+  }
+
+  scheduleBoxAlignment();
+}
+
+function todoRow(i){
+  var it = todoItems[i];
+  var row = mk("div", "todo");
+
+  var checkbox = mk("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = !!it.done;
+  checkbox.disabled = todoBusy;
+  checkbox.className = "todo-check";
+  checkbox.setAttribute("aria-label", it.done ? "Segna come da fare" : "Segna come completata");
+  checkbox.onchange = function(){ todoToggle(i); };
+  var checkCell = mk("span", "todo-check-cell");
+  checkCell.appendChild(checkbox);
+  row.appendChild(checkCell);
+
+  var txt = mk("span", it.done ? "todo-text done" : "todo-text", it.text);
+  row.appendChild(txt);
+
+  if(todoConnected){
+    var actions = mk("span", "todo-actions");
+    var del = mk("button", "todo-delete", "🗑");
+    del.type = "button";
+    del.disabled = todoBusy;
+    del.title = "Elimina attività";
+    del.onclick = function(){ todoDel(i); };
+    actions.appendChild(del);
+    row.appendChild(actions);
+  }
+  return row;
+}
+
+function loadTodo(){
+  var ctl = $("syncCtl");
+  var st = $("syncStatus");
+
+  var syncBox = $("syncBox");
+  if(syncBox){
+    syncBox.style.display = "block";
+  }
+
+  clear(ctl);
+  clear($("todoList"));
+
+  var pinInput = mk("input");
+  pinInput.id = "todoPinInput";
+  pinInput.type = "password";
+  pinInput.maxLength = 50;
+  pinInput.placeholder = "PIN sincronizzazione";
+  pinInput.autocomplete = "off";
+
+  var connectButton = mk("button", "", "Connetti");
+  connectButton.id = "todoConnectButton";
+  connectButton.type = "button";
+  connectButton.onclick = todoConnect;
+
+  ctl.appendChild(pinInput);
+  ctl.appendChild(document.createTextNode(" "));
+  ctl.appendChild(connectButton);
+
+  pinInput.onkeydown = function(ev){
+    ev = ev || window.event;
+    if(ev.keyCode === 13){
+      todoConnect();
+    }
+  };
+
+  var savedPin = getSavedTodoPin();
+
+  if(savedPin){
+    pinInput.value = savedPin;
+    todoConnect();
+  } else {
+    setText(st, "Inserisci il PIN per collegare la dashboard.");
+  }
+}
+
+/* ===== TASK GIORNALIERI ===== */
+
+var taskSel = "oggi";
+var taskDays = {};
+var taskReady = false;
+var taskBusy = false;
+
+var TASK_OFF = {
+  ieri: -1,
+  oggi: 0,
+  domani: 1
+};
+
+updateTodoSyncLabel();
+updateTaskButtons();
+
+function taskDateKey(offset){
+  var now = toRome(new Date().getTime());
+  var d = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + offset
+  ));
+
+  return d.getUTCFullYear() + "-" +
+    p2(d.getUTCMonth() + 1) + "-" +
+    p2(d.getUTCDate());
+}
+
+function taskDateLabel(offset){
+  var giorni = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
+  var mesi = ["gen", "feb", "mar", "apr", "mag", "giu",
+              "lug", "ago", "set", "ott", "nov", "dic"];
+
+  var d = new Date();
+  var now = toRome(new Date().getTime());
+
+  d = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + offset
+  ));
+
+  return giorni[d.getUTCDay()] + " " +
+    p2(d.getUTCDate()) + " " +
+    mesi[d.getUTCMonth()];
+}
+
+function taskRequest(method, data, callback){
+  var x = new XMLHttpRequest();
+  var url = CONFIG.todoWorkerUrl + "?list=tasks";
+
+  x.open(method, url, true);
+  x.setRequestHeader("X-Todo-Pin", todoPin);
+
+  if(method === "POST"){
+    x.setRequestHeader("Content-Type", "application/json");
+  }
+
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4) return;
+
+    var result = null;
+
+    try {
+      result = parseJson(x.responseText);
+    } catch(e) {}
+
+    if(x.status >= 200 && x.status < 300){
+      callback(null, result);
+    } else {
+      callback(
+        result && result.error ? result.error : "Errore HTTP " + x.status,
+        result
+      );
+    }
+  };
+
+  x.onerror = function(){
+    callback("Errore di connessione", null);
+  };
+
+  x.ontimeout = function(){
+    callback("Timeout di connessione", null);
+  };
+
+  x.timeout = 20000;
+
+  try {
+    x.send(method === "POST" ? JSON.stringify(data) : null);
+  } catch(e) {
+    callback("Errore di invio richiesta", null);
+  }
+}
+
+function selectTask(day){
+  taskSel = day;
+  updateTaskButtons();
+  renderTasks();
+}
+
+function updateTaskButtons(){
+  var days = ["ieri", "oggi", "domani"];
+  var i;
+
+  for(i = 0; i < days.length; i++){
+    var el = $("tb-" + days[i]);
+    if(el){
+      el.className = days[i] === taskSel ? "sel" : "";
+    }
+  }
+
+  $("taskDateTitle").innerHTML = "Task Condivisi";
+
+  var times = "";
+
+  if(!todoConnected){
+    times = "non connesso";
+  } else if(taskSyncError){
+    times = "sync error";
+  } else if(taskSyncedAt !== null){
+    times = "sync time: " +
+      hhmmRome(taskSyncedAt.getTime());
+  } else {
+    times = "sync in attesa";
+  }
+
+  $("taskTimes").innerHTML = times;
+}
+
+function loadTasks(silent){
+  if(!todoConnected){
+    taskSyncError = false;
+    updateTaskButtons();
+    setText($("taskStatus"), "");
+    return;
+  }
+
+  if(!silent){
+    setText($("taskStatus"), "Caricamento...");
+  }
+
+  taskRequest("GET", null, function(err, data){
+    if(err || !data || !data.days){
+      taskSyncError = true;
+      updateTaskButtons();
+
+      if(!silent){
+        setText($("taskStatus"), "Task non disponibili: " + (err || "risposta non valida"));
+      }
+
+      taskSchedulePoll();
+      return;
+    }
+
+    taskDays = data.days;
+    taskReady = true;
+    taskSyncError = false;
+    taskSyncedAt = new Date();
+
+    renderTasks();
+    updateTaskButtons();
+
+    if(!silent){
+      setText($("taskStatus"), "");
+    }
+
+    taskSchedulePoll();
+  });
+}
+
+function taskSchedulePoll(){
+  if(taskPollTimer !== null){
+    clearTimeout(taskPollTimer);
+  }
+
+  taskPollTimer = setTimeout(function(){
+    taskPollTimer = null;
+
+    if(!todoConnected){
+      return;
+    }
+
+    if(taskBusy){
+      taskSchedulePoll();
+      return;
+    }
+
+    loadTasks(true);
+  }, 30000);
+}
+
+function renderTasks(){
+  updateTaskButtons();
+  if(currentView !== "shared") renderPersonalGlobalTasks();
+
+  var list = $("taskList");
+  clear(list);
+
+  if(!taskReady){
+    return;
+  }
+
+  var key = taskDateKey(TASK_OFF[taskSel]);
+  var items = taskDays[key] || [];
+  var i;
+
+  for(i = 0; i < items.length; i++){
+    list.appendChild(taskRow(i, items[i]));
+  }
+
+  if(!items.length){
+    list.appendChild(mk("div", "", "Nessuna attività."));
+  }
+
+  scheduleBoxAlignment();
+}
+
+function taskRow(index, item){
+  var row = mk("div", "todo");
+
+  var checkbox = mk("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = !!item.done;
+  checkbox.disabled = taskBusy;
+  checkbox.className = "todo-check";
+  checkbox.setAttribute("aria-label", item.done ? "Segna come da fare" : "Segna come completata");
+  checkbox.onchange = function(){ changeTask("toggle", index); };
+  var checkCell = mk("span", "todo-check-cell");
+  checkCell.appendChild(checkbox);
+  row.appendChild(checkCell);
+
+  var txt = mk("span", item.done ? "todo-text done" : "todo-text", item.text);
+  row.appendChild(txt);
+
+  var actions = mk("span", "todo-actions");
+  var del = mk("button", "todo-delete", "🗑");
+  del.type = "button";
+  del.disabled = taskBusy;
+  del.title = "Elimina attività";
+  del.onclick = function(){ changeTask("delete", index); };
+  actions.appendChild(del);
+  row.appendChild(actions);
+  return row;
+}
+
+function changeTask(action, index, text){
+  if(!taskReady || taskBusy) return;
+
+  var key = taskDateKey(TASK_OFF[taskSel]);
+
+  var data = {
+    action: action,
+    date: key
+  };
+
+  if(action === "add"){
+    data.text = text;
+  } else {
+    data.index = index;
+  }
+
+  taskBusy = true;
+  renderTasks();
+  setText($("taskStatus"), "Salvataggio...");
+
+  taskRequest("POST", data, function(err, result){
+    taskBusy = false;
+
+    if(err || !result || !result.days){
+      taskSyncError = true;
+      updateTaskButtons();
+
+      setText($("taskStatus"), "Salvataggio non riuscito: " + (err || "errore"));
+
+      taskSchedulePoll();
+      return;
+    }
+
+    taskDays = result.days;
+    taskSyncedAt = new Date();
+    taskSyncError = false;
+
+    renderTasks();
+    updateTaskButtons();
+
+    setText($("taskStatus"), "");
+
+    taskSchedulePoll();
+  });
+}
+
+function addTask(){
+  var inp = $("taskInput");
+  if(!inp) return;
+
+  var value = inp.value.replace(/^\s+|\s+$/g, "");
+
+  if(!value) return;
+
+  if(value.length > 200){
+    setText($("taskStatus"), "Massimo 200 caratteri.");
+    return;
+  }
+
+  changeTask("add", null, value);
+  inp.value = "";
+}
+
+function initTasks(){
+  var inp = $("taskInput");
+  var add = $("taskAddButton");
+
+  inp.onkeydown = function(ev){
+    ev = ev || window.event;
+    if(ev.keyCode === 13){
+      addTask();
+    }
+  };
+
+  add.onclick = addTask;
+
+  $("tb-ieri").onclick = function(){
+    selectTask("ieri");
+  };
+
+  $("tb-oggi").onclick = function(){
+    selectTask("oggi");
+  };
+
+  $("tb-domani").onclick = function(){
+    selectTask("domani");
+  };
+
+  updateTaskButtons();
+  loadTasks();
+}
+
+/* ===== MENU SCUOLA ===== */
+var MENUF = {ieri: "menu-ieri.json", oggi: "menu.json", domani: "menu-domani.json"};
+var MENUOFF = {ieri: -1, oggi: 0, domani: 1};
+var menuSel = "oggi";
+var SKIP = /^(date|data|giorno|day|id|generated_at|updated|updated_at|url|link|scuola|school|centro|center|plesso|sede|nome_scuola|nome_centro)$/i;
+
+function collectMenu(d){
+  var out = [];
+  if(!d || !d.plates){ return out; }
+
+  for(var i = 0; i < d.plates.length; i++){
+    var p = d.plates[i];
+
+    if(typeof p === "string"){
+      if(p){ out.push(p); }
+    } else if(p){
+      var name = p.name || p.description;
+      if(name){ out.push(name); }
+    }
+  }
+
+  return out;
+}
+
+function selectMenu(k){ menuSel = k; updateMenuButtons(); loadMenu(); }
+
+function updateMenuButtons(){
+  var ks = ["ieri", "oggi", "domani"], i;
+  for(i = 0; i < ks.length; i++){ $("mb-" + ks[i]).className = (ks[i] === menuSel) ? "sel" : ""; }
+}
+
+
+function loadMenu() {
+  var k = menuSel;
+
+  // Calcola il giorno effettivamente selezionato
+  var selectedDay = todayNum() + MENUOFF[k];
+  var selectedDate = dateOfDayNum(selectedDay);
+  var day = selectedDate.getUTCDay();
+
+  // Se il giorno selezionato è sabato o domenica
+  if (day === 0 || day === 6) {
+    renderMenuWeekend();
+    return;
+  }
+
+  setText($("menuStatus"), "Caricamento...");
+
+  getJson([CONFIG.base + MENUF[k], MENUF[k]], function(err, d) {
+  
+    if (k !== menuSel) {
+      return;
+    }
+
+    if (!err && d) {
+      menuSyncedAt = new Date();
+      menuUpdatedAt = parseIso(
+        d.generated_at || d.updated_at
+      );
+    }
+
+    safe(function() {
+      renderMenu(k, err, d);
+    });
+  });
+}
+
+function renderMenuWeekend(){
+  var phrases = [
+    "Evviva! Oggi niente scuola: si gioca!",
+    "Sabato: missione divertimento attivata!",
+    "Domenica: vietato svegliarsi di fretta!",
+    "Oggi il menu prevede giochi, risate e coccole!",
+    "La scuola riposa, i bambini no!",
+    "Weekend! Due giorni da piccoli campioni!",
+    "Oggi la maestra è in vacanza… e anche noi!",
+    "Niente mensa: oggi comanda la fantasia!",
+    "Attenzione: piccolo esploratore in libertà!",
+    "Oggi si mangia, si gioca e si fa festa!",
+    "Weekend: abbracci extra e compiti zero!",
+    "La scuola può aspettare: oggi si fa baldoria!"
+  ];
+
+  var list = $("menuList");
+  clear(list);
+
+  setText($("menuDate"), "");
+  setText($("menuStatus"), "");
+
+  var buttons = ["mb-ieri", "mb-oggi", "mb-domani", "mb-refresh"];
+  var i, el;
+
+  for(i = 0; i < buttons.length; i++){
+    el = $(buttons[i]);
+    if(el){
+      el.style.display = "";
+    }
+  }
+
+  updateMenuButtons();
+
+  var phrase = phrases[Math.floor(Math.random() * phrases.length)];
+  var message = mk("div", "weekend-message", phrase);
+
+  list.appendChild(message);
+
+  scheduleBoxAlignment();
+}
+
+function classifyDish(dish){
+  if(IS_KINDLE){ return ""; }
+
+  var s = dish.toLowerCase();
+
+  if(/pizza/.test(s)){ return "🍕"; }
+
+  if(/pasta|riso|risotto|gnocchi|lasagne|tortellini|cous cous/.test(s)){
+    return "🍝";
+  }
+
+  if(/frutta|mela|pera|banana|arancia|mandarino/.test(s)){
+    return "🍎";
+  }
+
+  if(/gelato|dolce|torta|budino|dessert/.test(s)){
+    return "🍨";
+  }
+
+  if(/pane/.test(s)){ return "🥖"; }
+
+  if(/insalata|verdura|pomodori|carote|finocchi|zucchine|contorno/.test(s)){
+    return "🥗";
+  }
+
+  if(/burger|hamburger|carne|pollo|pesce|formaggio|uova|legumi|frittata/.test(s)){
+    return "🍽️";
+  }
+
+  return "🍽️";
+}
+
+
+function renderMenu(k, err, d){
+  var list = $("menuList"), i;
+  clear(list);
+
+  var times = "";
+  
+  if (menuUpdatedAt !== null) {
+    times = "upd time: " + hhmmRome(menuUpdatedAt);
+  } else {
+    times = "upd time: NON DISPONIBILE";
+  }
+  
+  if (menuSyncedAt !== null) {
+    times += "<br>sync time: " + hhmmRome(menuSyncedAt.getTime());
+  }
+  
+  if ($("menuTimes")) {
+    $("menuTimes").innerHTML = times;
+  }
+
+  var label = fullDateText(todayNum() + MENUOFF[k]);
+  setText($("menuDate"), label);
+
+  var buttons = ["mb-ieri", "mb-oggi", "mb-domani", "mb-refresh"];
+
+  for(i = 0; i < buttons.length; i++){
+    var el = $(buttons[i]);
+    if(el){ el.style.display = ""; }
+  }
+
+  updateMenuButtons();
+
+  if(err){
+    setText(list, "Menu non disponibile.");
+    setText($("menuStatus"), "File non raggiungibile.");
+    scheduleBoxAlignment();
+    return;
+  }
+
+  var dishes = collectMenu(d);
+
+  setText($("menuStatus"), "");
+
+  if(!dishes.length){
+    setText(list, "Menu non disponibile per questo giorno.");
+    scheduleBoxAlignment();
+    return;
+  }
+
+  var isKindle = IS_KINDLE;
+  var ul = mk("ul");
+
+  if(isKindle){
+    ul.style.listStyle = "none";
+    ul.style.listStyleType = "none";
+    ul.style.paddingLeft = "0";
+    ul.style.marginLeft = "0";
+  }
+
+  for(i = 0; i < dishes.length; i++){
+    var li = mk("li");
+
+    if(isKindle){
+      li.style.listStyleType = "none";
+      li.style.display = "block";
+      li.appendChild(document.createTextNode("\u2022\u00A0"));
+    } else {
+      var icon = mk("span");
+      icon.className = "dish-icon";
+      setText(icon, classifyDish(dishes[i]));
+      li.appendChild(icon);
+      li.appendChild(document.createTextNode(" "));
+    }
+
+    li.appendChild(document.createTextNode(dishes[i]));
+    ul.appendChild(li);
+  }
+
+  list.appendChild(ul);
+
+  scheduleBoxAlignment();
+}
+
+
+
+/* ===== AVVIO: ogni blocco è indipendente ===== */
+
+safe(startClock);
+getJson(
+  [CONFIG.base + "dashboard-config.json", "dashboard-config.json"],
+  function(err, data){
+
+    if(!err && data && data.views && data.boxes){
+
+      DASHBOARD_CONFIG = data;
+
+    } else {
+
+      console.log("Configurazione dashboard non disponibile.");
+    }
+
+    safe(initViewMenu);
+  }
+);
+safe(loadAgenda);
+safe(loadShoppingList);
+safe(loadWeather);
+safe(loadSunTimes);
+safe(loadRoutes);
+safe(loadMenu);
+safe(loadTodo);
+safe(updateMenuButtons);
+
+initTasks();
+startDailyUpdates();
+
+setInterval(function(){
+  safe(loadSunTimes);
+}, 3600000);
+
+setInterval(function() {
+  safe(loadRoutes);
+}, 5 * 60 * 1000);
+
+scheduleDailyAt(0, 2, function() {
+  loadRoutes();
+});
+
+
+
+
+function alignBottomBoxes(){
+
+  var row = currentView === "shared"
+    ? $("dashboardContent")
+    : $("personalLayoutRow");
+
+  if(!row) return;
+
+  /* Ripristina le altezze naturali */
+  var columns = [];
+
+  for(var i = 0; i < row.children.length; i++){
+
+    var child = row.children[i];
+
+    if((" " + child.className + " ").indexOf(" col ") !== -1){
+      child.style.minHeight = "";
+      columns.push(child);
+    }
+  }
+
+  /* In presenza di layout a righe, non usare questo allineamento */
+  if(columns.length !== 2) return;
+
+  var rect0 = columns[0].getBoundingClientRect();
+  var rect1 = columns[1].getBoundingClientRect();
+
+  /* Devono essere effettivamente affiancate */
+  if(Math.abs(rect0.left - rect1.left) < 2) return;
+
+  /* Altezza complessiva maggiore */
+  var maxHeight = Math.max(rect0.height, rect1.height);
+
+  columns[0].style.minHeight = maxHeight + "px";
+  columns[1].style.minHeight = maxHeight + "px";
+}
+
+
+function scheduleBoxAlignment(){
+
+  var raf = window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame;
+
+  if(typeof raf === "function"){
+
+    raf.call(window, function(){
+      raf.call(window, alignBottomBoxes);
+    });
+
+  } else {
+
+    window.setTimeout(alignBottomBoxes, 100);
+  }
+}
+
+window.onresize = function(){
+  alignBottomBoxes();
+};
+
+
+window.setTimeout(alignBottomBoxes, 500);
+window.setTimeout(alignBottomBoxes, 2000);
+
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard famiglia</title>
+
+<link rel="icon" type="image/png" href="favicon.png">
+
+<style>
+/* ==================================================
+   IMPOSTAZIONI GENERALI
+   ================================================== */
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #fff;
+    color: #111;
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+.wrap {
+    padding: 4px;
+}
+
+.box {
+    border: 2px solid #000;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 3px;
+    overflow: visible;
+    box-sizing: border-box;
+}
+
+/* ==================================================
+   INTESTAZIONI DEI BOX
+   ================================================== */
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+
+.section-heading h2 {
+    float: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    text-align: left;
+    flex: 0 1 auto;
+}
+
+.section-heading .sync-label {
+    align-self: flex-start;
+    margin-top: 0 !important;
+    line-height: 1.2;
+    position: relative;
+    top: -2px;
+}
+
+.sync-label {
+    font-size: 0.65em;
+    line-height: 1.4;
+    color: #888;
+    font-weight: normal;
+    text-transform: none;
+}
+
+/* ==================================================
+   TITOLI
+   ================================================== */
+
+h2 {
+    font-size: 1.05em;
+    margin: 0 0 6px;
+    padding: 0 0 3px;
+    border-bottom: 2px solid #000;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-size: 1em;
+    margin: 8px 0 2px;
+    text-transform: capitalize;
+}
+
+#agendaTitle {
+    text-transform: none;
+}
+
+/* ==================================================
+   LAYOUT COLONNE
+   ================================================== */
+
+.row {
+    display: block;
+    margin: 0;
+}
+
+.row::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.col {
+    float: left;
+    width: 50%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* ==================================================
+   HEADER: OROLOGIO, DATA E METEO
+   ================================================== */
+
+#head {
+    display: block;
+    position: relative;
+    min-height: 0;
+    height: auto;
+    overflow: visible !important;
+}
+
+#clock {
+    float: left;
+    width: 80px;
+    margin: 0;
+    font-size: 2.5em;
+    font-weight: bold;
+    line-height: 1;
+    text-align: left;
+    position: relative;
+    left: 5px;
+    top: 20px;
+    margin-left: 42px !important;
+}
+
+#info {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr) 64px max-content;
+    grid-template-rows: auto auto;
+    column-gap: 5px;
+    align-items: center;
+    margin-left: 120px;
+    padding-left: 8px;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+#wday {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 1.25em;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+#fulldate {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 1em;
+}
+
+#weatherIcon {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0;
+    position: relative;
+    left: -3px;
+    top: 14px;
+}
+
+#weather {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+    margin: 0;
+    text-align: left;
+    align-self: center;
+    justify-self: start;
+    min-width: 0;
+    position: relative;
+    left: -2px;
+}
+
+#syncBox {
+    display: none;
+}
+
+/* ==================================================
+   MENU SCOLASTICO
+   ================================================== */
+
+#menuList ul {
+    list-style: none;
+    margin: 4px 0;
+    padding: 0;
+    text-align: left;
+}
+
+#menuList li {
+    margin: 3px 0;
+}
+
+.dish-icon {
+    display: inline;
+    margin-right: 4px;
+}
+
+#mb-refresh {
+    display: none !important;
+}
+
+/* ==================================================
+   AGENDA
+   ================================================== */
+
+.ev {
+    margin: 2px 0;
+}
+
+.t {
+    display: inline-block;
+    width: 5.2em;
+    font-weight: bold;
+    vertical-align: top;
+}
+
+.tt {
+    display: inline-block;
+    vertical-align: top;
+}
+
+/* ==================================================
+   SPOSTAMENTI
+   ================================================== */
+
+.rt {
+    margin: 0 0 10px;
+}
+
+/* ==================================================
+   TASK E ATTIVITÀ
+   ================================================== */
+
+.todo {
+    display: flex !important;
+    align-items: center !important;
+    width: 100%;
+    margin: 3px 0;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+.todo-check {
+    flex: 0 0 20px;
+    width: 20px !important;
+    height: 20px;
+    margin: 0 2px 0 0 !important;
+    padding: 0;
+}
+
+.todo-text {
+    display: block !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    vertical-align: middle;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
+.todo-actions {
+    display: flex !important;
+    flex: 0 0 34px;
+    width: 34px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-left: auto;
+}
+
+.todo-delete {
+    min-width: 28px;
+    width: 28px;
+    margin: 0 !important;
+    padding: 2px !important;
+}
+
+.done {
+    text-decoration: line-through;
+}
+
+/* ==================================================
+   TASK DELL'AGENDA
+   ================================================== */
+
+.agenda-task-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 2px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.agenda-task-check {
+    flex: 0 0 20px !important;
+    width: 20px;
+    height: 20px;
+    margin: 0 !important;
+}
+
+.agenda-task-text {
+    display: block !important;
+    flex: 1 1 0 !important;
+    min-width: 0;
+    text-align: left !important;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+/* ==================================================
+   PULSANTI E INPUT
+   ================================================== */
+
+button {
+    font-family: inherit;
+    font-size: 1em;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    padding: 4px 10px;
+    margin: 2px 4px 2px 0;
+}
+
+button.sel {
+    background: #000;
+    color: #fff;
+}
+
+input {
+    font-family: inherit;
+    font-size: 1em;
+    border: 1px solid #000;
+    padding: 4px;
+    width: 60%;
+    box-sizing: border-box;
+}
+
+
+
+/* ==================================================
+   CAMPI INSERIMENTO ATTIVITÀ
+   ================================================== */
+
+@media screen and (min-width: 801px) {
+    #todoCtl,
+    #taskCtl {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        width: 100% !important;
+        gap: 8px;
+        box-sizing: border-box;
+    }
+
+    #todoInput,
+    #taskInput {
+        flex: 1 1 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    #todoCtl button,
+    #taskAddButton {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+    }
+}
+
+body.k #taskCtl,
+body.k #todoCtl {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+}
+
+body.k #taskInput,
+body.k #todoInput {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 90px !important;
+    width: auto !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+
+body.k #taskAddButton,
+body.k #todoCtl button {
+    display: block !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    width: 85px !important;
+    min-width: 85px !important;
+    max-width: 85px !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 5px 2px !important;
+    white-space: nowrap !important;
+}
+
+/* ==================================================
+   TESTI SECONDARI ED ERRORI
+   ================================================== */
+
+.small {
+    font-size: 0.8em;
+    color: #333;
+    margin-top: 6px;
+}
+
+#taskStatus,
+#todoStatus {
+    font-size: 0.65em;
+    color: #555;
+    margin-top: 3px;
+}
+
+#err {
+    color: #000;
+    font-size: 0.8em;
+    margin: 4px 3px;
+}
+
+/* ==================================================
+   NAVIGAZIONE PC E SMARTPHONE
+   ================================================== */
+
+body:not(.k) .agenda-nav,
+body:not(.k) #taskDayButtons,
+body:not(.k) #menuDayButtons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    gap: 5px;
+    box-sizing: border-box;
+}
+
+body:not(.k) .agenda-nav button,
+body:not(.k) #taskDayButtons button,
+body:not(.k) #menuDayButtons button {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    margin: 2px 0;
+    padding: 8px 3px;
+    box-sizing: border-box;
+    text-align: center;
+	border-radius: 4px !important;
+}
+
+.agenda-nav button:disabled,
+.agenda-nav button.active,
+.agenda-nav button.selected {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #000 !important;
+    opacity: 1 !important;
+}
+
+/* ==================================================
+   MENU VISTE FAMIGLIA
+   ================================================== */
+
+#viewMenu {
+    position: absolute;
+    left: 7px;
+    top: 7px;
+    z-index: 1000;
+}
+
+#viewMenuToggle {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    padding: 5px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 4px;
+}
+
+#viewMenuToggle span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: #000;
+}
+
+/* CONTENITORE DEL MENU */
+#viewMenuPanel {
+    display: block;
+    width: 142px;
+    margin-top: 5px;
+    padding: 6px;
+    background-color: #fff !important;
+    border: 2px solid #000 !important;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+/* NASCONDE IL MENU QUANDO CHIUSO */
+#viewMenuPanel[hidden] {
+    display: none !important;
+}
+
+#viewMenuPanel button {
+    display: block;
+    width: 100%;
+    margin: 3px 0;
+    padding: 8px;
+    text-align: left;
+    font-weight: bold;
+    border-radius: 8px !important;
+    box-sizing: border-box;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+}
+
+#viewMenuPanel button.active {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #000 !important;
+}
+
+#menuDayButtons button {
+    border-radius: 4px !important;
+}
+
+#menuDayButtons button.sel {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #000 !important;
+}
+
+/* ==================================================
+   PAGINE PERSONALI
+   ================================================== */
+
+#personalView {
+    width: 100%;
+}
+
+#personalTasksDate {
+    margin: 0 0 6px 0;
+}
+
+#personalTasks label {
+    display: block;
+    padding: 7px 2px;
+    font-size: 16px;
+    line-height: 1.35;
+    cursor: pointer;
+}
+
+#personalTasks input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0 10px 0 0;
+    vertical-align: middle;
+}
+
+#personalTasks .personal-task-empty {
+    padding: 4px 0;
+}
+
+#personalGlobalTaskBox {
+    display: block;
+}
+
+.personal-period-switch {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0 12px;
+}
+
+.personal-period-switch button {
+    flex: 1;
+    padding: 8px;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.personal-period-switch button.active {
+    background: #000;
+    color: #fff;
+}
+
+/* ==================================================
+   HEADER DESKTOP
+   ================================================== */
+
+@media screen and (min-width: 801px) {
+
+    /* Header PC più compatto: riduce l'altezza del box e riallinea i contenuti */
+    body:not(.k) #head {
+        padding: 2px 5px !important;
+    }
+
+    body:not(.k) #clock {
+        margin-left: 36px !important;
+        left: 2px !important;
+        top: 5px !important;
+    }
+
+    body:not(.k) #info {
+        margin-left: 146px !important;
+        padding: 0 0 0 8px !important;
+        grid-template-columns: max-content minmax(0, 1fr) 48px max-content !important;
+    }
+
+    body:not(.k) #weatherIcon {
+        width: 48px !important;
+        height: 48px !important;
+        top: 6px !important;
+    }
+
+    body:not(.k) #weatherIcon svg {
+        width: 48px !important;
+        height: 48px !important;
+    }
+}
+
+/* ==================================================
+   TABLET E SMARTPHONE
+   ================================================== */
+
+@media screen and (max-width: 800px) {
+
+    .col {
+        float: none;
+        display: block;
+        width: 100%;
+    }
+
+    body:not(.k) #head {
+        display: grid;
+        grid-template-columns: 145px minmax(0, 1fr) !important;
+        align-items: center;
+        column-gap: 5px !important;
+        padding: 4px !important;
+    }
+
+    body:not(.k) #clock {
+        float: none;
+        width: 85px;
+        font-size: 2em;
+        grid-column: 1;
+        grid-row: 1;
+        top: 1px !important;
+        margin-left: 38px !important;
+    }
+
+    body:not(.k) #info {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr) !important;
+        grid-template-rows: auto auto;
+        column-gap: 3px !important;
+        align-items: center;
+        min-width: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        grid-column: 2;
+        grid-row: 1;
+        box-sizing: border-box;
+    }
+
+    body:not(.k) #wday,
+    body:not(.k) #fulldate {
+        grid-column: 1 !important;
+        white-space: normal !important;
+        min-width: 0 !important;
+    }
+
+    body:not(.k) #wday {
+        grid-row: 1;
+        font-size: 0.95em;
+    }
+
+    body:not(.k) #fulldate {
+        grid-row: 2;
+        font-size: 0.85em;
+    }
+
+    body:not(.k) #weatherIcon {
+        grid-column: 2 !important;
+        grid-row: 1 / span 2 !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 32px !important;
+        height: 36px !important;
+        justify-content: center !important;
+    }
+
+    body:not(.k) #weatherIcon svg {
+        width: 32px !important;
+        height: 32px !important;
+        position: relative;
+        top: 0 !important;
+    }
+
+    body:not(.k) #weather {
+        grid-column: 3 !important;
+        grid-row: 1 / span 2 !important;
+        position: static !important;
+        left: auto !important;
+        width: auto !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow-wrap: anywhere !important;
+        font-size: 0.72em !important;
+        line-height: 1.15 !important;
+        text-align: left;
+        white-space: normal !important;
+    }
+
+    body:not(.k) #clockWeather {
+        display: none;
+    }
+
+    .agenda-nav button,
+    #taskDayButtons button {
+        font-size: 1.05em;
+        padding: 8px 18px;
+        margin-right: 6px;
+		border-radius: 4px !important;
+    }
+	
+	.agenda-nav button:disabled,
+	.agenda-nav button.active,
+	.agenda-nav button.selected {
+		background: #000 !important;
+		color: #fff !important;
+		border: 2px solid #000 !important;
+		opacity: 1 !important;
+	}
+
+}
+
+/* ==================================================
+   SMARTPHONE MOLTO STRETTI
+   ================================================== */
+
+@media screen and (max-width: 380px) {
+
+    body:not(.k) #wday {
+        font-size: 0.8em;
+    }
+
+    body:not(.k) #fulldate {
+        font-size: 0.75em;
+    }
+}
+
+/* ==================================================
+   PERSONALIZZAZIONI KINDLE
+   ================================================== */
+
+body.k {
+    font-size: 16px;
+}
+
+body.k .wrap {
+    padding-right: 14px;
+}
+
+/* Intestazioni */
+body.k .section-heading {
+    display: block !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+body.k .section-heading h2 {
+    float: left !important;
+    width: 62% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    font-size: 0.95em !important;
+}
+
+body.k .section-heading .sync-label {
+    float: right !important;
+    width: 36% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0.55em !important;
+    line-height: 1.2 !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+    position: relative !important;
+    top: -2px !important;
+}
+
+/* Colonne */
+body.k .col {
+    float: left;
+    display: block;
+    width: 50%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Header */
+body.k #head {
+    display: block;
+    position: relative;
+    height: auto;
+    min-height: 0;
+    padding: 0 2px 2px 0;
+    overflow: visible !important;
+    z-index: 1001 !important;
+}
+
+body.k #clock {
+    float: left;
+    width: 110px;
+    margin: 0 0 0 42px !important;
+    font-size: 2em;
+    line-height: 1;
+    position: relative;
+    top: 4px !important;
+    left: 3px;
+}
+
+body.k #info {
+    display: block;
+    position: relative;
+    top: 3px !important;
+    margin: 0 -6px 0 158px !important;
+    padding: 0;
+    min-height: 42px;
+}
+
+body.k #wday,
+body.k #fulldate {
+    display: block;
+    width: 135px;
+    margin: 0;
+    line-height: 1.1;
+}
+
+body.k #wday {
+    font-size: 1.2em;
+    margin-left: -30px;
+}
+
+body.k #fulldate {
+    font-size: 0.8em;
+    margin-left: -30px;
+    position: relative;
+    top: 2px;
+}
+
+body.k #weatherIcon {
+    position: absolute;
+    right: 100px;
+    left: auto;
+    top: 4px;
+    width: 48px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0;
+}
+
+body.k #weatherIcon svg {
+    width: 40px;
+    height: 40px;
+}
+
+body.k #weather {
+    position: absolute;
+    right: -21px;
+    left: auto;
+    top: 2px;
+    width: 130px;
+    font-size: 0.9em;
+    line-height: 1.2;
+    text-align: left;
+    white-space: normal;
+    margin: 0;
+}
+
+/* Menu scolastico */
+body.k #menuList .menu-icon {
+    display: none !important;
+}
+
+body.k #menuList ul,
+body.k #menuList li {
+    list-style: none !important;
+    list-style-type: none !important;
+}
+
+/* Navigazione giorni */
+body.k .agenda-nav,
+body.k #taskDayButtons,
+body.k #menuDayButtons {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    font-size: 0 !important;
+    box-sizing: border-box !important;
+}
+
+body.k .agenda-nav button,
+body.k #taskDayButtons button,
+body.k #menuDayButtons button {
+    display: inline-block !important;
+    vertical-align: top !important;
+    width: 32% !important;
+    min-width: 0 !important;
+    max-width: 32% !important;
+    margin: 2px 1px !important;
+    padding: 7px 1px !important;
+    font-size: 14px !important;
+    line-height: 1.3 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+	border-radius: 4px !important;
+}
+
+body.k #menuDayButtons #mb-refresh {
+    display: none !important;
+}
+
+/* Task condivisi e personali */
+body.k .todo {
+    display: table !important;
+    table-layout: fixed !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+body.k .todo-check-cell {
+    display: table-cell !important;
+    width: 23px !important;
+    vertical-align: middle !important;
+    text-align: left !important;
+}
+
+body.k .todo-check {
+    display: inline-block !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    vertical-align: middle !important;
+}
+
+body.k .todo-text {
+    display: table-cell !important;
+    width: auto !important;
+    vertical-align: middle !important;
+    text-align: left !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+}
+
+body.k .todo-actions {
+    display: table-cell !important;
+    width: 34px !important;
+    vertical-align: middle !important;
+    text-align: right !important;
+}
+
+/* Task dell'agenda */
+body.k .agenda-task-row {
+    display: block !important;
+    width: 100% !important;
+    text-align: left !important;
+    margin: 0 0 8px 0 !important;
+    padding: 0 !important;
+    float: none !important;
+    clear: both !important;
+    white-space: normal !important;
+}
+
+body.k .agenda-task-check {
+    display: inline-block !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 5px 0 0 !important;
+    vertical-align: top !important;
+}
+
+body.k .agenda-task-text {
+    display: inline !important;
+    width: auto !important;
+    vertical-align: top !important;
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+}
+
+body.k .event-task-inline {
+    display: block !important;
+    width: 100% !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
+}
+
+body.k .event-task-inline .agenda-task-row {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 6px 0 !important;
+    white-space: normal !important;
+    float: none !important;
+    clear: both !important;
+}
+
+body.k .event-task-inline .agenda-task-check {
+    display: inline-block !important;
+    vertical-align: top !important;
+}
+
+body.k .event-task-inline .agenda-task-text {
+    display: inline !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+
 /* =========================================
    MOTORE GENERICO LAYOUT DASHBOARD
    ========================================= */
