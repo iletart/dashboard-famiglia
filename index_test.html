@@ -1084,7 +1084,7 @@ body.k .todo-delete {
 body.k .trash-icon {
   position: relative;
   left: 2px;
-  top: 6px;
+  top: 7px;
   display: block;
   width: 11px;
   height: 12px;
@@ -1130,7 +1130,7 @@ body.k .trash-icon:after {
       <span></span><span></span><span></span>
     </button>
     <div id="viewMenuPanel" hidden>
-      <button type="button" data-view="shared">FAMIGLIA 2</button>
+      <button type="button" data-view="shared">FAMIGLIA</button>
       <button type="button" data-view="walter">WALTER</button>
       <button type="button" data-view="ilenia">ILENIA</button>
     </div>
@@ -2561,7 +2561,7 @@ function renderAgenda(){
 		buckets[n - viewStart].push({
 		  key: e.id || (startDate + "|" + titleEv),
 		  eventId: e.id || "",
-		  time: "Tutto il giorno",
+		  time: "All day",
 		  title: titleEv,
 		  description: e.description || "",
 		  htmlLink: e.htmlLink || ""
