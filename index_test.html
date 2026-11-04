@@ -1212,6 +1212,23 @@ body.k .trash-icon:after {
 </div>
 
 <div id="personalView" style="display:none;">
+
+	<div class="box" id="personalGlobalTaskBox">
+	  <div class="section-heading">
+		<h2 id="personalGlobalTaskTitle">TASK CONDIVISI</h2>
+		<div class="sync-label" id="personalGlobalTaskTimes"></div>
+	  </div>
+
+	  <div id="personalGlobalTaskCtl">
+		<button type="button" id="personalGlobalTbIeri">Ieri</button>
+		<button type="button" id="personalGlobalTbOggi" class="sel">Oggi</button>
+		<button type="button" id="personalGlobalTbDomani">Domani</button>
+	  </div>
+
+	  <div id="personalGlobalTaskList">Caricamento...</div>
+	  <div class="small" id="personalGlobalTaskStatus"></div>
+	</div>
+
 	<div class="box" id="personalTasksBox">
 	  <div class="section-heading">
 		<h2 id="personalTasksTitle">TASK DI WALTER</h2>
@@ -2415,9 +2432,9 @@ function renderPersonalTasks(){
 }
 
 function renderPersonalGlobalTasks(){
-  taskSel = "oggi";
   var box = $("personalGlobalTaskList");
   if(!box) return;
+
   clear(box);
 
   if(!taskReady){
@@ -2426,7 +2443,7 @@ function renderPersonalGlobalTasks(){
     return;
   }
 
-  var key = taskDateKey(0);
+  var key = taskDateKey(TASK_OFF[personalGlobalTaskSel]);
   var items = taskDays[key] || [];
   var i;
 
@@ -2434,20 +2451,11 @@ function renderPersonalGlobalTasks(){
     box.appendChild(mk("div", "", "Nessuna attività."));
   } else {
     for(i = 0; i < items.length; i++){
-      box.appendChild(taskRow(i, items[i]));
+      box.appendChild(taskRow(i, items[i], true));
     }
   }
 
-  if(!todoConnected){
-    setText($("personalGlobalTaskTimes"), "non connesso");
-  } else if(taskSyncError){
-    setText($("personalGlobalTaskTimes"), "sync error");
-  } else if(taskSyncedAt !== null){
-    setText($("personalGlobalTaskTimes"), "sync time: " + hhmmRome(taskSyncedAt.getTime()));
-  } else {
-    setText($("personalGlobalTaskTimes"), "sync in attesa");
-  }
-
+  updatePersonalGlobalTaskButtons();
   setText($("personalGlobalTaskStatus"), "");
 }
 
@@ -4066,6 +4074,7 @@ function loadTodo(){
 /* ===== TASK GIORNALIERI ===== */
 
 var taskSel = "oggi";
+var personalGlobalTaskSel = "oggi";
 var taskDays = {};
 var taskReady = false;
 var taskBusy = false;
@@ -4281,7 +4290,7 @@ function renderTasks(){
   scheduleBoxAlignment();
 }
 
-function taskRow(index, item){
+function taskRow(index, item, personalGlobal){
   var row = mk("div", "todo");
 
   var checkbox = mk("input");
@@ -4289,13 +4298,28 @@ function taskRow(index, item){
   checkbox.checked = !!item.done;
   checkbox.disabled = taskBusy;
   checkbox.className = "todo-check";
-  checkbox.setAttribute("aria-label", item.done ? "Segna come da fare" : "Segna come completata");
-  checkbox.onchange = function(){ changeTask("toggle", index); };
+  checkbox.setAttribute(
+    "aria-label",
+    item.done ? "Segna come da fare" : "Segna come completata"
+  );
+
+  checkbox.onchange = function(){
+    if(personalGlobal){
+      changePersonalGlobalTask("toggle", index);
+    } else {
+      changeTask("toggle", index);
+    }
+  };
+
   var checkCell = mk("span", "todo-check-cell");
   checkCell.appendChild(checkbox);
   row.appendChild(checkCell);
 
-  var txt = mk("span", item.done ? "todo-text done" : "todo-text", item.text);
+  var txt = mk(
+    "span",
+    item.done ? "todo-text done" : "todo-text",
+    item.text
+  );
   row.appendChild(txt);
 
   var actions = mk("span", "todo-actions");
@@ -4306,13 +4330,22 @@ function taskRow(index, item){
   } else {
     del.textContent = "🗑";
   }
-  
+
   del.type = "button";
   del.disabled = taskBusy;
   del.title = "Elimina attività";
-  del.onclick = function(){ changeTask("delete", index); };
+
+  del.onclick = function(){
+    if(personalGlobal){
+      changePersonalGlobalTask("delete", index);
+    } else {
+      changeTask("delete", index);
+    }
+  };
+
   actions.appendChild(del);
   row.appendChild(actions);
+
   return row;
 }
 
@@ -4403,9 +4436,100 @@ function initTasks(){
   $("tb-domani").onclick = function(){
     selectTask("domani");
   };
+  
+  $("personalGlobalTbIeri").onclick = function(){
+    selectPersonalGlobalTask("ieri");
+  };
+
+  $("personalGlobalTbOggi").onclick = function(){
+    selectPersonalGlobalTask("oggi");
+  };
+
+  $("personalGlobalTbDomani").onclick = function(){
+    selectPersonalGlobalTask("domani");
+  };
 
   updateTaskButtons();
   loadTasks();
+}
+
+function changePersonalGlobalTask(action, index){
+  if(!taskReady || taskBusy) return;
+
+  var key = taskDateKey(TASK_OFF[personalGlobalTaskSel]);
+
+  var data = {
+    action: action,
+    date: key
+  };
+
+  data.index = index;
+
+  taskBusy = true;
+  renderPersonalGlobalTasks();
+  setText($("personalGlobalTaskStatus"), "Salvataggio...");
+
+  taskRequest("POST", data, function(err, result){
+    taskBusy = false;
+
+    if(err || !result || !result.days){
+      taskSyncError = true;
+      updatePersonalGlobalTaskButtons();
+
+      setText(
+        $("personalGlobalTaskStatus"),
+        "Salvataggio non riuscito: " + (err || "errore")
+      );
+
+      taskSchedulePoll();
+      return;
+    }
+
+    taskDays = result.days;
+    taskSyncedAt = new Date();
+    taskSyncError = false;
+
+    renderPersonalGlobalTasks();
+
+    setText($("personalGlobalTaskStatus"), "");
+
+    taskSchedulePoll();
+  });
+}
+
+function selectPersonalGlobalTask(day){
+  personalGlobalTaskSel = day;
+  updatePersonalGlobalTaskButtons();
+  renderPersonalGlobalTasks();
+}
+
+function updatePersonalGlobalTaskButtons(){
+  var days = ["ieri", "oggi", "domani"];
+  var i;
+
+  for(i = 0; i < days.length; i++){
+    var el = $("personalGlobalTb" +
+      days[i].charAt(0).toUpperCase() +
+      days[i].substring(1));
+
+    if(el){
+      el.className = days[i] === personalGlobalTaskSel ? "sel" : "";
+    }
+  }
+
+  var times = "";
+
+  if(!todoConnected){
+    times = "non connesso";
+  } else if(taskSyncError){
+    times = "sync error";
+  } else if(taskSyncedAt !== null){
+    times = "sync time: " + hhmmRome(taskSyncedAt.getTime());
+  } else {
+    times = "sync in attesa";
+  }
+
+  setText($("personalGlobalTaskTimes"), times);
 }
 
 /* ===== MENU SCUOLA ===== */
