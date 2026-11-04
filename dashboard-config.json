@@ -29,8 +29,8 @@
     "ilenia": {
       "enabled": true,
       "columns": [
-        ["ileniaAgenda", "personalTasks"],
-        ["personalGlobalTasks"],
+        ["ileniaAgenda"],
+        ["personalGlobalTasks", "personalTasks"],
         ["personalRoutes"]
       ]
     }
