@@ -2063,76 +2063,6 @@ function renderPersonalGlobalTasks(){
   setText($("personalGlobalTaskStatus"), "");
 }
 
-function syncPersonalRoutes(){
-  var target = $("personalRoutes");
-  if(!target) return;
-
-  setText($("personalRoutesTimes"), "");
-  setText($("personalRoutesStatus"), "");
-
-  renderRoutesInto(target);
-}
-
-function loadShoppingList(){
-  var box = $("shoppingList");
-  if(!box) return;
-
-  getJson(
-    [CONFIG.base + "shopping.json", "shopping.json"],
-    function(err, d){
-      clear(box);
-
-      var times = "";
-      var gen = (!err && d)
-        ? parseIso(d.generated_at || d.updated_at)
-        : null;
-
-      if(gen !== null){
-        times += "upd time: " + hhmmRome(gen) + "<br>";
-      }
-
-      if(!err && d && d.items){
-        shoppingSyncedAt = new Date();
-
-        if(shoppingSyncedAt !== null){
-          times += "sync time: " + hhmmRome(shoppingSyncedAt.getTime());
-        }
-
-        var pending = [];
-        var completed = [];
-
-        for(var i = 0; i < d.items.length; i++){
-          if(d.items[i].completed){
-            completed.push(d.items[i]);
-          } else {
-            pending.push(d.items[i]);
-          }
-        }
-
-        function addItems(items, done){
-          for(var j = 0; j < items.length; j++){
-            var row = document.createElement("div");
-            row.className = done ? "shopping-item completed" : "shopping-item";
-            row.textContent = (done ? "✓ " : "□ ") + items[j].name;
-            box.appendChild(row);
-          }
-        }
-
-        addItems(pending, false);
-        addItems(completed, true);
-
-        if(gen !== null && new Date().getTime() - gen > 30 * 60000){
-          times += "<br>dati vecchi";
-        }
-
-      } else {
-        times += "<br>rete non disponibile";
-      }
-
-      $("shoppingTimes").innerHTML = times;
-    }
-  );
-}
 
 function loadAgenda() {
   getJson(
@@ -2589,9 +2519,11 @@ function loadRoutes() {
   });
 }
 
-function renderRoutes(){
 
-  var box = $("routes");
+function renderRoutesInto(box, timesEl, statusEl){
+
+  if(!box) return;
+
   var i, data, departure, arrival;
   var line, heading, details;
 
@@ -2600,34 +2532,30 @@ function renderRoutes(){
   var now = new Date();
   var day = now.getDay();
 
-  if ($("routesTitle")) {
-    $("routesTitle").innerHTML = "SPOSTAMENTI";
-  }
-
   var times = "";
   var routesGenerated = null;
 
-  if (routesData) {
+  if(routesData){
     routesGenerated = parseIso(
       routesData.generated_at || routesData.updated_at
     );
   }
 
-  if (routesGenerated !== null) {
+  if(routesGenerated !== null){
     times += "upd time: " + hhmmRome(routesGenerated) + "<br>";
   }
 
-  if (routesSyncedAt !== null) {
+  if(routesSyncedAt !== null){
     times += "sync time: " +
       hhmmRome(routesSyncedAt.getTime());
   }
 
-  if (routesErr) {
+  if(routesErr){
     times += "<br>sync error";
   }
 
-  if ($("routesTimes")) {
-    $("routesTimes").innerHTML = times;
+  if(timesEl){
+    timesEl.innerHTML = times;
   }
 
   /* Weekend */
@@ -2638,17 +2566,14 @@ function renderRoutes(){
     ];
 
     box.appendChild(mk("div", "weekend-message", phrase));
-    setText($("routesStatus"), "");
-    syncPersonalRoutes();
-    scheduleBoxAlignment();
+
+    setText(statusEl, "");
     return;
   }
 
   /* Configurazione */
   if(!CONFIG.routesUrl){
-    setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
-    syncPersonalRoutes();
-    scheduleBoxAlignment();
+    setText(statusEl, "Tempi di percorrenza non ancora configurati.");
     return;
   }
 
@@ -2671,12 +2596,13 @@ function renderRoutes(){
 
   var todayName = weekdayNames[day];
 
-  /* Verifica che il JSON sia quello di oggi */
-  if (
+  /* Verifica JSON */
+  if(
     !routesData ||
     routesData.day !== todayName ||
     !routesData.routes
-  ) {
+  ){
+
     box.appendChild(
       mk("div", "rt", "Percorsi non ancora calcolati per oggi.")
     );
@@ -2685,25 +2611,23 @@ function renderRoutes(){
 
     var found = false;
 
-    /* Le tratte vengono lette direttamente dal JSON */
-    for (var routeId in routesData.routes) {
+    for(var routeId in routesData.routes){
 
-      if (!Object.prototype.hasOwnProperty.call(
+      if(!Object.prototype.hasOwnProperty.call(
         routesData.routes, routeId
-      )) {
+      )){
         continue;
       }
 
       data = routesData.routes[routeId];
 
-      if (!data || !data.departure || !data.arrival) {
+      if(!data || !data.departure || !data.arrival){
         continue;
       }
 
-      /* Verifica che il calcolo sia di oggi */
       var calculated = parseIso(data.calculated_at);
 
-      if (calculated === null) continue;
+      if(calculated === null) continue;
 
       var calculatedRome = toRome(calculated);
 
@@ -2712,16 +2636,15 @@ function renderRoutes(){
         p2(calculatedRome.getUTCMonth() + 1) + "-" +
         p2(calculatedRome.getUTCDate());
 
-      if (calculatedDate !== today) continue;
+      if(calculatedDate !== today) continue;
 
       departure = parseIso(data.departure);
       arrival = parseIso(data.arrival);
 
-      if (departure === null || arrival === null) continue;
+      if(departure === null || arrival === null) continue;
 
       found = true;
 
-      /* Prima riga: percorso in grassetto */
       line = mk("div", "rt");
 
       heading = mk(
@@ -2732,7 +2655,6 @@ function renderRoutes(){
 
       heading.style.display = "block";
 
-      /* Seconda riga: orari e durata normali */
       details = mk(
         "div",
         "",
@@ -2749,7 +2671,7 @@ function renderRoutes(){
       box.appendChild(line);
     }
 
-    if (!found) {
+    if(!found){
       box.appendChild(
         mk("div", "rt", "Nessun percorso disponibile per oggi.")
       );
@@ -2759,13 +2681,48 @@ function renderRoutes(){
   var st = "";
 
   if(routesErr){
-    st = st ? st + " - rete non disponibile" :
-      "Tempi non raggiungibili.";
+    st = "Tempi non raggiungibili.";
   }
 
-  setText($("routesStatus"), st);
+  setText(statusEl, st);
+}
 
+
+/* Render spostamenti personali */
+function syncPersonalRoutes(){
+
+  var target = $("personalRoutes");
+
+  if(!target) return;
+
+  renderRoutesInto(
+    target,
+    $("personalRoutesTimes"),
+    $("personalRoutesStatus")
+  );
+}
+
+
+/* Render principale */
+function renderRoutes(){
+
+  var box = $("routes");
+
+  if(box){
+    if($("routesTitle")){
+      $("routesTitle").innerHTML = "SPOSTAMENTI";
+    }
+
+    renderRoutesInto(
+      box,
+      $("routesTimes"),
+      $("routesStatus")
+    );
+  }
+
+  /* Non dipende più dal vecchio box condiviso */
   syncPersonalRoutes();
+
   scheduleBoxAlignment();
 }
 
