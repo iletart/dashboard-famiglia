@@ -1,33 +1,33 @@
 {
   "available": true,
-  "date": "2026-11-03",
+  "date": "2026-11-04",
   "site": "U003128",
-  "generated_at": "2026-11-04T00:01:02.432428+01:00",
+  "generated_at": "2026-11-05T00:01:01.911863+01:00",
   "plates": [
     {
-      "position": "4232",
-      "dishCode": "P10095",
-      "name": "Risotto alla parmigiana"
+      "position": "4332",
+      "dishCode": "P02020",
+      "name": "Pasta di mais biologica al pomodoro e basilico"
     },
     {
-      "position": "4233",
-      "dishCode": "P100194",
-      "name": "Frittata"
+      "position": "4333",
+      "dishCode": "P00644",
+      "name": "Formaggio (primo sale biologico)"
     },
     {
-      "position": "4236",
-      "dishCode": "P00439",
-      "name": "Erbette all'olio"
+      "position": "4336",
+      "dishCode": "P101206",
+      "name": "Mix di verdure al forno"
     },
     {
-      "position": "4237",
-      "dishCode": "P00001",
+      "position": "4337",
+      "dishCode": "P00004",
       "name": "Frutta fresca di stagione"
     },
     {
-      "position": "4239",
-      "dishCode": "P01889",
-      "name": "Pane tipo 0"
+      "position": "4339",
+      "dishCode": "P01890",
+      "name": "Pane di farina integrale biologica "
     }
   ]
 }
