@@ -17,6 +17,12 @@
         "text": "Soldi per Chiara",
         "done": true
       }
+    ],
+    "2026-11-04": [
+      {
+        "text": "Avviare lavatrice (già carica)",
+        "done": false
+      }
     ]
   }
 }
