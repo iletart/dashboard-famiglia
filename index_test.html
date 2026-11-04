@@ -2813,13 +2813,13 @@ function loadRoutes() {
 
 function renderRoutes(){
 
-  var box = $("routes");
-
-  // La vista corrente non prevede il box degli spostamenti condivisi
-  if (!box) {
-    syncPersonalRoutes();
-    return;
-  }
+  var personal = currentView !== "shared";
+  
+  var box = $(personal ? "personalRoutes" : "routes");
+  var timesBox = $(personal ? "personalRoutesTimes" : "routesTimes");
+  var statusBox = $(personal ? "personalRoutesStatus" : "routesStatus");
+  
+  if (!box) return;
 
   var i, data, departure, arrival;
   var line, heading, details;
@@ -2855,8 +2855,8 @@ function renderRoutes(){
     times += "<br>sync error";
   }
 
-  if ($("routesTimes")) {
-    $("routesTimes").innerHTML = times;
+  if (timesBox) {
+    timesBox.innerHTML = times;
   }
 
   /* Weekend */
@@ -2867,16 +2867,14 @@ function renderRoutes(){
     ];
 
     box.appendChild(mk("div", "weekend-message", phrase));
-    setText($("routesStatus"), "");
-    syncPersonalRoutes();
+    setText(statusBox, "");
     scheduleBoxAlignment();
     return;
   }
 
   /* Configurazione */
   if(!CONFIG.routesUrl){
-    setText($("routesStatus"), "Tempi di percorrenza non ancora configurati.");
-    syncPersonalRoutes();
+    setText(statusBox, "Tempi di percorrenza non ancora configurati.");
     scheduleBoxAlignment();
     return;
   }
@@ -2992,9 +2990,8 @@ function renderRoutes(){
       "Tempi non raggiungibili.";
   }
 
-  setText($("routesStatus"), st);
+  setText(statusBox, st);
 
-  syncPersonalRoutes();
   scheduleBoxAlignment();
 }
 
