@@ -4482,8 +4482,10 @@ function alignBottomBoxes(){
     allBoxes[i].style.minHeight = "";
   }
 
+  if(!DASHBOARD_CONFIG || !DASHBOARD_CONFIG.views) return;
+  
   var config = DASHBOARD_CONFIG.views[currentView];
-
+  
   if(!config) return;
 
   /* ==================================
