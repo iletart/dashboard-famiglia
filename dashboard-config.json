@@ -15,8 +15,8 @@
     "shared": {
       "enabled": true,
       "columns": [
-        ["agenda", "shopping"],
-        ["sharedTasks", "todo", "schoolMenu"]
+        ["agenda", "schoolMenu"],
+        ["sharedTasks", "todo", "shopping"]
       ]
     },
     "walter": {
