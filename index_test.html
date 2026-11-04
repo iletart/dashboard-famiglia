@@ -4465,6 +4465,7 @@ scheduleDailyAt(0, 2, function() {
 });
 
 
+
 function alignBottomBoxes(){
 
   var row = currentView === "shared"
@@ -4475,18 +4476,16 @@ function alignBottomBoxes(){
 
   var layoutRows = [];
 
-  /* Recupera le righe del layout */
   for(var i = 0; i < row.children.length; i++){
 
     var child = row.children[i];
-    var cls = " " + child.className + " ";
 
-    if(cls.indexOf(" layout-row ") !== -1){
+    if((" " + child.className + " ").indexOf(" layout-row ") !== -1){
       layoutRows.push(child);
     }
   }
 
-  /* Compatibilità con il vecchio formato columns */
+  /* Compatibilità con columns */
   if(layoutRows.length === 0){
     layoutRows.push(row);
   }
@@ -4494,49 +4493,56 @@ function alignBottomBoxes(){
   for(var r = 0; r < layoutRows.length; r++){
 
     var currentRow = layoutRows[r];
-    var cols = [];
+    var boxes = [];
 
-    /* Recupera le colonne visibili */
     for(var i = 0; i < currentRow.children.length; i++){
 
       var col = currentRow.children[i];
 
-      if((" " + col.className + " ").indexOf(" col ") !== -1 &&
-         col.getBoundingClientRect().width > 0){
+      if((" " + col.className + " ").indexOf(" col ") === -1) continue;
+      if(col.getBoundingClientRect().width === 0) continue;
 
-        cols.push(col);
+      for(var j = 0; j < col.children.length; j++){
+
+        var box = col.children[j];
+
+        if((" " + box.className + " ").indexOf(" box ") !== -1){
+          box.style.height = "";
+          boxes.push(box);
+        }
       }
     }
 
-    if(cols.length < 2) continue;
+    if(boxes.length < 2) continue;
 
-    /* Verifica che siano affiancate */
-    var left1 = cols[0].getBoundingClientRect().left;
-    var left2 = cols[1].getBoundingClientRect().left;
+    /* Verifica che i box siano affiancati */
+    var rect0 = boxes[0].getBoundingClientRect();
+    var rect1 = boxes[1].getBoundingClientRect();
 
-    if(Math.abs(left1 - left2) < 2) continue;
+    if(Math.abs(rect0.left - rect1.left) < 2) continue;
 
-    /* Calcola l'altezza massima */
+    /* Altezza massima */
     var maxHeight = 0;
 
-    for(var i = 0; i < cols.length; i++){
+    for(var i = 0; i < boxes.length; i++){
 
-      cols[i].style.minHeight = "";
+      var h = boxes[i].getBoundingClientRect().height;
 
-      var h = cols[i].getBoundingClientRect().height;
-
-      if(h > maxHeight){
-        maxHeight = h;
-      }
+      if(h > maxHeight) maxHeight = h;
     }
 
-    /* Uniforma l'altezza delle colonne */
-    for(var i = 0; i < cols.length; i++){
+    /* Applica l'altezza al box più corto */
+    for(var i = 0; i < boxes.length; i++){
 
-      cols[i].style.minHeight = maxHeight + "px";
+      var h = boxes[i].getBoundingClientRect().height;
+
+      if(h < maxHeight){
+        boxes[i].style.height = maxHeight + "px";
+      }
     }
   }
 }
+
 
 
 function scheduleBoxAlignment(){
