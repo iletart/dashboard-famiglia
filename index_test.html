@@ -1833,7 +1833,6 @@ function closeViewMenu(){
 
 var DASHBOARD_CONFIG = null;
 
-
 function buildConfiguredLayout(view){
 
   if(!DASHBOARD_CONFIG || !DASHBOARD_CONFIG.views) return;
@@ -1898,7 +1897,6 @@ function buildConfiguredLayout(view){
     }
   }
 
-  /* Recupera la struttura configurata */
   var layout = viewConfig.rows || viewConfig.columns;
 
   if(!layout) return;
@@ -1929,6 +1927,7 @@ function buildConfiguredLayout(view){
 
     if(isRows){
 
+      /* Ogni elemento di rows rappresenta una riga */
       container = document.createElement("div");
       container.className = "row cf layout-row";
 
@@ -1936,7 +1935,11 @@ function buildConfiguredLayout(view){
 
     } else {
 
-      container = row;
+      /* Ogni elemento di columns rappresenta una colonna */
+      container = document.createElement("div");
+      container.className = "col";
+
+      row.appendChild(container);
     }
 
     var keys = layout[i];
@@ -1954,24 +1957,28 @@ function buildConfiguredLayout(view){
 
       if(!box) continue;
 
-      var col = document.createElement("div");
-      col.className = "col";
+      if(isRows){
 
-      /* Un solo box nella riga: larghezza intera */
-      if(isRows && maxBoxes === 1){
-        col.style.width = "100%";
-        col.style.float = "none";
+        var col = document.createElement("div");
+        col.className = "col";
+
+        /* Un solo box nella riga: larghezza intera */
+        if(maxBoxes === 1){
+          col.style.width = "100%";
+          col.style.float = "none";
+        }
+
+        box.style.display = "block";
+
+        col.appendChild(box);
+        container.appendChild(col);
+
+      } else {
+
+        /* Più box impilati verticalmente nella stessa colonna */
+        box.style.display = "block";
+        container.appendChild(box);
       }
-
-      box.style.display = "block";
-
-      col.appendChild(box);
-      container.appendChild(col);
-    }
-
-    /* La struttura columns usa una sola riga */
-    if(!isRows){
-      // Le colonne vengono aggiunte direttamente al contenitore
     }
   }
 
@@ -2013,6 +2020,7 @@ function buildConfiguredLayout(view){
     }
   }
 }
+
 
 function setView(view, manual) {
   if (manual) {
