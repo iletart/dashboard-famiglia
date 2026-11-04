@@ -2064,13 +2064,22 @@ function renderPersonalGlobalTasks(){
 }
 
 function syncPersonalRoutes(){
+  var source = $("routes");
   var target = $("personalRoutes");
-  if(!target) return;
+
+  if(!source || !target) return;
+
+  target.innerHTML = source.innerHTML;
 
   setText($("personalRoutesTimes"), "");
-  setText($("personalRoutesStatus"), "");
 
-  renderRoutesInto(target);
+  $("personalRoutesTimes").innerHTML =
+    $("routesTimes") ? $("routesTimes").innerHTML : "";
+
+  setText(
+    $("personalRoutesStatus"),
+    $("routesStatus") ? $("routesStatus").textContent : ""
+  );
 }
 
 function loadShoppingList(){
