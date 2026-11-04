@@ -1833,6 +1833,7 @@ function closeViewMenu(){
 
 var DASHBOARD_CONFIG = null;
 
+
 function buildConfiguredLayout(view){
 
   if(!DASHBOARD_CONFIG || !DASHBOARD_CONFIG.views) return;
@@ -1842,6 +1843,7 @@ function buildConfiguredLayout(view){
   if(!viewConfig || !viewConfig.enabled) return;
 
   var shared = view === "shared";
+
   var host = shared
     ? $("dashboardContent")
     : $("personalView");
@@ -1866,21 +1868,22 @@ function buildConfiguredLayout(view){
     }
   }
 
-  /* Recupera le colonne precedenti */
-  var oldCols = [];
+  /* Individua le vecchie strutture generate */
+  var oldLayouts = [];
 
   for(var i = 0; i < row.children.length; i++){
 
     var child = row.children[i];
+    var cls = " " + child.className + " ";
 
-    if(child.className &&
-       (" " + child.className + " ").indexOf(" col ") !== -1){
+    if(cls.indexOf(" col ") !== -1 ||
+       cls.indexOf(" layout-row ") !== -1){
 
-      oldCols.push(child);
+      oldLayouts.push(child);
     }
   }
 
-  /* Recupera tutti i box configurati */
+  /* Recupera tutti i box */
   var boxElements = {};
 
   for(var key in DASHBOARD_CONFIG.boxes){
@@ -1894,6 +1897,13 @@ function buildConfiguredLayout(view){
       boxElements[key] = element;
     }
   }
+
+  /* Recupera la struttura configurata */
+  var layout = viewConfig.rows || viewConfig.columns;
+
+  if(!layout) return;
+
+  var isRows = !!viewConfig.rows;
 
   /* Nasconde i box personali non previsti nella vista */
   if(!shared){
@@ -1912,33 +1922,68 @@ function buildConfiguredLayout(view){
     }
   }
 
-  /* Crea le nuove colonne e vi sposta i box */
-  for(var i = 0; i < viewConfig.columns.length; i++){
+  /* Crea la nuova struttura */
+  for(var i = 0; i < layout.length; i++){
 
-    var col = document.createElement("div");
-    col.className = "col";
+    var container;
 
-    var keys = viewConfig.columns[i];
+    if(isRows){
 
-    for(var j = 0; j < keys.length; j++){
+      container = document.createElement("div");
+      container.className = "row cf layout-row";
+
+      row.appendChild(container);
+
+    } else {
+
+      container = row;
+    }
+
+    var keys = layout[i];
+
+    /* Le righe possono contenere al massimo due box */
+    if(isRows && keys.length > 2){
+      console.warn("Massimo due box per riga:", keys);
+    }
+
+    var maxBoxes = isRows ? Math.min(keys.length, 2) : keys.length;
+
+    for(var j = 0; j < maxBoxes; j++){
 
       var box = boxElements[keys[j]];
 
-		if(box){
-		  box.style.display = "block";
-		  col.appendChild(box);
-		}
+      if(!box) continue;
+
+      var col = document.createElement("div");
+      col.className = "col";
+
+      /* Un solo box nella riga: larghezza intera */
+      if(isRows && maxBoxes === 1){
+        col.style.width = "100%";
+        col.style.float = "none";
+      }
+
+      box.style.display = "block";
+
+      col.appendChild(box);
+      container.appendChild(col);
     }
 
-    row.appendChild(col);
+    /* La struttura columns usa una sola riga */
+    if(!isRows){
+      // Le colonne vengono aggiunte direttamente al contenitore
+    }
   }
 
-  /* Rimuove le vecchie colonne */
-  for(var i = 0; i < oldCols.length; i++){
-    row.removeChild(oldCols[i]);
+  /* Rimuove le vecchie strutture */
+  for(var i = 0; i < oldLayouts.length; i++){
+
+    if(oldLayouts[i].parentNode === row){
+      row.removeChild(oldLayouts[i]);
+    }
   }
 
-  /* I box personali non utilizzati restano nascosti fuori dalle colonne */
+  /* I box personali non utilizzati restano nascosti */
   if(!shared){
 
     for(var key in boxElements){
@@ -1953,15 +1998,16 @@ function buildConfiguredLayout(view){
 
       var included = false;
 
-      for(var i = 0; i < viewConfig.columns.length; i++){
+      for(var i = 0; i < layout.length; i++){
 
-        if(viewConfig.columns[i].indexOf(key) !== -1){
+        if(layout[i].indexOf(key) !== -1){
           included = true;
           break;
         }
       }
 
       if(!included){
+        boxElements[key].style.display = "none";
         host.appendChild(boxElements[key]);
       }
     }
