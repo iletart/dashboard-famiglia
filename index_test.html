@@ -4539,7 +4539,9 @@ function alignBottomBoxes(){
 
 
 function scheduleBoxAlignment(){
-  setTimeout(alignBottomBoxes, 100);
+  requestAnimationFrame(function(){
+    requestAnimationFrame(alignBottomBoxes);
+  });
 }
 
 window.onresize = function(){
