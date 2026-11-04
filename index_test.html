@@ -4420,90 +4420,93 @@ scheduleDailyAt(0, 2, function() {
 
 function alignBottomBoxes(){
 
+  var row;
   var cols = [];
   var boxes;
   var i, j;
-  var maxHeight = 0;
-  var heights = [];
 
   /* =========================================
-     KINDLE
-     Recupera le colonne della riga principale
+     INDIVIDUA LA RIGA DELLA VISTA ATTIVA
      ========================================= */
 
-  if(IS_KINDLE){
-
-    var row = document.querySelector(".row.cf");
-    if(!row) return;
-
-    for(i = 0; i < row.children.length; i++){
-
-      var child = row.children[i];
-
-      if(child.className &&
-         (" " + child.className + " ").indexOf(" col ") !== -1){
-
-        if(child.getBoundingClientRect().height > 0){
-          cols.push(child);
-        }
-      }
-    }
-
+  if(currentView === "shared"){
+    row = $("dashboardContent");
   } else {
+    row = $("personalLayoutRow");
+  }
 
-    /* =========================================
-       PC ED ECHO SHOW
-       Recupera tutte le colonne visibili
-       ========================================= */
+  if(!row) return;
 
-    var allCols = document.querySelectorAll(".col");
+  /* Recupera le colonne visibili */
 
-    for(i = 0; i < allCols.length; i++){
+  for(i = 0; i < row.children.length; i++){
 
-      if(allCols[i].getBoundingClientRect().height > 0){
-        cols.push(allCols[i]);
+    var child = row.children[i];
+
+    if(child.className &&
+       (" " + child.className + " ").indexOf(" col ") !== -1){
+
+      if(child.getBoundingClientRect().width > 0){
+        cols.push(child);
       }
     }
   }
-
-  /* =========================================
-     CELLULARE
-     Mantiene il comportamento attuale
-     ========================================= */
-
-  if(!IS_KINDLE && window.innerWidth <= 560){
-
-    var allBoxes = document.querySelectorAll(".box");
-
-    for(i = 0; i < allBoxes.length; i++){
-      allBoxes[i].style.minHeight = "";
-    }
-
-    return;
-  }
-
-  if(cols.length < 2) return;
 
   /* =========================================
      AZZERA LE ALTEZZE PRECEDENTI
      ========================================= */
 
+  var colBoxes = [];
+
   for(i = 0; i < cols.length; i++){
 
-    boxes = cols[i].querySelectorAll(".box");
+    boxes = [];
 
-    for(j = 0; j < boxes.length; j++){
-      boxes[j].style.minHeight = "";
+    for(j = 0; j < cols[i].children.length; j++){
+
+      var childBox = cols[i].children[j];
+
+      if(childBox.className &&
+         (" " + childBox.className + " ").indexOf(" box ") !== -1){
+
+        childBox.style.minHeight = "";
+        boxes.push(childBox);
+      }
     }
+
+    colBoxes.push(boxes);
   }
 
   /* =========================================
-     MISURA LE COLONNE
+     SERVONO ALMENO DUE COLONNE
      ========================================= */
+
+  if(cols.length < 2) return;
+
+  /* =========================================
+     VERIFICA CHE LE COLONNE SIANO AFFIANCATE
+
+     Su cellulare normale sono impilate:
+     in quel caso non allungare i box.
+
+     Kindle mantiene invece le due colonne.
+     ========================================= */
+
+  var left1 = cols[0].getBoundingClientRect().left;
+  var left2 = cols[1].getBoundingClientRect().left;
+
+  if(Math.abs(left1 - left2) < 2) return;
+
+  /* =========================================
+     MISURA LE ALTEZZE DELLE COLONNE
+     ========================================= */
+
+  var heights = [];
+  var maxHeight = 0;
 
   for(i = 0; i < cols.length; i++){
 
-    heights[i] = cols[i].offsetHeight;
+    heights[i] = cols[i].getBoundingClientRect().height;
 
     if(heights[i] > maxHeight){
       maxHeight = heights[i];
@@ -4511,17 +4514,17 @@ function alignBottomBoxes(){
   }
 
   /* =========================================
-     DISTRIBUISCE LO SPAZIO AGGIUNTIVO
-     TRA TUTTI I BOX DELLE COLONNE PIÙ CORTE
+     DISTRIBUISCE LO SPAZIO LIBERO
+     FRA TUTTI I BOX DELLA COLONNA PIÙ CORTA
      ========================================= */
 
   for(i = 0; i < cols.length; i++){
 
     var difference = maxHeight - heights[i];
 
-    if(difference <= 0) continue;
+    if(difference <= 1) continue;
 
-    boxes = cols[i].querySelectorAll(".box");
+    boxes = colBoxes[i];
 
     if(!boxes.length) continue;
 
@@ -4530,23 +4533,26 @@ function alignBottomBoxes(){
     for(j = 0; j < boxes.length; j++){
 
       var box = boxes[j];
+
       var style = window.getComputedStyle(box);
 
-      var padding =
-        parseFloat(style.paddingTop) +
-        parseFloat(style.paddingBottom);
+      var currentHeight = box.getBoundingClientRect().height;
 
-      var border =
-        parseFloat(style.borderTopWidth) +
-        parseFloat(style.borderBottomWidth);
-
-      var newHeight = box.offsetHeight + extraPerBox;
+      var newHeight = currentHeight + extraPerBox;
 
       if(style.boxSizing === "border-box"){
 
         box.style.minHeight = newHeight + "px";
 
       } else {
+
+        var padding =
+          parseFloat(style.paddingTop) +
+          parseFloat(style.paddingBottom);
+
+        var border =
+          parseFloat(style.borderTopWidth) +
+          parseFloat(style.borderBottomWidth);
 
         box.style.minHeight =
           (newHeight - padding - border) + "px";
