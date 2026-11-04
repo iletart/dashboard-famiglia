@@ -1924,9 +1924,10 @@ function buildConfiguredLayout(view){
 
       var box = boxElements[keys[j]];
 
-      if(box){
-        col.appendChild(box);
-      }
+		if(box){
+		  box.style.display = "block";
+		  col.appendChild(box);
+		}
     }
 
     row.appendChild(col);
