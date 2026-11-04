@@ -15,8 +15,8 @@
   "shared": {
     "enabled": true,
     "columns": [
-      ["schoolMenu", "agenda", "todo"],
-      ["shopping", "sharedTasks"]
+      ["agenda", "shopping"],
+      ["sharedTasks", "todo", "schoolMenu"]
     ]
   },
     "walter": {
@@ -29,8 +29,9 @@
     "ilenia": {
       "enabled": true,
       "columns": [
-        ["personalTasks", "personalGlobalTasks"],
-        ["personalRoutes", "ileniaAgenda"]
+        ["ileniaAgenda", "personalTasks"],
+        ["personalGlobalTasks"],
+        ["personalRoutes"]
       ]
     }
   }
