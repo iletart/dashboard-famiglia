@@ -1,31 +1,18 @@
-{
-  "version": 1,
-  "boxes": {
-    "agenda": "agendaBox",
-    "shopping": "shoppingBox",
-    "sharedTasks": "sharedTasksBox",
-    "todo": "todoBox",
-    "schoolMenu": "schoolMenuBox",
-    "personalTasks": "personalTasksBox",
-    "personalGlobalTasks": "personalGlobalTaskBox",
-    "personalRoutes": "personalRoutesBox",
-    "ileniaAgenda": "ileniaAgendaBox"
-  },
-  "views": {
+"views": {
   "shared": {
     "enabled": true,
     "columns": [
-      ["agenda", "shopping"],
-      ["sharedTasks", "todo", "schoolMenu"]
+      ["sharedTasks", "todo", "schoolMenu"],
+      ["agenda", "shopping"]
     ]
   },
-    "walter": {
-      "enabled": true,
-      "columns": [
-        ["personalTasks"],
-        ["personalGlobalTasks"]
-      ]
-    },
+  "walter": {
+    "enabled": true,
+    "columns": [
+      ["personalTasks"],
+      ["personalGlobalTasks"]
+    ]
+  },
   "ilenia": {
     "enabled": true,
     "rows": [
@@ -33,6 +20,5 @@
       ["personalGlobalTasks", "personalTasks"],
       ["personalRoutes"]
     ]
-  }
   }
 }
