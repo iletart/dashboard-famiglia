@@ -2153,15 +2153,29 @@ function loadAgenda() {
     [CONFIG.base + "agenda.json", "agenda.json"],
     function(err, d) {
 
+      var eventsChanged = false;
+
       if (!err && d && d.events) {
+
+        var oldEvents = agendaData ?
+          JSON.stringify(agendaData.events || []) : "";
+
+        var newEvents = JSON.stringify(d.events || []);
+
+        eventsChanged = oldEvents !== newEvents;
+
         agendaData = d;
         agendaErr = false;
         agendaSyncedAt = new Date();
+
       } else {
         agendaErr = true;
       }
 
-      safe(renderAgenda);
+      if(eventsChanged || !agendaData) {
+        safe(renderAgenda);
+      }
+
       if(currentView !== "shared") safe(renderPersonalTasks);
 
       loadIleniaAgenda();
