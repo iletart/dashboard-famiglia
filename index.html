@@ -2592,6 +2592,13 @@ function loadRoutes() {
 function renderRoutes(){
 
   var box = $("routes");
+
+  // La vista corrente non prevede il box degli spostamenti condivisi
+  if (!box) {
+    syncPersonalRoutes();
+    return;
+  }
+
   var i, data, departure, arrival;
   var line, heading, details;
 
