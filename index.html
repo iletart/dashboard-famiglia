@@ -737,6 +737,24 @@ body:not(.k) #menuDayButtons button {
         margin-right: 6px;
         border-radius: 4px !important;
     }
+	
+    /* LAYOUT BOX: UNA SOLA COLONNA SU TABLET E SMARTPHONE */
+    body:not(.k) #dashboardContent > .col,
+    body:not(.k) #personalLayoutRow > .col,
+    body:not(.k) #personalLayoutRow > .layout-row,
+    body:not(.k) #personalLayoutRow .layout-row > .col {
+        display: block !important;
+        float: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    body:not(.k) #dashboardContent,
+    body:not(.k) #personalLayoutRow {
+        display: block !important;
+        width: 100% !important;
+    }
 }
 
 /* ==================================================
@@ -831,7 +849,7 @@ body.k #viewMenuToggle span:nth-child(1) {
 }
 
 body.k #viewMenuToggle span:nth-child(2) {
-    top: 11px;
+    top: 12px;
 }
 
 body.k #viewMenuToggle span:nth-child(3) {
@@ -2151,10 +2169,10 @@ function setView(view, manual) {
       ileniaAgendaBox.style.display = view === "ilenia" ? "block" : "none";
     }
 
-    if(view === "ilenia") {
-      syncPersonalRoutes();
-      safe(renderIleniaAgenda);
-    }
+	if(view === "ilenia") {
+	  safe(loadRoutes);
+	  safe(renderIleniaAgenda);
+	}
   }
 
   closeViewMenu();
