@@ -1172,6 +1172,7 @@ body.k .event-task-inline .agenda-task-text {
 	<div class="box">
 		<div class="section-heading">
 			<h2>Lista della spesa</h2>
+			<div class="sync-label" id="shoppingTimes"></div>
 		</div>
 		<div id="shoppingList"></div>
 	</div>
@@ -1270,6 +1271,7 @@ var routesSyncedAt = null;
 var todoSyncedAt = null;
 var taskSyncedAt = null;
 var menuSyncedAt = null;
+var shoppingSyncedAt = null;
 var personalTasksDayOffset = 0;
 var routesErr = false;
 var menuUpdatedAt = null;
@@ -2080,40 +2082,54 @@ function loadShoppingList(){
     function(err, d){
       clear(box);
 
-      if(err || !d || !d.items){
-        setText(box, "Lista della spesa non disponibile.");
-        return;
+      var times = "";
+      var gen = (!err && d)
+        ? parseIso(d.generated_at || d.updated_at)
+        : null;
+
+      if(gen !== null){
+        times += "upd time: " + hhmmRome(gen) + "<br>";
       }
 
-      var pending = [];
-      var completed = [];
+      if(!err && d && d.items){
+        shoppingSyncedAt = new Date();
 
-      for(var i = 0; i < d.items.length; i++){
-        if(d.items[i].completed){
-          completed.push(d.items[i]);
-        } else {
-          pending.push(d.items[i]);
+        if(shoppingSyncedAt !== null){
+          times += "sync time: " + hhmmRome(shoppingSyncedAt.getTime());
         }
-      }
 
-      function addItems(items, done){
-        for(var j = 0; j < items.length; j++){
-          var row = document.createElement("div");
-          row.className = done ? "shopping-item completed" : "shopping-item";
-          row.textContent = (done ? "✓ " : "□ ") + items[j].name;
-          box.appendChild(row);
+        var pending = [];
+        var completed = [];
+
+        for(var i = 0; i < d.items.length; i++){
+          if(d.items[i].completed){
+            completed.push(d.items[i]);
+          } else {
+            pending.push(d.items[i]);
+          }
         }
+
+        function addItems(items, done){
+          for(var j = 0; j < items.length; j++){
+            var row = document.createElement("div");
+            row.className = done ? "shopping-item completed" : "shopping-item";
+            row.textContent = (done ? "✓ " : "□ ") + items[j].name;
+            box.appendChild(row);
+          }
+        }
+
+        addItems(pending, false);
+        addItems(completed, true);
+
+        if(gen !== null && new Date().getTime() - gen > 30 * 60000){
+          times += "<br>dati vecchi";
+        }
+
+      } else {
+        times += "<br>rete non disponibile";
       }
 
-      addItems(pending, false);
-      addItems(completed, true);
-
-      if(d.updated_at){
-        var info = document.createElement("div");
-        info.className = "small";
-        info.textContent = "Aggiornata: " + d.updated_at;
-        box.appendChild(info);
-      }
+      $("shoppingTimes").innerHTML = times;
     }
   );
 }
