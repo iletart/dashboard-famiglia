@@ -7,13 +7,13 @@
       "to": "Lavoro",
       "mode": "arrival",
       "target_time": "08:10",
-      "departure": "2026-11-04T07:49:02+01:00",
+      "departure": "2026-11-04T07:46:55+01:00",
       "arrival": "2026-11-04T08:10:00+01:00",
-      "duration_minutes": 16,
+      "duration_minutes": 18,
       "static_duration_minutes": 14,
       "buffer_minutes": 5,
       "distance_meters": 10717,
-      "calculated_at": "2026-11-04T00:01:02.681075+01:00"
+      "calculated_at": "2026-11-04T07:00:02.587424+01:00"
     },
     "lavoro_campo": {
       "id": "lavoro_campo",
@@ -27,8 +27,8 @@
       "static_duration_minutes": 14,
       "buffer_minutes": 5,
       "distance_meters": 9288,
-      "calculated_at": "2026-11-04T07:00:02.601622+01:00"
+      "calculated_at": "2026-11-04T07:30:02.266268+01:00"
     }
   },
-  "generated_at": "2026-11-04T07:00:02.601622+01:00"
+  "generated_at": "2026-11-04T07:30:02.266268+01:00"
 }
