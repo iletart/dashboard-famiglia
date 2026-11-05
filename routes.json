@@ -7,13 +7,13 @@
       "to": "Lavoro",
       "mode": "arrival",
       "target_time": "08:00",
-      "departure": "2026-11-05T07:39:23+01:00",
+      "departure": "2026-11-05T07:37:26+01:00",
       "arrival": "2026-11-05T08:00:00+01:00",
-      "duration_minutes": 16,
+      "duration_minutes": 18,
       "static_duration_minutes": 14,
       "buffer_minutes": 5,
       "distance_meters": 11428,
-      "calculated_at": "2026-11-05T00:01:02.020068+01:00"
+      "calculated_at": "2026-11-05T07:00:02.154116+01:00"
     },
     "lavoro_asilo": {
       "id": "lavoro_asilo",
@@ -27,8 +27,8 @@
       "static_duration_minutes": 11,
       "buffer_minutes": 5,
       "distance_meters": 9927,
-      "calculated_at": "2026-11-05T07:00:02.115543+01:00"
+      "calculated_at": "2026-11-05T07:30:02.213202+01:00"
     }
   },
-  "generated_at": "2026-11-05T07:00:02.115543+01:00"
+  "generated_at": "2026-11-05T07:30:02.213202+01:00"
 }
