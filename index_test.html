@@ -59,8 +59,10 @@ h3 {
 
 #agendaTitle {
     text-transform: none;
-	margin-bottom: 4px;
-	padding-bottom: 0;
+    margin: 0 !important;
+    padding: 0 0 3px !important;
+    font-size: 1.05em;
+    line-height: 1.3;
 }
 
 .section-heading {
@@ -385,6 +387,15 @@ h3 {
     text-align: left !important;
     white-space: nowrap !important;
     text-indent: 0 !important;
+}
+
+/* Assegnazioni: PC e smartphone */
+body:not(.k) .todo-assign-option {
+    margin: 1px 0 !important;
+}
+
+body:not(.k) .todo-assign-option input {
+    margin: 0 4px 0 0 !important;
 }
 
 .todo-assign-option input {
@@ -1327,7 +1338,7 @@ body.k .trash-icon:after {
 
 	<div class="box" id="personalGlobalTaskBox">
 	  <div class="section-heading">
-		<h2 id="personalGlobalTaskTitle">TASK CONDIVISI DI UTENTE</h2>
+		<h2 id="personalGlobalTaskTitle">TASK GIORNALIERI DI UTENTE</h2>
 		<div class="sync-label" id="personalGlobalTaskTimes"></div>
 	  </div>
 
@@ -2310,7 +2321,7 @@ function setView(view, manual) {
     }
     setText(
       personalGlobalTitle,
-      personal ? "TASK CONDIVISI DI " + (selectedUser ? selectedUser.name : view.toUpperCase()) : "TASK GIORNALIERI"
+      personal ? "TASK GIORNALIERI DI " + (selectedUser ? selectedUser.name : view.toUpperCase()) : "TASK GIORNALIERI"
     );
   }
 
