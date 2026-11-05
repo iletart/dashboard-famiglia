@@ -1142,21 +1142,24 @@ body.k #menuDayButtons #mb-refresh {
     display: none !important;
 }
 
-/* Kindle: pulsanti OGGI/DOMANI a larghezza uguale */
+/* KINDLE: pulsanti OGGI/DOMANI a larghezza uguale */
 body.k #personalTasksBox .personal-period-switch {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
+    display: block !important;
     width: 100% !important;
-    gap: 5px !important;
+    white-space: nowrap !important;
+    font-size: 0 !important;
     box-sizing: border-box !important;
 }
 
 body.k #personalTasksBox .personal-period-switch button {
-    flex: 1 1 0 !important;
+    display: inline-block !important;
+    vertical-align: top !important;
+    width: 50% !important;
     min-width: 0 !important;
-    width: auto !important;
+    max-width: 50% !important;
     margin: 2px 0 !important;
+    padding: 7px 1px !important;
+    font-size: 14px !important;
     box-sizing: border-box !important;
 }
 
