@@ -349,17 +349,31 @@ h3 {
     font-weight: bold;
 }
 
-.todo-assign-option {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    margin: 4px 0;
+.todo-assign-options {
+    display: block;
+    width: 100%;
+    font-size: 0;
     text-align: left;
 }
 
+.todo-assign-option {
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+    width: 33.333%;
+    margin: 3px 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+    white-space: nowrap;
+}
+
 .todo-assign-option input {
-    flex: 0 0 auto;
-    margin: 0;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 4px 0 0;
+    padding: 0;
 }
 
 .todo-assign-buttons {
@@ -1326,7 +1340,7 @@ body.k .trash-icon:after {
 
   <div class="box" id="ileniaAgendaBox" style="display:none;">
     <div class="section-heading">
-      <h2>AGENDA PERSONALE DI ILENIA</h2>
+      <h2>AGENDA ILENIA</h2>
       <div class="sync-label" id="ileniaAgendaTimes"></div>
     </div>
     <div id="ileniaAgenda">Caricamento...</div>
@@ -4422,6 +4436,7 @@ function taskRow(index, item, personalGlobal){
 
     var selected = Array.isArray(item.assignees) ? item.assignees : [];
     var userChecks = [];
+    var options = mk("div", "todo-assign-options");
 
     if(!USERS.length){
       menu.appendChild(mk("div", "", "Elenco utenti non disponibile."));
@@ -4435,9 +4450,10 @@ function taskRow(index, item, personalGlobal){
         userCheck.checked = selected.indexOf(user.id) !== -1;
         label.appendChild(userCheck);
         label.appendChild(document.createTextNode(user.name));
-        menu.appendChild(label);
+        options.appendChild(label);
         userChecks.push(userCheck);
       }
+      menu.appendChild(options);
     }
 
     var menuButtons = mk("div", "todo-assign-buttons");
