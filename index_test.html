@@ -330,8 +330,8 @@ h3 {
 .todo-assign-menu {
     display: none;
     position: relative;
-    margin: 4px 0 8px 34px;
-    padding: 8px;
+    margin: 4px 0 8px 12px;
+    padding: 8px 8px 8px 4px;
     border: 1px solid #555;
     border-radius: 4px;
     background: #fff;
@@ -350,13 +350,16 @@ h3 {
 }
 
 .todo-assign-option {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 2px;
     margin: 4px 0;
     text-align: left;
 }
 
 .todo-assign-option input {
-    margin-right: 6px;
+    flex: 0 0 auto;
+    margin: 0;
 }
 
 .todo-assign-buttons {
