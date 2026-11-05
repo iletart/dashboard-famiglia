@@ -1,6 +1,6 @@
 {
   "calendar": "Ilenia Tartamella",
-  "generated_at": "2026-11-05T00:50:02.401277+01:00",
+  "generated_at": "2026-11-05T23:03:43.939998+01:00",
   "period_days": 14,
   "events": [
     {
@@ -48,6 +48,22 @@
       "location": "",
       "description": "",
       "htmlLink": "https://www.google.com/calendar/event?eid=NXBoNjBvNG1vYTJoa2I4cmY0MWswbmxvOTJfMjAyNjExMDVUMTgwMDAwWiBpbGV0YXJ0YUBt"
+    },
+    {
+      "id": "c8qm6p34cdgjab9m6kqm8b9k6crjcbb168pjeb9o6ti38ohk6srmcp9ncg",
+      "title": "Synlab",
+      "start": {
+        "dateTime": "2026-11-06T07:45:00+01:00",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-06T08:45:00+01:00",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=YzhxbTZwMzRjZGdqYWI5bTZrcW04YjlrNmNyamNiYjE2OHBqZWI5bzZ0aTM4b2hrNnNybWNwOW5jZyBpbGV0YXJ0YUBt"
     },
     {
       "id": "0f1jo4jkhad5qf7i0pvu2njjf5_20261106T134500Z",
