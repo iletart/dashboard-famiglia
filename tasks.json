@@ -23,7 +23,7 @@
     "2026-11-06": [
       {
         "text": "Portare libro asilo",
-        "done": false,
+        "done": true,
         "assignees": [
           "walter"
         ]
