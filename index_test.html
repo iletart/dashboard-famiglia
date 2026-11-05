@@ -268,13 +268,14 @@ h3 {
     align-items: flex-start !important;
     width: 100%;
     margin: 3px 0;
-    gap: 8px;
+    gap: 2px;
     box-sizing: border-box;
+    margin-left: -4px;
 }
 
 .todo-check-cell {
-    flex: 0 0 26px;
-    width: 26px;
+    flex: 0 0 21px;
+    width: 21px;
     box-sizing: border-box;
 }
 
@@ -312,6 +313,18 @@ h3 {
     width: 28px;
     margin: 0 !important;
     padding: 2px !important;
+}
+
+.todo-assign {
+    display: inline-block !important;
+    color: #000 !important;
+    background: #fff !important;
+    border: 1px solid #000 !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 20px !important;
+    text-align: center !important;
 }
 
 .todo-assign-menu {
@@ -1087,7 +1100,7 @@ body.k .todo {
 
 body.k .todo-check-cell {
     display: table-cell !important;
-    width: 26px !important;
+    width: 21px !important;
     vertical-align: top !important;
     padding-top: 2px !important;
     text-align: left !important;
@@ -1106,6 +1119,7 @@ body.k .todo-text {
     width: auto !important;
     vertical-align: top !important;
     padding: 2px 0 0 !important;
+    margin-left: 0 !important;
     text-align: left !important;
     white-space: normal !important;
     overflow-wrap: break-word !important;
@@ -1267,7 +1281,7 @@ body.k .trash-icon:after {
 
 	<div class="box" id="personalGlobalTaskBox">
 	  <div class="section-heading">
-		<h2 id="personalGlobalTaskTitle">TASK CONDIVISI</h2>
+		<h2 id="personalGlobalTaskTitle">TASK CONDIVISI DI UTENTE</h2>
 		<div class="sync-label" id="personalGlobalTaskTimes"></div>
 	  </div>
 
@@ -1283,7 +1297,7 @@ body.k .trash-icon:after {
 
 	<div class="box" id="personalTasksBox">
 	  <div class="section-heading">
-		<h2 id="personalTasksTitle">TASK DI WALTER</h2>
+		<h2 id="personalTasksTitle">AGENDA DI WALTER</h2>
 		<div class="sync-label" id="personalTasksTimes"></div>
 	  </div>
 
@@ -1347,7 +1361,7 @@ body.k .trash-icon:after {
         <!-- TASK CONDIVISI -->
         <div class="box" id="sharedTasksBox">
             <div class="section-heading">
-                <h2 id="taskDateTitle">Task</h2>
+                <h2 id="taskDateTitle">Task giornalieri</h2>
                 <div class="sync-label" id="taskTimes"></div>
             </div>
 
@@ -1368,7 +1382,7 @@ body.k .trash-icon:after {
         <!-- TO-DO -->
         <div class="box" id="todoBox">
             <div class="section-heading">
-                <h2>Da fare</h2>
+                <h2>Task condivisi</h2>
                 <div id="todoSyncLabel" class="sync-label">(non connesso)</div>
             </div>
             <div id="todoCtl" style="display:none;"></div>
@@ -2241,7 +2255,17 @@ function setView(view, manual) {
 
   var personalGlobalTitle = $("personalGlobalTaskTitle");
   if(personalGlobalTitle){
-    setText(personalGlobalTitle, "TASK CONDIVISI");
+    var selectedUser = null;
+    for(var ui = 0; ui < USERS.length; ui++){
+      if(USERS[ui].id === view){
+        selectedUser = USERS[ui];
+        break;
+      }
+    }
+    setText(
+      personalGlobalTitle,
+      personal ? "TASK CONDIVISI DI " + (selectedUser ? selectedUser.name : view.toUpperCase()) : "TASK GIORNALIERI"
+    );
   }
 
   if(view === "shared") {
@@ -2378,12 +2402,18 @@ function renderPersonalTasks(){
   clear(box);
 
   var owner = currentView === "ilenia" ? "I" : "W";
-  var ownerName = owner === "W" ? "WALTER" : "ILENIA";
+  var ownerName = currentView.toUpperCase();
+  for(var ui = 0; ui < USERS.length; ui++){
+    if(USERS[ui].id === currentView){
+      ownerName = USERS[ui].name;
+      break;
+    }
+  }
 
   var targetDay = todayNum() + personalTasksDayOffset;
   var dayLabel = personalTasksDayOffset === 0 ? "oggi" : "domani";
 
-  setText($("personalTasksTitle"), "TASK DI " + ownerName);
+  setText($("personalTasksTitle"), "AGENDA DI " + ownerName);
   setText($("personalTasksDate"), "");
 
   var times = "";
@@ -3274,7 +3304,7 @@ function startDailyUpdates() {
 /* ===== LISTA DA FARE OGGI - SINCRONIZZATA ===== */
 
 function updateTaskDate(){
-  setText($("taskDateTitle"), "Task Condivisi");
+  setText($("taskDateTitle"), "Task giornalieri");
 }
 
 updateTaskDate();
@@ -4233,7 +4263,7 @@ function updateTaskButtons(){
     }
   }
 
-  $("taskDateTitle").innerHTML = "Task Condivisi";
+  $("taskDateTitle").innerHTML = "Task giornalieri";
 
   var times = "";
 
@@ -4375,7 +4405,7 @@ function taskRow(index, item, personalGlobal){
   var actions = mk("span", "todo-actions");
 
   if(!personalGlobal){
-    var assign = mk("button", "todo-assign", "👥");
+    var assign = mk("button", "todo-assign", "A");
     assign.type = "button";
     assign.disabled = taskBusy;
     assign.title = "Assegna attività";
@@ -4416,11 +4446,14 @@ function taskRow(index, item, personalGlobal){
     menu.appendChild(menuButtons);
 
     assign.onclick = function(){
+      var wasOpen = menu.classList.contains("open");
       var allMenus = document.querySelectorAll(".todo-assign-menu.open");
       for(var m = 0; m < allMenus.length; m++){
         allMenus[m].classList.remove("open");
       }
-      menu.classList.toggle("open");
+      if(!wasOpen){
+        menu.classList.add("open");
+      }
     };
 
     cancel.onclick = function(){
