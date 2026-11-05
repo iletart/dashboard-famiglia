@@ -257,6 +257,12 @@ h3 {
    8. TASK CONDIVISI E PERSONALI
    ================================================== */
 
+.todo-wrap {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .todo {
     display: flex !important;
     align-items: flex-start !important;
@@ -293,18 +299,62 @@ h3 {
 
 .todo-actions {
     display: flex !important;
-    flex: 0 0 34px;
-    width: 34px;
+    flex: 0 0 72px;
+    width: 72px;
     justify-content: flex-end;
     align-items: flex-start;
     margin-left: auto;
 }
 
-.todo-delete {
+.todo-delete,
+.todo-assign {
     min-width: 28px;
     width: 28px;
     margin: 0 !important;
     padding: 2px !important;
+}
+
+.todo-assign-menu {
+    display: none;
+    position: relative;
+    margin: 4px 0 8px 34px;
+    padding: 8px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background: #fff;
+    color: #111;
+    z-index: 5;
+    box-sizing: border-box;
+}
+
+.todo-assign-menu.open {
+    display: block;
+}
+
+.todo-assign-title {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.todo-assign-option {
+    display: block;
+    margin: 4px 0;
+    text-align: left;
+}
+
+.todo-assign-option input {
+    margin-right: 6px;
+}
+
+.todo-assign-buttons {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.todo-assign-buttons button {
+    min-width: 58px;
+    padding: 4px 8px;
 }
 
 .done {
@@ -1064,7 +1114,7 @@ body.k .todo-text {
 
 body.k .todo-actions {
     display: table-cell !important;
-    width: 34px !important;
+    width: 72px !important;
     vertical-align: middle !important;
     text-align: right !important;
 }
@@ -2440,12 +2490,18 @@ function renderPersonalGlobalTasks(){
   var items = taskDays[key] || [];
   var i;
 
-  if(!items.length){
-    box.appendChild(mk("div", "", "Nessuna attività."));
-  } else {
-    for(i = 0; i < items.length; i++){
+  var assignedCount = 0;
+
+  for(i = 0; i < items.length; i++){
+    if(Array.isArray(items[i].assignees) &&
+       items[i].assignees.indexOf(currentView) !== -1){
       box.appendChild(taskRow(i, items[i], true));
+      assignedCount++;
     }
+  }
+
+  if(!assignedCount){
+    box.appendChild(mk("div", "", "Nessuna attività assegnata."));
   }
 
   updatePersonalGlobalTaskButtons();
@@ -4284,6 +4340,7 @@ function renderTasks(){
 }
 
 function taskRow(index, item, personalGlobal){
+  var wrap = mk("div", "todo-wrap");
   var row = mk("div", "todo");
 
   var checkbox = mk("input");
@@ -4316,6 +4373,74 @@ function taskRow(index, item, personalGlobal){
   row.appendChild(txt);
 
   var actions = mk("span", "todo-actions");
+
+  if(!personalGlobal){
+    var assign = mk("button", "todo-assign", "👥");
+    assign.type = "button";
+    assign.disabled = taskBusy;
+    assign.title = "Assegna attività";
+    assign.setAttribute("aria-label", "Assegna attività");
+
+    var menu = mk("div", "todo-assign-menu");
+    var title = mk("div", "todo-assign-title", "Assegna a:");
+    menu.appendChild(title);
+
+    var selected = Array.isArray(item.assignees) ? item.assignees : [];
+    var userChecks = [];
+
+    if(!USERS.length){
+      menu.appendChild(mk("div", "", "Elenco utenti non disponibile."));
+    } else {
+      for(var u = 0; u < USERS.length; u++){
+        var user = USERS[u];
+        var label = mk("label", "todo-assign-option");
+        var userCheck = mk("input");
+        userCheck.type = "checkbox";
+        userCheck.value = user.id;
+        userCheck.checked = selected.indexOf(user.id) !== -1;
+        label.appendChild(userCheck);
+        label.appendChild(document.createTextNode(user.name));
+        menu.appendChild(label);
+        userChecks.push(userCheck);
+      }
+    }
+
+    var menuButtons = mk("div", "todo-assign-buttons");
+    var save = mk("button", "", "Salva");
+    var cancel = mk("button", "", "Annulla");
+    save.type = "button";
+    cancel.type = "button";
+    save.disabled = taskBusy || !USERS.length;
+    menuButtons.appendChild(save);
+    menuButtons.appendChild(cancel);
+    menu.appendChild(menuButtons);
+
+    assign.onclick = function(){
+      var allMenus = document.querySelectorAll(".todo-assign-menu.open");
+      for(var m = 0; m < allMenus.length; m++){
+        allMenus[m].classList.remove("open");
+      }
+      menu.classList.toggle("open");
+    };
+
+    cancel.onclick = function(){
+      menu.classList.remove("open");
+    };
+
+    save.onclick = function(){
+      var assignees = [];
+      for(var c = 0; c < userChecks.length; c++){
+        if(userChecks[c].checked) assignees.push(userChecks[c].value);
+      }
+      menu.classList.remove("open");
+      saveTaskAssignees(taskDateKey(TASK_OFF[taskSel]), index, assignees);
+    };
+
+    actions.appendChild(assign);
+    wrap.appendChild(row);
+    wrap.appendChild(menu);
+  }
+
   var del = mk("button", "todo-delete", "");
 
   if(document.body.classList.contains("k")){
@@ -4339,7 +4464,44 @@ function taskRow(index, item, personalGlobal){
   actions.appendChild(del);
   row.appendChild(actions);
 
-  return row;
+  if(personalGlobal){
+    wrap.appendChild(row);
+  }
+
+  return wrap;
+}
+
+function saveTaskAssignees(date, index, assignees){
+  if(!taskReady || taskBusy) return;
+
+  taskBusy = true;
+  renderTasks();
+  setText($("taskStatus"), "Salvataggio assegnazioni...");
+
+  taskRequest("POST", {
+    action: "assign",
+    date: date,
+    index: index,
+    assignees: assignees
+  }, function(err, result){
+    taskBusy = false;
+
+    if(err || !result || !result.days){
+      taskSyncError = true;
+      updateTaskButtons();
+      setText($("taskStatus"), "Assegnazione non riuscita: " + (err || "errore"));
+      taskSchedulePoll();
+      return;
+    }
+
+    taskDays = result.days;
+    taskSyncedAt = new Date();
+    taskSyncError = false;
+    renderTasks();
+    if(currentView !== "shared") renderPersonalGlobalTasks();
+    setText($("taskStatus"), "");
+    taskSchedulePoll();
+  });
 }
 
 function changeTask(action, index, text){
