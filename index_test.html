@@ -1348,6 +1348,29 @@ body.k .trash-icon:after {
     top: -5px;
 }
 
+/* TASK GIORNALIERI: vista personale */
+body:not(.k) .personal-global-todo .todo-check-cell {
+    position: relative;
+    top: 2px;
+}
+
+body:not(.k) .personal-global-todo .todo-text,
+body:not(.k) .personal-global-todo .todo-actions {
+    display: inline-flex;
+    align-items: center;
+}
+
+body.k .personal-global-todo .todo-check-cell {
+    position: relative;
+    top: 2px;
+}
+
+body.k .personal-global-todo .todo-text,
+body.k .personal-global-todo .todo-actions {
+    display: inline-flex;
+    align-items: center;
+}
+
 </style>
 
 
@@ -4467,6 +4490,10 @@ function renderTasks(){
 function taskRow(index, item, personalGlobal){
   var wrap = mk("div", "todo-wrap");
   var row = mk("div", "todo");
+  
+  if(personalGlobal){
+  row.classList.add("personal-global-todo");
+}
 
   var checkbox = mk("input");
   checkbox.type = "checkbox";
