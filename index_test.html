@@ -268,14 +268,14 @@ h3 {
     align-items: flex-start !important;
     width: 100%;
     margin: 3px 0;
-    gap: 2px;
+    gap: 0;
     box-sizing: border-box;
-    margin-left: -4px;
+    margin-left: -9px;
 }
 
 .todo-check-cell {
-    flex: 0 0 21px;
-    width: 21px;
+    flex: 0 0 16px;
+    width: 16px;
     box-sizing: border-box;
 }
 
@@ -1094,13 +1094,15 @@ body.k #menuDayButtons #mb-refresh {
 body.k .todo {
     display: table !important;
     table-layout: fixed !important;
+    border-spacing: 0 !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    margin-left: -9px !important;
 }
 
 body.k .todo-check-cell {
     display: table-cell !important;
-    width: 21px !important;
+    width: 16px !important;
     vertical-align: top !important;
     padding-top: 2px !important;
     text-align: left !important;
@@ -4405,7 +4407,7 @@ function taskRow(index, item, personalGlobal){
   var actions = mk("span", "todo-actions");
 
   if(!personalGlobal){
-    var assign = mk("button", "todo-assign", "A");
+    var assign = mk("button", "todo-assign", document.body.classList.contains("k") ? "A" : "👥");
     assign.type = "button";
     assign.disabled = taskBusy;
     assign.title = "Assegna attività";
