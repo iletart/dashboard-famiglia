@@ -59,6 +59,9 @@ h3 {
 
 #agendaTitle {
     text-transform: none;
+	margin-bottom: 4px;
+	padding-bottom: 0;
+	border-bottom: 1px solid #000;
 }
 
 .section-heading {
@@ -68,9 +71,9 @@ h3 {
     width: 100%;
     box-sizing: border-box;
     border-bottom: 1px solid #000;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
     gap: 8px;
+	margin-bottom: 4px;
+	padding-bottom: 0;
 }
 
 .section-heading h2 {
@@ -402,6 +405,28 @@ h3 {
 
 .done {
     text-decoration: line-through;
+}
+
+/* Checkbox del popup assegnazioni */
+.assign-menu {
+    padding-left: 0 !important;
+}
+
+.assign-option {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: 2px !important;
+    white-space: nowrap;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+.assign-option input[type="checkbox"] {
+    width: 16px !important;
+    min-width: 16px !important;
+    margin: 0 !important;
+    flex: 0 0 16px !important;
 }
 
 /* ==================================================
@@ -1334,7 +1359,7 @@ body.k .trash-icon:after {
 
 	<div class="box" id="personalTasksBox">
 	  <div class="section-heading">
-		<h2 id="personalTasksTitle">AGENDA DI WALTER</h2>
+		<h2 id="personalTasksTitle">AGENDA DI UTENTE</h2>
 		<div class="sync-label" id="personalTasksTimes"></div>
 	  </div>
 
