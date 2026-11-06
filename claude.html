@@ -264,7 +264,7 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
     <div id="personalTasks">Caricamento...</div>
   </div>
 
-  <div class="box" id="personalRoutesBox" data-only="ilenia" hidden>
+  <div class="box" id="personalRoutesBox" hidden>
     <div class="section-heading">
       <h2>Spostamenti</h2>
       <div class="sync-label" id="personalRoutesTimes"></div>
@@ -273,12 +273,12 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
     <div class="small" id="personalRoutesStatus"></div>
   </div>
 
-  <div class="box" id="ileniaAgendaBox" data-only="ilenia" hidden>
+  <div class="box" id="userAgendaBox" hidden>
     <div class="section-heading">
-      <h2>Agenda Ilenia</h2>
-      <div class="sync-label" id="ileniaAgendaTimes"></div>
+      <h2>Agenda Personale</h2>
+      <div class="sync-label" id="userAgendaTimes"></div>
     </div>
-    <div id="ileniaAgenda">Caricamento...</div>
+    <div id="userAgenda">Caricamento...</div>
   </div>
 </div>
 
@@ -393,8 +393,8 @@ var viewManualUntil = 0;
 
 var agendaData = null, agendaErr = false, agendaSyncedAt = null;
 var agendaSt = {today: true, week: 0};
-var ileniaData = null, ileniaErr = false, ileniaSyncedAt = null;
-var ileniaSt = {today: true, week: 0};
+var userData = null, userErr = false, userSyncedAt = null;
+var userSt = {today: true, week: 0};
 var routesData = null, routesErr = false, routesSyncedAt = null;
 var shoppingSyncedAt = null;
 var menuSel = "oggi", menuSyncedAt = null, menuUpdatedAt = null;
@@ -558,6 +558,29 @@ function userName(id){
   return u ? u.name : String(id).toUpperCase();
 }
 
+function viewHasBox(view, boxName){
+  var config = DASHBOARD_CONFIG;
+  if(!config || !config.views || !config.views[view]){
+    return false;
+  }
+
+  var viewConfig = config.views[view];
+  var layouts = [
+    viewConfig.columns || [],
+    viewConfig.rows || []
+  ];
+
+  for(var i = 0; i < layouts.length; i++){
+    for(var j = 0; j < layouts[i].length; j++){
+      if(layouts[i][j].indexOf(boxName) !== -1){
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 /* ==================================================
    3. DATE (UTC -> Europe/Rome senza Intl)
    ================================================== */
@@ -661,7 +684,7 @@ window.addEventListener("pageshow", function(){ safe(updateClock); });
 document.addEventListener("visibilitychange", function(){ if(!document.hidden){ safe(updateClock); } });
 
 /* ==================================================
-   5. AGENDA (famiglia e Ilenia)
+   5. AGENDA (famiglia e vista utente)
    ================================================== */
 
 /* Intervallo di giorni e orario di un evento; null se non valido */
@@ -764,27 +787,49 @@ function renderAgenda(){
               {tasks: currentView === "shared", click: true});
 }
 
-function renderIleniaAgenda(){
-  var box = $("ileniaAgenda");
+function renderUserAgenda(){
+  var box = $("userAgenda");
   if(!box){ return; }
+
   clear(box);
-  if(!ileniaData){
-    setText(box, ileniaErr ? "Agenda non disponibile." : "Caricamento...");
+
+  if(!userData){
+    setText(box, userErr ? "Agenda non disponibile." : "Caricamento...");
     return;
   }
-  setTimes($("ileniaAgendaTimes"), parseIso(ileniaData.generated_at || ileniaData.updated_at),
-           ileniaSyncedAt, ileniaErr, 3 * 3600000);
-  buildAgenda(box, ileniaData.events, ileniaSt, function(){ safe(renderIleniaAgenda); }, {});
+
+  setTimes(
+    $("userAgendaTimes"),
+    parseIso(userData.generated_at || userData.updated_at),
+    userSyncedAt,
+    userErr,
+    3 * 3600000
+  );
+
+  buildAgenda(
+    box,
+    userData.events,
+    userSt,
+    function(){ safe(renderUserAgenda); },
+    {}
+  );
 }
 
-function loadIleniaAgenda(){
-  getJson([CONFIG.base + "agenda_ilenia.json", "agenda_ilenia.json"], function(err, d){
+function loadUserAgenda(userId){
+  var file = "agenda_" + String(userId).toLowerCase() + ".json";
+  var start = Date.now();
+
+  getJson([CONFIG.base + file, file], function(err, d){
+
     if(!err && d && d.events){
-      ileniaData = d; ileniaErr = false; ileniaSyncedAt = new Date();
+      userData = d;
+      userErr = false;
+      userSyncedAt = new Date();
     } else {
-      ileniaErr = true;
+      userErr = true;
     }
-    safe(renderIleniaAgenda);
+
+    safe(renderUserAgenda);
   });
 }
 
@@ -796,7 +841,9 @@ function scheduleAgendaRefresh(){
 
 function loadAgenda(){
   scheduleAgendaRefresh();
+
   getJson([CONFIG.base + "agenda.json", "agenda.json"], function(err, d){
+  
     var hadAgenda = !!agendaData, changed = true;
 
     if(!err && d && d.events){
@@ -808,7 +855,7 @@ function loadAgenda(){
 
     if(changed || err){ safe(renderAgenda); }
     if(currentView !== "shared"){ safe(renderPersonalTasks); }
-    if(currentView === "ilenia"){ loadIleniaAgenda(); }
+
   });
 }
 
@@ -1470,7 +1517,7 @@ function renderWeather(){
 }
 
 /* ==================================================
-   12. SPOSTAMENTI (vista Ilenia)
+   12. SPOSTAMENTI
    ================================================== */
 var WEEKEND_ROUTES = [
   "Weekend! Oggi niente lavoro, goditi la giornata!",
@@ -1481,13 +1528,24 @@ var WEEKEND_ROUTES = [
   "Oggi l'unico appuntamento è con il tempo libero!"
 ];
 
-function loadRoutes(){
-  getJson([CONFIG.routesUrl], function(err, d){
+function loadRoutes(userId){
+  userId = userId || currentView;
+
+  if(!userId || userId === "shared"){
+    return;
+  }
+
+  var file = "routes_" + String(userId).toLowerCase() + ".json";
+
+  getJson([CONFIG.base + file, file], function(err, d){
     if(!err && d && d.routes){
-      routesData = d; routesErr = false; routesSyncedAt = new Date();
+      routesData = d;
+      routesErr = false;
+      routesSyncedAt = new Date();
     } else {
       routesErr = true;
     }
+
     safe(renderRoutes);
   });
 }
@@ -1768,7 +1826,7 @@ function buildLayout(view){
 
 function setView(view, manual){
   if(manual){ viewManualUntil = Date.now() + 10 * 60 * 1000; }
-  currentView = view;
+  currentView = view; 
 
   var btns = $("viewMenuPanel").getElementsByTagName("button");
   for(var i = 0; i < btns.length; i++){
@@ -1788,12 +1846,17 @@ function setView(view, manual){
   }
 
   renderAgenda();
+  
   if(personal){
-    renderPersonalTasks();
-    if(view === "ilenia"){
-      renderIleniaAgenda();
-      loadIleniaAgenda();
-      loadRoutes();
+    safe(renderPersonalTasks);
+  
+    if(view !== "shared" && viewHasBox(view, "personalRoutes")){
+      loadRoutes(view);
+    }
+  
+    if(viewHasBox(view, "userAgenda")){
+      renderUserAgenda();
+      loadUserAgenda(view);
     }
   }
 
@@ -1975,7 +2038,10 @@ safe(loadTodo);
 setInterval(function(){ safe(loadSunTimes); }, 3600000);
 setInterval(function(){
   safe(loadShoppingList);
-  if(currentView === "ilenia"){ safe(loadRoutes); }
+
+  if(viewHasBox(currentView, "personalRoutes")){
+    safe(function(){ loadRoutes(currentView); });
+  }
 }, 5 * 60000);
 </script>
 </body>
