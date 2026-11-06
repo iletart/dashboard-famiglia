@@ -851,12 +851,7 @@ function loadAgenda(){
 
     if(changed || err){ safe(renderAgenda); }
     if(currentView !== "shared"){ safe(renderPersonalTasks); }
-	if(
-	  currentView !== "shared" &&
-	  viewHasBox(currentView, "userAgenda")
-	){
-	  loadUserAgenda(currentView);
-	}
+
   });
 }
 
@@ -1859,6 +1854,7 @@ function setView(view, manual){
 		
 	if(viewHasBox(view, "userAgenda")){
 	  renderUserAgenda();
+	  loadUserAgenda(view);
 	}
   }
 
