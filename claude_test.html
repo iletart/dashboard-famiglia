@@ -1517,7 +1517,7 @@ function renderWeather(){
 }
 
 /* ==================================================
-   12. SPOSTAMENTI (vista Ilenia)
+   12. SPOSTAMENTI
    ================================================== */
 var WEEKEND_ROUTES = [
   "Weekend! Oggi niente lavoro, goditi la giornata!",
@@ -2038,7 +2038,10 @@ safe(loadTodo);
 setInterval(function(){ safe(loadSunTimes); }, 3600000);
 setInterval(function(){
   safe(loadShoppingList);
-  if(currentView === "ilenia"){ safe(loadRoutes); }
+
+  if(viewHasBox(currentView, "personalRoutes")){
+    safe(function(){ loadRoutes(currentView); });
+  }
 }, 5 * 60000);
 </script>
 </body>
