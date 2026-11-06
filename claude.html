@@ -1685,7 +1685,7 @@ function renderWeather(){
 }
 
 /* ==================================================
-   12. SPOSTAMENTI (vista Ilenia)
+   12. SPOSTAMENTI 
    ================================================== */
 var WEEKEND_ROUTES = [
   "Weekend! Oggi niente lavoro, goditi la giornata!",
@@ -1697,9 +1697,16 @@ var WEEKEND_ROUTES = [
 ];
 
 function loadRoutes(){
-  getJson([CONFIG.routesUrl], function(err, d){
+  var url = CONFIG.base + "routes_" + currentView + ".json";
+
+  routesData = null;
+  routesErr = false;
+
+  getJson([url], function(err, d){
     if(!err && d && d.routes){
-      routesData = d; routesErr = false; routesSyncedAt = new Date();
+      routesData = d;
+      routesErr = false;
+      routesSyncedAt = new Date();
     } else {
       routesErr = true;
     }
@@ -2005,10 +2012,11 @@ function setView(view, manual){
   renderAgenda();
   if(personal){
     renderPersonalTasks();
+    loadRoutes();
+  
     if(view === "ilenia"){
       renderIleniaAgenda();
       loadIleniaAgenda();
-      loadRoutes();
     }
   }
 
