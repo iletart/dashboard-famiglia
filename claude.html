@@ -2109,8 +2109,12 @@ function setView(view, manual){
   /* box riservati a una sola vista (data-only) */
   var only = document.querySelectorAll(".box[data-only]");
   for(i = 0; i < only.length; i++){
-    var owner = only[i].getAttribute("data-only");
-	only[i].hidden = owner !== view || owner !== authProfile;
+	var owner = only[i].getAttribute("data-only");
+	only[i].hidden = owner !== view;
+
+	if(only[i].id === "personalRoutesBox" && authProfile !== "ilenia"){
+	  only[i].hidden = true;
+	}
   }
 
   renderAgenda();
