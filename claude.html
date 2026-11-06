@@ -2109,7 +2109,8 @@ function setView(view, manual){
   /* box riservati a una sola vista (data-only) */
   var only = document.querySelectorAll(".box[data-only]");
   for(i = 0; i < only.length; i++){
-    only[i].hidden = only[i].getAttribute("data-only") !== view;
+    var owner = only[i].getAttribute("data-only");
+	only[i].hidden = owner !== view || owner !== authProfile;
   }
 
   renderAgenda();
