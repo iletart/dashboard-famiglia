@@ -9,7 +9,7 @@
     "personalTasks": "personalTasksBox",
     "personalGlobalTasks": "personalGlobalTaskBox",
     "personalRoutes": "personalRoutesBox",
-    "ileniaAgenda": "ileniaAgendaBox"
+    "userAgenda": "userAgendaBox"
   },
   "views": {
     "shared": {
@@ -29,7 +29,7 @@
     "ilenia": {
       "enabled": true,
       "rows": [
-        ["ileniaAgenda"],
+        ["userAgenda"],
         ["personalGlobalTasks", "personalTasks"],
         ["personalRoutes"]
       ]
