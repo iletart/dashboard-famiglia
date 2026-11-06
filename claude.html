@@ -1129,6 +1129,51 @@ function addFrom(inp, statusEl, fn){
 /* ==================================================
    9. TASK CONDIVISI (to-do)
    ================================================== */
+   
+function loadDashboardConfig(callback){
+  if(!authToken){
+    console.error("Sessione non disponibile per caricare la configurazione.");
+    if(callback){ callback(false); }
+    return;
+  }
+
+  var x = new XMLHttpRequest();
+  x.open("GET", "https://dashboard-api.iletarta-633.workers.dev/config", true);
+  x.setRequestHeader("Authorization", "Bearer " + authToken);
+  x.timeout = 20000;
+
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4){ return; }
+
+    var d = null;
+    try { d = JSON.parse(x.responseText); } catch(e){}
+
+    if(x.status < 200 || x.status >= 300 ||
+       !d || !d.ok || !d.config ||
+       !d.config.views || !d.config.boxes){
+      console.error("Errore caricamento configurazione dashboard:", x.status, d);
+      if(callback){ callback(false); }
+      return;
+    }
+
+    DASHBOARD_CONFIG = d.config;
+    console.log("Configurazione dashboard caricata da API.");
+    if(callback){ callback(true); }
+  };
+
+  x.onerror = function(){
+    console.error("Errore di connessione a dashboard-api.");
+    if(callback){ callback(false); }
+  };
+
+  x.ontimeout = function(){
+    console.error("Timeout caricamento configurazione dashboard.");
+    if(callback){ callback(false); }
+  };
+
+  x.send(null);
+}
+
 function getSavedAuthSession(){
   try {
     var saved = JSON.parse(
@@ -1220,6 +1265,14 @@ function todoConnect(){
 
     saveAuthSession(d);
     inp.value = "";
+	
+	loadDashboardConfig(function(ok){
+	if(ok){
+		safe(initViewMenu);
+	} else {
+		console.error("Impossibile inizializzare il menu delle viste.");
+	}
+	});
 
     setText($("syncStatus"), "Accesso effettuato. Sincronizzazione in corso...");
 
@@ -1337,6 +1390,14 @@ function loadTodo(){
 
     authProfile = d.profile;
     profileSelect.value = d.profile;
+	
+	loadDashboardConfig(function(ok){
+	if(ok){
+		safe(initViewMenu);
+	} else {
+		console.error("Impossibile inizializzare il menu delle viste.");
+	}
+	});
 
     api("GET", "", null, function(err, result){
       if(err || !result || !result.items){
@@ -2180,12 +2241,6 @@ function bindUi(){
 safe(startClock);
 safe(bindUi);
 safe(updateSyncLabels);
-
-getJson([CONFIG.base + "dashboard-config.json", "dashboard-config.json"], function(err, d){
-  if(!err && d && d.views && d.boxes){ DASHBOARD_CONFIG = d; }
-  else { console.log("Configurazione dashboard non disponibile."); }
-  safe(initViewMenu);
-});
 
 safe(loadAgenda);
 safe(loadShoppingList);
