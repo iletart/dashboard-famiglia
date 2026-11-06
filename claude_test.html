@@ -558,6 +558,29 @@ function userName(id){
   return u ? u.name : String(id).toUpperCase();
 }
 
+function viewHasBox(view, boxName){
+  var config = DASHBOARD_CONFIG;
+  if(!config || !config.views || !config.views[view]){
+    return false;
+  }
+
+  var viewConfig = config.views[view];
+  var layouts = [
+    viewConfig.columns || [],
+    viewConfig.rows || []
+  ];
+
+  for(var i = 0; i < layouts.length; i++){
+    for(var j = 0; j < layouts[i].length; j++){
+      if(layouts[i][j].indexOf(boxName) !== -1){
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 /* ==================================================
    3. DATE (UTC -> Europe/Rome senza Intl)
    ================================================== */
@@ -1508,13 +1531,24 @@ var WEEKEND_ROUTES = [
   "Oggi l'unico appuntamento è con il tempo libero!"
 ];
 
-function loadRoutes(){
-  getJson([CONFIG.routesUrl], function(err, d){
+function loadRoutes(userId){
+  userId = userId || currentView;
+
+  if(!userId || userId === "shared"){
+    return;
+  }
+
+  var file = "routes_" + String(userId).toLowerCase() + ".json";
+
+  getJson([CONFIG.base + file, file], function(err, d){
     if(!err && d && d.routes){
-      routesData = d; routesErr = false; routesSyncedAt = new Date();
+      routesData = d;
+      routesErr = false;
+      routesSyncedAt = new Date();
     } else {
       routesErr = true;
     }
+
     safe(renderRoutes);
   });
 }
@@ -1818,10 +1852,10 @@ function setView(view, manual){
   
   if(personal){
     
-    if(view === "ilenia"){
-      loadRoutes();
-    }
-	
+	if(view !== "shared" && viewHasBox(view, "personalRoutes")){
+	  loadRoutes(view);
+	}
+		
 	if(
 	  currentView !== "shared" &&
 	  DASHBOARD_CONFIG &&
