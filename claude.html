@@ -10,7 +10,7 @@
 /* ==================================================
    1. BASE
    ================================================== */
-*{box-sizing:border-box}
+.box,.col,.seg,.seg button,.todo,.todo-check-cell,.todo-actions button,.todo-assign-menu,.section-heading,#info,#viewMenuToggle,#viewMenuPanel,#viewMenuPanel button,.add-ctl input,.add-ctl button,.overlay{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{background:#fff;color:#111;font:16px/1.3 "Trebuchet MS",Arial,sans-serif}
 [hidden]{display:none!important}
@@ -139,8 +139,9 @@ input[type=checkbox]{margin:0}
   body:not(.k) #weatherIcon{grid-column:2;grid-row:1/span 2;justify-content:center;width:32px;height:36px;left:0;top:0}
   body:not(.k) #weatherIcon svg{width:32px;height:32px}
   body:not(.k) #weather{grid-column:3;grid-row:1/span 2;position:static;width:auto;max-width:100%;min-width:0;overflow-wrap:anywhere;font-size:.72em;line-height:1.15}
-
-  /* Una sola colonna */
+}
+/* Colonne impilate solo su telefoni stretti (mai su Kindle) */
+@media screen and (max-width:600px){
   body:not(.k) .col{float:none;width:100%;max-width:100%}
 }
 @media screen and (max-width:380px){
@@ -152,6 +153,10 @@ input[type=checkbox]{margin:0}
    7. KINDLE
    ================================================== */
 body.k .wrap{padding-right:14px}
+
+/* Colonne sempre affiancate, come su PC (layout da dashboard-config.json) */
+body.k .col{float:left;width:50%}
+body.k .col.full{float:none;width:100%}
 
 /* Intestazione dei box */
 body.k .section-heading{display:block;overflow:hidden}
@@ -171,7 +176,7 @@ body.k #clock{float:left;width:110px;margin:0 0 0 42px;left:3px;top:4px;font-siz
 body.k #info{display:block;position:relative;top:3px;min-height:42px;margin:0 -6px 0 158px;padding:0}
 body.k #wday,body.k #fulldate{display:block;width:135px;margin:0 0 0 -30px;line-height:1.1}
 body.k #wday{font-size:1.2em}
-body.k #fulldate{top:2px;font-size:.8em}
+body.k #fulldate{position:relative;top:2px;font-size:.8em}
 body.k #weatherIcon{position:absolute;right:100px;top:4px;width:48px;height:42px;justify-content:flex-end;margin:0}
 body.k #weatherIcon svg{width:40px;height:40px}
 body.k #weather{position:absolute;right:-21px;top:2px;width:130px;margin:0;font-size:.9em;line-height:1.2;white-space:normal}
@@ -410,6 +415,10 @@ function $(id){ return document.getElementById(id); }
 function clear(el){
   if(!el){ return; }
   while(el.firstChild){ el.removeChild(el.firstChild); }
+}
+
+function setHidden(el, h){
+  if(h){ el.setAttribute("hidden", "hidden"); } else { el.removeAttribute("hidden"); }
 }
 
 function setText(el, t){
@@ -1117,7 +1126,7 @@ function todoConnect(){
       /* il PIN salvato non viene cancellato: un errore di rete non deve costringere a reinserirlo */
       var detail = d && d.detail ? " - " + d.detail : "";
       setText($("syncStatus"), "Connessione non riuscita: " + (err || "risposta non valida") + detail);
-      $("syncBox").hidden = false;
+      setHidden($("syncBox"), false);
       inp.value = pin;
       updateSyncLabels();
       return;
@@ -1129,9 +1138,9 @@ function todoConnect(){
     todoSyncError = false;
     saveTodoPin(pin);
 
-    $("syncBox").hidden = true;
-    $("todoCtl").hidden = false;
-    $("taskCtl").hidden = false;
+    setHidden($("syncBox"), true);
+    setHidden($("todoCtl"), false);
+    setHidden($("taskCtl"), false);
 
     renderTodo();
     updateSyncLabels();
@@ -1150,7 +1159,7 @@ function loadTodo(){
     $("todoPinInput").value = saved;
     todoConnect();
   } else {
-    $("syncBox").hidden = false;
+    setHidden($("syncBox"), false);
     setText($("syncStatus"), "Inserisci il PIN per collegare la dashboard.");
   }
 }
@@ -1699,7 +1708,7 @@ function checkScheduledView(){
 }
 
 function closeViewMenu(){
-  $("viewMenuPanel").hidden = true;
+  setHidden($("viewMenuPanel"), true);
   $("viewMenuToggle").setAttribute("aria-expanded", "false");
 }
 
@@ -1744,7 +1753,7 @@ function buildLayout(view){
     for(j = 0; j < n; j++){
       var b = boxes[keys[j]];
       if(!b){ continue; }
-      b.hidden = false;
+      setHidden(b, false);
 
       if(isRows){
         var col = mk("div", n === 1 ? "col full" : "col");
@@ -1767,15 +1776,15 @@ function setView(view, manual){
   }
 
   var personal = view !== "shared";
-  $("dashboardContent").hidden = personal;
-  $("personalView").hidden = !personal;
+  setHidden($("dashboardContent"), personal);
+  setHidden($("personalView"), !personal);
 
   buildLayout(view);
 
   /* box riservati a una sola vista (data-only) */
   var only = document.querySelectorAll(".box[data-only]");
   for(i = 0; i < only.length; i++){
-    only[i].hidden = only[i].getAttribute("data-only") !== view;
+    setHidden(only[i], only[i].getAttribute("data-only") !== view);
   }
 
   renderAgenda();
@@ -1796,8 +1805,9 @@ function initViewMenu(){
   var toggle = $("viewMenuToggle"), panel = $("viewMenuPanel");
 
   toggle.onclick = function(){
-    panel.hidden = !panel.hidden;
-    toggle.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
+    var open = panel.hasAttribute("hidden");
+    setHidden(panel, !open);
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
   };
   document.addEventListener("click", function(ev){
     if(!$("viewMenu").contains(ev.target)){ closeViewMenu(); }
@@ -1844,7 +1854,7 @@ function hasClass(el, name){ return (" " + (el.className || "") + " ").indexOf("
 function boxesOf(el){
   var r = [], k = el.children;
   for(var i = 0; i < k.length; i++){
-    if(hasClass(k[i], "box") && !k[i].hidden){ r.push(k[i]); }
+    if(hasClass(k[i], "box") && !k[i].hasAttribute("hidden")){ r.push(k[i]); }
   }
   return r;
 }
@@ -1873,7 +1883,7 @@ function alignBoxes(){
   for(i = 0; i < all.length; i++){ all[i].style.minHeight = ""; }
 
   /* su schermi stretti (non Kindle) le colonne sono impilate: niente allineamento */
-  if(!IS_KINDLE && document.documentElement.clientWidth <= 800){ return; }
+  if(!IS_KINDLE && document.documentElement.clientWidth <= 600){ return; }
 
   var kids = host.children, rowsMode = false;
   for(i = 0; i < kids.length; i++){
