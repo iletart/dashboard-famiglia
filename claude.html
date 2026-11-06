@@ -369,7 +369,7 @@ var q = window.location.search;
 var IS_KINDLE = (function(){
   if(q.indexOf("kindle=1") >= 0){ return true; }
   if(q.indexOf("kindle=0") >= 0 || q.indexOf("echo=1") >= 0){ return false; }
-  return /Kindle|KF[A-Z]{2,5}/i.test(navigator.userAgent);
+  return /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
 })();
 if(IS_KINDLE){ document.body.className += " k"; }
 
