@@ -912,6 +912,10 @@ function eventTaskRow(label, key, done, eventId){
 /* Scarica lo stato e disegna i compiti di un evento (tutti, o solo quelli di owner) */
 function renderEventTasks(ev, box, owner, onDone){
   var data = parseTasks(ev.description), idx = [], i;
+  if(!authToken || !todoConnected){
+	  box.appendChild(mk("div", "", "Accedi per visualizzare i compiti."));
+	  return;
+	}
   for(i = 0; i < data.tasks.length; i++){
     if(!owner || data.owners[i] === owner){ idx.push(i); }
   }
