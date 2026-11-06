@@ -819,15 +819,7 @@ function loadUserAgenda(userId){
   var file = "agenda_" + String(userId).toLowerCase() + ".json";
   var start = Date.now();
 
-  console.log("[AGENDA] Avvio caricamento:", file);
-
   getJson([CONFIG.base + file, file], function(err, d){
-    console.log(
-      "[AGENDA] Risposta dopo",
-      ((Date.now() - start) / 1000).toFixed(2),
-      "secondi. Errore:",
-      err
-    );
 
     if(!err && d && d.events){
       userData = d;
@@ -849,17 +841,8 @@ function scheduleAgendaRefresh(){
 
 function loadAgenda(){
   scheduleAgendaRefresh();
-  
-  var startAgenda = Date.now();
-  console.log("[AGENDA CONDIVISA] Richiesta avviata:", startAgenda);
 
   getJson([CONFIG.base + "agenda.json", "agenda.json"], function(err, d){
-  
-    console.log(
-      "[AGENDA CONDIVISA] Risposta dopo:",
-      ((Date.now() - startAgenda) / 1000).toFixed(2),
-      "secondi"
-    );
   
     var hadAgenda = !!agendaData, changed = true;
 
@@ -1037,18 +1020,9 @@ function renderPersonalTasks(){
 
   var box = $("personalTasks");
   clear(box);
-  
-  console.log(
-    "[TASK PERSONALI] Render:",
-    currentView,
-    Date.now()
-  );
 
   var name = userName(currentView);
   var owner = currentView.charAt(0).toUpperCase();
-  console.log("VISTA:", currentView);
-  console.log("OWNER:", owner);
-  console.log("NOME:", userName(currentView));
   var target = todayNum() + TASK_OFF[personalPeriod];
 
   setText($("personalTasksTitle"), "Agenda di " + name);
@@ -1852,9 +1826,7 @@ function buildLayout(view){
 
 function setView(view, manual){
   if(manual){ viewManualUntil = Date.now() + 10 * 60 * 1000; }
-  currentView = view;
-  
-  console.log("[VIEW] Inizio:", view, Date.now());
+  currentView = view; 
 
   var btns = $("viewMenuPanel").getElementsByTagName("button");
   for(var i = 0; i < btns.length; i++){
@@ -1866,8 +1838,6 @@ function setView(view, manual){
   setHidden($("personalView"), !personal);
 
   buildLayout(view);
-  
-  console.log("[VIEW] Layout completato:", view, Date.now());
 
   /* box riservati a una sola vista (data-only) */
   var only = document.querySelectorAll(".box[data-only]");
