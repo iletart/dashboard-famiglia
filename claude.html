@@ -2060,14 +2060,22 @@ function buildLayout(view){
   var host = view === "shared" ? $("dashboardContent") : personalRow();
   var stash = $("stash"), boxes = {}, key, el, i, j;
 
-  /* parcheggia tutti i box, poi ricostruisce l'host */
+  /* Parcheggia e nasconde tutti i box */
   for(key in cfg.boxes){
     if(!cfg.boxes.hasOwnProperty(key)){ continue; }
+
     el = $(cfg.boxes[key]);
-    if(el){ boxes[key] = el; stash.appendChild(el); }
+
+    if(el){
+      el.hidden = true;
+      boxes[key] = el;
+      stash.appendChild(el);
+    }
   }
+
   clear(host);
 
+  /* Mostra esclusivamente i box previsti nella vista */
   for(i = 0; i < layout.length; i++){
     var keys = layout[i];
     var container = mk("div", isRows ? "row layout-row" : "col");
@@ -2078,6 +2086,7 @@ function buildLayout(view){
     for(j = 0; j < n; j++){
       var b = boxes[keys[j]];
       if(!b){ continue; }
+
       b.hidden = false;
 
       if(isRows){
