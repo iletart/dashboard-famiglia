@@ -851,11 +851,9 @@ function loadAgenda(){
 
     if(changed || err){ safe(renderAgenda); }
     if(currentView !== "shared"){ safe(renderPersonalTasks); }
-    if(
+	if(
 	  currentView !== "shared" &&
-	  DASHBOARD_CONFIG &&
-	  DASHBOARD_CONFIG.boxes &&
-	  DASHBOARD_CONFIG.boxes.userAgenda
+	  viewHasBox(currentView, "userAgenda")
 	){
 	  loadUserAgenda(currentView);
 	}
@@ -1026,6 +1024,9 @@ function renderPersonalTasks(){
 
   var name = userName(currentView);
   var owner = currentView.charAt(0).toUpperCase();
+  console.log("VISTA:", currentView);
+  console.log("OWNER:", owner);
+  console.log("NOME:", userName(currentView));
   var target = todayNum() + TASK_OFF[personalPeriod];
 
   setText($("personalTasksTitle"), "Agenda di " + name);
@@ -1856,14 +1857,8 @@ function setView(view, manual){
 	  loadRoutes(view);
 	}
 		
-	if(
-	  currentView !== "shared" &&
-	  DASHBOARD_CONFIG &&
-	  DASHBOARD_CONFIG.boxes &&
-	  DASHBOARD_CONFIG.boxes.userAgenda
-	){
+	if(viewHasBox(view, "userAgenda")){
 	  renderUserAgenda();
-	  loadUserAgenda(currentView);
 	}
   }
 
