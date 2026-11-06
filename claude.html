@@ -413,7 +413,11 @@ var shoppingSyncedAt = null;
 var menuSel = "oggi", menuSyncedAt = null, menuUpdatedAt = null;
 var personalPeriod = "oggi";
 
-var todoPin = "", todoItems = [], todoConnected = false, todoBusy = false;
+var authToken = "";
+var authProfile = "";
+var authSessionId = "";
+var authExpiresAt = "";
+var todoItems = [], todoConnected = false, todoBusy = false;
 var todoSyncError = false, todoSyncedAt = null;
 var taskSel = "oggi", personalGlobalTaskSel = "oggi";
 var taskDays = {}, taskReady = false, taskBusy = false;
@@ -490,33 +494,56 @@ function getJson(urls, cb, nocb){
   })();
 }
 
-/* Richieste al Worker (to-do, task, compiti degli eventi). query: "", "?list=tasks", ... */
+/* Richieste al Worker (to-do, task, compiti degli eventi) */
 function api(method, query, data, cb){
   var x = new XMLHttpRequest(), finished = false;
+
   function fin(err, res){
     if(finished){ return; }
     finished = true;
     cb(err, res);
   }
+
+  if(!authToken){
+    fin("Sessione non autenticata", null);
+    return;
+  }
+
   x.open(method, CONFIG.todoWorkerUrl + (query || ""), true);
-  x.setRequestHeader("X-Todo-Pin", todoPin);
-  if(method === "POST"){ x.setRequestHeader("Content-Type", "application/json"); }
+  x.setRequestHeader("Authorization", "Bearer " + authToken);
+
+  if(method === "POST"){
+    x.setRequestHeader("Content-Type", "application/json");
+  }
+
   x.timeout = 20000;
+
   x.onreadystatechange = function(){
     if(x.readyState !== 4){ return; }
+
     if(x.status === 0){
       setTimeout(function(){ fin("Errore di connessione", null); }, 0);
       return;
     }
+
     var res = null;
     try { res = JSON.parse(x.responseText); } catch(e){}
-    if(x.status >= 200 && x.status < 300){ fin(null, res); }
-    else { fin(res && res.error ? res.error : "Errore HTTP " + x.status, res); }
+
+    if(x.status >= 200 && x.status < 300){
+      fin(null, res);
+    } else {
+      fin(res && res.error ? res.error : "Errore HTTP " + x.status, res);
+    }
   };
+
   x.onerror = function(){ fin("Errore di connessione", null); };
   x.ontimeout = function(){ fin("Timeout di connessione", null); };
-  try { x.send(method === "POST" ? JSON.stringify(data) : null); }
-  catch(e){ fin("Errore di invio richiesta", null); }
+
+  try {
+    x.send(method === "POST" ? JSON.stringify(data) : null);
+  } catch(e){
+    fin("Errore di invio richiesta", null);
+  }
 }
 
 /* Etichetta "upd / sync / errore / dati vecchi" uguale per tutti i box */
@@ -1098,80 +1125,254 @@ function addFrom(inp, statusEl, fn){
 /* ==================================================
    9. TASK CONDIVISI (to-do)
    ================================================== */
-function getSavedTodoPin(){
-  var pin = "";
-  try { pin = window.localStorage.getItem("todoPin") || ""; } catch(e){}
-  if(pin){ return pin; }
-  var m = document.cookie.match(/(?:^|; )todoPin=([^;]*)/);
-  if(m){
-    try { return decodeURIComponent(m[1]); } catch(e){ return m[1]; }
+function getSavedAuthSession(){
+  try {
+    var saved = JSON.parse(
+      window.localStorage.getItem("dashboardAuthSession") || "null"
+    );
+
+    if(!saved || !saved.token ||
+       (saved.profile !== "walter" && saved.profile !== "ilenia") ||
+       !saved.expires_at ||
+       Date.parse(saved.expires_at) <= Date.now()){
+      return null;
+    }
+
+    return saved;
+  } catch(e){
+    return null;
   }
-  return "";
 }
 
-function saveTodoPin(pin){
-  try { window.localStorage.setItem("todoPin", pin); } catch(e){}
+function saveAuthSession(session){
+  authToken = session.token;
+  authProfile = session.profile;
+  authSessionId = session.session_id;
+  authExpiresAt = session.expires_at;
+
   try {
-    document.cookie = "todoPin=" + encodeURIComponent(pin) + "; Max-Age=31536000; Path=/; SameSite=Lax" +
+    window.localStorage.setItem(
+      "dashboardAuthSession",
+      JSON.stringify(session)
+    );
+  } catch(e){}
+}
+
+function clearAuthSession(){
+  authToken = "";
+  authProfile = "";
+  authSessionId = "";
+  authExpiresAt = "";
+
+  try {
+    window.localStorage.removeItem("dashboardAuthSession");
+    window.localStorage.removeItem("todoPin");
+  } catch(e){}
+
+  try {
+    document.cookie = "todoPin=; Max-Age=0; Path=/; SameSite=Lax" +
       (location.protocol === "https:" ? "; Secure" : "");
   } catch(e){}
 }
 
 function todoConnect(){
   var inp = $("todoPinInput");
-  var pin = (inp && inp.value) || getSavedTodoPin();
+  var profile = $("todoProfileSelect").value;
+  var pin = (inp && inp.value) || "";
 
-  if(!pin){ setText($("syncStatus"), "Inserisci il PIN."); return; }
+  if(profile !== "walter" && profile !== "ilenia"){
+    setText($("syncStatus"), "Seleziona un utente valido.");
+    return;
+  }
 
-  todoPin = pin;
+  if(!/^\d{6,12}$/.test(pin)){
+    setText($("syncStatus"), "Inserisci un PIN da 6 a 12 cifre.");
+    return;
+  }
+
   todoBusy = true;
-  setText($("syncStatus"), "Connessione in corso...");
+  setText($("syncStatus"), "Accesso in corso...");
 
-  api("GET", "", null, function(err, d){
+  var x = new XMLHttpRequest();
+  x.open("POST", "https://auth-api.iletarta-633.workers.dev/login", true);
+  x.setRequestHeader("Content-Type", "application/json");
+  x.timeout = 20000;
+
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4){ return; }
+
     todoBusy = false;
 
-    if(err || !d || !d.items){
-	  todoSyncError = true;
-      todoConnected = false;
-      /* il PIN salvato non viene cancellato: un errore di rete non deve costringere a reinserirlo */
-      var detail = d && d.detail ? " - " + d.detail : "";
-      setText($("syncStatus"), "Connessione non riuscita: " + (err || "risposta non valida") + detail);
+    var d = null;
+    try { d = JSON.parse(x.responseText); } catch(e){}
+
+    if(x.status < 200 || x.status >= 300 || !d || !d.ok || !d.token){
+      var error = d && d.error ? d.error : "Errore HTTP " + x.status;
+      setText($("syncStatus"), "Accesso non riuscito: " + error);
       $("syncBox").hidden = false;
-      inp.value = pin;
       updateSyncLabels();
       return;
     }
 
-    todoItems = d.items;
-    todoConnected = true;
-    todoSyncedAt = new Date();
-    todoSyncError = false;
-    saveTodoPin(pin);
+    saveAuthSession(d);
+    inp.value = "";
 
-    $("syncBox").hidden = true;
-    $("todoCtl").hidden = false;
-    $("taskCtl").hidden = false;
+    setText($("syncStatus"), "Accesso effettuato. Sincronizzazione in corso...");
 
-    renderTodo();
-    updateSyncLabels();
-    if(!pollTimer){ schedulePoll(); }
-    loadTasks();
-  });
+    api("GET", "", null, function(err, result){
+
+      if(err || !result || !result.items){
+        todoConnected = false;
+        todoSyncError = true;
+
+        var detail = result && result.detail ? " - " + result.detail : "";
+        setText($("syncStatus"),
+          "Accesso effettuato, ma sincronizzazione non riuscita: " +
+          (err || "risposta non valida") + detail
+        );
+
+        $("syncBox").hidden = false;
+        updateSyncLabels();
+        return;
+      }
+
+      todoItems = result.items;
+      todoConnected = true;
+      todoSyncedAt = new Date();
+      todoSyncError = false;
+
+      $("syncBox").hidden = true;
+      $("todoCtl").hidden = false;
+      $("taskCtl").hidden = false;
+
+      renderTodo();
+      updateSyncLabels();
+
+      if(!pollTimer){ schedulePoll(); }
+
+      loadTasks();
+    });
+  };
+
+  x.onerror = function(){
+    todoBusy = false;
+    setText($("syncStatus"), "Errore di connessione durante l'accesso.");
+  };
+
+  x.ontimeout = function(){
+    todoBusy = false;
+    setText($("syncStatus"), "Timeout durante l'accesso.");
+  };
+
+  try {
+    x.send(JSON.stringify({
+      profile: profile,
+      pin: pin
+    }));
+  } catch(e){
+    todoBusy = false;
+    setText($("syncStatus"), "Errore nell'invio della richiesta.");
+  }
 }
 
 function loadTodo(){
   var btn = $("todoConnectButton");
-  btn.onclick = todoConnect;
-  onEnter($("todoPinInput"), todoConnect);
+  var profileSelect = $("todoProfileSelect");
+  var pinInput = $("todoPinInput");
 
-  var saved = getSavedTodoPin();
-  if(saved){
-    $("todoPinInput").value = saved;
-    todoConnect();
-  } else {
+  btn.onclick = todoConnect;
+  onEnter(pinInput, todoConnect);
+
+  var saved = getSavedAuthSession();
+
+  if(!saved){
+    clearAuthSession();
     $("syncBox").hidden = false;
-    setText($("syncStatus"), "Inserisci il PIN per collegare la dashboard.");
+    setText($("syncStatus"), "Seleziona il tuo utente e inserisci il PIN.");
+    return;
   }
+
+  authToken = saved.token;
+  authProfile = saved.profile;
+  authSessionId = saved.session_id;
+  authExpiresAt = saved.expires_at;
+
+  profileSelect.value = saved.profile;
+
+  setText($("syncStatus"), "Verifica della sessione in corso...");
+
+  var x = new XMLHttpRequest();
+  x.open("POST", "https://auth-api.iletarta-633.workers.dev/session/verify", true);
+  x.setRequestHeader("Authorization", "Bearer " + authToken);
+  x.timeout = 20000;
+
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4){ return; }
+
+    var d = null;
+    try { d = JSON.parse(x.responseText); } catch(e){}
+
+    if(x.status < 200 || x.status >= 300 || !d || !d.ok){
+      if(x.status === 401 || x.status === 403){
+        clearAuthSession();
+        $("syncBox").hidden = false;
+        setText($("syncStatus"), "Sessione scaduta o revocata. Accedi nuovamente.");
+      } else {
+        $("syncBox").hidden = false;
+        setText($("syncStatus"), "Impossibile verificare la sessione. Riprova.");
+      }
+      return;
+    }
+
+    if(d.profile !== "walter" && d.profile !== "ilenia"){
+      clearAuthSession();
+      $("syncBox").hidden = false;
+      setText($("syncStatus"), "Profilo non valido. Accedi nuovamente.");
+      return;
+    }
+
+    authProfile = d.profile;
+    profileSelect.value = d.profile;
+
+    api("GET", "", null, function(err, result){
+      if(err || !result || !result.items){
+        todoConnected = false;
+        todoSyncError = true;
+        $("syncBox").hidden = false;
+        setText($("syncStatus"), "Sessione valida, ma sincronizzazione non disponibile.");
+        updateSyncLabels();
+        return;
+      }
+
+      todoItems = result.items;
+      todoConnected = true;
+      todoSyncedAt = new Date();
+      todoSyncError = false;
+
+      $("syncBox").hidden = true;
+      $("todoCtl").hidden = false;
+      $("taskCtl").hidden = false;
+
+      renderTodo();
+      updateSyncLabels();
+
+      if(!pollTimer){ schedulePoll(); }
+
+      loadTasks();
+    });
+  };
+
+  x.onerror = function(){
+    $("syncBox").hidden = false;
+    setText($("syncStatus"), "Errore di connessione durante la verifica della sessione.");
+  };
+
+  x.ontimeout = function(){
+    $("syncBox").hidden = false;
+    setText($("syncStatus"), "Timeout durante la verifica della sessione.");
+  };
+
+  x.send(null);
 }
 
 function todoChange(action, index, text){
