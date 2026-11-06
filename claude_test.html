@@ -1878,15 +1878,16 @@ function setView(view, manual){
   renderAgenda();
   
   if(personal){
-    
-	if(view !== "shared" && viewHasBox(view, "personalRoutes")){
-	  loadRoutes(view);
-	}
-		
-	if(viewHasBox(view, "userAgenda")){
-	  renderUserAgenda();
-	  loadUserAgenda(view);
-	}
+    safe(renderPersonalTasks);
+  
+    if(view !== "shared" && viewHasBox(view, "personalRoutes")){
+      loadRoutes(view);
+    }
+  
+    if(viewHasBox(view, "userAgenda")){
+      renderUserAgenda();
+      loadUserAgenda(view);
+    }
   }
 
   closeViewMenu();
