@@ -2061,17 +2061,6 @@ function buildLayout(view){
   var stash = $("stash"), boxes = {}, key, el, i, j;
 
   /* Parcheggia e nasconde tutti i box */
-  for(key in cfg.boxes){
-    if(!cfg.boxes.hasOwnProperty(key)){ continue; }
-
-    el = $(cfg.boxes[key]);
-
-    if(el){
-      el.hidden = true;
-      boxes[key] = el;
-      stash.appendChild(el);
-    }
-  }
 
   clear(host);
 
