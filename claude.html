@@ -214,7 +214,7 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
     <div id="viewMenuPanel" hidden></div>
   </div>
   <div id="clock">--:--</div>
-  <button type="button" id="logoutButton" onclick="logout()">ESCI</button>
+ 
   <div id="info">
     <div id="wday"></div>
     <div id="fulldate"></div>
@@ -2162,9 +2162,34 @@ function initViewMenu(){
 
     clear(panel);
     addButton("shared", "FAMIGLIA");
-    for(var i = 0; i < USERS.length; i++){ addButton(USERS[i].id, USERS[i].name); }
+    for(var i = 0; i < USERS.length; i++){
+      addButton(USERS[i].id, USERS[i].name);
+    }
+
+    var separator = mk("div", "view-menu-separator");
+    panel.appendChild(separator);
+
+    var logoutButton = mk("button", "logout-menu-button");
+    logoutButton.type = "button";
+    logoutButton.innerHTML =
+      '<svg viewBox="0 0 24 24" width="18" height="18" ' +
+      'fill="none" stroke="currentColor" stroke-width="2" ' +
+      'stroke-linecap="round" stroke-linejoin="round" ' +
+      'aria-hidden="true">' +
+      '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>' +
+      '<path d="M10 17l5-5-5-5"/>' +
+      '<path d="M15 12H3"/>' +
+      '</svg><span>Logout</span>';
+
+    logoutButton.onclick = function(){
+      closeViewMenu();
+      logout();
+    };
+
+    panel.appendChild(logoutButton);
 
     setView(getScheduledView(), false);
+	
     setInterval(checkScheduledView, 15000);
   });
 }
