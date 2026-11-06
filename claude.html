@@ -214,6 +214,7 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
     <div id="viewMenuPanel" hidden></div>
   </div>
   <div id="clock">--:--</div>
+  <button type="button" id="logoutButton" onclick="logout()">ESCI</button>
   <div id="info">
     <div id="wday"></div>
     <div id="fulldate"></div>
@@ -1205,6 +1206,47 @@ function saveAuthSession(session){
       JSON.stringify(session)
     );
   } catch(e){}
+}
+
+function logout(){
+  var token = authToken;
+
+  if(!token){
+    clearAuthSession();
+    location.reload();
+    return;
+  }
+
+  var x = new XMLHttpRequest();
+  x.open(
+    "POST",
+    "https://auth-api.iletarta-633.workers.dev/logout",
+    true
+  );
+  x.setRequestHeader("Authorization", "Bearer " + token);
+  x.timeout = 15000;
+
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4){ return; }
+
+    if(x.status >= 200 && x.status < 300){
+      clearAuthSession();
+      location.reload();
+    } else {
+      console.error("Errore durante il logout:", x.status, x.responseText);
+      alert("Disconnessione non riuscita. Riprova.");
+    }
+  };
+
+  x.onerror = function(){
+    alert("Errore di connessione durante la disconnessione.");
+  };
+
+  x.ontimeout = function(){
+    alert("Timeout durante la disconnessione. Riprova.");
+  };
+
+  x.send(null);
 }
 
 function clearAuthSession(){
