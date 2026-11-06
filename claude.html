@@ -222,11 +222,29 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
   </div>
 </div>
 
-<!-- ===== SINCRONIZZAZIONE (PIN) ===== -->
+<!-- ===== ACCESSO E SINCRONIZZAZIONE ===== -->
 <div class="box" id="syncBox" hidden>
-  <div class="section-heading"><h2>Sincronizzazione</h2></div>
-  <input type="password" id="todoPinInput" maxlength="50" placeholder="PIN sincronizzazione" autocomplete="off">
-  <button type="button" id="todoConnectButton">Connetti</button>
+  <div class="section-heading">
+    <h2>Accesso alla dashboard</h2>
+  </div>
+
+  <select id="todoProfileSelect">
+    <option value="walter">Walter</option>
+    <option value="ilenia">Ilenia</option>
+  </select>
+
+  <input
+    type="password"
+    id="todoPinInput"
+    maxlength="12"
+    inputmode="numeric"
+    pattern="[0-9]*"
+    placeholder="PIN personale"
+    autocomplete="off"
+  >
+
+  <button type="button" id="todoConnectButton">Accedi</button>
+
   <div class="small" id="syncStatus"></div>
 </div>
 
