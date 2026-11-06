@@ -1113,6 +1113,7 @@ function todoConnect(){
     todoBusy = false;
 
     if(err || !d || !d.items){
+	  todoSyncError = true;
       todoConnected = false;
       /* il PIN salvato non viene cancellato: un errore di rete non deve costringere a reinserirlo */
       var detail = d && d.detail ? " - " + d.detail : "";
