@@ -817,8 +817,18 @@ function renderUserAgenda(){
 
 function loadUserAgenda(userId){
   var file = "agenda_" + String(userId).toLowerCase() + ".json";
+  var start = Date.now();
+
+  console.log("[AGENDA] Avvio caricamento:", file);
 
   getJson([CONFIG.base + file, file], function(err, d){
+    console.log(
+      "[AGENDA] Risposta dopo",
+      ((Date.now() - start) / 1000).toFixed(2),
+      "secondi. Errore:",
+      err
+    );
+
     if(!err && d && d.events){
       userData = d;
       userErr = false;
