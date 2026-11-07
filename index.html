@@ -4048,6 +4048,49 @@ function startDashboard(preferredView){
 	  personalPeriod = day;
 	  renderPersonalTasks();
 	});
+	
+	// Aggiunta task giornalieri
+	$("taskAddButton").onclick = function(){
+	  var input = $("taskInput");
+	  var value = input.value.trim();
+
+	  if(!value){ return; }
+
+	  if(taskPost({
+		action: "add",
+		date: taskKey(taskSel),
+		text: value
+	  }, false)){
+		input.value = "";
+	  }
+	};
+
+	// Aggiunta task condivisi
+	$("todoAddButton").onclick = function(){
+	  var input = $("todoInput");
+	  var value = input.value.trim();
+
+	  if(!value){ return; }
+
+	  if(todoChange("add", null, value)){
+		input.value = "";
+	  }
+	};
+
+	// Invio da tastiera
+	$("taskInput").onkeydown = function(ev){
+	  if(ev.key === "Enter"){
+		ev.preventDefault();
+		$("taskAddButton").click();
+	  }
+	};
+
+	$("todoInput").onkeydown = function(ev){
+	  if(ev.key === "Enter"){
+		ev.preventDefault();
+		$("todoAddButton").click();
+	  }
+	};
 
     safe(loadAgenda);
     safe(loadShoppingList);
