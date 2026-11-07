@@ -1592,6 +1592,11 @@ function renderRoutes(){
    13. LISTA DELLA SPESA
    ================================================== */
 
+
+/* ==================================================
+   13. LISTA DELLA SPESA
+   ================================================== */
+
 function loadShoppingList(){
   var box = $("shoppingList");
 
@@ -1650,22 +1655,158 @@ function loadShoppingList(){
         }
       }
 
-      box.appendChild(mk("h3", "", userName(list.account) + " - " + list.list_name));
+      box.appendChild(
+        mk("h3", "", userName(list.account) + " - " + list.list_name)
+      );
 
-      box.appendChild(mk("div", "shopping-group-title", "DA COMPRARE"));
+      // Pulsanti DA COMPRARE / COMPRATO
+      var tabs = mk("div", "seg two");
+      var pendingButton = mk("button", "", "DA COMPRARE");
+      var completedButton = mk("button", "", "COMPRATO");
+
+      pendingButton.type = "button";
+      completedButton.type = "button";
+
+      tabs.appendChild(pendingButton);
+      tabs.appendChild(completedButton);
+      box.appendChild(tabs);
+
+      var pendingSection = mk("div", "shopping-section");
+      var completedSection = mk("div", "shopping-section");
+
+      completedSection.style.display = "none";
+
+      pendingButton.addEventListener("click", function(ps, cs){
+        return function(){
+          ps.style.display = "block";
+          cs.style.display = "none";
+        };
+      }(pendingSection, completedSection));
+
+      completedButton.addEventListener("click", function(ps, cs){
+        return function(){
+          ps.style.display = "none";
+          cs.style.display = "block";
+        };
+      }(pendingSection, completedSection));
+
+      // Funzione comune per creare una checkbox
+      function addShoppingItem(container, item, isCompleted, dateText){
+        var row = mk("div",
+          isCompleted ? "shopping-item completed" : "shopping-item"
+        );
+
+        var checkbox = mk("input", "");
+        checkbox.type = "checkbox";
+        checkbox.checked = isCompleted;
+        checkbox.className = "shopping-checkbox";
+
+        var label = mk("span", "", item.name);
+
+        row.appendChild(checkbox);
+        row.appendChild(label);
+
+        if(isCompleted){
+          row.appendChild(mk("span", "", " (" + dateText + ")"));
+        }
+
+        container.appendChild(row);
+
+        checkbox.addEventListener("change", function(){
+          var desiredStatus = checkbox.checked;
+          checkbox.disabled = true;
+
+          var update = new XMLHttpRequest();
+
+          update.open(
+            "POST",
+            SHOPPING_API_URL + "/shopping/update",
+            true
+          );
+
+          update.setRequestHeader(
+            "Authorization",
+            "Bearer " + authToken
+          );
+
+          update.setRequestHeader(
+            "Content-Type",
+            "application/json"
+          );
+
+          update.timeout = 20000;
+
+          update.onreadystatechange = function(){
+            if(update.readyState !== 4){ return; }
+
+            var result = null;
+
+            try {
+              result = JSON.parse(update.responseText);
+            } catch(e){}
+
+            if(
+              update.status >= 200 &&
+              update.status < 300 &&
+              result &&
+              result.ok
+            ){
+              // Il comando è stato accodato.
+              // La sincronizzazione effettiva avverrà tramite NAS.
+              return;
+            }
+
+            checkbox.checked = isCompleted;
+            checkbox.disabled = false;
+
+            alert(
+              result && result.error
+                ? result.error
+                : "Impossibile aggiornare l'articolo."
+            );
+          };
+
+          update.onerror = function(){
+            checkbox.checked = isCompleted;
+            checkbox.disabled = false;
+            alert("Errore di connessione a shopping-api.");
+          };
+
+          update.ontimeout = function(){
+            checkbox.checked = isCompleted;
+            checkbox.disabled = false;
+            alert("Timeout durante l'aggiornamento.");
+          };
+
+          update.send(JSON.stringify({
+            view_id: currentView,
+            view_item_id: list.view_item_id,
+            shopping_list_id: list.shopping_list_id,
+            item_id: item.id,
+            completed: desiredStatus
+          }));
+        });
+      }
 
       if(!pending.length){
-        box.appendChild(mk("div", "", "Nessun articolo da comprare."));
+        pendingSection.appendChild(
+          mk("div", "", "Nessun articolo da comprare.")
+        );
       }
 
       for(var j = 0; j < pending.length; j++){
-        box.appendChild(mk("div", "shopping-item", "□ " + pending[j].name));
+        addShoppingItem(
+          pendingSection,
+          pending[j],
+          false,
+          ""
+        );
       }
 
-      box.appendChild(mk("div", "shopping-group-title", "COMPRATO"));
-
       if(!completed.length){
-        box.appendChild(mk("div", "", "Nessun articolo comprato."));
+        completedSection.appendChild(
+          mk("div", "", "Nessun articolo comprato.")
+        );
       }
 
       for(var j = 0; j < completed.length; j++){
@@ -1680,17 +1821,23 @@ function loadShoppingList(){
           }
         }
 
-        var row = mk("div", "shopping-item completed",
-          "✓ " + item.name + " (" + dateText + ")");
-
-        box.appendChild(row);
+        addShoppingItem(
+          completedSection,
+          item,
+          true,
+          dateText
+        );
       }
+
+      box.appendChild(pendingSection);
+      box.appendChild(completedSection);
     }
 
     var lastSync = null;
 
     for(var i = 0; i < lists.length; i++){
       var ms = parseIso(lists[i].last_sync_at || "");
+
       if(ms !== null && (lastSync === null || ms > lastSync)){
         lastSync = ms;
       }
