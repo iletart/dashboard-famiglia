@@ -113,6 +113,24 @@ input[type=checkbox]{margin:0}
 .overlay-details-title{margin:20px 0 8px;font-size:17px;font-weight:bold}
 .overlay-details{white-space:pre-line;line-height:1.5}
 
+/* Shoppig list */
+.shopping-group-title {
+  margin: 10px 0 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #999;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+.shopping-item {
+  margin: 4px 0;
+  overflow-wrap: break-word;
+}
+
+.shopping-item.completed {
+  color: #666;
+}
+
 /* ==================================================
    5. PC (> 800px)
    ================================================== */
@@ -360,6 +378,7 @@ var q = window.location.search;
 
 var AUTH_URL = "https://auth-api.iletarta-633.workers.dev";
 var DASHBOARD_API_URL = "https://dashboard-api.iletarta-633.workers.dev";
+var SHOPPING_API_URL = "https://shopping-api.iletarta-633.workers.dev";
 
 var authToken = "";
 var authProfile = "";
@@ -1572,35 +1591,134 @@ function renderRoutes(){
 /* ==================================================
    13. LISTA DELLA SPESA
    ================================================== */
+
 function loadShoppingList(){
   var box = $("shoppingList");
 
-  getJson([CONFIG.base + "shopping.json", "shopping.json"], function(err, d){
-    var ok = !err && d && d.items;
-    var gen = (!err && d) ? parseIso(d.generated_at || d.updated_at) : null;
+  if(!authToken){
+    setText(box, "Sessione non disponibile.");
+    return;
+  }
 
-    if(ok){
-      shoppingSyncedAt = new Date();
+  setText(box, "Caricamento...");
+
+  var x = new XMLHttpRequest();
+  var url = SHOPPING_API_URL + "/shopping?view_id=" +
+            encodeURIComponent(currentView);
+
+  x.open("GET", url, true);
+  x.setRequestHeader("Authorization", "Bearer " + authToken);
+  x.timeout = 20000;
+
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4){ return; }
+
+    var data = null;
+    try { data = JSON.parse(x.responseText); } catch(e){}
+
+    if(x.status < 200 || x.status >= 300 || !data || !data.ok){
       clear(box);
+      setText(box, data && data.error
+        ? data.error
+        : "Lista della spesa non disponibile.");
 
-      var pending = [], completed = [], i;
-      for(i = 0; i < d.items.length; i++){
-        (d.items[i].completed ? completed : pending).push(d.items[i]);
-      }
-      var all = pending.concat(completed);
-      for(i = 0; i < all.length; i++){
-        box.appendChild(mk("div", all[i].completed ? "shopping-item completed" : "shopping-item",
-          (all[i].completed ? "✓ " : "□ ") + all[i].name));
-      }
-      if(!all.length){ box.appendChild(mk("div", "", "Lista vuota.")); }
-    } else if(!box.getElementsByTagName("div").length){
-      setText(box, "Lista non disponibile.");
+      setText($("shoppingTimes"), "rete non disponibile");
+      return;
     }
 
-    setTimes($("shoppingTimes"), gen, ok ? shoppingSyncedAt : null, !ok, 30 * 60000);
+    shoppingSyncedAt = new Date();
+
+    clear(box);
+
+    var lists = data.lists || [];
+
+    if(!lists.length){
+      box.appendChild(mk("div", "", "Nessuna lista associata a questa vista."));
+    }
+
+    for(var i = 0; i < lists.length; i++){
+      var list = lists[i];
+
+      var pending = [];
+      var completed = [];
+
+      for(var j = 0; j < list.items.length; j++){
+        if(list.items[j].completed){
+          completed.push(list.items[j]);
+        } else {
+          pending.push(list.items[j]);
+        }
+      }
+
+      box.appendChild(mk("h3", "", userName(list.account) + " - " + list.list_name));
+
+      box.appendChild(mk("div", "shopping-group-title", "DA COMPRARE"));
+
+      if(!pending.length){
+        box.appendChild(mk("div", "", "Nessun articolo da comprare."));
+      }
+
+      for(var j = 0; j < pending.length; j++){
+        box.appendChild(mk("div", "shopping-item", "□ " + pending[j].name));
+      }
+
+      box.appendChild(mk("div", "shopping-group-title", "COMPRATO"));
+
+      if(!completed.length){
+        box.appendChild(mk("div", "", "Nessun articolo comprato."));
+      }
+
+      for(var j = 0; j < completed.length; j++){
+        var item = completed[j];
+        var dateText = "Data non disponibile";
+
+        if(item.checked_at){
+          var ms = parseIso(item.checked_at);
+
+          if(ms !== null){
+            dateText = fullDateText(dayNumOfRome(toRome(ms)));
+          }
+        }
+
+        var row = mk("div", "shopping-item completed",
+          "✓ " + item.name + " (" + dateText + ")");
+
+        box.appendChild(row);
+      }
+    }
+
+    var lastSync = null;
+
+    for(var i = 0; i < lists.length; i++){
+      var ms = parseIso(lists[i].last_sync_at || "");
+      if(ms !== null && (lastSync === null || ms > lastSync)){
+        lastSync = ms;
+      }
+    }
+
+    setTimes(
+      $("shoppingTimes"),
+      lastSync,
+      shoppingSyncedAt,
+      false,
+      0,
+      true
+    );
+
     scheduleAlign();
-  });
+  };
+
+  x.onerror = function(){
+    setText(box, "Errore di connessione a shopping-api.");
+  };
+
+  x.ontimeout = function(){
+    setText(box, "Timeout di connessione a shopping-api.");
+  };
+
+  x.send(null);
 }
+
 
 /* ==================================================
    14. MENU SCUOLA
@@ -1810,6 +1928,7 @@ function setView(view, manual){
   setHidden($("personalView"), !personal);
 
   buildLayout(view);
+  safe(loadShoppingList);
 
   /* box riservati a una sola vista (data-only) */
   var only = document.querySelectorAll(".box[data-only]");
