@@ -2316,13 +2316,17 @@ console.log("SHOPPING: funzione avviata");
         }
       }
 
-      var listTitle = mk(
-        "h3",
-        "",
-        "LISTA SPESA (" + userName(list.account) + ")"
-      );
+	  var listHeading = mk("div", "section-heading");
+	  var listTitle = mk(
+	    "h2",
+	    "",
+	    "LISTA SPESA (" + userName(list.account) + ")"
+	  );
+	  listHeading.appendChild(listTitle);
 
-      box.appendChild(listTitle);
+      var listHeading = mk("div", "section-heading");
+	  listHeading.appendChild(listTitle);
+	  box.appendChild(listHeading);
 
       // --------------------------------------------------
       // TABS
