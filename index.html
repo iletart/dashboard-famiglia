@@ -3495,14 +3495,20 @@ function buildLayout(view){
 
   if(!host || !stash){ return; }
 
-  for(i = 0; i < rows.length; i++){
-    items = rows[i].items || [];
+	for(var v = 0; v < views.length; v++){
+	  var allRows = views[v].rows || [];
 
-    for(j = 0; j < items.length; j++){
-      el = $(items[j].element_id);
-      if(el){ stash.appendChild(el); }
-    }
-  }
+	  for(i = 0; i < allRows.length; i++){
+		items = allRows[i].items || [];
+
+		for(j = 0; j < items.length; j++){
+		  el = $(items[j].element_id);
+		  if(el && el.parentNode !== stash){
+			stash.appendChild(el);
+		  }
+		}
+	  }
+	}
 
   clear(host);
 
