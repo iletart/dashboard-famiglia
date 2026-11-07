@@ -2227,7 +2227,7 @@ function loadShoppingList(){
             );
           }
 
-          checkBatchSync(0);
+          checkBatchSync(0, drafts, failed);
         }
 
         for (var i = 0; i < commands.length; i++) {
@@ -2239,7 +2239,7 @@ function loadShoppingList(){
       // ATTESA SINCRONIZZAZIONE D1
       // --------------------------------------------------
 
-      function checkBatchSync(attempt) {
+      function checkBatchSync(attempt, drafts, failed) {
         if (attempt >= 60) {
           updateCommitButtons();
 
@@ -2339,19 +2339,19 @@ function loadShoppingList(){
           }
 
           setTimeout(function () {
-            checkBatchSync(attempt + 1);
+            checkBatchSync(attempt + 1, drafts, failed);
           }, 500);
         };
 
         check.onerror = function () {
           setTimeout(function () {
-            checkBatchSync(attempt + 1);
+            checkBatchSync(attempt + 1, drafts, failed);
           }, 500);
         };
 
         check.ontimeout = function () {
           setTimeout(function () {
-            checkBatchSync(attempt + 1);
+            checkBatchSync(attempt + 1, drafts, failed);
           }, 500);
         };
 
