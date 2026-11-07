@@ -2098,6 +2098,84 @@ function waitForShoppingUpdate(listId, itemId, desiredStatus, attempt, checkbox,
   check.send(null);
 }
 
+function waitForDeleteCommand(commandId, deleteButton) {
+  function check(attempt) {
+    if (attempt >= 240) {
+      deleteButton.disabled = false;
+      deleteButton.textContent = "🗑";
+      alert("Il comando è ancora in attesa. Aggiorna la lista tra poco.");
+      return;
+    }
+
+    var checkRequest = new XMLHttpRequest();
+
+    checkRequest.open(
+      "GET",
+      SHOPPING_API_URL + "/shopping/command-status?id=" +
+        encodeURIComponent(commandId),
+      true
+    );
+
+    checkRequest.setRequestHeader(
+      "Authorization",
+      "Bearer " + authToken
+    );
+
+    checkRequest.timeout = 15000;
+
+    checkRequest.onreadystatechange = function () {
+      if (checkRequest.readyState !== 4) return;
+
+      var data = null;
+
+      try {
+        data = JSON.parse(checkRequest.responseText);
+      } catch (e) {}
+
+      if (
+        checkRequest.status >= 200 &&
+        checkRequest.status < 300 &&
+        data &&
+        data.ok
+      ) {
+        if (data.status === "succeeded") {
+          setTimeout(function () {
+            loadShoppingList();
+          }, 500);
+          return;
+        }
+
+        if (data.status === "failed") {
+          deleteButton.disabled = false;
+          deleteButton.textContent = "🗑";
+          alert("Amazon non è riuscito a eliminare l'articolo.");
+          return;
+        }
+      }
+
+      setTimeout(function () {
+        check(attempt + 1);
+      }, 500);
+    };
+
+    checkRequest.onerror = function () {
+      setTimeout(function () {
+        check(attempt + 1);
+      }, 500);
+    };
+
+    checkRequest.ontimeout = function () {
+      setTimeout(function () {
+        check(attempt + 1);
+      }, 500);
+    };
+
+    checkRequest.send(null);
+  }
+
+  check(0);
+}
+
 function loadShoppingList(){
   var box = $("shoppingBox");
 
@@ -2318,68 +2396,166 @@ function loadShoppingList(){
       // CREAZIONE RIGA ARTICOLO
       // --------------------------------------------------
 
-      function addShoppingItem(container, item, isCompleted, dateText) {
-        var row = mk(
-          "div",
-          isCompleted
-            ? "shopping-item completed"
-            : "shopping-item"
-        );
+		function addShoppingItem(container, item, isCompleted, dateText) {
+		  var row = mk(
+			"div",
+			isCompleted
+			  ? "shopping-item completed"
+			  : "shopping-item"
+		  );
 
-        row.style.display = "flex";
-        row.style.alignItems = "center";
-        row.style.gap = "12px";
+		  row.style.display = "flex";
+		  row.style.alignItems = "center";
+		  row.style.gap = "12px";
 
-        var checkbox = mk("input", "");
+		  var checkbox = mk("input", "");
 
-        checkbox.type = "checkbox";
-        checkbox.className = "shopping-checkbox";
+		  checkbox.type = "checkbox";
+		  checkbox.className = "shopping-checkbox";
 
-        var key = getDraftKey(item);
-        var draft = shoppingDrafts[key];
+		  var key = getDraftKey(item);
+		  var draft = shoppingDrafts[key];
 
-        checkbox.checked = draft
-          ? draft.desiredStatus
-          : isCompleted;
+		  checkbox.checked = draft
+			? draft.desiredStatus
+			: isCompleted;
 
-        var label = mk("span", "", item.name);
+		  var label = mk("span", "", item.name);
 
-        label.style.flex = "1";
+		  label.style.flex = "1";
 
-        row.appendChild(checkbox);
-        row.appendChild(label);
+		  row.appendChild(checkbox);
+		  row.appendChild(label);
 
-        if (isCompleted) {
-          row.appendChild(
-            mk("span", "", " (" + dateText + ")")
-          );
-        }
+		  if (isCompleted) {
+			row.appendChild(
+			  mk("span", "", " (" + dateText + ")")
+			);
 
-        container.appendChild(row);
+			var deleteButton = mk(
+			  "button",
+			  "shopping-delete-button",
+			  "🗑"
+			);
 
-        // ------------------------------------------------
-        // MODIFICA TEMPORANEA CHECKBOX
-        // ------------------------------------------------
+			deleteButton.type = "button";
+			deleteButton.title = "Elimina articolo";
+			deleteButton.setAttribute(
+			  "aria-label",
+			  "Elimina " + item.name
+			);
 
-        checkbox.addEventListener("change", function () {
-          var desiredStatus = checkbox.checked;
+			deleteButton.addEventListener("click", function () {
+			  if (!confirm(
+				'Vuoi eliminare definitivamente "' +
+				item.name +
+				'" dalla lista Amazon?'
+			  )) {
+				return;
+			  }
 
-          if (desiredStatus === isCompleted) {
-            delete shoppingDrafts[key];
-          } else {
-            shoppingDrafts[key] = {
-              view_id: currentView,
-              view_item_id: list.view_item_id,
-              shopping_list_id: list.shopping_list_id,
-              item_id: item.id,
-              desiredStatus: desiredStatus,
-              originalStatus: isCompleted
-            };
-          }
+			  deleteButton.disabled = true;
+			  deleteButton.textContent = "...";
 
-          updateCommitButtons();
-        });
-      }
+			  var request = new XMLHttpRequest();
+
+			  request.open(
+				"POST",
+				SHOPPING_API_URL + "/shopping/delete",
+				true
+			  );
+
+			  request.setRequestHeader(
+				"Authorization",
+				"Bearer " + authToken
+			  );
+
+			  request.setRequestHeader(
+				"Content-Type",
+				"application/json"
+			  );
+
+			  request.timeout = 30000;
+
+			  request.onreadystatechange = function () {
+				if (request.readyState !== 4) {
+				  return;
+				}
+
+				var result = null;
+
+				try {
+				  result = JSON.parse(request.responseText);
+				} catch (e) {}
+
+				if (
+				  request.status >= 200 &&
+				  request.status < 300 &&
+				  result &&
+				  result.ok &&
+				  result.command_id
+				) {
+				  waitForDeleteCommand(
+					result.command_id,
+					deleteButton
+				  );
+				  return;
+				}
+
+				deleteButton.disabled = false;
+				deleteButton.textContent = "🗑";
+
+				alert(
+				  result && result.error
+					? result.error
+					: "Impossibile richiedere l'eliminazione."
+				);
+			  };
+
+			  request.onerror = function () {
+				deleteButton.disabled = false;
+				deleteButton.textContent = "🗑";
+				alert("Errore di connessione a shopping-api.");
+			  };
+
+			  request.ontimeout = function () {
+				deleteButton.disabled = false;
+				deleteButton.textContent = "🗑";
+				alert("Timeout durante la richiesta di eliminazione.");
+			  };
+
+			  request.send(JSON.stringify({
+				view_id: currentView,
+				view_item_id: list.view_item_id,
+				shopping_list_id: list.shopping_list_id,
+				item_id: item.id
+			  }));
+			});
+
+			row.appendChild(deleteButton);
+		  }
+
+		  container.appendChild(row);
+
+		  checkbox.addEventListener("change", function () {
+			var desiredStatus = checkbox.checked;
+
+			if (desiredStatus === isCompleted) {
+			  delete shoppingDrafts[key];
+			} else {
+			  shoppingDrafts[key] = {
+				view_id: currentView,
+				view_item_id: list.view_item_id,
+				shopping_list_id: list.shopping_list_id,
+				item_id: item.id,
+				desiredStatus: desiredStatus,
+				originalStatus: isCompleted
+			  };
+			}
+
+			updateCommitButtons();
+		  });
+		}
 
       // --------------------------------------------------
       // CREAZIONE LISTA DA COMPRARE
