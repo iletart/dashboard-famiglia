@@ -264,10 +264,15 @@ input[type=checkbox]{margin:0}
 
 .shopping-commit-button {
   font-size: 11px;
-  padding: 5px 8px;
+  padding: 5px 3px;
   min-height: 28px;
   line-height: 1.2;
-  gap: 5px;
+  display: flex;
+  width: 100%;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .seg.two button.active,
@@ -611,6 +616,16 @@ body.k #weather{
   font-size:.7em;
   line-height:1.2;
   text-align:right;
+}
+
+body.k #shoppingBox input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+body.k #shoppingBox label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 /* Gruppi di pulsanti */
