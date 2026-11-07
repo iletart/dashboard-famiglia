@@ -2504,26 +2504,26 @@ console.log("SHOPPING: funzione avviata");
 		  });
 		}
 
-		  checkbox.addEventListener("change", function () {
-			var desiredStatus = checkbox.checked;
+		checkbox.addEventListener("change", function () {
+		  var desiredStatus = checkbox.checked;
 
-			if (desiredStatus === isCompleted) {
-			  delete shoppingDrafts[key];
-			} else {
-			  shoppingDrafts[key] = {
-				view_id: currentView,
-				view_item_id: list.view_item_id,
-				shopping_list_id: list.shopping_list_id,
-				item_id: item.id,
-				desiredStatus: desiredStatus,
-				originalStatus: isCompleted
-			  };
-			}
+		  if (desiredStatus === isCompleted) {
+			delete shoppingDrafts[key];
+		  } else {
+			shoppingDrafts[key] = {
+			  view_id: currentView,
+			  view_item_id: list.view_item_id,
+			  shopping_list_id: list.shopping_list_id,
+			  item_id: item.id,
+			  desiredStatus: desiredStatus,
+			  originalStatus: isCompleted
+			};
+		  }
 
-			updateCommitButtons();
-			container.appendChild(row);
-		  });
-		}
+		  updateCommitButtons();
+		});
+
+		container.appendChild(row);
 
       // --------------------------------------------------
       // CREAZIONE LISTA DA COMPRARE
