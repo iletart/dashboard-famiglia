@@ -1835,58 +1835,92 @@ function renderViewMenu(){
   var panel = $("viewMenuPanel");
   clear(panel);
 
-  function showPinEntry(id, button){
-    var oldEntry = panel.querySelector(".pin-inline");
-    if(oldEntry){ oldEntry.remove(); }
+  var pendingProfile = !authToken ? panel._pendingLoginProfile : null;
 
-    var entry = mk("div", "pin-inline", "");
+  // SCHERMATA DI ACCESSO
+  if(pendingProfile){
+    var box = mk("div", "pin-login-panel", "");
+    box.style.padding = "18px 12px";
+    box.style.display = "flex";
+    box.style.flexDirection = "column";
+    box.style.gap = "14px";
+    box.style.width = "100%";
+    box.style.boxSizing = "border-box";
 
-    entry.style.display = "flex";
-    entry.style.gap = "6px";
-    entry.style.padding = "6px";
-    entry.style.alignItems = "center";
+    var title = mk("div", "", "ACCESSO " +
+      (pendingProfile === "shared" ? "FAMIGLIA" : userName(pendingProfile)));
+
+    title.style.textAlign = "center";
+    title.style.fontSize = "18px";
+    title.style.fontWeight = "bold";
 
     var input = document.createElement("input");
     input.type = "password";
     input.inputMode = "numeric";
     input.autocomplete = "current-password";
     input.maxLength = 12;
-    input.placeholder = "Inserisci PIN";
-    input.style.flex = "1";
-    input.style.minWidth = "0";
+    input.placeholder = "Inserisci il PIN";
+    input.style.width = "100%";
     input.style.boxSizing = "border-box";
+    input.style.padding = "15px";
+    input.style.fontSize = "24px";
+    input.style.textAlign = "center";
+    input.style.letterSpacing = "6px";
+
+    var error = mk("div", "", "");
+    error.style.color = "#c00";
+    error.style.textAlign = "center";
 
     var loginButton = mk("button", "", "ACCEDI");
     loginButton.type = "button";
+    loginButton.style.width = "100%";
+    loginButton.style.padding = "14px";
+    loginButton.style.fontSize = "16px";
 
-    function submit(){
+    var cancelButton = mk("button", "", "ANNULLA");
+    cancelButton.type = "button";
+    cancelButton.style.width = "100%";
+    cancelButton.style.padding = "12px";
+    cancelButton.onclick = function(){
+      panel._pendingLoginProfile = null;
+      renderViewMenu();
+    };
+
+    function submitPin(){
       var pin = input.value.trim();
 
       if(!/^\d{6,12}$/.test(pin)){
-        alert("Il PIN deve contenere da 6 a 12 cifre.");
+        error.textContent = "Inserisci da 6 a 12 cifre.";
         input.focus();
         return;
       }
 
-      authLogin(id, pin);
+      error.textContent = "";
+      loginButton.disabled = true;
+      authLogin(pendingProfile, pin);
     }
 
-    loginButton.onclick = submit;
+    loginButton.onclick = submitPin;
 
     input.onkeydown = function(ev){
       if(ev.key === "Enter"){
         ev.preventDefault();
-        submit();
+        submitPin();
       }
     };
 
-    entry.appendChild(input);
-    entry.appendChild(loginButton);
+    box.appendChild(title);
+    box.appendChild(input);
+    box.appendChild(error);
+    box.appendChild(loginButton);
+    box.appendChild(cancelButton);
 
-    panel.insertBefore(entry, button.nextSibling);
+    panel.appendChild(box);
     input.focus();
+    return;
   }
 
+  // ELENCO PROFILI
   function addButton(id, label){
     var b = mk("button", "", label);
     b.type = "button";
@@ -1894,7 +1928,8 @@ function renderViewMenu(){
 
     b.onclick = function(){
       if(!authToken){
-        showPinEntry(id, b);
+        panel._pendingLoginProfile = id;
+        renderViewMenu();
       } else {
         personalPeriod = "oggi";
         setView(id, true);
@@ -2160,16 +2195,9 @@ function startDashboard(preferredView){
 
 function authLogin(profile, pin){
   if(!profile){ return; }
-  if(pin === undefined){
-    pin = window.prompt("Inserisci il PIN per " +
-      (profile === "shared" ? "FAMIGLIA" : userName(profile)) + ":");
-    if(pin === null){ return; }
-  }
 
-  pin = String(pin).trim();
-  
-  pin = pin.trim();
-  
+  pin = String(pin || "").trim();
+
   if(!/^\d{6,12}$/.test(pin)){
     alert("Il PIN deve contenere da 6 a 12 cifre.");
     return;
@@ -2193,6 +2221,9 @@ function authLogin(profile, pin){
       localStorage.setItem("dashboardAuthProfile", authProfile);
       localStorage.setItem("dashboardAuthSessionId", authSessionId);
     } catch(e){}
+
+    var panel = $("viewMenuPanel");
+    if(panel){ panel._pendingLoginProfile = null; }
 
     startDashboard(profile);
   });
