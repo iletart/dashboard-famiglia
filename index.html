@@ -43,9 +43,21 @@ button.sel{background:#000;color:#fff}
 input[type=text],input[type=password]{font-family:inherit;font-size:1em;border:1px solid #000;padding:4px;width:60%}
 input[type=checkbox]{margin:0}
 
-/* Gruppo di pulsanti equidistribuiti (Ieri/Oggi/Domani, Oggi/Settimana/...) */
-.seg{display:flex;gap:5px}
-.seg button{flex:1 1 0;min-width:0;margin:2px 0;padding:8px 3px;text-align:center;border-radius:4px}
+/* Grafica comune dei pulsanti di selezione */
+.seg-button{
+  flex:1 1 0;
+  min-width:0;
+  margin:2px 0;
+  padding:8px 3px;
+  text-align:center;
+  border-radius:4px;
+}
+
+/* Gruppi */
+.seg{
+  display:flex;
+  gap:5px;
+}
 
 /* Campo "nuova attività" */
 .add-ctl{display:flex;align-items:center;gap:8px;margin:4px 0}
@@ -191,11 +203,6 @@ input[type=checkbox]{margin:0}
   line-height:1.2;
   text-align:right;
   min-width:0;
-}
-
-#agendaBox .section-heading,
-#userAgendaBox .section-heading {
-  margin-bottom: 1px;
 }
 
 /* ==================================================
@@ -654,9 +661,24 @@ body.k .shopping-commit-button {
 }
 
 /* Gruppi di pulsanti */
+
 body.k .seg{display:block;font-size:0;white-space:nowrap}
-body.k .seg button{display:inline-block;vertical-align:top;width:32%;min-width:0;margin:2px 1px;padding:7px 1px;font-size:14px;line-height:1.3;white-space:nowrap}
-body.k .seg.two button{width:49%}
+
+body.k .seg-button{
+  display:inline-block;
+  vertical-align:top;
+  width:32%;
+  min-width:0;
+  margin:2px 1px;
+  padding:7px 1px;
+  font-size:14px;
+  line-height:1.3;
+  white-space:nowrap;
+}
+
+body.k .seg.two .seg-button{
+  width:49%;
+}
 
 /* Campo nuova attività */
 body.k .add-ctl{display:block;position:relative;height:32px}
@@ -725,9 +747,9 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
       <div class="sync-label" id="personalGlobalTaskTimes"></div>
     </div>
     <div class="seg" id="personalGlobalTaskDays">
-      <button type="button" data-day="ieri">Ieri</button>
-      <button type="button" data-day="oggi">Oggi</button>
-      <button type="button" data-day="domani">Domani</button>
+      <button type="button" class="seg-button" data-day="ieri">Ieri</button>
+      <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+      <button type="button" class="seg-button" data-day="domani">Domani</button>
     </div>
     <div id="personalGlobalTaskList">Caricamento...</div>
     <div class="small" id="personalGlobalTaskStatus"></div>
@@ -739,8 +761,8 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
       <div class="sync-label" id="personalTasksTimes"></div>
     </div>
     <div class="seg two" id="personalPeriod">
-      <button type="button" data-day="oggi">Oggi</button>
-      <button type="button" data-day="domani">Domani</button>
+      <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+      <button type="button" class="seg-button" data-day="domani">Domani</button>
     </div>
     <div id="personalTasks">Caricamento...</div>
   </div>
@@ -792,9 +814,9 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
         <div class="sync-label" id="taskTimes"></div>
       </div>
       <div class="seg" id="taskDays">
-        <button type="button" data-day="ieri">Ieri</button>
-        <button type="button" data-day="oggi">Oggi</button>
-        <button type="button" data-day="domani">Domani</button>
+        <button type="button" class="seg-button" data-day="ieri">Ieri</button>
+        <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+        <button type="button" class="seg-button" data-day="domani">Domani</button>
       </div>
       <div class="add-ctl" id="taskCtl" hidden>
         <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
@@ -823,9 +845,9 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
         <div class="sync-label" id="menuTimes"></div>
       </div>
       <div class="seg" id="menuDays">
-        <button type="button" data-day="ieri">Ieri</button>
-        <button type="button" data-day="oggi">Oggi</button>
-        <button type="button" data-day="domani">Domani</button>
+        <button type="button" class="seg-button" data-day="ieri">Ieri</button>
+        <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+        <button type="button" class="seg-button" data-day="domani">Domani</button>
       </div>
       <div class="menu-head">
         <h3 id="menuDate"></h3>
