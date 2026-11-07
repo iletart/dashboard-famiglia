@@ -212,18 +212,6 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
 <body>
 <div class="wrap">
 
-<div class="box" id="loginBox">
-  <h2>Accesso dashboard</h2>
-  <div style="margin:10px 0">
-    <input type="text" id="authProfile" placeholder="Profilo" autocomplete="username">
-  </div>
-  <div style="margin:10px 0">
-    <input type="password" id="authPin" placeholder="PIN" autocomplete="current-password">
-  </div>
-  <button type="button" id="authLoginButton">Accedi</button>
-  <div class="small" id="authStatus"></div>
-</div>
-
 <!-- ===== HEADER ===== -->
 <div class="box" id="head">
   <div id="viewMenu">
@@ -237,14 +225,6 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
     <div id="weatherIcon"></div>
     <div id="weather">Meteo: caricamento...</div>
   </div>
-</div>
-
-<!-- ===== SINCRONIZZAZIONE (PIN) ===== -->
-<div class="box" id="syncBox" hidden>
-  <div class="section-heading"><h2>Sincronizzazione</h2></div>
-  <input type="password" id="todoPinInput" maxlength="50" placeholder="PIN sincronizzazione" autocomplete="off">
-  <button type="button" id="todoConnectButton">Connetti</button>
-  <div class="small" id="syncStatus"></div>
 </div>
 
 <!-- ===== VISTE PERSONALI ===== -->
@@ -295,7 +275,7 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
 </div>
 
 <!-- ===== VISTA FAMIGLIA ===== -->
-<div class="row" id="dashboardContent">
+<div class="row" id="dashboardContent" hidden>
   <div class="col">
 
     <div class="box" id="agendaBox">
@@ -398,7 +378,9 @@ var CONFIG = {
   weatherMin: 5,
   todoWorkerUrl: "https://todo-sync.iletarta-633.workers.dev"
 };
-CONFIG.routesUrl = CONFIG.base + "routes.json";
+CONFIG.routesUrl = function(userId){
+  return CONFIG.base + "routes_" + String(userId).toLowerCase() + ".json";
+};
 
 var MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 var GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
@@ -419,7 +401,8 @@ var shoppingSyncedAt = null;
 var menuSel = "oggi", menuSyncedAt = null, menuUpdatedAt = null;
 var personalPeriod = "oggi";
 
-var todoPin = "", todoItems = [], todoConnected = false, todoBusy = false;
+var todoItems = [], todoConnected = false, todoBusy = false;
+var menuInitialized = false, usersLoaded = false, scheduleViewTimer = null;
 var todoSyncError = false, todoSyncedAt = null;
 var taskSel = "oggi", personalGlobalTaskSel = "oggi";
 var taskDays = {}, taskReady = false, taskBusy = false;
@@ -509,7 +492,7 @@ function api(method, query, data, cb){
     cb(err, res);
   }
   x.open(method, CONFIG.todoWorkerUrl + (query || ""), true);
-  x.setRequestHeader("X-Todo-Pin", todoPin);
+  if(authToken){ x.setRequestHeader("Authorization", "Bearer " + authToken); }
   if(method === "POST"){ x.setRequestHeader("Content-Type", "application/json"); }
   x.timeout = 20000;
   x.onreadystatechange = function(){
@@ -1155,45 +1138,21 @@ function addFrom(inp, statusEl, fn){
 /* ==================================================
    9. TASK CONDIVISI (to-do)
    ================================================== */
-function getSavedTodoPin(){
-  var pin = "";
-  try { pin = window.localStorage.getItem("todoPin") || ""; } catch(e){}
-  if(pin){ return pin; }
-  var m = document.cookie.match(/(?:^|; )todoPin=([^;]*)/);
-  if(m){
-    try { return decodeURIComponent(m[1]); } catch(e){ return m[1]; }
-  }
-  return "";
-}
-
-function saveTodoPin(pin){
-  try { window.localStorage.setItem("todoPin", pin); } catch(e){}
-  try {
-    document.cookie = "todoPin=" + encodeURIComponent(pin) + "; Max-Age=31536000; Path=/; SameSite=Lax" +
-      (location.protocol === "https:" ? "; Secure" : "");
-  } catch(e){}
-}
-
 function todoConnect(){
-  var inp = $("todoPinInput");
-  var pin = (inp && inp.value) || getSavedTodoPin();
+  if(!authToken){ return; }
 
-  if(!pin){ setText($("syncStatus"), "Inserisci il PIN."); return; }
-
-  todoPin = pin;
   todoBusy = true;
-  setText($("syncStatus"), "Connessione in corso...");
+  setText($("todoStatus"), "Connessione in corso...");
 
   api("GET", "", null, function(err, d){
     todoBusy = false;
 
     if(err || !d || !d.items){
       todoConnected = false;
-      /* il PIN salvato non viene cancellato: un errore di rete non deve costringere a reinserirlo */
+      todoSyncError = true;
       var detail = d && d.detail ? " - " + d.detail : "";
-      setText($("syncStatus"), "Connessione non riuscita: " + (err || "risposta non valida") + detail);
-      setHidden($("syncBox"), false);
-      inp.value = pin;
+      setText($("todoStatus"), "Sincronizzazione non disponibile: " +
+        (err || "risposta non valida") + detail);
       updateSyncLabels();
       return;
     }
@@ -1202,32 +1161,20 @@ function todoConnect(){
     todoConnected = true;
     todoSyncedAt = new Date();
     todoSyncError = false;
-    saveTodoPin(pin);
 
-    setHidden($("syncBox"), true);
     setHidden($("todoCtl"), false);
     setHidden($("taskCtl"), false);
 
     renderTodo();
     updateSyncLabels();
+    setText($("todoStatus"), "");
     if(!pollTimer){ schedulePoll(); }
     loadTasks();
   });
 }
 
 function loadTodo(){
-  var btn = $("todoConnectButton");
-  btn.onclick = todoConnect;
-  onEnter($("todoPinInput"), todoConnect);
-
-  var saved = getSavedTodoPin();
-  if(saved){
-    $("todoPinInput").value = saved;
-    todoConnect();
-  } else {
-    setHidden($("syncBox"), false);
-    setText($("syncStatus"), "Inserisci il PIN per collegare la dashboard.");
-  }
+  todoConnect();
 }
 
 function todoChange(action, index, text){
@@ -1554,9 +1501,10 @@ function loadRoutes(userId){
     return;
   }
 
+  var url = CONFIG.routesUrl(userId);
   var file = "routes_" + String(userId).toLowerCase() + ".json";
 
-  getJson([CONFIG.base + file, file], function(err, d){
+  getJson([url, CONFIG.base + file, file], function(err, d){
     if(!err && d && d.routes){
       routesData = d;
       routesErr = false;
@@ -1883,51 +1831,76 @@ function setView(view, manual){
   scheduleAlign();
 }
 
+function renderViewMenu(){
+  var panel = $("viewMenuPanel");
+  clear(panel);
+
+  function addButton(id, label){
+    var b = mk("button", "", label);
+    b.type = "button";
+    b.setAttribute("data-view", id);
+    b.onclick = function(){
+      if(!authToken){
+        authLogin(id);
+      } else {
+        personalPeriod = "oggi";
+        setView(id, true);
+      }
+    };
+    panel.appendChild(b);
+  }
+
+  addButton("shared", "FAMIGLIA");
+  for(var i = 0; i < USERS.length; i++){
+    addButton(USERS[i].id, USERS[i].name);
+  }
+
+  if(authToken){
+    var logoutButton = mk("button", "", "ESCI");
+    logoutButton.type = "button";
+    logoutButton.onclick = authLogout;
+    panel.appendChild(logoutButton);
+  }
+}
+
 function initViewMenu(){
   var toggle = $("viewMenuToggle"), panel = $("viewMenuPanel");
 
-  toggle.onclick = function(){
-    var open = panel.hasAttribute("hidden");
-    setHidden(panel, !open);
-    toggle.setAttribute("aria-expanded", open ? "true" : "false");
-  };
-  document.addEventListener("click", function(ev){
-    if(!$("viewMenu").contains(ev.target)){ closeViewMenu(); }
-  });
-  document.addEventListener("keydown", function(ev){
-    if(ev.key === "Escape"){ closeViewMenu(); }
-  });
+  if(!menuInitialized){
+    toggle.onclick = function(){
+      var open = panel.hasAttribute("hidden");
+      setHidden(panel, !open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    };
+
+    document.addEventListener("click", function(ev){
+      if(!$("viewMenu").contains(ev.target)){ closeViewMenu(); }
+    });
+
+    document.addEventListener("keydown", function(ev){
+      if(ev.key === "Escape"){ closeViewMenu(); }
+    });
+
+    menuInitialized = true;
+  }
+
+  if(usersLoaded){
+    renderViewMenu();
+    return;
+  }
 
   getJson([CONFIG.base + "users.json", "users.json"], function(err, d){
-    if(err || !d || !Array.isArray(d.users)){
-      console.error("Errore caricamento users.json");
-      USERS = [];
+    if(!err && d && Array.isArray(d.users)){
+      USERS = d.users.filter(function(u){
+        return u && u.id && u.name && u.enabled === true;
+      });
     } else {
-      USERS = d.users.filter(function(u){ return u && u.id && u.name && u.enabled === true; });
+      USERS = [];
+      console.error("Errore caricamento users.json");
     }
 
-    function addButton(id, label){
-      var b = mk("button", "", label);
-      b.type = "button";
-      b.setAttribute("data-view", id);
-      b.onclick = function(){
-        personalPeriod = "oggi";
-        setView(id, true);
-      };
-      panel.appendChild(b);
-    }
-
-    clear(panel);
-    addButton("shared", "FAMIGLIA");
-    for(var i = 0; i < USERS.length; i++){ addButton(USERS[i].id, USERS[i].name); }
-
-	var logoutButton = mk("button", "", "ESCI");
-	logoutButton.type = "button";
-	logoutButton.onclick = authLogout;
-	panel.appendChild(logoutButton);
-
-    setView(getScheduledView(), false);
-    setInterval(checkScheduledView, 15000);
+    usersLoaded = true;
+    renderViewMenu();
   });
 }
 
@@ -2072,79 +2045,82 @@ function loadAuthorizedConfig(callback){
   x.send(null);
 }
 
-function showLogin(message){
+function clearAuthStorage(){
+  try {
+    localStorage.removeItem("dashboardAuthToken");
+    localStorage.removeItem("dashboardAuthProfile");
+    localStorage.removeItem("dashboardAuthSessionId");
+  } catch(e){}
+}
+
+function showLoggedOut(message){
   authToken = "";
   authProfile = "";
   authSessionId = "";
+  DASHBOARD_CONFIG = null;
 
-  localStorage.removeItem("dashboardAuthToken");
-  localStorage.removeItem("dashboardAuthProfile");
-  localStorage.removeItem("dashboardAuthSessionId");
-
-  setHidden($("loginBox"), false);
-  setHidden($("head"), true);
-  setHidden($("syncBox"), true);
+  clearAuthStorage();
+  setHidden($("head"), false);
   setHidden($("dashboardContent"), true);
   setHidden($("personalView"), true);
-
-  setText($("authStatus"), message || "");
+  clear($("err"));
+  if(message){ setText($("err"), message); }
+  renderViewMenu();
+  closeViewMenu();
 }
 
-function startDashboard(){
+function startDashboard(preferredView){
   loadAuthorizedConfig(function(err){
     if(err){
-      showLogin(err);
+      showLoggedOut("Configurazione dashboard non disponibile: " + err);
       return;
     }
 
-    setHidden($("loginBox"), true);
     setHidden($("head"), false);
+    setHidden($("dashboardContent"), false);
+    renderViewMenu();
+    setView(preferredView || getScheduledView(), false);
 
-    getJson([CONFIG.base + "users.json", "users.json"], function(e, d){
-      USERS = (!e && d && Array.isArray(d.users))
-        ? d.users.filter(function(u){
-            return u && u.id && u.name && u.enabled === true;
-          })
-        : [];
+    safe(loadAgenda);
+    safe(loadShoppingList);
+    safe(loadWeather);
+    safe(loadSunTimes);
+    safe(loadMenu);
+    safe(loadTodo);
 
-      safe(initViewMenu);
-      safe(loadAgenda);
+    if(!scheduleViewTimer){
+      scheduleViewTimer = setInterval(checkScheduledView, 15000);
+    }
+
+    setInterval(function(){ safe(loadSunTimes); }, 3600000);
+
+    setInterval(function(){
       safe(loadShoppingList);
-      safe(loadWeather);
-      safe(loadSunTimes);
-      safe(loadMenu);
-      safe(loadTodo);
-
-      setInterval(function(){ safe(loadSunTimes); }, 3600000);
-
-      setInterval(function(){
-        safe(loadShoppingList);
-
-        if(viewHasBox(currentView, "personalRoutes")){
-          safe(function(){ loadRoutes(currentView); });
-        }
-      }, 5 * 60000);
-    });
+      if(viewHasBox(currentView, "personalRoutes")){
+        safe(function(){ loadRoutes(currentView); });
+      }
+    }, 5 * 60000);
   });
 }
 
-function authLogin(){
-  var profile = $("authProfile").value.replace(/^\s+|\s+$/g, "");
-  var pin = $("authPin").value;
+function authLogin(profile){
+  if(!profile){ return; }
 
-  if(!profile || !pin){
-    setText($("authStatus"), "Inserisci profilo e PIN.");
+  var pin = window.prompt("Inserisci il PIN per " +
+    (profile === "shared" ? "FAMIGLIA" : userName(profile)) + ":");
+
+  if(pin === null){ return; }
+  if(!/^\\d{6,12}$/.test(pin)){
+    alert("Il PIN deve contenere da 6 a 12 cifre.");
     return;
   }
-
-  setText($("authStatus"), "Accesso in corso...");
 
   authRequest("POST", "/login", {
     profile: profile,
     pin: pin
   }, function(err, data){
     if(err || !data || !data.ok){
-      setText($("authStatus"), err || "Accesso non riuscito.");
+      alert(err || "Accesso non riuscito.");
       return;
     }
 
@@ -2152,49 +2128,52 @@ function authLogin(){
     authProfile = data.profile;
     authSessionId = data.session_id || "";
 
-    localStorage.setItem("dashboardAuthToken", authToken);
-    localStorage.setItem("dashboardAuthProfile", authProfile);
-    localStorage.setItem("dashboardAuthSessionId", authSessionId);
+    try {
+      localStorage.setItem("dashboardAuthToken", authToken);
+      localStorage.setItem("dashboardAuthProfile", authProfile);
+      localStorage.setItem("dashboardAuthSessionId", authSessionId);
+    } catch(e){}
 
-    $("authPin").value = "";
-    startDashboard();
+    startDashboard(profile);
   });
 }
 
 function authLogout(){
+  if(!authToken){ return; }
+
   authRequest("POST", "/logout", null, function(){
-    showLogin("Sessione terminata.");
+    showLoggedOut("Sessione terminata. Seleziona un profilo dal menu.");
   });
 }
 
 function restoreAuthSession(){
-  authToken = localStorage.getItem("dashboardAuthToken") || "";
+  try { authToken = localStorage.getItem("dashboardAuthToken") || ""; }
+  catch(e){ authToken = ""; }
 
   if(!authToken){
-    showLogin("");
+    renderViewMenu();
     return;
   }
 
   authRequest("POST", "/session/verify", null, function(err, data){
     if(err || !data || !data.ok){
-      showLogin("Sessione scaduta. Accedi nuovamente.");
+      showLoggedOut("Sessione scaduta. Seleziona un profilo dal menu.");
       return;
     }
 
     authProfile = data.profile;
+    authSessionId = data.session_id || "";
     startDashboard();
   });
 }
+
 /* ==================================================
    17. AVVIO
    ================================================== */
 safe(startClock);
 safe(updateSyncLabels);
-
-$("authLoginButton").onclick = authLogin;
-onEnter($("authPin"), authLogin);
-
-restoreAuthSession();
+safe(initViewMenu);
+setTimeout(restoreAuthSession, 0);
 
 </script>
 </body>
