@@ -1840,10 +1840,11 @@ function renderViewMenu(){
   // SCHERMATA DI ACCESSO
   if(pendingProfile){
     var box = mk("div", "pin-login-panel", "");
-    box.style.padding = "18px 12px";
+	box.style.padding = "12px";
+	box.style.gap = "8px";
+	box.style.alignItems = "center";
     box.style.display = "flex";
     box.style.flexDirection = "column";
-    box.style.gap = "14px";
     box.style.width = "100%";
     box.style.boxSizing = "border-box";
 
@@ -1860,20 +1861,17 @@ function renderViewMenu(){
     input.autocomplete = "current-password";
     input.maxLength = 12;
     input.placeholder = "Inserisci il PIN";
-    input.style.width = "100%";
+	input.style.width = "100%";
 	input.style.maxWidth = "none";
 	input.style.minWidth = "0";
 	input.style.display = "block";
 	input.style.flex = "none";
-	input.style.height = "56px";
-	input.style.fontSize = "24px";
-	input.style.padding = "12px";
-	input.style.letterSpacing = "5px";
-    input.style.boxSizing = "border-box";
-    input.style.padding = "15px";
-    input.style.fontSize = "24px";
-    input.style.textAlign = "center";
-    input.style.letterSpacing = "6px";
+	input.style.height = "40px";
+	input.style.fontSize = "18px";
+	input.style.padding = "6px 10px";
+	input.style.letterSpacing = "4px";
+	input.style.textAlign = "center";
+	input.style.boxSizing = "border-box";
 
     var error = mk("div", "", "");
     error.style.color = "#c00";
