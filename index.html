@@ -831,7 +831,7 @@ var TASK_OFF = {ieri: -1, oggi: 0, domani: 1};
 
 var USERS = [];
 var DASHBOARD_VIEWS = [];
-var currentView = "shared";
+var currentView = "famiglia";
 var viewManualUntil = 0;
 
 var agendaData = null, agendaErr = false, agendaSyncedAt = null;
@@ -1111,7 +1111,7 @@ function onNewDay(){
   setTimeout(function(){ safe(loadMenu); }, 5 * 60000);   /* il menu del nuovo giorno può arrivare con ritardo */
   renderAgenda();
   renderTasks();
-  if(currentView !== "shared"){ renderPersonalTasks(); }
+  if(currentView !== "famiglia"){ renderPersonalTasks(); }
 }
 
 function updateClock(){
@@ -1233,7 +1233,7 @@ function renderAgenda(){
   setTimes($("agendaTimes"), parseIso(agendaData.generated_at || agendaData.updated_at),
            agendaSyncedAt, agendaErr, 3 * 3600000);
   buildAgenda(box, agendaData.events || [], agendaSt, function(){ safe(renderAgenda); },
-              {tasks: currentView === "shared", click: true});
+              {tasks: currentView === "famiglia", click: true});
 }
 
 function renderUserAgenda(){
@@ -1303,7 +1303,7 @@ function loadAgenda(){
     }
 
     if(changed || err){ safe(renderAgenda); }
-    if(currentView !== "shared"){ safe(renderPersonalTasks); }
+    if(currentView !== "famiglia"){ safe(renderPersonalTasks); }
 
   });
 }
@@ -1505,7 +1505,7 @@ function renderPersonalTasks(){
 }
 
 function renderPersonalGlobalTasks(){
-  if(currentView === "shared"){ return; }
+  if(currentView === "famiglia"){ return; }
 
   var box = $("personalGlobalTaskList");
   clear(box);
@@ -1944,7 +1944,7 @@ var WEEKEND_ROUTES = [
 function loadRoutes(userId){
   userId = userId || currentView;
 
-  if(!userId || userId === "shared"){
+  if(!userId || userId === "famiglia"){
     return;
   }
 
@@ -3451,7 +3451,7 @@ function getScheduledView(){
     }
   }
 
-  return "shared";
+  return "famiglia";
 }
 
 function checkScheduledView(){
@@ -3498,7 +3498,7 @@ function buildLayout(view){
   });
 
   isRows = vc.layout_mode === "rows";
-  host = view === "shared" ? $("dashboardContent") : personalRow();
+  host = view === "famiglia" ? $("dashboardContent") : personalRow();
   stash = $("stash");
 
   if(!host || !stash){ return; }
@@ -3566,7 +3566,7 @@ function setView(view, manual){
     btns[i].className = btns[i].getAttribute("data-view") === view ? "sel" : "";
   }
 
-  var personal = view !== "shared";
+  var personal = view !== "famiglia";
   setHidden($("dashboardContent"), personal);
   setHidden($("personalView"), !personal);
 
@@ -3584,7 +3584,7 @@ function setView(view, manual){
   if(personal){
     safe(renderPersonalTasks);
   
-    if(view !== "shared" && viewHasBox(view, "personalRoutes")){
+    if(view !== "famiglia" && viewHasBox(view, "personalRoutes")){
       loadRoutes(view);
     }
   
@@ -3616,7 +3616,7 @@ function renderViewMenu(){
     box.style.boxSizing = "border-box";
 
     var title = mk("div", "", "ACCESSO " +
-      (pendingProfile === "shared" ? "FAMIGLIA" : userName(pendingProfile)));
+      (pendingProfile === "famiglia" ? "FAMIGLIA" : userName(pendingProfile)));
 
     title.style.textAlign = "center";
     title.style.fontSize = "18px";
@@ -3717,7 +3717,7 @@ function renderViewMenu(){
     panel.appendChild(b);
   }
 
-  addButton("shared", "FAMIGLIA");
+  addButton("famiglia", "FAMIGLIA");
 
   for(var i = 0; i < USERS.length; i++){
     addButton(USERS[i].id, USERS[i].name);
@@ -3808,7 +3808,7 @@ function growColumn(bs, extra){
 
 
 function alignBoxes(){
-  var host = currentView === "shared"
+  var host = currentView === "famiglia"
     ? $("dashboardContent")
     : personalRow();
 
