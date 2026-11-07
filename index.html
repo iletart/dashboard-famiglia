@@ -496,42 +496,47 @@ body.k #viewMenuToggle span:nth-child(1){top:5px}
 body.k #viewMenuToggle span:nth-child(2){top:12px}
 body.k #viewMenuToggle span:nth-child(3){top:19px}
 
-/* Header Kindle */
+/* Header Kindle: layout compatibile con il vecchio browser */
+
 body.k #head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  display:block;
+  position:relative;
   height:auto;
   min-height:38px;
   padding:0 2px 0 40px;
-  overflow:visible;
+  overflow:hidden;
+}
+
+body.k #head:after{
+  content:"";
+  display:table;
+  clear:both;
 }
 
 body.k #headerLeft{
-  display:flex;
-  align-items:center;
-  gap:5px;
+  display:block;
+  float:left;
+  width:62%;
   min-width:0;
+  overflow:hidden;
 }
 
 body.k #clock{
-  float:none;
+  float:left;
   width:auto;
-  margin:0;
-  position:static;
+  margin:3px 5px 0 0;
   font-size:1.8em;
+  line-height:1;
   white-space:nowrap;
 }
 
 body.k #info{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  position:static;
-  min-height:0;
-  min-width:0;
+  display:block;
+  float:left;
+  width:auto;
   margin:0;
-  padding:0;
+  padding:2px 0 0;
+  min-width:0;
 }
 
 body.k #wday,
@@ -540,47 +545,43 @@ body.k #fulldate{
   width:auto;
   margin:0;
   line-height:1.1;
+  white-space:nowrap;
 }
 
 body.k #wday{font-size:1em}
 
 body.k #fulldate{
-  position:static;
   font-size:.7em;
 }
 
 body.k #headerRight{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  justify-content:center;
-  gap:3px;
+  display:block;
+  float:right;
+  width:35%;
   min-width:0;
+  text-align:right;
 }
 
 body.k #loggedUser{
+  display:block;
   font-size:.6em;
   margin:0;
   text-align:right;
 }
 
 body.k #weatherRow{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:3px;
-  min-width:0;
+  display:block;
+  overflow:hidden;
+  text-align:right;
 }
 
 body.k #weatherIcon{
-  display:flex;
+  display:block;
+  float:right;
   position:static;
   width:30px;
   height:30px;
-  justify-content:center;
-  align-items:center;
-  margin:0;
-  flex:none;
+  margin:0 0 0 3px;
 }
 
 body.k #weatherIcon svg{
@@ -589,13 +590,13 @@ body.k #weatherIcon svg{
 }
 
 body.k #weather{
+  display:block;
   position:static;
   width:auto;
-  max-width:85px;
+  max-width:none;
   margin:0;
   font-size:.7em;
   line-height:1.2;
-  white-space:normal;
   text-align:right;
 }
 
@@ -3332,7 +3333,7 @@ function growColumn(bs, extra){
 function alignBoxes(){
   var host = currentView === "shared"
     ? $("dashboardContent")
-    : $("personalLayoutRow");
+    : personalRow();
 
   if(!host){ return; }
 
@@ -3341,37 +3342,36 @@ function alignBoxes(){
   var all = host.querySelectorAll(".box");
   var i, j, boxes, maxHeight = 0;
 
-  /* Reset */
+  /* Reset delle altezze */
   for(i = 0; i < all.length; i++){
-    all[i].style.minHeight = "";
-    all[i].style.flexGrow = "0";
+	all[i].style.minHeight = "";
+	all[i].style.height = "";
+	all[i].style.flexGrow = "";
   }
 
-  /* COLONNE: calcola l'altezza della colonna più alta */
+  /* COLONNE: calcola l'altezza naturale della più alta */
   for(i = 0; i < columns.length; i++){
     boxes = boxesOf(columns[i]);
-
-    columns[i].style.display = "flex";
-    columns[i].style.flexDirection = "column";
-    columns[i].style.height = "auto";
-
-    var height = columns[i].scrollHeight;
+    var height = columnHeight(boxes);
     maxHeight = Math.max(maxHeight, height);
   }
 
-  /* Assegna la stessa altezza a tutte le colonne */
+  /* Allunga solo l'ultimo box di ogni colonna */
   for(i = 0; i < columns.length; i++){
     boxes = boxesOf(columns[i]);
 
-    columns[i].style.height = maxHeight + "px";
+    if(!boxes.length){ continue; }
 
-    /* Solo l'ultimo box assorbe lo spazio residuo */
-    if(boxes.length){
-      boxes[boxes.length - 1].style.flexGrow = "1";
+    var currentHeight = columnHeight(boxes);
+    var extra = maxHeight - currentHeight;
+
+    if(extra > 1){
+      var last = boxes[boxes.length - 1];
+      last.style.height = (last.offsetHeight + extra) + "px";
     }
   }
 
-  /* RIGHE: uniforma l'altezza dei box affiancati */
+  /* RIGHE: uniforma i box affiancati */
   for(i = 0; i < rows.length; i++){
     var firsts = [];
     var max = 0;
@@ -3390,7 +3390,6 @@ function alignBoxes(){
     }
   }
 }
-
 
 
 function scheduleAlign(){
