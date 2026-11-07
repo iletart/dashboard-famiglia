@@ -2108,9 +2108,12 @@ function authLogin(profile){
 
   var pin = window.prompt("Inserisci il PIN per " +
     (profile === "shared" ? "FAMIGLIA" : userName(profile)) + ":");
-
+  
   if(pin === null){ return; }
-  if(!/^\\d{6,12}$/.test(pin)){
+  
+  pin = pin.trim();
+  
+  if(!/^\d{6,12}$/.test(pin)){
     alert("Il PIN deve contenere da 6 a 12 cifre.");
     return;
   }
