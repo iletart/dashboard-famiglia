@@ -1052,13 +1052,6 @@ function userName(id){
 
 function viewHasBox(view, boxName){
   var views = DASHBOARD_VIEWS || [];
-  var aliases = {
-    personalRoutes: ["personalRoutes", "personalRoutesBox"],
-    userAgenda: ["userAgenda", "userAgendaBox"],
-    personalTasks: ["personalTasks", "personalTasksBox"],
-    personalGlobalTasks: ["personalGlobalTasks", "personalGlobalTaskBox"]
-  };
-
   var viewConfig = null;
 
   for(var i = 0; i < views.length; i++){
@@ -1072,18 +1065,11 @@ function viewHasBox(view, boxName){
     return false;
   }
 
-  var accepted = aliases[boxName] || [boxName];
-
   for(var i = 0; i < viewConfig.rows.length; i++){
     var items = viewConfig.rows[i].items || [];
 
     for(var j = 0; j < items.length; j++){
-      var item = items[j];
-
-      if(
-        accepted.indexOf(item.box_id) !== -1 ||
-        accepted.indexOf(item.element_id) !== -1
-      ){
+      if(items[j].box_id === boxName){
         return true;
       }
     }
