@@ -131,6 +131,13 @@ input[type=checkbox]{margin:0}
   color: #666;
 }
 
+.seg.two button.active,
+body.k .seg.two button.active {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-color: #000 !important;
+}
+
 /* ==================================================
    5. PC (> 800px)
    ================================================== */
@@ -1659,36 +1666,41 @@ function loadShoppingList(){
         mk("h3", "", userName(list.account) + " - " + list.list_name)
       );
 
-      // Pulsanti DA COMPRARE / COMPRATO
-      var tabs = mk("div", "seg two");
-      var pendingButton = mk("button", "", "DA COMPRARE");
-      var completedButton = mk("button", "", "COMPRATO");
+	  // Pulsanti DA COMPRARE / COMPRATO
+	  var tabs = mk("div", "seg two");
+	  var pendingButton = mk("button", "", "DA COMPRARE");
+	  var completedButton = mk("button", "", "COMPRATO");
+	  
+	  pendingButton.type = "button";
+	  completedButton.type = "button";
+	  
+	  tabs.appendChild(pendingButton);
+	  tabs.appendChild(completedButton);
+	  box.appendChild(tabs);
+	  
+	  var pendingSection = mk("div", "shopping-section");
+	  var completedSection = mk("div", "shopping-section");
+	  
+	  completedSection.style.display = "none";
+	  pendingButton.classList.add("active");
 
-      pendingButton.type = "button";
-      completedButton.type = "button";
+		pendingButton.addEventListener("click", function(ps, cs, pb, cb){
+		  return function(){
+			ps.style.display = "block";
+			cs.style.display = "none";
+			pb.classList.add("active");
+			cb.classList.remove("active");
+		  };
+		}(pendingSection, completedSection, pendingButton, completedButton));
 
-      tabs.appendChild(pendingButton);
-      tabs.appendChild(completedButton);
-      box.appendChild(tabs);
-
-      var pendingSection = mk("div", "shopping-section");
-      var completedSection = mk("div", "shopping-section");
-
-      completedSection.style.display = "none";
-
-      pendingButton.addEventListener("click", function(ps, cs){
-        return function(){
-          ps.style.display = "block";
-          cs.style.display = "none";
-        };
-      }(pendingSection, completedSection));
-
-      completedButton.addEventListener("click", function(ps, cs){
-        return function(){
-          ps.style.display = "none";
-          cs.style.display = "block";
-        };
-      }(pendingSection, completedSection));
+		completedButton.addEventListener("click", function(ps, cs, pb, cb){
+		  return function(){
+			ps.style.display = "none";
+			cs.style.display = "block";
+			pb.classList.remove("active");
+			cb.classList.add("active");
+		  };
+		}(pendingSection, completedSection, pendingButton, completedButton));
 
       // Funzione comune per creare una checkbox
       function addShoppingItem(container, item, isCompleted, dateText){
