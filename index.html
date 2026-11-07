@@ -67,6 +67,12 @@ input[type=checkbox]{margin:0}
 #weatherIcon,#weather{position:relative}
 #weatherIcon{display:flex;align-items:center}
 
+#loggedUser {
+  font-size: .75em;
+  margin: 3px 0 5px;
+  color: #555;
+}
+
 /* ==================================================
    4. ELENCHI: EVENTI, RIGHE CHECKBOX, ASSEGNAZIONI
    ================================================== */
@@ -246,6 +252,7 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
     <button type="button" id="viewMenuToggle" aria-label="Apri menu" aria-expanded="false"><span></span><span></span><span></span></button>
     <div id="viewMenuPanel" hidden></div>
   </div>
+  <div id="loggedUser"></div>
   <div id="clock">--:--</div>
   <div id="info">
     <div id="wday"></div>
@@ -2809,6 +2816,19 @@ function renderViewMenu(){
   }
 }
 
+function updateLoggedUser(){
+  var el = $("loggedUser");
+
+  if(!el){ return; }
+
+  if(!authToken || !authProfile){
+    el.textContent = "";
+    return;
+  }
+
+  el.textContent = "Utente collegato: " + userName(authProfile);
+}
+
 function initViewMenu(){
   var toggle = $("viewMenuToggle");
   var panel = $("viewMenuPanel");
@@ -2997,6 +3017,7 @@ function showLoggedOut(message){
   authToken = "";
   authProfile = "";
   authSessionId = "";
+  updateLoggedUser();
   DASHBOARD_CONFIG = null;
 
   clearAuthStorage();
@@ -3066,6 +3087,7 @@ function authLogin(profile, pin){
 
     authToken = data.token;
     authProfile = data.profile;
+	updateLoggedUser();
     authSessionId = data.session_id || "";
 
     try {
@@ -3105,6 +3127,7 @@ function restoreAuthSession(){
     }
 
     authProfile = data.profile;
+	updateLoggedUser();
     authSessionId = data.session_id || "";
     startDashboard();
   });
