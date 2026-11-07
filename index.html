@@ -752,12 +752,47 @@ body.k .add-ctl button{position:absolute;right:0;top:0;width:85px;height:32px;ma
 
 /* Righe checkbox: layout a tabella */
 body.k .todo{display:table;table-layout:fixed;border-spacing:0;width:100%}
-body.k .todo-check-cell,body.k .todo-text,body.k .todo-actions{display:table-cell;vertical-align:top}
-body.k .todo-check-cell{width:28px;padding-right:8px}
-body.k .todo-check{display:inline-block}
-body.k .todo-text{padding-top:2px}
-body.k .todo-actions{width:72px;text-align:right;white-space:nowrap}
-body.k .todo-actions button{margin-left:4px}
+body.k .todo-check-cell,
+body.k .todo-text,
+body.k .todo-actions{
+  display:table-cell;
+  vertical-align:middle;
+}
+
+body.k .todo-check-cell{
+  width:28px;
+  padding-right:8px;
+}
+
+body.k .todo-check{
+  display:inline-block;
+  vertical-align:middle;
+}
+
+body.k .todo-text{
+  padding-top:0;
+  text-align:left;
+  overflow-wrap:break-word;
+  word-wrap:break-word;
+}
+
+body.k .todo-actions{
+  width:76px;
+  text-align:right;
+  white-space:nowrap;
+}
+
+body.k .todo-actions button{
+  display:inline-block;
+  vertical-align:middle;
+  box-sizing:border-box;
+  width:28px;
+  min-width:28px;
+  height:28px;
+  margin:0 0 0 4px;
+  padding:0;
+}
+
 body.k .todo-assign-option{margin:3px 0}
 body.k .todo-assign-option input{margin-right:1px}
 
