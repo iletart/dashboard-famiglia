@@ -1801,87 +1801,152 @@ function loadShoppingList(){
 
         container.appendChild(row);
 
-        checkbox.addEventListener("change", function(){
-          var desiredStatus = checkbox.checked;
-          checkbox.disabled = true;
+checkbox.addEventListener("change", function(){
+  var desiredStatus = checkbox.checked;
+  checkbox.disabled = true;
 
-          var update = new XMLHttpRequest();
+  var update = new XMLHttpRequest();
 
-          update.open(
-            "POST",
-            SHOPPING_API_URL + "/shopping/update",
-            true
+  update.open(
+    "POST",
+    SHOPPING_API_URL + "/shopping/update",
+    true
+  );
+
+  update.setRequestHeader(
+    "Authorization",
+    "Bearer " + authToken
+  );
+
+  update.setRequestHeader(
+    "Content-Type",
+    "application/json"
+  );
+
+  update.timeout = 20000;
+
+  update.onreadystatechange = function(){
+    if(update.readyState !== 4){ return; }
+
+    var result = null;
+
+    try {
+      result = JSON.parse(update.responseText);
+    } catch(e){}
+
+    if(
+      update.status >= 200 &&
+      update.status < 300 &&
+      result &&
+      result.ok &&
+      result.command_id
+    ){
+      checkCommandStatus(result.command_id, 0);
+      return;
+    }
+
+    checkbox.checked = isCompleted;
+    checkbox.disabled = false;
+
+    alert(
+      result && result.error
+        ? result.error
+        : "Impossibile aggiornare l'articolo."
+    );
+  };
+
+  update.onerror = function(){
+    checkbox.checked = isCompleted;
+    checkbox.disabled = false;
+    alert("Errore di connessione a shopping-api.");
+  };
+
+  update.ontimeout = function(){
+    checkbox.checked = isCompleted;
+    checkbox.disabled = false;
+    alert("Timeout durante l'aggiornamento.");
+  };
+
+  update.send(JSON.stringify({
+    view_id: currentView,
+    view_item_id: list.view_item_id,
+    shopping_list_id: list.shopping_list_id,
+    item_id: item.id,
+    completed: desiredStatus
+  }));
+
+  function checkCommandStatus(commandId, attempt){
+    if(attempt >= 60){
+      checkbox.disabled = false;
+      alert("Il comando è ancora in elaborazione. Ricarica la lista tra poco.");
+      return;
+    }
+
+    var check = new XMLHttpRequest();
+
+    check.open(
+      "GET",
+      SHOPPING_API_URL + "/shopping/command-status?id=" +
+        encodeURIComponent(commandId),
+      true
+    );
+
+    check.setRequestHeader(
+      "Authorization",
+      "Bearer " + authToken
+    );
+
+    check.timeout = 15000;
+
+    check.onreadystatechange = function(){
+      if(check.readyState !== 4){ return; }
+
+      var statusData = null;
+
+      try {
+        statusData = JSON.parse(check.responseText);
+      } catch(e){}
+
+      if(check.status >= 200 && check.status < 300 &&
+         statusData && statusData.ok){
+
+        if(statusData.status === "succeeded"){
+          loadShoppingList();
+          return;
+        }
+
+        if(statusData.status === "failed"){
+          checkbox.checked = isCompleted;
+          checkbox.disabled = false;
+
+          alert(
+            statusData.error ||
+            "Alexa non è riuscita ad aggiornare l'articolo."
           );
+          return;
+        }
+      }
 
-          update.setRequestHeader(
-            "Authorization",
-            "Bearer " + authToken
-          );
+      setTimeout(function(){
+        checkCommandStatus(commandId, attempt + 1);
+      }, 2000);
+    };
 
-          update.setRequestHeader(
-            "Content-Type",
-            "application/json"
-          );
+    check.onerror = function(){
+      setTimeout(function(){
+        checkCommandStatus(commandId, attempt + 1);
+      }, 2000);
+    };
 
-          update.timeout = 20000;
+    check.ontimeout = function(){
+      setTimeout(function(){
+        checkCommandStatus(commandId, attempt + 1);
+      }, 2000);
+    };
 
-          update.onreadystatechange = function(){
-            if(update.readyState !== 4){ return; }
-
-            var result = null;
-
-            try {
-              result = JSON.parse(update.responseText);
-            } catch(e){}
-
-			if(
-			  update.status >= 200 &&
-			  update.status < 300 &&
-			  result &&
-			  result.ok
-			){
-			  waitForShoppingUpdate(
-				list.shopping_list_id,
-				item.id,
-				desiredStatus,
-				0,
-				checkbox,
-				isCompleted
-			  );
-
-			  return;
-			}
-
-            checkbox.checked = isCompleted;
-            checkbox.disabled = false;
-
-            alert(
-              result && result.error
-                ? result.error
-                : "Impossibile aggiornare l'articolo."
-            );
-          };
-
-          update.onerror = function(){
-            checkbox.checked = isCompleted;
-            checkbox.disabled = false;
-            alert("Errore di connessione a shopping-api.");
-          };
-
-          update.ontimeout = function(){
-            checkbox.checked = isCompleted;
-            checkbox.disabled = false;
-            alert("Timeout durante l'aggiornamento.");
-          };
-
-          update.send(JSON.stringify({
-            view_id: currentView,
-            view_item_id: list.view_item_id,
-            shopping_list_id: list.shopping_list_id,
-            item_id: item.id,
-            completed: desiredStatus
-          }));
-        });
+    check.send(null);
+  }
+});
       }
 
       if(!pending.length){
