@@ -1016,7 +1016,7 @@ function viewHasBox(view, boxName){
     var items = viewConfig.rows[i].items || [];
 
     for(var j = 0; j < items.length; j++){
-      if(items[j].element_id === boxName){
+      if(items[j].box_id === boxName || items[j].element_id === boxName){
         return true;
       }
     }
