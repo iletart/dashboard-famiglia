@@ -1835,28 +1835,83 @@ function renderViewMenu(){
   var panel = $("viewMenuPanel");
   clear(panel);
 
+  function showPinEntry(id, button){
+    var oldEntry = panel.querySelector(".pin-inline");
+    if(oldEntry){ oldEntry.remove(); }
+
+    var entry = mk("div", "pin-inline", "");
+
+    entry.style.display = "flex";
+    entry.style.gap = "6px";
+    entry.style.padding = "6px";
+    entry.style.alignItems = "center";
+
+    var input = document.createElement("input");
+    input.type = "password";
+    input.inputMode = "numeric";
+    input.autocomplete = "current-password";
+    input.maxLength = 12;
+    input.placeholder = "Inserisci PIN";
+    input.style.flex = "1";
+    input.style.minWidth = "0";
+    input.style.boxSizing = "border-box";
+
+    var loginButton = mk("button", "", "ACCEDI");
+    loginButton.type = "button";
+
+    function submit(){
+      var pin = input.value.trim();
+
+      if(!/^\d{6,12}$/.test(pin)){
+        alert("Il PIN deve contenere da 6 a 12 cifre.");
+        input.focus();
+        return;
+      }
+
+      authLogin(id, pin);
+    }
+
+    loginButton.onclick = submit;
+
+    input.onkeydown = function(ev){
+      if(ev.key === "Enter"){
+        ev.preventDefault();
+        submit();
+      }
+    };
+
+    entry.appendChild(input);
+    entry.appendChild(loginButton);
+
+    panel.insertBefore(entry, button.nextSibling);
+    input.focus();
+  }
+
   function addButton(id, label){
     var b = mk("button", "", label);
     b.type = "button";
     b.setAttribute("data-view", id);
+
     b.onclick = function(){
       if(!authToken){
-        authLogin(id);
+        showPinEntry(id, b);
       } else {
         personalPeriod = "oggi";
         setView(id, true);
       }
     };
+
     panel.appendChild(b);
   }
 
   addButton("shared", "FAMIGLIA");
+
   for(var i = 0; i < USERS.length; i++){
     addButton(USERS[i].id, USERS[i].name);
   }
 
   if(authToken){
-    var logoutButton = mk("button", "", "ESCI");
+    var logoutButton = mk("button", "", "↪ ESCI");
     logoutButton.type = "button";
     logoutButton.onclick = authLogout;
     panel.appendChild(logoutButton);
@@ -2103,13 +2158,15 @@ function startDashboard(preferredView){
   });
 }
 
-function authLogin(profile){
+function authLogin(profile, pin){
   if(!profile){ return; }
+  if(pin === undefined){
+    pin = window.prompt("Inserisci il PIN per " +
+      (profile === "shared" ? "FAMIGLIA" : userName(profile)) + ":");
+    if(pin === null){ return; }
+  }
 
-  var pin = window.prompt("Inserisci il PIN per " +
-    (profile === "shared" ? "FAMIGLIA" : userName(profile)) + ":");
-  
-  if(pin === null){ return; }
+  pin = String(pin).trim();
   
   pin = pin.trim();
   
