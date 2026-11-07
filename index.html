@@ -824,7 +824,7 @@ var GIORNI_JSON = ["domenica","lunedi","martedi","mercoledi","giovedi","venerdi"
 var TASK_OFF = {ieri: -1, oggi: 0, domani: 1};
 
 var USERS = [];
-var DASHBOARD_CONFIG = null;
+var DASHBOARD_VIEWS = [];
 var currentView = "shared";
 var viewManualUntil = 0;
 
@@ -2998,37 +2998,71 @@ function personalRow(){
   return r;
 }
 
-/* Costruisce colonne (views[v].columns) o righe da due box (views[v].rows) */
 function buildLayout(view){
-  var cfg = DASHBOARD_CONFIG;
-  var vc = cfg && cfg.views && cfg.views[view];
-  if(!vc || !vc.enabled){ return; }
+  var views = DASHBOARD_VIEWS || [];
+  var vc = null;
+  var i, j, k, el, b;
+  var rows, items, row, item;
+  var isRows, host, stash;
 
-  var layout = vc.rows || vc.columns;
-  if(!layout){ return; }
-
-  var isRows = !!vc.rows;
-  var host = view === "shared" ? $("dashboardContent") : personalRow();
-  var stash = $("stash"), boxes = {}, key, el, i, j;
-
-  /* parcheggia tutti i box, poi ricostruisce l'host */
-  for(key in cfg.boxes){
-    if(!cfg.boxes.hasOwnProperty(key)){ continue; }
-    el = $(cfg.boxes[key]);
-    if(el){ boxes[key] = el; stash.appendChild(el); }
+  for(i = 0; i < views.length; i++){
+    if(views[i].id === view){
+      vc = views[i];
+      break;
+    }
   }
+
+  if(!vc){ return; }
+
+  rows = (vc.rows || []).slice();
+
+  rows.sort(function(a, b){
+    return a.position - b.position;
+  });
+
+  isRows = vc.layout_mode === "rows";
+  host = view === "shared" ? $("dashboardContent") : personalRow();
+  stash = $("stash");
+
+  if(!host || !stash){ return; }
+
+  /* Sposta nel contenitore temporaneo tutti i box configurati */
+  for(i = 0; i < rows.length; i++){
+    items = rows[i].items || [];
+
+    for(j = 0; j < items.length; j++){
+      el = $(items[j].element_id);
+      if(el){
+        stash.appendChild(el);
+      }
+    }
+  }
+
   clear(host);
 
-  for(i = 0; i < layout.length; i++){
-    var keys = layout[i];
-    var container = mk("div", isRows ? "row layout-row" : "col");
+  for(i = 0; i < rows.length; i++){
+    row = rows[i];
+    items = (row.items || []).slice();
+
+    items.sort(function(a, b){
+      return a.position - b.position;
+    });
+
+    var container = mk(
+      "div",
+      isRows ? "row layout-row" : "col"
+    );
+
     host.appendChild(container);
 
-    var n = isRows ? Math.min(keys.length, 2) : keys.length;
+    var n = isRows ? Math.min(items.length, 2) : items.length;
 
     for(j = 0; j < n; j++){
-      var b = boxes[keys[j]];
+      item = items[j];
+      b = $(item.element_id);
+
       if(!b){ continue; }
+
       setHidden(b, false);
 
       if(isRows){
@@ -3386,18 +3420,20 @@ function loadAuthorizedConfig(callback){
     var data = null;
     try { data = JSON.parse(x.responseText); } catch(e){}
 
-	if(x.status !== 200 || !data || !data.ok ||
-	   !Array.isArray(data.views) ||
-	   !Array.isArray(data.users)){
-	  callback("Configurazione non disponibile");
-	  return;
-	}
+    if(x.status !== 200 || !data || !data.ok ||
+       !Array.isArray(data.views) ||
+       !Array.isArray(data.users)){
+      callback("Configurazione non disponibile");
+      return;
+    }
 
-	USERS = data.users.filter(function(u){
-	  return u && u.id && u.name;
-	});
+    DASHBOARD_VIEWS = data.views;
 
-	callback(null);
+    USERS = data.users.filter(function(u){
+      return u && u.id && u.name;
+    });
+
+    callback(null);
   };
 
   x.onerror = function(){ callback("Errore di connessione"); };
@@ -3418,7 +3454,7 @@ function showLoggedOut(message){
   authProfile = "";
   authSessionId = "";
   updateLoggedUser();
-  DASHBOARD_CONFIG = null;
+  DASHBOARD_VIEWS = [];
 
   clearAuthStorage();
   setHidden($("head"), false);
