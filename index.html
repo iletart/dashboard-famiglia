@@ -1910,10 +1910,10 @@ checkbox.addEventListener("change", function(){
       if(check.status >= 200 && check.status < 300 &&
          statusData && statusData.ok){
 
-        if(statusData.status === "succeeded"){
-          loadShoppingList();
-          return;
-        }
+		if(statusData.status === "succeeded"){
+		  checkShoppingSync(0);
+		  return;
+		}
 
         if(statusData.status === "failed"){
           checkbox.checked = isCompleted;
@@ -1944,6 +1944,91 @@ checkbox.addEventListener("change", function(){
       }, 2000);
     };
 
+    check.send(null);
+  }
+  
+  function checkShoppingSync(attempt){
+    if(attempt >= 60){
+      checkbox.disabled = false;
+      alert(
+        "Alexa ha elaborato il comando, ma la lista non è ancora aggiornata. Riprova tra poco."
+      );
+      return;
+    }
+  
+    var check = new XMLHttpRequest();
+  
+    check.open(
+      "GET",
+      SHOPPING_API_URL + "/shopping?view_id=" +
+        encodeURIComponent(currentView) +
+        "&_=" + Date.now(),
+      true
+    );
+  
+    check.setRequestHeader(
+      "Authorization",
+      "Bearer " + authToken
+    );
+  
+    check.timeout = 15000;
+  
+    check.onreadystatechange = function(){
+      if(check.readyState !== 4){ return; }
+  
+      var data = null;
+  
+      try {
+        data = JSON.parse(check.responseText);
+      } catch(e){}
+  
+      if(check.status >= 200 && check.status < 300 &&
+         data && data.ok){
+  
+        var synced = false;
+        var lists = data.lists || [];
+  
+        for(var i = 0; i < lists.length; i++){
+          if(lists[i].shopping_list_id != list.shopping_list_id){
+            continue;
+          }
+  
+          var items = lists[i].items || [];
+  
+          for(var j = 0; j < items.length; j++){
+            if(
+              String(items[j].id) === String(item.id) &&
+              Boolean(items[j].completed) === desiredStatus
+            ){
+              synced = true;
+              break;
+            }
+          }
+        }
+  
+        if(synced){
+          loadShoppingList();
+          return;
+        }
+      }
+  
+      setTimeout(function(){
+        checkShoppingSync(attempt + 1);
+      }, 2000);
+    };
+  
+    check.onerror = function(){
+      setTimeout(function(){
+        checkShoppingSync(attempt + 1);
+      }, 2000);
+    };
+  
+    check.ontimeout = function(){
+      setTimeout(function(){
+        checkShoppingSync(attempt + 1);
+      }, 2000);
+    };
+  
     check.send(null);
   }
 });
