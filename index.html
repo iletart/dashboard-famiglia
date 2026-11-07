@@ -2213,6 +2213,10 @@ function loadShoppingList(){
       !data.ok
     ) {
       clear(box);
+	  
+	  console.log("SHOPPING: inizio rendering", new Date().toLocaleTimeString());
+	  box.appendChild(completedSection);
+	  console.log("SHOPPING: fine rendering", new Date().toLocaleTimeString());
 
       setText(
         box,
