@@ -2029,6 +2029,17 @@ function loadShoppingList(){
 
         commitBought.disabled = true;
         commitNotBought.disabled = true;
+		
+		var activeButton = desiredStatus
+		  ? commitBought
+		  : commitNotBought;
+
+		var originalText = activeButton.textContent;
+
+		activeButton.textContent = "IN CORSO...";
+		activeButton.style.backgroundColor = "#000";
+		activeButton.style.color = "#fff";
+		activeButton.style.borderColor = "#000";
 
         var update = new XMLHttpRequest();
 
@@ -2095,15 +2106,25 @@ function loadShoppingList(){
           );
         };
 
-        update.onerror = function () {
-          updateCommitButtons();
-          alert("Errore di connessione a shopping-api.");
-        };
+		update.onerror = function () {
+		  activeButton.textContent = originalText;
+		  activeButton.style.backgroundColor = "";
+		  activeButton.style.color = "";
+		  activeButton.style.borderColor = "";
 
-        update.ontimeout = function () {
-          updateCommitButtons();
-          alert("Timeout durante l'invio delle modifiche.");
-        };
+		  updateCommitButtons();
+		  alert("Errore di connessione a shopping-api.");
+		};
+
+		update.ontimeout = function () {
+		  activeButton.textContent = originalText;
+		  activeButton.style.backgroundColor = "";
+		  activeButton.style.color = "";
+		  activeButton.style.borderColor = "";
+
+		  updateCommitButtons();
+		  alert("Timeout durante l'invio delle modifiche.");
+		};
 
         update.send(JSON.stringify(payload));
       }
