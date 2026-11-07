@@ -2199,10 +2199,17 @@ console.log("SHOPPING: funzione avviata");
   x.setRequestHeader("Authorization", "Bearer " + authToken);
   x.timeout = 20000;
 
-  x.onreadystatechange = function () {
-    if (x.readyState !== 4) {
-      return;
-    }
+	x.onreadystatechange = function () {
+	  if (x.readyState !== 4) {
+		return;
+	  }
+
+	  box = $("shoppingBox");
+
+	  if (!box) {
+		console.warn("SHOPPING: contenitore non disponibile");
+		return;
+	  }
 
     var data = null;
 
