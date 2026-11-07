@@ -257,10 +257,24 @@ input[type=checkbox]{
 
 .todo-actions{
   display:table-cell;
-  width:72px;
+  width:76px;
   vertical-align:middle;
   text-align:right;
   white-space:nowrap;
+}
+
+.todo-actions button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  vertical-align:middle;
+  box-sizing:border-box;
+  width:28px;
+  min-width:28px;
+  height:28px;
+  margin:0 0 0 4px;
+  padding:0;
+  line-height:1;
 }
 
 .todo-check{
@@ -271,7 +285,6 @@ input[type=checkbox]{
   padding:0;
 }
 
-.todo-actions button{box-sizing:border-box;width:28px;min-width:28px;height:28px;margin:0;padding:2px}
 .todo-assign{font:bold 16px/20px Arial,sans-serif;text-align:center}
 
 .todo-assign-menu{display:none;position:relative;z-index:5;margin:4px 0 8px;padding:8px;border:1px solid #555;border-radius:4px;background:#fff}
