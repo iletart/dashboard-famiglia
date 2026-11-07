@@ -2180,6 +2180,8 @@ function startDashboard(preferredView){
       return;
     }
 
+    clear($("err")); // AGGIUNGI QUESTA RIGA
+
     setHidden($("head"), false);
     setHidden($("dashboardContent"), false);
     renderViewMenu();
