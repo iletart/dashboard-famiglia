@@ -1861,6 +1861,14 @@ function renderViewMenu(){
     input.maxLength = 12;
     input.placeholder = "Inserisci il PIN";
     input.style.width = "100%";
+	input.style.maxWidth = "none";
+	input.style.minWidth = "0";
+	input.style.display = "block";
+	input.style.flex = "none";
+	input.style.height = "56px";
+	input.style.fontSize = "24px";
+	input.style.padding = "12px";
+	input.style.letterSpacing = "5px";
     input.style.boxSizing = "border-box";
     input.style.padding = "15px";
     input.style.fontSize = "24px";
@@ -1926,11 +1934,16 @@ function renderViewMenu(){
     b.type = "button";
     b.setAttribute("data-view", id);
 
-    b.onclick = function(){
-      if(!authToken){
-        panel._pendingLoginProfile = id;
-        renderViewMenu();
-      } else {
+	b.onclick = function(ev){
+	  if(ev){
+		ev.preventDefault();
+		ev.stopPropagation();
+	  }
+
+	  if(!authToken){
+		panel._pendingLoginProfile = id;
+		renderViewMenu();
+	  } else {
         personalPeriod = "oggi";
         setView(id, true);
       }
@@ -1963,9 +1976,12 @@ function initViewMenu(){
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
     };
 
-    document.addEventListener("click", function(ev){
-      if(!$("viewMenu").contains(ev.target)){ closeViewMenu(); }
-    });
+	document.addEventListener("click", function(ev){
+	  var menu = $("viewMenu");
+	  if(menu && !menu.contains(ev.target)){
+		closeViewMenu();
+	  }
+	});
 
     document.addEventListener("keydown", function(ev){
       if(ev.key === "Escape"){ closeViewMenu(); }
