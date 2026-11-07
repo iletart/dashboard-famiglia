@@ -3327,49 +3327,58 @@ function growColumn(bs, extra){
   }
 }
 
+
 function alignBoxes(){
-  var host = currentView === "shared" ? $("dashboardContent") : $("personalLayoutRow");
+  var host = currentView === "shared"
+    ? $("dashboardContent")
+    : $("personalLayoutRow");
+
   if(!host){ return; }
 
-  var all = host.querySelectorAll(".box"), i, j;
-  for(i = 0; i < all.length; i++){ all[i].style.minHeight = ""; }
+  var columns = host.querySelectorAll(".layout-column");
+  var i, j, boxes;
 
-  /* su schermi stretti (non Kindle) le colonne sono impilate: niente allineamento */
-  if(!IS_KINDLE && document.documentElement.clientWidth <= 600){ return; }
-
-  var kids = host.children, rowsMode = false;
-  for(i = 0; i < kids.length; i++){
-    if(hasClass(kids[i], "layout-row")){ rowsMode = true; break; }
+  /* Reset delle impostazioni precedenti */
+  var all = host.querySelectorAll(".box");
+  for(i = 0; i < all.length; i++){
+    all[i].style.minHeight = "";
+    all[i].style.flexGrow = "0";
   }
 
-  if(rowsMode){
-    for(i = 0; i < kids.length; i++){
-      if(!hasClass(kids[i], "layout-row")){ continue; }
-      var firsts = [], max = 0;
-      for(j = 0; j < kids[i].children.length; j++){
-        var bs = boxesOf(kids[i].children[j]);
-        if(bs.length){ firsts.push(bs[0]); }
-      }
-      if(firsts.length < 2){ continue; }
-      for(j = 0; j < firsts.length; j++){ max = Math.max(max, firsts[j].offsetHeight); }
-      for(j = 0; j < firsts.length; j++){
-        if(max - firsts[j].offsetHeight > 1){ firsts[j].style.minHeight = max + "px"; }
+  /* Colonne verticali: si espande soltanto l'ultimo box */
+  for(i = 0; i < columns.length; i++){
+    boxes = boxesOf(columns[i]);
+
+    columns[i].style.display = "flex";
+    columns[i].style.flexDirection = "column";
+    columns[i].style.height = "100%";
+
+    if(boxes.length){
+      boxes[boxes.length - 1].style.flexGrow = "1";
+    }
+  }
+
+  /* Righe orizzontali: box affiancati della stessa altezza */
+  var rows = host.querySelectorAll(".layout-row");
+
+  for(i = 0; i < rows.length; i++){
+    var firsts = [];
+    var max = 0;
+
+    for(j = 0; j < rows[i].children.length; j++){
+      boxes = boxesOf(rows[i].children[j]);
+      if(boxes.length){
+        firsts.push(boxes[0]);
+        max = Math.max(max, boxes[0].offsetHeight);
       }
     }
-    return;
-  }
 
-  var cols = [], maxH = 0;
-  for(i = 0; i < kids.length; i++){
-    if(!hasClass(kids[i], "col")){ continue; }
-    var cb = boxesOf(kids[i]);
-    if(cb.length){ var h = columnHeight(cb); cols.push({boxes: cb, h: h}); maxH = Math.max(maxH, h); }
-  }
-  if(cols.length < 2){ return; }
-  for(i = 0; i < cols.length; i++){
-    if(maxH - cols[i].h > 1){ growColumn(cols[i].boxes, maxH - cols[i].h); }
+    for(j = 0; j < firsts.length; j++){
+      firsts[j].style.minHeight = max + "px";
+    }
   }
 }
+
 
 function scheduleAlign(){
   if(alignTimer){ clearTimeout(alignTimer); }
