@@ -1599,10 +1599,87 @@ function renderRoutes(){
    13. LISTA DELLA SPESA
    ================================================== */
 
+function waitForShoppingUpdate(listId, itemId, desiredStatus, attempt, checkbox, originalStatus){
 
-/* ==================================================
-   13. LISTA DELLA SPESA
-   ================================================== */
+  if(attempt >= 24){
+    checkbox.checked = originalStatus;
+    checkbox.disabled = false;
+    alert("L'aggiornamento è stato inviato, ma la sincronizzazione non è ancora arrivata. Riprova tra poco.");
+    return;
+  }
+
+  var check = new XMLHttpRequest();
+
+  var url = SHOPPING_API_URL + "/shopping?view_id=" +
+            encodeURIComponent(currentView);
+
+  check.open("GET", url, true);
+  check.setRequestHeader("Authorization", "Bearer " + authToken);
+  check.timeout = 20000;
+
+  check.onreadystatechange = function(){
+    if(check.readyState !== 4){ return; }
+
+    var data = null;
+
+    try {
+      data = JSON.parse(check.responseText);
+    } catch(e){}
+
+    if(check.status >= 200 && check.status < 300 && data && data.ok){
+
+      var lists = data.lists || [];
+
+      for(var i = 0; i < lists.length; i++){
+        var listData = lists[i];
+
+        if(String(listData.shopping_list_id) !== String(listId)){
+          continue;
+        }
+
+        var items = listData.items || [];
+
+        for(var j = 0; j < items.length; j++){
+          if(
+            String(items[j].id) === String(itemId) &&
+            !!items[j].completed === desiredStatus
+          ){
+            loadShoppingList();
+            return;
+          }
+        }
+      }
+    }
+
+    setTimeout(function(){
+      waitForShoppingUpdate(
+        listId,
+        itemId,
+        desiredStatus,
+        attempt + 1,
+        checkbox,
+        originalStatus
+      );
+    }, 5000);
+  };
+
+  check.onerror = function(){
+    setTimeout(function(){
+      waitForShoppingUpdate(
+        listId,
+        itemId,
+        desiredStatus,
+        attempt + 1,
+        checkbox,
+        originalStatus
+      );
+    }, 5000);
+  };
+
+  check.ontimeout = check.onerror;
+
+  check.send(null);
+}
 
 function loadShoppingList(){
   var box = $("shoppingList");
@@ -1757,16 +1834,23 @@ function loadShoppingList(){
               result = JSON.parse(update.responseText);
             } catch(e){}
 
-            if(
-              update.status >= 200 &&
-              update.status < 300 &&
-              result &&
-              result.ok
-            ){
-              // Il comando è stato accodato.
-              // La sincronizzazione effettiva avverrà tramite NAS.
-              return;
-            }
+			if(
+			  update.status >= 200 &&
+			  update.status < 300 &&
+			  result &&
+			  result.ok
+			){
+			  waitForShoppingUpdate(
+				list.shopping_list_id,
+				item.id,
+				desiredStatus,
+				0,
+				checkbox,
+				isCompleted
+			  );
+
+			  return;
+			}
 
             checkbox.checked = isCompleted;
             checkbox.disabled = false;
