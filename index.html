@@ -3328,6 +3328,7 @@ function growColumn(bs, extra){
 }
 
 
+
 function alignBoxes(){
   var host = currentView === "shared"
     ? $("dashboardContent")
@@ -3336,37 +3337,48 @@ function alignBoxes(){
   if(!host){ return; }
 
   var columns = host.querySelectorAll(".layout-column");
-  var i, j, boxes;
-
-  /* Reset delle impostazioni precedenti */
+  var rows = host.querySelectorAll(".layout-row");
   var all = host.querySelectorAll(".box");
+  var i, j, boxes, maxHeight = 0;
+
+  /* Reset */
   for(i = 0; i < all.length; i++){
     all[i].style.minHeight = "";
     all[i].style.flexGrow = "0";
   }
 
-  /* Colonne verticali: si espande soltanto l'ultimo box */
+  /* COLONNE: calcola l'altezza della colonna più alta */
   for(i = 0; i < columns.length; i++){
     boxes = boxesOf(columns[i]);
 
     columns[i].style.display = "flex";
     columns[i].style.flexDirection = "column";
-    columns[i].style.height = "100%";
+    columns[i].style.height = "auto";
 
+    var height = columns[i].scrollHeight;
+    maxHeight = Math.max(maxHeight, height);
+  }
+
+  /* Assegna la stessa altezza a tutte le colonne */
+  for(i = 0; i < columns.length; i++){
+    boxes = boxesOf(columns[i]);
+
+    columns[i].style.height = maxHeight + "px";
+
+    /* Solo l'ultimo box assorbe lo spazio residuo */
     if(boxes.length){
       boxes[boxes.length - 1].style.flexGrow = "1";
     }
   }
 
-  /* Righe orizzontali: box affiancati della stessa altezza */
-  var rows = host.querySelectorAll(".layout-row");
-
+  /* RIGHE: uniforma l'altezza dei box affiancati */
   for(i = 0; i < rows.length; i++){
     var firsts = [];
     var max = 0;
 
     for(j = 0; j < rows[i].children.length; j++){
       boxes = boxesOf(rows[i].children[j]);
+
       if(boxes.length){
         firsts.push(boxes[0]);
         max = Math.max(max, boxes[0].offsetHeight);
@@ -3378,6 +3390,7 @@ function alignBoxes(){
     }
   }
 }
+
 
 
 function scheduleAlign(){
