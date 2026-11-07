@@ -2213,18 +2213,15 @@ console.log("SHOPPING: funzione avviata");
       !data ||
       !data.ok
     ) {
-      clear(box);
-	  
-	  console.log("SHOPPING: inizio rendering", new Date().toLocaleTimeString());
-	  box.appendChild(completedSection);
-	  console.log("SHOPPING: fine rendering", new Date().toLocaleTimeString());
+	
+	clear(box);
 
-      setText(
-        box,
-        data && data.error
-          ? data.error
-          : "Lista della spesa non disponibile."
-      );
+	setText(
+	  box,
+	  data && data.error
+		? data.error
+		: "Lista della spesa non disponibile."
+	);
 
       setText($("shoppingTimes"), "rete non disponibile");
       return;
