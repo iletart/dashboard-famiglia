@@ -794,8 +794,10 @@ body.k .todo-actions button{
 }
 
 body.k .todo-assign{
-  font-size:13px;
-  line-height:16px;
+  font:normal 16px/1 Arial,sans-serif;
+  width:28px;
+  min-width:28px;
+  height:28px;
   padding:0;
 }
 
@@ -1958,7 +1960,7 @@ function closeAssignMenus(){
 
 /* Pulsante "assegna" e relativo menu a tendina */
 function assignControl(index, item){
-  var btn = mk("button", "todo-assign", IS_KINDLE ? "A" : "👥");
+  var btn = mk("button", "todo-assign", IS_KINDLE ? "↗" : "👥");
   btn.type = "button";
   btn.disabled = taskBusy;
   btn.title = "Assegna attività";
