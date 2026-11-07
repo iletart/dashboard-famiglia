@@ -248,18 +248,32 @@ body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5p
 
 <!-- ===== HEADER ===== -->
 <div class="box" id="head">
+
   <div id="viewMenu">
-    <button type="button" id="viewMenuToggle" aria-label="Apri menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <button type="button" id="viewMenuToggle" aria-label="Apri menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
     <div id="viewMenuPanel" hidden></div>
   </div>
-  <div id="loggedUser"></div>
-  <div id="clock">--:--</div>
-  <div id="info">
-    <div id="wday"></div>
-    <div id="fulldate"></div>
-    <div id="weatherIcon"></div>
-    <div id="weather">Meteo: caricamento...</div>
+
+  <div id="headerLeft">
+    <div id="clock">--:--</div>
+
+    <div id="info">
+      <div id="wday"></div>
+      <div id="fulldate"></div>
+    </div>
   </div>
+
+  <div id="headerRight">
+    <div id="loggedUser"></div>
+
+    <div id="weatherRow">
+      <div id="weatherIcon"></div>
+      <div id="weather">Meteo: caricamento...</div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ===== VISTE PERSONALI ===== -->
