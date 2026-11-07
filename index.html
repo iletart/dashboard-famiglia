@@ -53,24 +53,144 @@ input[type=checkbox]{margin:0}
 .add-ctl button{flex:0 0 auto;margin:0;white-space:nowrap}
 
 /* ==================================================
-   3. HEADER: MENU, OROLOGIO, DATA, METEO
+   HEADER
    ================================================== */
-#head{position:relative;z-index:1001}
-#viewMenu{position:absolute;left:7px;top:7px;z-index:1000}
-#viewMenuToggle{display:flex;flex-direction:column;justify-content:space-around;width:28px;height:28px;min-width:28px;margin:0;padding:5px;border-radius:4px}
-#viewMenuToggle span{display:block;width:100%;height:2px;background:#000}
-#viewMenuPanel{width:142px;margin-top:5px;padding:6px;background:#fff;border:2px solid #000;border-radius:5px}
-#viewMenuPanel button{display:block;width:100%;margin:3px 0;padding:8px;text-align:left;font-weight:bold;border-radius:4px}
 
-#clock{position:relative;font-weight:bold;line-height:1}
-#wday{font-weight:bold;text-transform:capitalize}
-#weatherIcon,#weather{position:relative}
-#weatherIcon{display:flex;align-items:center}
+#head{
+  position:relative;
+  z-index:1001;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:65px;
+  padding:5px 10px 5px 42px;
+  gap:10px;
+}
 
-#loggedUser {
-  font-size: .75em;
-  margin: 3px 0 5px;
-  color: #555;
+#viewMenu{
+  position:absolute;
+  left:7px;
+  top:7px;
+  z-index:1000;
+}
+
+#viewMenuToggle{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-around;
+  width:28px;
+  height:28px;
+  min-width:28px;
+  margin:0;
+  padding:5px;
+  border-radius:4px;
+}
+
+#viewMenuToggle span{
+  display:block;
+  width:100%;
+  height:2px;
+  background:#000;
+}
+
+#viewMenuPanel{
+  width:142px;
+  margin-top:5px;
+  padding:6px;
+  background:#fff;
+  border:2px solid #000;
+  border-radius:5px;
+}
+
+#viewMenuPanel button{
+  display:block;
+  width:100%;
+  margin:3px 0;
+  padding:8px;
+  text-align:left;
+  font-weight:bold;
+  border-radius:4px;
+}
+
+/* Parte sinistra: orologio e data */
+
+#headerLeft{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+#clock{
+  font-weight:bold;
+  line-height:1;
+  font-size:2.5em;
+  white-space:nowrap;
+}
+
+#info{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-width:0;
+  margin:0;
+  padding:0;
+}
+
+#wday{
+  font-weight:bold;
+  text-transform:capitalize;
+}
+
+#fulldate{
+  font-size:.9em;
+}
+
+/* Parte destra: utente e meteo */
+
+#headerRight{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  justify-content:center;
+  gap:5px;
+  min-width:0;
+}
+
+#loggedUser{
+  font-size:.75em;
+  color:#555;
+  text-align:right;
+  margin:0;
+}
+
+#weatherRow{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:5px;
+  min-width:0;
+}
+
+#weatherIcon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:42px;
+  flex:none;
+}
+
+#weatherIcon svg{
+  width:42px;
+  height:42px;
+}
+
+#weather{
+  font-size:.85em;
+  line-height:1.2;
+  text-align:right;
+  min-width:0;
 }
 
 /* ==================================================
@@ -157,32 +277,129 @@ body.k .seg.two button.active {
   body:not(.k) #weatherIcon svg{width:48px;height:48px}
   body:not(.k) #weather{grid-column:4;grid-row:1/span 2;justify-self:start;left:-2px}
 }
-
 /* ==================================================
    6. TABLET E SMARTPHONE (<= 800px)
    ================================================== */
 @media screen and (max-width:800px){
-  body:not(.k) #head{display:grid;grid-template-columns:145px minmax(0,1fr);column-gap:5px;align-items:center;padding:4px}
-  body:not(.k) #clock{float:none;grid-column:1;grid-row:1;width:85px;margin-left:38px;left:5px;top:1px;font-size:2em}
-  body:not(.k) #info{display:grid;grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr);grid-template-rows:auto auto;column-gap:3px;align-items:center;grid-column:2;grid-row:1;width:100%;min-width:0;margin:0;padding:0}
-  body:not(.k) #wday{grid-column:1;grid-row:1;min-width:0;font-size:.95em}
-  body:not(.k) #fulldate{grid-column:1;grid-row:2;min-width:0;font-size:.85em}
-  body:not(.k) #weatherIcon{grid-column:2;grid-row:1/span 2;justify-content:center;width:32px;height:36px;left:0;top:0}
-  body:not(.k) #weatherIcon svg{width:32px;height:32px}
-  body:not(.k) #weather{grid-column:3;grid-row:1/span 2;position:static;width:auto;max-width:100%;min-width:0;overflow-wrap:anywhere;font-size:.72em;line-height:1.15}
+
+  /* Header */
+  body:not(.k) #head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:5px;
+    min-height:58px;
+    padding:5px 6px 5px 38px;
+  }
+
+  body:not(.k) #headerLeft{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    min-width:0;
+  }
+
+  body:not(.k) #clock{
+    float:none;
+    width:auto;
+    margin:0;
+    position:static;
+    font-size:1.8em;
+    white-space:nowrap;
+  }
+
+  body:not(.k) #info{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    grid-column:auto;
+    grid-row:auto;
+    width:auto;
+    min-width:0;
+    margin:0;
+    padding:0;
+  }
+
+  body:not(.k) #wday{
+    font-size:.95em;
+    min-width:0;
+  }
+
+  body:not(.k) #fulldate{
+    font-size:.85em;
+    min-width:0;
+  }
+
+  body:not(.k) #headerRight{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    justify-content:center;
+    gap:4px;
+    min-width:0;
+  }
+
+  body:not(.k) #loggedUser{
+    font-size:.65em;
+    margin:0;
+    text-align:right;
+  }
+
+  body:not(.k) #weatherRow{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:3px;
+    min-width:0;
+  }
+
+  body:not(.k) #weatherIcon{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:static;
+    width:32px;
+    height:32px;
+    flex:none;
+  }
+
+  body:not(.k) #weatherIcon svg{
+    width:32px;
+    height:32px;
+  }
+
+  body:not(.k) #weather{
+    position:static;
+    width:auto;
+    max-width:100%;
+    min-width:0;
+    overflow-wrap:anywhere;
+    font-size:.72em;
+    line-height:1.15;
+    text-align:right;
+  }
 }
+
 /* Colonne impilate solo su telefoni stretti (mai su Kindle) */
 @media screen and (max-width:600px){
-  body:not(.k) .col{float:none;width:100%;max-width:100%}
+  body:not(.k) .col{
+    float:none;
+    width:100%;
+    max-width:100%;
+  }
 }
+
 @media screen and (max-width:380px){
   body:not(.k) #wday{font-size:.8em}
   body:not(.k) #fulldate{font-size:.75em}
+  body:not(.k) #clock{font-size:1.5em}
+  body:not(.k) #weather{max-width:75px}
 }
 
 /* ==================================================
    7. KINDLE
    ================================================== */
+
 body.k .wrap{padding-right:14px}
 
 /* Colonne sempre affiancate, come su PC (layout caricato da D1) */
@@ -201,16 +418,108 @@ body.k #viewMenuToggle span:nth-child(1){top:5px}
 body.k #viewMenuToggle span:nth-child(2){top:12px}
 body.k #viewMenuToggle span:nth-child(3){top:19px}
 
-/* Header */
-body.k #head{display:block;height:auto;padding:0 2px 2px 0;overflow:visible}
-body.k #clock{float:left;width:110px;margin:0 0 0 42px;left:3px;top:4px;font-size:2em}
-body.k #info{display:block;position:relative;top:3px;min-height:42px;margin:0 -6px 0 158px;padding:0}
-body.k #wday,body.k #fulldate{display:block;width:135px;margin:0 0 0 -30px;line-height:1.1}
-body.k #wday{font-size:1.2em}
-body.k #fulldate{position:relative;top:2px;font-size:.8em}
-body.k #weatherIcon{position:absolute;right:100px;top:4px;width:48px;height:42px;justify-content:flex-end;margin:0}
-body.k #weatherIcon svg{width:40px;height:40px}
-body.k #weather{position:absolute;right:-21px;top:2px;width:130px;margin:0;font-size:.9em;line-height:1.2;white-space:normal}
+/* Header Kindle */
+body.k #head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  height:auto;
+  min-height:48px;
+  padding:3px 2px 3px 40px;
+  overflow:visible;
+}
+
+body.k #headerLeft{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+}
+
+body.k #clock{
+  float:none;
+  width:auto;
+  margin:0;
+  position:static;
+  font-size:1.8em;
+  white-space:nowrap;
+}
+
+body.k #info{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:static;
+  min-height:0;
+  min-width:0;
+  margin:0;
+  padding:0;
+}
+
+body.k #wday,
+body.k #fulldate{
+  display:block;
+  width:auto;
+  margin:0;
+  line-height:1.1;
+}
+
+body.k #wday{font-size:1em}
+
+body.k #fulldate{
+  position:static;
+  font-size:.7em;
+}
+
+body.k #headerRight{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  justify-content:center;
+  gap:3px;
+  min-width:0;
+}
+
+body.k #loggedUser{
+  font-size:.6em;
+  margin:0;
+  text-align:right;
+}
+
+body.k #weatherRow{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:3px;
+  min-width:0;
+}
+
+body.k #weatherIcon{
+  display:flex;
+  position:static;
+  width:30px;
+  height:30px;
+  justify-content:center;
+  align-items:center;
+  margin:0;
+  flex:none;
+}
+
+body.k #weatherIcon svg{
+  width:28px;
+  height:28px;
+}
+
+body.k #weather{
+  position:static;
+  width:auto;
+  max-width:85px;
+  margin:0;
+  font-size:.7em;
+  line-height:1.2;
+  white-space:normal;
+  text-align:right;
+}
 
 /* Gruppi di pulsanti */
 body.k .seg{display:block;font-size:0;white-space:nowrap}
@@ -238,7 +547,6 @@ body.k .todo-delete{border:0;background:transparent;box-shadow:none}
 body.k .trash-icon{position:relative;left:2px;top:7px;display:block;width:11px;height:12px;margin-top:4px;border:1px solid #000;border-top:0}
 body.k .trash-icon:before{content:"";position:absolute;left:-2px;top:-3px;width:13px;height:1px;background:#000}
 body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5px;height:2px;border:1px solid #000;border-bottom:0}
-
 
 
 </style>
