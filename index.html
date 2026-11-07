@@ -2180,6 +2180,9 @@ function waitForDeleteCommand(commandId, deleteButton) {
 function loadShoppingList(){
 console.log("SHOPPING: funzione avviata");
   var box = $("shoppingBox");
+  
+  console.log("SHOPPING BOX:", box);
+	console.log("SHOPPING VIEW:", currentView);
 
   if (!authToken) {
     setText(box, "Sessione non disponibile.");
