@@ -232,6 +232,9 @@ body.k .todo-delete{border:0;background:transparent;box-shadow:none}
 body.k .trash-icon{position:relative;left:2px;top:7px;display:block;width:11px;height:12px;margin-top:4px;border:1px solid #000;border-top:0}
 body.k .trash-icon:before{content:"";position:absolute;left:-2px;top:-3px;width:13px;height:1px;background:#000}
 body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5px;height:2px;border:1px solid #000;border-bottom:0}
+
+
+
 </style>
 </head>
 <body>
@@ -2963,13 +2966,12 @@ function loadAuthorizedConfig(callback){
     var data = null;
     try { data = JSON.parse(x.responseText); } catch(e){}
 
-	if(x.status !== 200 || !data || !data.ok || !data.config ||
+	if(x.status !== 200 || !data || !data.ok ||
+	   !Array.isArray(data.views) ||
 	   !Array.isArray(data.users)){
 	  callback("Configurazione non disponibile");
 	  return;
 	}
-
-	DASHBOARD_CONFIG = data.config;
 
 	USERS = data.users.filter(function(u){
 	  return u && u.id && u.name;
