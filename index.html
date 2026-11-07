@@ -997,20 +997,25 @@ function userName(id){
 }
 
 function viewHasBox(view, boxName){
-  var config = DASHBOARD_CONFIG;
-  if(!config || !config.views || !config.views[view]){
+  var views = DASHBOARD_VIEWS || [];
+  var viewConfig = null;
+
+  for(var i = 0; i < views.length; i++){
+    if(views[i].id === view){
+      viewConfig = views[i];
+      break;
+    }
+  }
+
+  if(!viewConfig || !Array.isArray(viewConfig.rows)){
     return false;
   }
 
-  var viewConfig = config.views[view];
-  var layouts = [
-    viewConfig.columns || [],
-    viewConfig.rows || []
-  ];
+  for(var i = 0; i < viewConfig.rows.length; i++){
+    var items = viewConfig.rows[i].items || [];
 
-  for(var i = 0; i < layouts.length; i++){
-    for(var j = 0; j < layouts[i].length; j++){
-      if(layouts[i][j].indexOf(boxName) !== -1){
+    for(var j = 0; j < items.length; j++){
+      if(items[j].element_id === boxName){
         return true;
       }
     }
