@@ -4043,6 +4043,11 @@ function startDashboard(preferredView){
 	  menuSel = day;
 	  loadMenu();
 	});
+	
+	bindSeg("personalPeriod", function(day){
+	  personalPeriod = day;
+	  renderPersonalTasks();
+	});
 
     safe(loadAgenda);
     safe(loadShoppingList);
