@@ -154,7 +154,7 @@ input[type=checkbox]{margin:0}
    ================================================== */
 body.k .wrap{padding-right:14px}
 
-/* Colonne sempre affiancate, come su PC (layout da dashboard-config.json) */
+/* Colonne sempre affiancate, come su PC (layout caricato da D1) */
 body.k .col{float:left;width:50%}
 body.k .col.full{float:none;width:100%}
 
@@ -402,7 +402,7 @@ var menuSel = "oggi", menuSyncedAt = null, menuUpdatedAt = null;
 var personalPeriod = "oggi";
 
 var todoItems = [], todoConnected = false, todoBusy = false;
-var menuInitialized = false, usersLoaded = false, scheduleViewTimer = null;
+var menuInitialized = false, scheduleViewTimer = null;
 var todoSyncError = false, todoSyncedAt = null;
 var taskSel = "oggi", personalGlobalTaskSel = "oggi";
 var taskDays = {}, taskReady = false, taskBusy = false;
@@ -1711,18 +1711,23 @@ function renderMenu(k, err, d){
 }
 
 /* ==================================================
-   15. VISTE: MENU, ORARI, LAYOUT DA dashboard-config.json
+   15. VISTE: MENU, ORARI, LAYOUT DA D1
    ================================================== */
 function getScheduledView(){
   var r = toRome(Date.now());
   var m = r.getUTCHours() * 60 + r.getUTCMinutes();
 
   for(var i = 0; i < USERS.length; i++){
-    var s = USERS[i].schedule;
-    if(!s || !s.start || !s.end){ continue; }
-    var a = toMin(s.start), b = toMin(s.end);
-    if(a < b ? (m >= a && m < b) : (m >= a || m < b)){ return USERS[i].id; }
+    var s = USERS[i];
+    if(!s.schedule_start || !s.schedule_end){ continue; }
+
+    var a = toMin(s.schedule_start), b = toMin(s.schedule_end);
+
+    if(a < b ? (m >= a && m < b) : (m >= a || m < b)){
+      return s.id;
+    }
   }
+
   return "shared";
 }
 
@@ -1965,7 +1970,8 @@ function renderViewMenu(){
 }
 
 function initViewMenu(){
-  var toggle = $("viewMenuToggle"), panel = $("viewMenuPanel");
+  var toggle = $("viewMenuToggle");
+  var panel = $("viewMenuPanel");
 
   if(!menuInitialized){
     toggle.onclick = function(){
@@ -1974,38 +1980,23 @@ function initViewMenu(){
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
     };
 
-	document.addEventListener("click", function(ev){
-	  var menu = $("viewMenu");
-	  if(menu && !menu.contains(ev.target)){
-		closeViewMenu();
-	  }
-	});
+    document.addEventListener("click", function(ev){
+      var menu = $("viewMenu");
+      if(menu && !menu.contains(ev.target)){
+        closeViewMenu();
+      }
+    });
 
     document.addEventListener("keydown", function(ev){
-      if(ev.key === "Escape"){ closeViewMenu(); }
+      if(ev.key === "Escape"){
+        closeViewMenu();
+      }
     });
 
     menuInitialized = true;
   }
 
-  if(usersLoaded){
-    renderViewMenu();
-    return;
-  }
-
-  getJson([CONFIG.base + "users.json", "users.json"], function(err, d){
-    if(!err && d && Array.isArray(d.users)){
-      USERS = d.users.filter(function(u){
-        return u && u.id && u.name && u.enabled === true;
-      });
-    } else {
-      USERS = [];
-      console.error("Errore caricamento users.json");
-    }
-
-    usersLoaded = true;
-    renderViewMenu();
-  });
+  renderViewMenu();
 }
 
 /* ==================================================
@@ -2135,13 +2126,19 @@ function loadAuthorizedConfig(callback){
     var data = null;
     try { data = JSON.parse(x.responseText); } catch(e){}
 
-    if(x.status !== 200 || !data || !data.ok || !data.config){
-      callback("Configurazione non disponibile");
-      return;
-    }
+	if(x.status !== 200 || !data || !data.ok || !data.config ||
+	   !Array.isArray(data.users)){
+	  callback("Configurazione non disponibile");
+	  return;
+	}
 
-    DASHBOARD_CONFIG = data.config;
-    callback(null);
+	DASHBOARD_CONFIG = data.config;
+
+	USERS = data.users.filter(function(u){
+	  return u && u.id && u.name;
+	});
+
+	callback(null);
   };
 
   x.onerror = function(){ callback("Errore di connessione"); };
