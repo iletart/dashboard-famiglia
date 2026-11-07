@@ -4028,6 +4028,21 @@ function startDashboard(preferredView){
     setHidden($("dashboardContent"), false);
     renderViewMenu();
     setView(preferredView || getScheduledView(), false);
+	
+	bindSeg("taskDays", function(day){
+	  taskSel = day;
+	  renderTasks();
+	});
+
+	bindSeg("personalGlobalTaskDays", function(day){
+	  personalGlobalTaskSel = day;
+	  renderPersonalGlobalTasks();
+	});
+
+	bindSeg("menuDays", function(day){
+	  menuSel = day;
+	  loadMenu();
+	});
 
     safe(loadAgenda);
     safe(loadShoppingList);
