@@ -5054,10 +5054,11 @@ function renderViewMenu(){
 
   if(!authToken){
     for(var i = 0; i < AUTH_PROFILES.length; i++){
-      addButton(
-        AUTH_PROFILES[i].profile_key,
-        AUTH_PROFILES[i].name
-      );
+		addButton(
+		  AUTH_PROFILES[i].profile_key,
+		  AUTH_PROFILES[i].name.charAt(0).toUpperCase() +
+		  AUTH_PROFILES[i].name.slice(1).toLowerCase()
+		);
     }
   } else {
     for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
