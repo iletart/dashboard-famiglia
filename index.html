@@ -5191,12 +5191,18 @@ function initViewMenu(){
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
     };
 
-    document.addEventListener("click", function(ev){
-      var menu = $("viewMenu");
-      if(menu && !menu.contains(ev.target)){
-        closeViewMenu();
-      }
-    });
+	document.addEventListener("click", function(ev){
+	  var menu = $("viewMenu");
+	  var target = ev.target;
+
+	  while(target && target !== menu){
+		target = target.parentNode;
+	  }
+
+	  if(menu && target !== menu){
+		closeViewMenu();
+	  }
+	});
 
     document.addEventListener("keydown", function(ev){
       if(ev.key === "Escape"){
