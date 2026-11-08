@@ -2298,6 +2298,7 @@ function renderRoutes(){
   if(!found){ box.appendChild(mk("div", "rt", "Nessun percorso disponibile per oggi.")); }
   scheduleAlign();
 }
+
 /* ==================================================
    13. LISTA DELLA SPESA
    ================================================== */
@@ -2755,6 +2756,31 @@ function loadShoppingList() {
         return result;
       }
 
+	  // --------------------------------------------------
+	  // STATO ELABORAZIONE PULSANTI
+	  // --------------------------------------------------
+	  
+	  var shoppingCommitInProgress = false;
+	  var shoppingActiveCommitButton = null;
+	  var shoppingActiveCommitText = "";
+	  
+	  function setShoppingCommitBusy(button, text) {
+	  
+	    shoppingCommitInProgress = true;
+	    shoppingActiveCommitButton = button;
+	    shoppingActiveCommitText = text;
+	  
+	    updateCommitButtons();
+	  }
+	  
+	  function finishShoppingCommit() {
+	  
+	    shoppingCommitInProgress = false;
+	    shoppingActiveCommitButton = null;
+	    shoppingActiveCommitText = "";
+	  
+	    updateCommitButtons();
+	  }
 
       // --------------------------------------------------
       // AGGIORNAMENTO CONTATORI PULSANTI
@@ -2785,6 +2811,30 @@ function loadShoppingList() {
         commitBought.disabled = boughtDrafts.length === 0;
         commitNotBought.disabled = notBoughtDrafts.length === 0;
         commitDelete.disabled = deleteKeys.length === 0;
+		
+		if (shoppingCommitInProgress && shoppingActiveCommitButton) {
+
+		  commitBought.disabled = true;
+		  commitNotBought.disabled = true;
+		  commitDelete.disabled = true;
+
+		  shoppingActiveCommitButton.textContent =
+			shoppingActiveCommitText;
+
+		  shoppingActiveCommitButton.style.backgroundColor = "#000";
+		  shoppingActiveCommitButton.style.color = "#fff";
+
+		} else {
+
+		  commitBought.style.backgroundColor = "#fff";
+		  commitBought.style.color = "#000";
+
+		  commitNotBought.style.backgroundColor = "#fff";
+		  commitNotBought.style.color = "#000";
+
+		  commitDelete.style.backgroundColor = "#fff";
+		  commitDelete.style.color = "#000";
+		}
       }
 
 
@@ -3058,7 +3108,7 @@ function loadShoppingList() {
         var failed = [];
 
         if (!remaining) {
-          updateCommitButtons();
+          finishShoppingCommit();
           return;
         }
 
@@ -3184,12 +3234,12 @@ function loadShoppingList() {
       function checkDeleteBatchSync(attempt, succeeded) {
 
         if (!succeeded.length) {
-          updateCommitButtons();
+          finishShoppingCommit();
           return;
         }
 
         if (attempt >= 60) {
-          updateCommitButtons();
+          finishShoppingCommit();
 
           alert(
             "Le eliminazioni sono state elaborate, ma la lista non è ancora aggiornata. Riprova tra poco."
@@ -3256,6 +3306,7 @@ function loadShoppingList() {
             });
 
             if (allDeleted) {
+			  finishShoppingCommit();
               loadShoppingList();
               return;
             }
@@ -3311,11 +3362,10 @@ function loadShoppingList() {
           names,
           function () {
 
-            commitBought.disabled = true;
-            commitNotBought.disabled = true;
-            commitDelete.disabled = true;
-
-            commitDelete.textContent = "ELIMINAZIONE IN CORSO...";
+			setShoppingCommitBusy(
+			  commitDelete,
+			  "ELIMINAZIONE IN CORSO..."
+			);
 
             var request = new XMLHttpRequest();
 
@@ -3376,7 +3426,7 @@ function loadShoppingList() {
                 return;
               }
 
-              updateCommitButtons();
+              finishShoppingCommit();
 
               alert(
                 result && result.error
@@ -3386,12 +3436,12 @@ function loadShoppingList() {
             };
 
             request.onerror = function () {
-              updateCommitButtons();
+              finishShoppingCommit();
               alert("Errore di connessione a shopping-api.");
             };
 
             request.ontimeout = function () {
-              updateCommitButtons();
+              finishShoppingCommit();
               alert("Timeout durante l'invio delle eliminazioni.");
             };
 
@@ -3416,12 +3466,10 @@ function loadShoppingList() {
           ? commitBought
           : commitNotBought;
 
-        commitBought.disabled = true;
-        commitNotBought.disabled = true;
-
-        var originalText = activeButton.textContent;
-
-        activeButton.textContent = "IN CORSO...";
+		setShoppingCommitBusy(
+		  activeButton,
+		  "IN CORSO..."
+		);
 
         var update = new XMLHttpRequest();
 
@@ -3454,67 +3502,59 @@ function loadShoppingList() {
             };
           })
         };
+		
+		update.onreadystatechange = function () {
 
-        update.onreadystatechange = function () {
+		  if (update.readyState !== 4) {
+			return;
+		  }
 
-          if (update.readyState !== 4) {
-            return;
-          }
+		  var result = null;
 
-          var result = null;
+		  try {
+			result = JSON.parse(update.responseText);
+		  } catch (e) {}
 
-          try {
-            result = JSON.parse(update.responseText);
-          } catch (e) {}
+		  if (
+			update.status >= 200 &&
+			update.status < 300 &&
+			result &&
+			result.ok &&
+			result.commands
+		  ) {
 
-          if (
-            update.status >= 200 &&
-            update.status < 300 &&
-            result &&
-            result.ok &&
-            result.commands
-          ) {
+			waitForBatchCommands(
+			  result.commands,
+			  drafts
+			);
 
-            waitForBatchCommands(
-              result.commands,
-              drafts
-            );
+			return;
+		  }
 
-            return;
-          }
+		  finishShoppingCommit();
 
-          activeButton.textContent = originalText;
+		  alert(
+			result && result.error
+			  ? result.error
+			  : "Impossibile inviare le modifiche."
+		  );
+		};
 
-          updateCommitButtons();
+		update.onerror = function () {
 
-          alert(
-            result && result.error
-              ? result.error
-              : "Impossibile inviare le modifiche."
-          );
-        };
+		  finishShoppingCommit();
 
-        update.onerror = function () {
+		  alert("Errore di connessione a shopping-api.");
+		};
 
-          activeButton.textContent = originalText;
+		update.ontimeout = function () {
 
-          updateCommitButtons();
+		  finishShoppingCommit();
 
-          alert("Errore di connessione a shopping-api.");
-        };
+		  alert("Timeout durante l'invio delle modifiche.");
+		};
 
-        update.ontimeout = function () {
-
-          activeButton.textContent = originalText;
-
-          updateCommitButtons();
-
-          alert("Timeout durante l'invio delle modifiche.");
-        };
-
-        update.send(JSON.stringify(payload));
-      }
-
+		update.send(JSON.stringify(payload));
 
       // --------------------------------------------------
       // ATTESA COMANDI AMAZON
@@ -3527,7 +3567,7 @@ function loadShoppingList() {
         var failed = [];
 
         if (!remaining) {
-          updateCommitButtons();
+          finishShoppingCommit();
           return;
         }
 
@@ -3653,7 +3693,7 @@ function loadShoppingList() {
 
         if (!drafts.length) {
 
-          updateCommitButtons();
+          finishShoppingCommit();
 
           if (failed.length) {
             alert(
@@ -3667,7 +3707,7 @@ function loadShoppingList() {
 
         if (attempt >= 60) {
 
-          updateCommitButtons();
+          finishShoppingCommit();
 
           alert(
             "Le modifiche sono state elaborate, ma la lista non è ancora aggiornata. Riprova tra poco."
@@ -3748,7 +3788,7 @@ function loadShoppingList() {
                 delete shoppingDrafts[key];
               }
 
-              updateCommitButtons();
+              finishShoppingCommit();
 
               if (failed.length) {
                 alert(
