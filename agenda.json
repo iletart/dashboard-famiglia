@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-09T00:30:03.129543+01:00",
+  "generated_at": "2026-11-09T00:40:03.109184+01:00",
   "period_days": 14,
   "events": [
     {
@@ -16,7 +16,7 @@
       },
       "all_day": false,
       "location": "",
-      "description": "- sacchetto merenda",
+      "description": "- I: preparare sacchetto merenda\n- W: portare sacchetto merenda all'asilo",
       "htmlLink": "https://www.google.com/calendar/event?eid=NzBzM2FvOWs2b3MzNmI5cGNsaTMyYjlrY2RnajRiYjFjbGo2MmJiMTZoaDY4cDFvNjFpNjhjMzU2cyBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
     },
     {
