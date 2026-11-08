@@ -604,27 +604,49 @@ input[type=checkbox] {
 }
 
 /* Contenitore dei tre pulsanti */
+Il CSS attuale è ancora impostato per tre pulsanti nello stesso contenitore; ora che abbiamo due contenitori separati possiamo semplificarlo.
 
+Primo passaggio: sostituisci tutto il CSS che mi hai incollato con questo:
 .shopping-commit-buttons {
+  display:flex;
+  width:100%;
+  box-sizing:border-box;
+  gap:6px;
+}
+
+.shopping-commit-button {
+  box-sizing:border-box;
+  min-width:0;
+  font-size:10px;
+  padding:5px 4px;
+  min-height:28px;
+  line-height:1.2;
+  white-space:nowrap;
+  text-align:center;
+}
+
+/* DA COMPRARE: un solo pulsante a tutta larghezza */
+.shopping-pending-commit-buttons {
+  display:block;
+  width:100%;
+}
+
+.shopping-pending-commit-buttons .shopping-commit-button {
+  display:block;
+  width:100%;
+}
+
+/* COMPRATO: due pulsanti sulla stessa riga */
+.shopping-completed-commit-buttons {
   display:flex;
   flex-direction:row;
   flex-wrap:nowrap;
   width:100%;
-  gap:6px;
 }
 
-/* Pulsanti conferma */
-
-.shopping-commit-button {
-  flex:1 1 0;
-  min-width:0;
-  width:0;
-  box-sizing:border-box;
-  white-space:normal;
-  font-size:10px;
-  padding:5px 2px;
-  min-height:28px;
-  line-height:1.2;
+.shopping-completed-commit-buttons .shopping-commit-button {
+  flex:1 1 50%;
+  width:50%;
 }
 
 
@@ -1039,44 +1061,24 @@ body.k #shoppingBox label {
   gap:10px;
 }
 
-/* Pulsanti lista spesa Kindle:
-   due a sinistra, eliminazione a destra */
-
-body.k .shopping-commit-buttons {
+/* KINDLE: DA COMPRARE */
+body.k .shopping-pending-commit-buttons .shopping-commit-button {
   display:block;
-  position:relative;
   width:100%;
-  min-height:68px;
-  padding-right:2px;
-  box-sizing:border-box;
 }
 
-body.k .shopping-commit-button {
-  box-sizing:border-box;
-  flex:none;
-  min-width:0;
-  width:48%;
-  font-size:8px;
-  padding:6px 8px;
-  line-height:1.3;
-  white-space:normal;
-  overflow-wrap:break-word;
-  margin:0 0 5px 0;
-  text-align:center;
+/* KINDLE: COMPRATO */
+body.k .shopping-completed-commit-buttons {
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  gap:4px;
 }
 
-body.k .shopping-commit-button:nth-child(1),
-body.k .shopping-commit-button:nth-child(2) {
+body.k .shopping-completed-commit-buttons .shopping-commit-button {
   display:block;
-}
-
-body.k .shopping-commit-button:nth-child(3) {
-  position:absolute;
-  right:0;
-  top:18px;
-  width:48%;
-  margin:0;
-  text-align:center;
+  flex:1 1 50%;
+  width:50%;
 }
 
 /* Righe articoli */
