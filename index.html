@@ -1832,7 +1832,7 @@ function onNewDay(){
   setTimeout(function(){ safe(loadMenu); }, 5 * 60000);   /* il menu del nuovo giorno può arrivare con ritardo */
   renderAgenda();
   renderTasks();
-  if(currentView !== "famiglia"){ renderPersonalTasks(); }
+  if(!isSharedView(currentView)){ renderPersonalTasks(); }
 }
 
 function updateClock(){
@@ -1959,7 +1959,7 @@ function renderAgenda(){
   setTimes($("agendaTimes"), parseIso(agendaData.generated_at || agendaData.updated_at),
            agendaSyncedAt, agendaErr, 3 * 3600000);
   buildAgenda(box, agendaData.events || [], agendaSt, function(){ safe(renderAgenda); },
-              {tasks: currentView === "famiglia", click: true});
+              {tasks: isSharedView(currentView), click: true});
 }
 
 function renderUserAgenda(){
@@ -2029,7 +2029,7 @@ function loadAgenda(){
     }
 
     if(changed || err){ safe(renderAgenda); }
-    if(currentView !== "famiglia"){ safe(renderPersonalTasks); }
+    if(!isSharedView(currentView)){ safe(renderPersonalTasks); }
 
   });
 }
@@ -2231,7 +2231,7 @@ function renderPersonalTasks(){
 }
 
 function renderPersonalGlobalTasks(){
-  if(currentView === "famiglia"){ return; }
+  if(isSharedView(currentView)){ return; }
 
   var box = $("personalGlobalTaskList");
   clear(box);
@@ -2670,7 +2670,7 @@ var WEEKEND_ROUTES = [
 function loadRoutes(userId){
   userId = userId || currentView;
 
-  if(!userId || userId === "famiglia"){
+  if(!userId || isSharedView(userId)){
     return;
   }
 
@@ -4600,6 +4600,14 @@ function renderMenu(k, err, d){
 /* ==================================================
    15. VISTE: MENU, ORARI, LAYOUT DA D1
    ================================================== */
+function isSharedView(viewId){
+  var view = DASHBOARD_VIEWS.find(function(v){
+    return v.id === viewId;
+  });
+
+  return !!view && view.view_type === "shared";
+}
+
 function getScheduledView(){
   var r = toRome(Date.now());
   var m = r.getUTCHours() * 60 + r.getUTCMinutes();
@@ -4615,7 +4623,11 @@ function getScheduledView(){
     }
   }
 
-  return "famiglia";
+  var sharedView = DASHBOARD_VIEWS.find(function(v){
+    return v.view_type === "shared";
+  });
+  
+  return sharedView ? sharedView.id : null;
 }
 
 function checkScheduledView(){
