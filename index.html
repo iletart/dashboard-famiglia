@@ -3391,7 +3391,401 @@ function loadShoppingList() {
         );
       }
 
+      // --------------------------------------------------
+      // CONFERMA COMPRATI / NON COMPRATI
+      // --------------------------------------------------
 
+      function commitShoppingItems(desiredStatus) {
+
+        var drafts = getDrafts(desiredStatus);
+
+        if (!drafts.length) {
+          return;
+        }
+
+        var activeButton = desiredStatus
+          ? commitBought
+          : commitNotBought;
+
+        commitBought.disabled = true;
+        commitNotBought.disabled = true;
+
+        var originalText = activeButton.textContent;
+
+        activeButton.textContent = "IN CORSO...";
+
+        var update = new XMLHttpRequest();
+
+        update.open(
+          "POST",
+          SHOPPING_API_URL + "/shopping/update-batch",
+          true
+        );
+
+        update.setRequestHeader(
+          "Authorization",
+          "Bearer " + authToken
+        );
+
+        update.setRequestHeader(
+          "Content-Type",
+          "application/json"
+        );
+
+        update.timeout = 30000;
+
+        var payload = {
+          view_id: currentView,
+          view_item_id: list.view_item_id,
+          shopping_list_id: list.shopping_list_id,
+          items: drafts.map(function (draft) {
+            return {
+              item_id: draft.item_id,
+              completed: desiredStatus
+            };
+          })
+        };
+
+        update.onreadystatechange = function () {
+
+          if (update.readyState !== 4) {
+            return;
+          }
+
+          var result = null;
+
+          try {
+            result = JSON.parse(update.responseText);
+          } catch (e) {}
+
+          if (
+            update.status >= 200 &&
+            update.status < 300 &&
+            result &&
+            result.ok &&
+            result.commands
+          ) {
+
+            waitForBatchCommands(
+              result.commands,
+              drafts
+            );
+
+            return;
+          }
+
+          activeButton.textContent = originalText;
+
+          updateCommitButtons();
+
+          alert(
+            result && result.error
+              ? result.error
+              : "Impossibile inviare le modifiche."
+          );
+        };
+
+        update.onerror = function () {
+
+          activeButton.textContent = originalText;
+
+          updateCommitButtons();
+
+          alert("Errore di connessione a shopping-api.");
+        };
+
+        update.ontimeout = function () {
+
+          activeButton.textContent = originalText;
+
+          updateCommitButtons();
+
+          alert("Timeout durante l'invio delle modifiche.");
+        };
+
+        update.send(JSON.stringify(payload));
+      }
+
+
+      // --------------------------------------------------
+      // ATTESA COMANDI AMAZON
+      // --------------------------------------------------
+
+      function waitForBatchCommands(commands, drafts) {
+
+        var remaining = commands.length;
+        var succeeded = [];
+        var failed = [];
+
+        if (!remaining) {
+          updateCommitButtons();
+          return;
+        }
+
+        function checkOneCommand(command, attempt) {
+
+          if (attempt >= 240) {
+            failed.push(command);
+            finishIfComplete();
+            return;
+          }
+
+          var check = new XMLHttpRequest();
+
+          check.open(
+            "GET",
+            SHOPPING_API_URL + "/shopping/command-status?id=" +
+              encodeURIComponent(command.command_id),
+            true
+          );
+
+          check.setRequestHeader(
+            "Authorization",
+            "Bearer " + authToken
+          );
+
+          check.timeout = 15000;
+
+          check.onreadystatechange = function () {
+
+            if (check.readyState !== 4) {
+              return;
+            }
+
+            var data = null;
+
+            try {
+              data = JSON.parse(check.responseText);
+            } catch (e) {}
+
+            if (
+              check.status >= 200 &&
+              check.status < 300 &&
+              data &&
+              data.ok
+            ) {
+
+              if (data.status === "succeeded") {
+                succeeded.push(command);
+                finishIfComplete();
+                return;
+              }
+
+              if (data.status === "failed") {
+                failed.push(command);
+                finishIfComplete();
+                return;
+              }
+            }
+
+            setTimeout(function () {
+              checkOneCommand(command, attempt + 1);
+            }, 500);
+          };
+
+          check.onerror = function () {
+            setTimeout(function () {
+              checkOneCommand(command, attempt + 1);
+            }, 500);
+          };
+
+          check.ontimeout = function () {
+            setTimeout(function () {
+              checkOneCommand(command, attempt + 1);
+            }, 500);
+          };
+
+          check.send(null);
+        }
+
+
+        function finishIfComplete() {
+
+          remaining--;
+
+          if (remaining > 0) {
+            return;
+          }
+
+          var succeededDrafts = [];
+
+          for (var i = 0; i < succeeded.length; i++) {
+
+            for (var j = 0; j < drafts.length; j++) {
+
+              if (
+                String(drafts[j].item_id) ===
+                String(succeeded[i].item_id)
+              ) {
+                succeededDrafts.push(drafts[j]);
+              }
+            }
+          }
+
+          checkBatchSync(
+            0,
+            succeededDrafts,
+            failed
+          );
+        }
+
+
+        for (var i = 0; i < commands.length; i++) {
+          checkOneCommand(commands[i], 0);
+        }
+      }
+
+
+      // --------------------------------------------------
+      // VERIFICA SINCRONIZZAZIONE LISTA
+      // --------------------------------------------------
+
+      function checkBatchSync(attempt, drafts, failed) {
+
+        if (!drafts.length) {
+
+          updateCommitButtons();
+
+          if (failed.length) {
+            alert(
+              failed.length +
+              " modifiche non sono riuscite. Riprova."
+            );
+          }
+
+          return;
+        }
+
+        if (attempt >= 60) {
+
+          updateCommitButtons();
+
+          alert(
+            "Le modifiche sono state elaborate, ma la lista non è ancora aggiornata. Riprova tra poco."
+          );
+
+          return;
+        }
+
+        var check = new XMLHttpRequest();
+
+        check.open(
+          "GET",
+          SHOPPING_API_URL + "/shopping?view_id=" +
+            encodeURIComponent(currentView) +
+            "&_=" + Date.now(),
+          true
+        );
+
+        check.setRequestHeader(
+          "Authorization",
+          "Bearer " + authToken
+        );
+
+        check.timeout = 15000;
+
+        check.onreadystatechange = function () {
+
+          if (check.readyState !== 4) {
+            return;
+          }
+
+          var data = null;
+
+          try {
+            data = JSON.parse(check.responseText);
+          } catch (e) {}
+
+          if (
+            check.status >= 200 &&
+            check.status < 300 &&
+            data &&
+            data.ok
+          ) {
+
+            var items = [];
+
+            for (var i = 0; i < data.lists.length; i++) {
+
+              if (
+                String(data.lists[i].shopping_list_id) ===
+                String(list.shopping_list_id)
+              ) {
+                items = data.lists[i].items || [];
+                break;
+              }
+            }
+
+            var allUpdated = drafts.every(function (draft) {
+
+              return items.some(function (item) {
+
+                return (
+                  String(item.id) === String(draft.item_id) &&
+                  !!item.completed === draft.desiredStatus
+                );
+
+              });
+
+            });
+
+            if (allUpdated) {
+
+              for (var i = 0; i < drafts.length; i++) {
+
+                var key = String(drafts[i].shopping_list_id) +
+                  "_" + String(drafts[i].item_id);
+
+                delete shoppingDrafts[key];
+              }
+
+              updateCommitButtons();
+
+              if (failed.length) {
+                alert(
+                  failed.length +
+                  " modifiche non sono riuscite. Riprova."
+                );
+              }
+
+              loadShoppingList();
+
+              return;
+            }
+          }
+
+          setTimeout(function () {
+            checkBatchSync(
+              attempt + 1,
+              drafts,
+              failed
+            );
+          }, 500);
+        };
+
+        check.onerror = function () {
+          setTimeout(function () {
+            checkBatchSync(
+              attempt + 1,
+              drafts,
+              failed
+            );
+          }, 500);
+        };
+
+        check.ontimeout = function () {
+          setTimeout(function () {
+            checkBatchSync(
+              attempt + 1,
+              drafts,
+              failed
+            );
+          }, 500);
+        };
+
+        check.send(null);
+      }
+	  
       updateCommitButtons();
 
 
