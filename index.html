@@ -2671,8 +2671,15 @@ console.log("SHOPPING: funzione avviata");
 			shoppingDeleteSelections[deleteKey]
 		  );
 
-		  var deleteIcon = mk("span", "", "🗑");
-		  deleteIcon.title = "Seleziona per eliminazione";
+		  var deleteIcon;
+		  
+		  if (IS_KINDLE) {
+		    deleteIcon = mk("span", "trash-icon");
+		  } else {
+		    deleteIcon = mk("span", "", "🗑");
+		  }
+		  
+		  deleteIcon.title = "Seleziona per eliminazione";"
 
 		  deleteLabel.appendChild(deleteCheckbox);
 		  deleteLabel.appendChild(deleteIcon);
