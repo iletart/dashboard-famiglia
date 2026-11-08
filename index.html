@@ -5138,11 +5138,13 @@ function renderViewMenu(){
   });
   
   if(
-    authToken &&
-    AUTH_PERMISSIONS.indexOf("users.manage") !== -1 &&
-    currentViewConfig &&
-    currentViewConfig.view_type === "shared"
-  ){
+      authToken &&
+      AUTH_PERMISSIONS &&
+      typeof AUTH_PERMISSIONS.indexOf === "function" &&
+      AUTH_PERMISSIONS.indexOf("users.manage") !== -1 &&
+      currentViewConfig &&
+      currentViewConfig.view_type === "shared"
+    ){
     var addUserButton = mk("button", "", "+ AGGIUNGI UTENTE");
     addUserButton.type = "button";
   
