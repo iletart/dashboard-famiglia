@@ -6,56 +6,160 @@
 <title>Dashboard famiglia</title>
 <link rel="icon" type="image/png" href="favicon.png">
 
+
 <style>
 /* ==================================================
    1. BASE
    ================================================== */
-.box,.col,.seg,.seg button,.todo,.todo-check-cell,.todo-actions button,.todo-assign-menu,.section-heading,#info,#viewMenuToggle,#viewMenuPanel,#viewMenuPanel button,.add-ctl input,.add-ctl button,.overlay{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:#fff;color:#111;font:16px/1.3 "Trebuchet MS",Arial,sans-serif}
-[hidden]{display:none!important}
 
-.wrap{padding:4px}
-.box{border:2px solid #000;border-radius:5px;padding:8px;margin:3px}
+.box,.col,.seg,.seg button,.todo,.todo-check-cell,
+.todo-actions button,.todo-assign-menu,.section-heading,
+#info,#viewMenuToggle,#viewMenuPanel,#viewMenuPanel button,
+.add-ctl input,.add-ctl button,.overlay {
+  box-sizing:border-box;
+}
 
-.row{display:block}
-.row:after{content:"";display:table;clear:both}
-.col{float:left;width:50%;min-width:0}
-.col.full{float:none;width:100%}
+html,body {
+  margin:0;
+  padding:0;
+}
 
-h2{font-size:1.05em;line-height:1.3;margin:0;padding:0 0 2px;text-transform:uppercase}
-h3{font-size:1em;margin:8px 0 2px;text-transform:capitalize}
+body {
+  background:#fff;
+  color:#111;
+  font:16px/1.3 "Trebuchet MS",Arial,sans-serif;
+}
 
-.small{font-size:.8em;color:#333;margin-top:6px}
-#err{font-size:.8em;margin:4px 3px}
-.done{text-decoration:line-through}
+[hidden] {
+  display:none!important;
+}
 
-/* Intestazione dei box: titolo a sinistra, orari di sincronizzazione a destra */
-.section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px;border-bottom:1px solid #000}
-.sync-label{position:relative;top:-4px;font-size:.65em;line-height:1.2;color:#888;text-align:right;text-transform:none}
+.wrap {
+  padding:4px;
+}
+
+.box {
+  border:2px solid #000;
+  border-radius:5px;
+  padding:8px;
+  margin:3px;
+}
+
+.row {
+  display:block;
+}
+
+.row:after {
+  content:"";
+  display:table;
+  clear:both;
+}
+
+.col {
+  float:left;
+  width:50%;
+  min-width:0;
+}
+
+.col.full {
+  float:none;
+  width:100%;
+}
+
+h2 {
+  font-size:1.05em;
+  line-height:1.3;
+  margin:0;
+  padding:0 0 2px;
+  text-transform:uppercase;
+}
+
+h3 {
+  font-size:1em;
+  margin:8px 0 2px;
+  text-transform:capitalize;
+}
+
+.small {
+  font-size:.8em;
+  color:#333;
+  margin-top:6px;
+}
+
+#err {
+  font-size:.8em;
+  margin:4px 3px;
+}
+
+.done {
+  text-decoration:line-through;
+}
+
+/* Intestazione box e sincronizzazione */
+
+.section-heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:8px;
+  margin-bottom:5px;
+  border-bottom:1px solid #000;
+}
+
+.sync-label {
+  position:relative;
+  top:-4px;
+  font-size:.65em;
+  line-height:1.2;
+  color:#888;
+  text-align:right;
+  text-transform:none;
+}
+
 
 /* ==================================================
-   2. PULSANTI, CAMPI, GRUPPI DI PULSANTI
+   2. PULSANTI, CAMPI, GRUPPI
    ================================================== */
-button{font-family:inherit;font-size:1em;border:1px solid #000;background:#fff;color:#000;padding:4px 10px;margin:2px 4px 2px 0}
-button.sel{background:#000;color:#fff}
 
-input[type=text],input[type=password]{font-family:inherit;font-size:1em;border:1px solid #000;padding:4px;width:60%}
+button {
+  font-family:inherit;
+  font-size:1em;
+  border:1px solid #000;
+  background:#fff;
+  color:#000;
+  padding:4px 10px;
+  margin:2px 4px 2px 0;
+}
 
-input[type=checkbox]{
+button.sel {
+  background:#000;
+  color:#fff;
+}
+
+input[type=text],
+input[type=password] {
+  font-family:inherit;
+  font-size:1em;
+  border:1px solid #000;
+  padding:4px;
+  width:60%;
+}
+
+input[type=checkbox] {
   width:16px;
   height:16px;
   margin:0;
   vertical-align:middle;
 }
 
-/* Grafica comune dei gruppi di pulsanti */
-.seg{
+/* Gruppi di pulsanti */
+
+.seg {
   display:flex;
   gap:5px;
 }
 
-.seg > button{
+.seg > button {
   flex:1 1 0;
   min-width:0;
   margin:2px 0;
@@ -65,22 +169,45 @@ input[type=checkbox]{
 }
 
 .seg-button.sel,
-.seg-button.active{
+.seg-button.active {
   background:#000;
   color:#fff;
   border-color:#000;
 }
 
-/* Campo "nuova attività" */
-.add-ctl{display:flex;align-items:center;gap:8px;margin:4px 0}
-.add-ctl input{flex:1 1 auto;width:auto;min-width:0}
-.add-ctl button{flex:0 0 auto;margin:0;white-space:nowrap}
+.seg.two button.active {
+  background-color:#000!important;
+  color:#fff!important;
+  border-color:#000!important;
+}
+
+/* Campo nuova attività */
+
+.add-ctl {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:4px 0;
+}
+
+.add-ctl input {
+  flex:1 1 auto;
+  width:auto;
+  min-width:0;
+}
+
+.add-ctl button {
+  flex:0 0 auto;
+  margin:0;
+  white-space:nowrap;
+}
+
 
 /* ==================================================
-   HEADER
+   3. HEADER
    ================================================== */
 
-#head{
+#head {
   position:relative;
   z-index:1001;
   display:flex;
@@ -91,14 +218,14 @@ input[type=checkbox]{
   gap:10px;
 }
 
-#viewMenu{
+#viewMenu {
   position:absolute;
   left:7px;
   top:7px;
   z-index:1000;
 }
 
-#viewMenuToggle{
+#viewMenuToggle {
   display:flex;
   flex-direction:column;
   justify-content:space-around;
@@ -110,14 +237,14 @@ input[type=checkbox]{
   border-radius:4px;
 }
 
-#viewMenuToggle span{
+#viewMenuToggle span {
   display:block;
   width:100%;
   height:2px;
   background:#000;
 }
 
-#viewMenuPanel{
+#viewMenuPanel {
   width:142px;
   margin-top:5px;
   padding:6px;
@@ -126,7 +253,7 @@ input[type=checkbox]{
   border-radius:5px;
 }
 
-#viewMenuPanel button{
+#viewMenuPanel button {
   display:block;
   width:100%;
   margin:3px 0;
@@ -138,21 +265,21 @@ input[type=checkbox]{
 
 /* Parte sinistra: orologio e data */
 
-#headerLeft{
+#headerLeft {
   display:flex;
   align-items:center;
   gap:12px;
   min-width:0;
 }
 
-#clock{
+#clock {
   font-weight:bold;
   line-height:1;
   font-size:2.5em;
   white-space:nowrap;
 }
 
-#info{
+#info {
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -161,18 +288,18 @@ input[type=checkbox]{
   padding:0;
 }
 
-#wday{
+#wday {
   font-weight:bold;
   text-transform:capitalize;
 }
 
-#fulldate{
+#fulldate {
   font-size:.9em;
 }
 
 /* Parte destra: utente e meteo */
 
-#headerRight{
+#headerRight {
   display:flex;
   flex-direction:column;
   align-items:flex-end;
@@ -181,14 +308,14 @@ input[type=checkbox]{
   min-width:0;
 }
 
-#loggedUser{
+#loggedUser {
   font-size:.75em;
   color:#555;
   text-align:right;
   margin:0;
 }
 
-#weatherRow{
+#weatherRow {
   display:flex;
   align-items:center;
   justify-content:flex-end;
@@ -196,7 +323,7 @@ input[type=checkbox]{
   min-width:0;
 }
 
-#weatherIcon{
+#weatherIcon {
   display:flex;
   align-items:center;
   justify-content:center;
@@ -205,49 +332,83 @@ input[type=checkbox]{
   flex:none;
 }
 
-#weatherIcon svg{
+#weatherIcon svg {
   width:34px;
   height:34px;
 }
 
-#weather{
+#weather {
   font-size:.85em;
   line-height:1.2;
   text-align:right;
   min-width:0;
 }
 
+
 /* ==================================================
-   4. ELENCHI: EVENTI, RIGHE CHECKBOX, ASSEGNAZIONI
+   4. ELENCHI, EVENTI, CHECKBOX E ASSEGNAZIONI
    ================================================== */
-.agenda-period{font-weight:bold}
-.ev{position:relative;margin:2px 0;padding-left:5.2em}
-.ev.clickable{cursor:pointer}
-.ev .t{position:absolute;left:0;top:0;font-weight:bold}
-.event-tasks{margin:2px 0 12px 25px;padding:4px 8px;border-left:2px solid #999}
-.link-detail{display:block;margin-top:8px;font-size:14px;font-style:italic;text-decoration:underline;color:#555;cursor:pointer}
 
-.rt{margin:0 0 10px}
+.agenda-period {
+  font-weight:bold;
+}
 
-/* Riga con checkbox: usata ovunque (task, to-do, compiti agenda, finestra) */
+.ev {
+  position:relative;
+  margin:2px 0;
+  padding-left:5.2em;
+}
 
-.todo{
+.ev.clickable {
+  cursor:pointer;
+}
+
+.ev .t {
+  position:absolute;
+  left:0;
+  top:0;
+  font-weight:bold;
+}
+
+.event-tasks {
+  margin:2px 0 12px 25px;
+  padding:4px 8px;
+  border-left:2px solid #999;
+}
+
+.link-detail {
+  display:block;
+  margin-top:8px;
+  font-size:14px;
+  font-style:italic;
+  text-decoration:underline;
+  color:#555;
+  cursor:pointer;
+}
+
+.rt {
+  margin:0 0 10px;
+}
+
+/* Riga checkbox comune */
+
+.todo {
   display:table;
   width:100%;
   table-layout:fixed;
-  border-spacing:0 0px;
+  border-spacing:0 0;
   padding:0;
   margin:0;
   line-height:1.3;
 }
 
-.todo-check-cell{
+.todo-check-cell {
   display:table-cell;
   width:28px;
   vertical-align:middle;
 }
 
-.todo-text{
+.todo-text {
   display:table-cell;
   vertical-align:middle;
   text-align:left;
@@ -255,7 +416,7 @@ input[type=checkbox]{
   word-wrap:break-word;
 }
 
-.todo-actions{
+.todo-actions {
   display:table-cell;
   width:76px;
   vertical-align:middle;
@@ -263,12 +424,11 @@ input[type=checkbox]{
   white-space:nowrap;
 }
 
-.todo-actions button{
+.todo-actions button {
   display:inline-flex;
   align-items:center;
   justify-content:center;
   vertical-align:middle;
-  box-sizing:border-box;
   width:28px;
   min-width:28px;
   height:28px;
@@ -277,7 +437,7 @@ input[type=checkbox]{
   line-height:1;
 }
 
-.todo-check{
+.todo-check {
   display:block;
   width:16px;
   height:16px;
@@ -285,101 +445,213 @@ input[type=checkbox]{
   padding:0;
 }
 
-.todo-assign{font:bold 16px/20px Arial,sans-serif;text-align:center}
+.todo-assign {
+  font:bold 16px/20px Arial,sans-serif;
+  text-align:center;
+}
 
-.todo-assign-menu{display:none;position:relative;z-index:5;margin:4px 0 8px;padding:8px;border:1px solid #555;border-radius:4px;background:#fff}
-.todo-assign-menu.open{display:block}
-.todo-assign-title{margin:0 0 5px;font-weight:bold}
-.todo-assign-options{font-size:0}
-.todo-assign-option{display:inline-block;vertical-align:top;width:33.333%;margin:1px 0;font-size:14px;line-height:20px;white-space:nowrap}
-.todo-assign-option input{display:inline-block;vertical-align:middle;width:13px;height:13px;margin:0 4px 0 0}
-.todo-assign-buttons{display:flex;gap:6px;margin-top:8px}
-.todo-assign-buttons button{min-width:58px;margin:0;padding:4px 8px}
+.todo-assign-menu {
+  display:none;
+  position:relative;
+  z-index:5;
+  margin:4px 0 8px;
+  padding:8px;
+  border:1px solid #555;
+  border-radius:4px;
+  background:#fff;
+}
+
+.todo-assign-menu.open {
+  display:block;
+}
+
+.todo-assign-title {
+  margin:0 0 5px;
+  font-weight:bold;
+}
+
+.todo-assign-options {
+  font-size:0;
+}
+
+.todo-assign-option {
+  display:inline-block;
+  vertical-align:top;
+  width:33.333%;
+  margin:1px 0;
+  font-size:14px;
+  line-height:20px;
+  white-space:nowrap;
+}
+
+.todo-assign-option input {
+  display:inline-block;
+  vertical-align:middle;
+  width:13px;
+  height:13px;
+  margin:0 4px 0 0;
+}
+
+.todo-assign-buttons {
+  display:flex;
+  gap:6px;
+  margin-top:8px;
+}
+
+.todo-assign-buttons button {
+  min-width:58px;
+  margin:0;
+  padding:4px 8px;
+}
 
 /* Menu scuola */
-#menuList ul{list-style:none;margin:4px 0;padding:0}
-#menuList li{margin:3px 0}
-.menu-head{display:flex;justify-content:space-between;align-items:center}
-#menuDate{margin:10px 0}
+
+#menuList ul {
+  list-style:none;
+  margin:4px 0;
+  padding:0;
+}
+
+#menuList li {
+  margin:3px 0;
+}
+
+.menu-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+#menuDate {
+  margin:10px 0;
+}
 
 /* Finestra dettagli evento */
-.overlay{position:fixed;left:0;top:0;width:100%;height:100%;z-index:9999;overflow-y:auto;padding:20px;background:#fff}
-.overlay .panel{padding:15px;border:2px solid #000;border-radius:5px;background:#fff}
-.overlay-head{overflow:hidden;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #000}
-.overlay-head h2{float:left;padding:0}
-.overlay-head button{float:right;margin:0}
-.overlay .todo{padding:10px 0;font-size:18px;border-bottom:1px solid #ccc}
-.overlay-details-title{margin:20px 0 8px;font-size:17px;font-weight:bold}
-.overlay-details{white-space:pre-line;line-height:1.5}
 
-/* Shoppig list */
+.overlay {
+  position:fixed;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  z-index:9999;
+  overflow-y:auto;
+  padding:20px;
+  background:#fff;
+}
+
+.overlay .panel {
+  padding:15px;
+  border:2px solid #000;
+  border-radius:5px;
+  background:#fff;
+}
+
+.overlay-head {
+  overflow:hidden;
+  margin-bottom:8px;
+  padding-bottom:8px;
+  border-bottom:1px solid #000;
+}
+
+.overlay-head h2 {
+  float:left;
+  padding:0;
+}
+
+.overlay-head button {
+  float:right;
+  margin:0;
+}
+
+.overlay .todo {
+  padding:10px 0;
+  font-size:18px;
+  border-bottom:1px solid #ccc;
+}
+
+.overlay-details-title {
+  margin:20px 0 8px;
+  font-size:17px;
+  font-weight:bold;
+}
+
+.overlay-details {
+  white-space:pre-line;
+  line-height:1.5;
+}
+
+
+/* ==================================================
+   5. LISTA DELLA SPESA
+   ================================================== */
+
 .shopping-group-title {
-  margin: 10px 0 4px;
-  padding-bottom: 3px;
-  border-bottom: 1px solid #999;
-  font-size: 0.85em;
-  font-weight: bold;
+  margin:10px 0 4px;
+  padding-bottom:3px;
+  border-bottom:1px solid #999;
+  font-size:.85em;
+  font-weight:bold;
 }
 
 .shopping-item {
-  margin: 4px 0;
-  overflow-wrap: break-word;
+  margin:4px 0;
+  overflow-wrap:break-word;
 }
 
 .shopping-item.completed {
-  color: #666;
+  color:#666;
 }
+
+/* Contenitore dei tre pulsanti */
 
 .shopping-commit-buttons {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  width: 100%;
-  gap: 6px;
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  width:100%;
+  gap:6px;
 }
+
+/* Pulsanti conferma */
 
 .shopping-commit-button {
-  flex: 1 1 0;
-  min-width: 0;
-  width: 0;
-  box-sizing: border-box;
-  white-space: normal;
-  font-size: 10px;
-  padding: 5px 2px;
-  min-height: 28px;
-  line-height: 1.2;
+  flex:1 1 0;
+  min-width:0;
+  width:0;
+  box-sizing:border-box;
+  white-space:normal;
+  font-size:10px;
+  padding:5px 2px;
+  min-height:28px;
+  line-height:1.2;
 }
 
-.seg.two button.active,
-body.k .seg.two button.active {
-  background-color: #000 !important;
-  color: #fff !important;
-  border-color: #000 !important;
-}
 
 /* ==================================================
-   5. PC (> 800px)
+   6. PC (> 800px)
    ================================================== */
-@media screen and (min-width:801px){
 
-  body:not(.k) #head{
+@media screen and (min-width:801px) {
+
+  body:not(.k) #head {
     display:flex;
     justify-content:space-between;
     align-items:center;
     min-height:52px;
     padding:2px 10px 2px 42px;
     gap:2px;
-	padding-top:5px;
+    padding-top:5px;
   }
 
-  body:not(.k) #headerLeft{
+  body:not(.k) #headerLeft {
     display:flex;
     align-items:center;
     gap:12px;
     min-width:0;
   }
 
-  body:not(.k) #clock{
+  body:not(.k) #clock {
     float:none;
     width:auto;
     margin:0;
@@ -388,7 +660,7 @@ body.k .seg.two button.active {
     white-space:nowrap;
   }
 
-  body:not(.k) #info{
+  body:not(.k) #info {
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -397,15 +669,15 @@ body.k .seg.two button.active {
     padding:0;
   }
 
-  body:not(.k) #wday{
+  body:not(.k) #wday {
     font-size:1.25em;
   }
 
-  body:not(.k) #fulldate{
+  body:not(.k) #fulldate {
     font-size:.9em;
   }
 
-  body:not(.k) #headerRight{
+  body:not(.k) #headerRight {
     display:flex;
     flex-direction:column;
     align-items:flex-end;
@@ -413,8 +685,8 @@ body.k .seg.two button.active {
     gap:0;
     min-width:0;
   }
-  
-  body:not(.k) #loggedUser{
+
+  body:not(.k) #loggedUser {
     position:relative;
     top:5px;
     margin:0;
@@ -422,55 +694,56 @@ body.k .seg.two button.active {
     text-align:right;
   }
 
-  body:not(.k) #weatherRow{
+  body:not(.k) #weatherRow {
     display:flex;
     align-items:center;
     justify-content:flex-end;
     gap:5px;
   }
 
-  body:not(.k) #weatherIcon{
+  body:not(.k) #weatherIcon {
     position:static;
     width:42px;
     height:42px;
     justify-content:center;
   }
 
-  body:not(.k) #weatherIcon svg{
+  body:not(.k) #weatherIcon svg {
     width:42px;
     height:42px;
   }
 
-  body:not(.k) #weather{
+  body:not(.k) #weather {
     position:static;
     font-size:.85em;
     text-align:right;
   }
 }
 
-/* ==================================================
-   6. TABLET E SMARTPHONE (<= 800px)
-   ================================================== */
-@media screen and (max-width:800px){
 
-  /* Header */
-  body:not(.k) #head{
+/* ==================================================
+   7. TABLET E SMARTPHONE (<= 800px)
+   ================================================== */
+
+@media screen and (max-width:800px) {
+
+  body:not(.k) #head {
     display:flex;
     justify-content:space-between;
     align-items:center;
     gap:5px;
     min-height:40px;
-	padding:0 6px 0 38px;
+    padding:0 6px 0 38px;
   }
 
-  body:not(.k) #headerLeft{
+  body:not(.k) #headerLeft {
     display:flex;
     align-items:center;
     gap:7px;
     min-width:0;
   }
 
-  body:not(.k) #clock{
+  body:not(.k) #clock {
     float:none;
     width:auto;
     margin:0;
@@ -479,7 +752,7 @@ body.k .seg.two button.active {
     white-space:nowrap;
   }
 
-  body:not(.k) #info{
+  body:not(.k) #info {
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -491,17 +764,17 @@ body.k .seg.two button.active {
     padding:0;
   }
 
-  body:not(.k) #wday{
+  body:not(.k) #wday {
     font-size:.95em;
     min-width:0;
   }
 
-  body:not(.k) #fulldate{
+  body:not(.k) #fulldate {
     font-size:.85em;
     min-width:0;
   }
 
-  body:not(.k) #headerRight{
+  body:not(.k) #headerRight {
     display:flex;
     flex-direction:column;
     align-items:flex-end;
@@ -510,13 +783,13 @@ body.k .seg.two button.active {
     min-width:0;
   }
 
-  body:not(.k) #loggedUser{
+  body:not(.k) #loggedUser {
     font-size:.65em;
     margin:0;
     text-align:right;
   }
 
-  body:not(.k) #weatherRow{
+  body:not(.k) #weatherRow {
     display:flex;
     align-items:center;
     justify-content:flex-end;
@@ -524,7 +797,7 @@ body.k .seg.two button.active {
     min-width:0;
   }
 
-  body:not(.k) #weatherIcon{
+  body:not(.k) #weatherIcon {
     display:flex;
     justify-content:center;
     align-items:center;
@@ -534,12 +807,12 @@ body.k .seg.two button.active {
     flex:none;
   }
 
-  body:not(.k) #weatherIcon svg{
+  body:not(.k) #weatherIcon svg {
     width:32px;
     height:32px;
   }
 
-  body:not(.k) #weather{
+  body:not(.k) #weather {
     position:static;
     width:auto;
     max-width:100%;
@@ -551,47 +824,105 @@ body.k .seg.two button.active {
   }
 }
 
-/* Colonne impilate solo su telefoni stretti (mai su Kindle) */
-@media screen and (max-width:600px){
-  body:not(.k) .col{
+/* Colonne impilate solo su telefoni stretti, mai su Kindle */
+
+@media screen and (max-width:600px) {
+  body:not(.k) .col {
     float:none;
     width:100%;
     max-width:100%;
   }
 }
 
-@media screen and (max-width:380px){
-  body:not(.k) #wday{font-size:.8em}
-  body:not(.k) #fulldate{font-size:.75em}
-  body:not(.k) #clock{font-size:1.5em}
-  body:not(.k) #weather{max-width:75px}
+@media screen and (max-width:380px) {
+  body:not(.k) #wday {
+    font-size:.8em;
+  }
+
+  body:not(.k) #fulldate {
+    font-size:.75em;
+  }
+
+  body:not(.k) #clock {
+    font-size:1.5em;
+  }
+
+  body:not(.k) #weather {
+    max-width:75px;
+  }
 }
 
+
 /* ==================================================
-   7. KINDLE
+   8. KINDLE
    ================================================== */
 
-body.k .wrap{padding-right:14px}
+/* Contenitore e colonne */
 
-/* Colonne sempre affiancate, come su PC (layout caricato da D1) */
-body.k .col{float:left;width:50%}
-body.k .col.full{float:none;width:100%}
+body.k .wrap {
+  padding-right:14px;
+}
 
-/* Intestazione dei box */
-body.k .section-heading{display:block;overflow:hidden}
-body.k .section-heading h2{float:left;width:62%;font-size:.95em;white-space:nowrap}
-body.k .sync-label{float:right;width:36%;font-size:.55em;white-space:nowrap}
+body.k .col {
+  float:left;
+  width:50%;
+}
+
+body.k .col.full {
+  float:none;
+  width:100%;
+}
+
+/* Intestazione box */
+
+body.k .section-heading {
+  display:block;
+  overflow:hidden;
+}
+
+body.k .section-heading h2 {
+  float:left;
+  width:62%;
+  font-size:.95em;
+  white-space:nowrap;
+}
+
+body.k .sync-label {
+  float:right;
+  width:36%;
+  font-size:.55em;
+  white-space:nowrap;
+}
 
 /* Hamburger */
-body.k #viewMenuToggle{position:relative;display:block;padding:0}
-body.k #viewMenuToggle span{position:absolute;left:4px;width:18px}
-body.k #viewMenuToggle span:nth-child(1){top:5px}
-body.k #viewMenuToggle span:nth-child(2){top:12px}
-body.k #viewMenuToggle span:nth-child(3){top:19px}
 
-/* Header Kindle: layout compatibile con il vecchio browser */
+body.k #viewMenuToggle {
+  position:relative;
+  display:block;
+  padding:0;
+}
 
-body.k #head{
+body.k #viewMenuToggle span {
+  position:absolute;
+  left:4px;
+  width:18px;
+}
+
+body.k #viewMenuToggle span:nth-child(1) {
+  top:5px;
+}
+
+body.k #viewMenuToggle span:nth-child(2) {
+  top:12px;
+}
+
+body.k #viewMenuToggle span:nth-child(3) {
+  top:19px;
+}
+
+/* Header Kindle */
+
+body.k #head {
   display:block;
   position:relative;
   height:auto;
@@ -600,13 +931,13 @@ body.k #head{
   overflow:visible;
 }
 
-body.k #head:after{
+body.k #head:after {
   content:"";
   display:table;
   clear:both;
 }
 
-body.k #headerLeft{
+body.k #headerLeft {
   display:block;
   float:left;
   width:62%;
@@ -614,7 +945,7 @@ body.k #headerLeft{
   overflow:hidden;
 }
 
-body.k #clock{
+body.k #clock {
   float:left;
   width:auto;
   margin:3px 5px 0 0;
@@ -623,7 +954,7 @@ body.k #clock{
   white-space:nowrap;
 }
 
-body.k #info{
+body.k #info {
   display:block;
   float:left;
   width:auto;
@@ -633,7 +964,7 @@ body.k #info{
 }
 
 body.k #wday,
-body.k #fulldate{
+body.k #fulldate {
   display:block;
   width:auto;
   margin:0;
@@ -641,13 +972,15 @@ body.k #fulldate{
   white-space:nowrap;
 }
 
-body.k #wday{font-size:1em}
+body.k #wday {
+  font-size:1em;
+}
 
-body.k #fulldate{
+body.k #fulldate {
   font-size:.7em;
 }
 
-body.k #headerRight{
+body.k #headerRight {
   display:block;
   float:right;
   width:35%;
@@ -655,20 +988,20 @@ body.k #headerRight{
   text-align:right;
 }
 
-body.k #loggedUser{
+body.k #loggedUser {
   display:block;
   font-size:.6em;
   margin:0;
   text-align:right;
 }
 
-body.k #weatherRow{
+body.k #weatherRow {
   display:block;
   overflow:hidden;
   text-align:right;
 }
 
-body.k #weatherIcon{
+body.k #weatherIcon {
   display:block;
   float:right;
   position:static;
@@ -677,12 +1010,12 @@ body.k #weatherIcon{
   margin:0 0 0 3px;
 }
 
-body.k #weatherIcon svg{
+body.k #weatherIcon svg {
   width:28px;
   height:28px;
 }
 
-body.k #weather{
+body.k #weather {
   display:block;
   position:static;
   width:auto;
@@ -693,36 +1026,62 @@ body.k #weather{
   text-align:right;
 }
 
+/* Lista della spesa Kindle */
+
 body.k #shoppingBox input[type="checkbox"] {
-  margin-right: 10px;
+  margin-right:10px;
 }
 
 body.k #shoppingBox label {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
 }
 
+/* Pulsanti lista spesa Kindle:
+   due a sinistra, eliminazione a destra */
+
 body.k .shopping-commit-buttons {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 3px;
+  display:block;
+  position:relative;
+  width:100%;
+  min-height:68px;
+  padding-right:2px;
+  box-sizing:border-box;
 }
 
 body.k .shopping-commit-button {
-  flex: 1 1 0;
-  min-width: 0;
-  width: auto;
-  font-size: 8px;
-  padding: 6px 1px;
-  line-height: 1.3;
-  white-space: normal;
-  overflow-wrap: break-word;
+  box-sizing:border-box;
+  flex:none;
+  min-width:0;
+  width:48%;
+  font-size:8px;
+  padding:6px 8px;
+  line-height:1.3;
+  white-space:normal;
+  overflow-wrap:break-word;
+  margin:0 0 5px 0;
+  text-align:center;
 }
 
+body.k .shopping-commit-button:nth-child(1),
+body.k .shopping-commit-button:nth-child(2) {
+  display:block;
+}
+
+body.k .shopping-commit-button:nth-child(3) {
+  position:absolute;
+  right:0;
+  top:18px;
+  width:48%;
+  margin:0;
+  text-align:center;
+}
+
+/* Righe articoli */
+
 body.k .shopping-item {
-  display:table !important;
+  display:table!important;
   table-layout:fixed;
   width:100%;
   border-spacing:0;
@@ -758,6 +1117,8 @@ body.k .shopping-actions {
   white-space:nowrap;
 }
 
+/* Etichetta cestino e checkbox */
+
 body.k .shopping-delete-label {
   display:inline-block;
   white-space:nowrap;
@@ -768,7 +1129,11 @@ body.k .shopping-delete-checkbox {
   vertical-align:middle;
   margin:0;
   display:inline-block;
+  position:relative;
+  top:-1px;
 }
+
+/* Cestino disegnato in CSS */
 
 body.k .shopping-actions .trash-icon {
   display:inline-block;
@@ -788,11 +1153,6 @@ body.k .shopping-delete-label .trash-icon {
   margin:0 5px 0 0;
   border:1px solid #000;
   border-top:0;
-}
-
-body.k .shopping-delete-label input[type="checkbox"] {
-  position:relative;
-  top:-1px;
 }
 
 body.k .shopping-delete-label .trash-icon:before {
@@ -818,15 +1178,15 @@ body.k .shopping-delete-label .trash-icon:after {
   border-bottom:0;
 }
 
-/* Gruppi di pulsanti */
+/* Gruppi di pulsanti Kindle */
 
-body.k .seg{
+body.k .seg {
   display:block;
   font-size:0;
   white-space:nowrap;
 }
 
-body.k .seg > button{
+body.k .seg > button {
   display:inline-block;
   vertical-align:top;
   width:32%;
@@ -838,32 +1198,57 @@ body.k .seg > button{
   white-space:nowrap;
 }
 
-body.k .seg.two > button{
+body.k .seg.two > button {
   width:49%;
 }
 
-/* Campo nuova attività */
-body.k .add-ctl{display:block;position:relative;height:32px}
-body.k .add-ctl input{position:absolute;left:0;right:90px;width:auto;height:32px;margin:0}
-body.k .add-ctl button{position:absolute;right:0;top:0;width:85px;height:32px;margin:0;padding:5px 2px}
+/* Campo nuova attività Kindle */
 
-/* Righe checkbox: layout a tabella */
-body.k .todo{display:table;table-layout:fixed;border-spacing:0;width:100%}
-body.k .todo-check-cell,
-body.k .todo-text,
+body.k .add-ctl {
+  display:block;
+  position:relative;
+  height:32px;
+}
 
+body.k .add-ctl input {
+  position:absolute;
+  left:0;
+  right:90px;
+  width:auto;
+  height:32px;
+  margin:0;
+}
 
-body.k .todo-check-cell{
+body.k .add-ctl button {
+  position:absolute;
+  right:0;
+  top:0;
+  width:85px;
+  height:32px;
+  margin:0;
+  padding:5px 2px;
+}
+
+/* Righe checkbox Kindle */
+
+body.k .todo {
+  display:table;
+  table-layout:fixed;
+  border-spacing:0;
+  width:100%;
+}
+
+body.k .todo-check-cell {
   width:28px;
   padding-right:8px;
 }
 
-body.k .todo-check{
+body.k .todo-check {
   display:inline-block;
   vertical-align:middle;
 }
 
-body.k .todo-text{
+body.k .todo-text {
   display:table-cell;
   width:100%;
   padding-top:0;
@@ -874,7 +1259,7 @@ body.k .todo-text{
   word-break:normal;
 }
 
-body.k .todo-actions{
+body.k .todo-actions {
   width:76px;
   text-align:right;
   white-space:nowrap;
@@ -882,7 +1267,7 @@ body.k .todo-actions{
   vertical-align:middle;
 }
 
-body.k .todo-actions button{
+body.k .todo-actions button {
   display:inline-block;
   vertical-align:middle;
   box-sizing:border-box;
@@ -893,8 +1278,8 @@ body.k .todo-actions button{
   padding:0;
 }
 
-body.k .todo-assign{
-  font:normal 13px/1 Arial,sans-serif !important;
+body.k .todo-assign {
+  font:normal 13px/1 Arial,sans-serif!important;
   width:20px;
   min-width:20px;
   height:20px;
@@ -902,17 +1287,56 @@ body.k .todo-assign{
   margin:0 0 0 4px;
 }
 
-body.k .todo-assign-option{margin:3px 0}
-body.k .todo-assign-option input{margin-right:1px}
+body.k .todo-assign-option {
+  margin:3px 0;
+}
 
-/* Cestino disegnato in CSS */
-body.k .todo-delete{border:0;background:transparent;box-shadow:none}
-body.k .trash-icon{position:relative;left:2px;top:7px;display:block;width:11px;height:12px;margin-top:4px;border:1px solid #000;border-top:0}
-body.k .trash-icon:before{content:"";position:absolute;left:-2px;top:-3px;width:13px;height:1px;background:#000}
-body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5px;height:2px;border:1px solid #000;border-bottom:0}
+body.k .todo-assign-option input {
+  margin-right:1px;
+}
 
+/* Cestino attività Kindle */
 
+body.k .todo-delete {
+  border:0;
+  background:transparent;
+  box-shadow:none;
+}
+
+body.k .trash-icon {
+  position:relative;
+  left:2px;
+  top:7px;
+  display:block;
+  width:11px;
+  height:12px;
+  margin-top:4px;
+  border:1px solid #000;
+  border-top:0;
+}
+
+body.k .trash-icon:before {
+  content:"";
+  position:absolute;
+  left:-2px;
+  top:-3px;
+  width:13px;
+  height:1px;
+  background:#000;
+}
+
+body.k .trash-icon:after {
+  content:"";
+  position:absolute;
+  left:2px;
+  top:-5px;
+  width:5px;
+  height:2px;
+  border:1px solid #000;
+  border-bottom:0;
+}
 </style>
+
 </head>
 <body>
 <div class="wrap">
