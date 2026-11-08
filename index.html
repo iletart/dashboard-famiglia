@@ -4341,6 +4341,7 @@ function loadShoppingList() {
 
   x.send(null);
 }
+
 function showShoppingConfirm(title, names, onConfirm) {
 
   var overlay = mk("div", "shopping-confirm-overlay");
@@ -4623,11 +4624,9 @@ function getScheduledView(){
     }
   }
 
-  var sharedView = DASHBOARD_VIEWS.find(function(v){
-    return v.view_type === "shared";
-  });
-  
-  return sharedView ? sharedView.id : null;
+  return DASHBOARD_VIEWS.length
+    ? DASHBOARD_VIEWS[0].id
+    : null;
 }
 
 function checkScheduledView(){
@@ -4735,19 +4734,31 @@ function buildLayout(view){
 
 function setView(view, manual){
   if(manual){ viewManualUntil = Date.now() + 10 * 60 * 1000; }
-  currentView = view; 
-
-  var btns = $("viewMenuPanel").getElementsByTagName("button");
-  for(var i = 0; i < btns.length; i++){
-    btns[i].className = btns[i].getAttribute("data-view") === view ? "sel" : "";
-  }
-
+  
   var viewConfig = DASHBOARD_VIEWS.find(function(v){
     return v.id === view;
   });
   
-  if(!viewConfig){ return; }
+  if(!viewConfig){
+    viewConfig = DASHBOARD_VIEWS.length
+      ? DASHBOARD_VIEWS[0]
+      : null;
+  }
   
+  if(!viewConfig){
+    currentView = null;
+    return;
+  }
+  
+  currentView = viewConfig.id;
+  view = currentView;
+  
+  var btns = $("viewMenuPanel").getElementsByTagName("button");
+  
+  for(var i = 0; i < btns.length; i++){
+    btns[i].className = btns[i].getAttribute("data-view") === view ? "sel" : "";
+  }
+
   var personal = viewConfig.view_type === "personal";
   
   setHidden($("dashboardContent"), personal);
