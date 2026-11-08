@@ -1640,8 +1640,13 @@ function showErr(m){
   if(e){ e.appendChild(mk("div", "", "Errore: " + m)); }
 }
 
-function safe(f){
-  try { f(); } catch(e){ showErr(e && e.message ? e.message : String(e)); }
+function safe(f, nome){
+  try {
+    f();
+  } catch(e){
+    showErr("Errore in " + nome + ": " +
+      (e && e.message ? e.message : String(e)));
+  }
 }
 
 /*
@@ -5485,12 +5490,12 @@ function startDashboard(preferredView){
 	  }
 	};
 
-    safe(loadAgenda);
-    safe(loadShoppingList);
-    safe(loadWeather);
-    safe(loadSunTimes);
-    safe(loadMenu);
-    safe(loadTodo);
+	safe(loadAgenda, "loadAgenda");
+	safe(loadShoppingList, "loadShoppingList");
+	safe(loadWeather, "loadWeather");
+	safe(loadSunTimes, "loadSunTimes");
+	safe(loadMenu, "loadMenu");
+	safe(loadTodo, "loadTodo");
 
 	if(!scheduleViewTimer){
 	  scheduleViewTimer = setInterval(checkScheduledView, 15000);
