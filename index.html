@@ -1075,10 +1075,16 @@ body.k .shopping-completed-commit-buttons {
   gap:4px;
 }
 
+/* KINDLE: testo pulsanti conferma */
 body.k .shopping-completed-commit-buttons .shopping-commit-button {
   display:block;
   flex:1 1 50%;
   width:50%;
+  font-size:6px;
+  padding-left:0;
+  padding-right:0;
+  white-space:nowrap;
+  letter-spacing:-0.4px;
 }
 
 /* Righe articoli */
@@ -3474,7 +3480,10 @@ function loadShoppingList() {
         container.appendChild(row);
       }
 
-
+	  // Inserimento pulsanti sopra le rispettive liste
+	  pendingSection.appendChild(pendingCommitButtons);
+	  completedSection.appendChild(completedCommitButtons);
+	  
       // --------------------------------------------------
       // CREAZIONE LISTA DA COMPRARE
       // --------------------------------------------------
@@ -4283,9 +4292,6 @@ function loadShoppingList() {
       // --------------------------------------------------
       // INSERIMENTO SEZIONI E RELATIVI PULSANTI
       // --------------------------------------------------
-
-      pendingSection.appendChild(pendingCommitButtons);
-      completedSection.appendChild(completedCommitButtons);
 
   	  box.appendChild(pendingSection);
   	  box.appendChild(completedSection);
