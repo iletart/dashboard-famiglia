@@ -774,12 +774,10 @@ body.k .todo-text{
 }
 
 body.k .todo-actions{
-  display:table-cell;
   width:76px;
-  min-width:76px;
   text-align:right;
   white-space:nowrap;
-  padding-left:4px;
+  display:table-cell;
   vertical-align:middle;
 }
 
@@ -2661,11 +2659,6 @@ console.log("SHOPPING: funzione avviata");
 			"_" + String(item.id);
 
 		  var deleteLabel = mk("label", "shopping-delete-label");
-		  
-		  deleteLabel.style.marginLeft = "auto";
-		  deleteLabel.style.flexShrink = "0";
-		  deleteLabel.style.display = "flex";
-		  deleteLabel.style.alignItems = "center";
 
 		  var deleteCheckbox = mk("input", "");
 		  deleteCheckbox.type = "checkbox";
@@ -2674,14 +2667,7 @@ console.log("SHOPPING: funzione avviata");
 			shoppingDeleteSelections[deleteKey]
 		  );
 
-		  var deleteIcon;
-		  
-		  if (IS_KINDLE) {
-		    deleteIcon = mk("span", "trash-icon");
-		  } else {
-		    deleteIcon = mk("span", "", "🗑");
-		  }
-		  
+		  var deleteIcon = mk("span", "", "🗑");
 		  deleteIcon.title = "Seleziona per eliminazione";
 
 		  deleteLabel.appendChild(deleteCheckbox);
