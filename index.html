@@ -2774,6 +2774,9 @@ function waitForShoppingUpdate(
 
   var url = SHOPPING_API_URL + "/shopping?view_id=" +
     encodeURIComponent(currentView);
+	
+console.log("SHOPPING currentView:", currentView);
+console.log("SHOPPING URL:", url);
 
   check.open("GET", url, true);
   check.setRequestHeader("Authorization", "Bearer " + authToken);
