@@ -1351,6 +1351,50 @@ body.k .trash-icon:after {
 }
 </style>
 
+<script>
+(function () {
+  function showError(message) {
+    var box = document.getElementById("kindle-error-box");
+
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "kindle-error-box";
+
+      box.style.cssText =
+        "position:fixed;bottom:0;left:0;right:0;" +
+        "z-index:99999;background:white;color:black;" +
+        "border:2px solid black;padding:8px;" +
+        "font:14px monospace;max-height:35%;" +
+        "overflow:auto;word-wrap:break-word;";
+
+      document.body.appendChild(box);
+    }
+
+    box.innerHTML +=
+      "<div style='border-bottom:1px solid #999;padding:4px'>" +
+      message +
+      "</div>";
+  }
+
+  window.onerror = function (message, source, line, column) {
+    showError(
+      "ERRORE: " + message +
+      " | File: " + source +
+      " | Riga: " + line +
+      " | Colonna: " + column
+    );
+  };
+
+  window.addEventListener("unhandledrejection", function (event) {
+    showError(
+      "PROMISE: " +
+      (event.reason && event.reason.message
+        ? event.reason.message
+        : String(event.reason))
+    );
+  });
+})();
+</script>
 </head>
 <body>
 <div class="wrap">
