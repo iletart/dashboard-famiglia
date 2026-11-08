@@ -5358,6 +5358,11 @@ function startDashboard(preferredView){
     setHidden($("head"), false);
     setHidden($("dashboardContent"), false);
     renderViewMenu();
+	
+console.log("AUTH PROFILE:", authProfile);
+console.log("VISTE AUTORIZZATE:", DASHBOARD_VIEWS);
+console.log("VISTA PROGRAMMATA:", getScheduledView());
+
     setView(preferredView || getScheduledView(), false);
 	
 	bindSeg("taskDays", function(day){
