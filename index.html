@@ -754,10 +754,7 @@ body.k .add-ctl button{position:absolute;right:0;top:0;width:85px;height:32px;ma
 body.k .todo{display:table;table-layout:fixed;border-spacing:0;width:100%}
 body.k .todo-check-cell,
 body.k .todo-text,
-body.k .todo-actions{
-  display:table-cell;
-  vertical-align:middle;
-}
+
 
 body.k .todo-check-cell{
   width:28px;
@@ -777,9 +774,13 @@ body.k .todo-text{
 }
 
 body.k .todo-actions{
+  display:table-cell;
   width:76px;
+  min-width:76px;
   text-align:right;
   white-space:nowrap;
+  padding-left:4px;
+  vertical-align:middle;
 }
 
 body.k .todo-actions button{
