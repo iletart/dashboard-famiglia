@@ -3869,7 +3869,8 @@ function showShoppingConfirm(title, names, onConfirm) {
   popup.style.padding = "14px";
   popup.style.width = "85%";
   popup.style.maxWidth = "420px";
-  popup.style.maxHeight = "85%";
+  popup.style.maxHeight = "95%";
+  popup.style.height = "95%";
   popup.style.boxSizing = "border-box";
   popup.style.display = "flex";
   popup.style.flexDirection = "column";
@@ -3889,11 +3890,13 @@ function showShoppingConfirm(title, names, onConfirm) {
 
   list.style.border = "1px solid #999";
   list.style.padding = "6px";
-  list.style.height = "220px";
+  list.style.height = "55vh";
+  list.style.maxHeight = "55vh";
+  list.style.overflow = "hidden";
   list.style.boxSizing = "border-box";
   list.style.overflow = "hidden";
 
-  var pageSize = 20;
+  var pageSize = 10;
   var currentPage = 0;
   var totalPages = Math.ceil(names.length / pageSize);
 
