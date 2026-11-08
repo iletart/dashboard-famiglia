@@ -1351,37 +1351,6 @@ body.k .trash-icon:after {
 }
 </style>
 
-<script>
-(function () {
-  window.onerror = function (message, source, line, column) {
-    var box = document.getElementById("kindle-error-box");
-
-    if (!box) {
-      box = document.createElement("div");
-      box.id = "kindle-error-box";
-      box.style.cssText =
-        "position:fixed;bottom:0;left:0;right:0;" +
-        "z-index:99999;background:white;color:black;" +
-        "border:2px solid black;padding:8px;" +
-        "font:14px monospace;max-height:35%;overflow:auto;";
-
-      document.body.appendChild(box);
-    }
-
-    var row = document.createElement("div");
-    row.appendChild(document.createTextNode(
-      "ERRORE: " + message +
-      " | File: " + source +
-      " | Riga: " + line +
-      " | Colonna: " + column
-    ));
-
-    box.appendChild(row);
-
-    return true;
-  };
-})();
-</script>
 </head>
 <body>
 <div class="wrap">
