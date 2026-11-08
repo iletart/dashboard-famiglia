@@ -1,118 +1,8 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-08T23:50:02.925418+01:00",
+  "generated_at": "2026-11-09T00:00:03.005796+01:00",
   "period_days": 14,
   "events": [
-    {
-      "id": "q1rhdovpk97b31egfgfbgl3h8j_20261102T073000Z",
-      "title": "Motricità",
-      "start": {
-        "dateTime": "2026-11-02T07:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-02T07:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "- W: calze antiscivolo",
-      "htmlLink": "https://www.google.com/calendar/event?eid=cTFyaGRvdnBrOTdiMzFlZ2ZnZmJnbDNoOGpfMjAyNjExMDJUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "12ug354gtoq95bjhtvc2lbvafc_20261102T163000Z",
-      "title": "Motricità",
-      "start": {
-        "dateTime": "2026-11-02T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-02T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMDJUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "01guhquf80r3kbvobnkb9hv1pk_20261103T161500Z",
-      "title": "Piscina",
-      "start": {
-        "dateTime": "2026-11-03T16:15:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-03T17:00:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "- I: merenda post piscina\n- I: zaino con tutto",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MDFndWhxdWY4MHIza2J2b2Jua2I5aHYxcGtfMjAyNjExMDNUMTYxNTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "34ec9dkbompbtjfs9oa9f2apjb_20261104",
-      "title": "Atletica",
-      "start": {
-        "date": "2026-11-04"
-      },
-      "end": {
-        "date": "2026-11-05"
-      },
-      "all_day": true,
-      "location": "",
-      "description": "- W: zaino giallo con maglietta e scarpe \n- W: borraccia (col ghiaccio)\n- I: merenda",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MzRlYzlka2JvbXBidGpmczlvYTlmMmFwamJfMjAyNjExMDQgZmFtaWx5MDI3MjI5Nzk3MDg3MjgwNTUzNzRAZw"
-    },
-    {
-      "id": "71h6adhp6gpj4bb370s36b9k65i3gbb26tim6b9pc4r3gohi61hjacb2cc",
-      "title": "Riportare libro a scuola",
-      "start": {
-        "dateTime": "2026-11-05T07:00:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-05T07:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "- W: libro",
-      "htmlLink": "https://www.google.com/calendar/event?eid=NzFoNmFkaHA2Z3BqNGJiMzcwczM2YjlrNjVpM2diYjI2dGltNmI5cGM0cjNnb2hpNjFoamFjYjJjYyBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "072ngfmhkv80b5s5n8h83qgatj_20261105T163000Z",
-      "title": "Inglese Mattia",
-      "start": {
-        "dateTime": "2026-11-05T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-05T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "",
-      "htmlLink": "https://www.google.com/calendar/event?eid=MDcybmdmbWhrdjgwYjVzNW44aDgzcWdhdGpfMjAyNjExMDVUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
-    },
-    {
-      "id": "ckrj2o9icpj3eb9gchi3cb9k71hj0bb1c4r68b9l74qj6dhm6ph32c1i64_20261106T163000Z",
-      "title": "Rugby",
-      "start": {
-        "dateTime": "2026-11-06T16:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "end": {
-        "dateTime": "2026-11-06T17:30:00Z",
-        "timeZone": "Europe/Rome"
-      },
-      "all_day": false,
-      "location": "",
-      "description": "- W: calze antiscivolo\n- I: merenda",
-      "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTEwNlQxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
-    },
     {
       "id": "70s3ao9k6os36b9pcli32b9kcdgj4bb1clj62bb16hh68p1o61i68c356s",
       "title": "Merenda motricità",
@@ -238,6 +128,100 @@
       "location": "",
       "description": "- W: calze antiscivolo\n- I: merenda",
       "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTExM1QxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
+    },
+    {
+      "id": "q1rhdovpk97b31egfgfbgl3h8j_20261116T073000Z",
+      "title": "Motricità",
+      "start": {
+        "dateTime": "2026-11-16T07:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-16T07:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "- W: calze antiscivolo",
+      "htmlLink": "https://www.google.com/calendar/event?eid=cTFyaGRvdnBrOTdiMzFlZ2ZnZmJnbDNoOGpfMjAyNjExMTZUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "12ug354gtoq95bjhtvc2lbvafc_20261116T163000Z",
+      "title": "Motricità",
+      "start": {
+        "dateTime": "2026-11-16T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-16T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MTJ1ZzM1NGd0b3E5NWJqaHR2YzJsYnZhZmNfMjAyNjExMTZUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "01guhquf80r3kbvobnkb9hv1pk_20261117T161500Z",
+      "title": "Piscina",
+      "start": {
+        "dateTime": "2026-11-17T16:15:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-17T17:00:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "- I: merenda post piscina\n- I: zaino con tutto",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MDFndWhxdWY4MHIza2J2b2Jua2I5aHYxcGtfMjAyNjExMTdUMTYxNTAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "34ec9dkbompbtjfs9oa9f2apjb_20261118",
+      "title": "Atletica",
+      "start": {
+        "date": "2026-11-18"
+      },
+      "end": {
+        "date": "2026-11-19"
+      },
+      "all_day": true,
+      "location": "",
+      "description": "- W: zaino giallo con maglietta e scarpe \n- W: borraccia (col ghiaccio)\n- I: merenda",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MzRlYzlka2JvbXBidGpmczlvYTlmMmFwamJfMjAyNjExMTggZmFtaWx5MDI3MjI5Nzk3MDg3MjgwNTUzNzRAZw"
+    },
+    {
+      "id": "072ngfmhkv80b5s5n8h83qgatj_20261119T163000Z",
+      "title": "Inglese Mattia",
+      "start": {
+        "dateTime": "2026-11-19T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-19T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MDcybmdmbWhrdjgwYjVzNW44aDgzcWdhdGpfMjAyNjExMTlUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "ckrj2o9icpj3eb9gchi3cb9k71hj0bb1c4r68b9l74qj6dhm6ph32c1i64_20261120T163000Z",
+      "title": "Rugby",
+      "start": {
+        "dateTime": "2026-11-20T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-20T17:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "- W: calze antiscivolo\n- I: merenda",
+      "htmlLink": "https://www.google.com/calendar/event?eid=Y2tyajJvOWljcGozZWI5Z2NoaTNjYjlrNzFoajBiYjFjNHI2OGI5bDc0cWo2ZGhtNnBoMzJjMWk2NF8yMDI2MTEyMFQxNjMwMDBaIGZhbWlseTAyNzIyOTc5NzA4NzI4MDU1Mzc0QGc"
     }
   ]
 }
