@@ -2542,17 +2542,16 @@ console.log("SHOPPING: funzione avviata");
         }
       }
 
-	  var listHeading = mk("div", "section-heading");
-	  var listTitle = mk(
-	    "h2",
-	    "",
-	    "LISTA SPESA (" + userName(list.account) + ")"
-	  );
-	  listHeading.appendChild(listTitle);
+		var listHeading = mk("div", "section-heading");
 
-      var listHeading = mk("div", "section-heading");
-	  listHeading.appendChild(listTitle);
-	  box.appendChild(listHeading);
+		var listTitle = mk(
+		  "h2",
+		  "",
+		  "LISTA SPESA (" + userName(list.account) + ")"
+		);
+
+		listHeading.appendChild(listTitle);
+		box.appendChild(listHeading);
 
       // --------------------------------------------------
       // TABS
@@ -2655,6 +2654,18 @@ console.log("SHOPPING: funzione avviata");
 		commitButtons.appendChild(commitDelete);
 
 		box.appendChild(commitButtons);
+		
+		commitBought.addEventListener("click", function () {
+		  commitShoppingItems(true);
+		});
+
+		commitNotBought.addEventListener("click", function () {
+		  commitShoppingItems(false);
+		});
+
+		commitDelete.addEventListener("click", function () {
+		  commitShoppingDeletes();
+});
 
       // --------------------------------------------------
       // IDENTIFICATIVO DELLE MODIFICHE TEMPORANEE
@@ -3145,491 +3156,118 @@ console.log("SHOPPING: funzione avviata");
 	  check.send(null);
 	}
 
-	function commitShoppingDeletes() {
-	  var selectedItems = Object.keys(shoppingDeleteSelections)
-		.map(function (key) {
-		  return shoppingDeleteSelections[key];
-		})
-		.filter(function (item) {
-		  return String(item.shopping_list_id) ===
-			String(list.shopping_list_id);
-		});
+function commitShoppingDeletes() {
+  var selectedItems = Object.keys(shoppingDeleteSelections)
+    .map(function (key) {
+      return shoppingDeleteSelections[key];
+    })
+    .filter(function (item) {
+      return String(item.shopping_list_id) ===
+        String(list.shopping_list_id);
+    });
 
-	  if (!selectedItems.length) {
-		return;
-	  }
+  if (!selectedItems.length) {
+    return;
+  }
 
-	  var names = selectedItems.map(function (item) {
-		return item.name;
-	  });
+  var names = selectedItems.map(function (item) {
+    return item.name;
+  });
 
-	  if (!confirm(
-		"Vuoi eliminare definitivamente " +
-		selectedItems.length +
-		" articoli dalla lista Amazon?\n\n" +
-		names.join("\n")
-	  )) {
-		return;
-	  }
+  showShoppingConfirm(
+    "ELIMINARE DEFINITIVAMENTE " +
+    selectedItems.length + " ARTICOLI?",
+    names,
+    function () {
 
-	  commitBought.disabled = true;
-	  commitNotBought.disabled = true;
-	  commitDelete.disabled = true;
+      commitBought.disabled = true;
+      commitNotBought.disabled = true;
+      commitDelete.disabled = true;
 
-	  commitDelete.textContent = "ELIMINAZIONE IN CORSO...";
+      commitDelete.textContent = "ELIMINAZIONE IN CORSO...";
 
-	  var request = new XMLHttpRequest();
+      var request = new XMLHttpRequest();
 
-	  request.open(
-		"POST",
-		SHOPPING_API_URL + "/shopping/delete-batch",
-		true
-	  );
+      request.open(
+        "POST",
+        SHOPPING_API_URL + "/shopping/delete-batch",
+        true
+      );
 
-	  request.setRequestHeader(
-		"Authorization",
-		"Bearer " + authToken
-	  );
+      request.setRequestHeader(
+        "Authorization",
+        "Bearer " + authToken
+      );
 
-	  request.setRequestHeader(
-		"Content-Type",
-		"application/json"
-	  );
+      request.setRequestHeader(
+        "Content-Type",
+        "application/json"
+      );
 
-	  request.timeout = 30000;
+      request.timeout = 30000;
 
-	  var payload = {
-		view_id: currentView,
-		view_item_id: list.view_item_id,
-		shopping_list_id: list.shopping_list_id,
-		items: selectedItems.map(function (item) {
-		  return {
-			item_id: item.item_id
-		  };
-		})
-	  };
+      var payload = {
+        view_id: currentView,
+        view_item_id: list.view_item_id,
+        shopping_list_id: list.shopping_list_id,
+        items: selectedItems.map(function (item) {
+          return {
+            item_id: item.item_id
+          };
+        })
+      };
 
-	  request.onreadystatechange = function () {
-		if (request.readyState !== 4) {
-		  return;
-		}
-
-		var result = null;
-
-		try {
-		  result = JSON.parse(request.responseText);
-		} catch (e) {}
-
-		if (
-		  request.status >= 200 &&
-		  request.status < 300 &&
-		  result &&
-		  result.ok &&
-		  result.commands
-		) {
-		  waitForDeleteBatchCommands(
-			result.commands,
-			selectedItems
-		  );
-		  return;
-		}
-
-		updateCommitButtons();
-
-		alert(
-		  result && result.error
-			? result.error
-			: "Impossibile inviare le eliminazioni."
-		);
-	  };
-
-	  request.onerror = function () {
-		updateCommitButtons();
-		alert("Errore di connessione a shopping-api.");
-	  };
-
-	  request.ontimeout = function () {
-		updateCommitButtons();
-		alert("Timeout durante l'invio delle eliminazioni.");
-	  };
-
-	  request.send(JSON.stringify(payload));
-	}
-
-      function commitShoppingItems(desiredStatus) {
-        var drafts = getDrafts(desiredStatus);
-
-        if (!drafts.length) {
+      request.onreadystatechange = function () {
+        if (request.readyState !== 4) {
           return;
         }
 
-        commitBought.disabled = true;
-        commitNotBought.disabled = true;
-		
-		var activeButton = desiredStatus
-		  ? commitBought
-		  : commitNotBought;
+        var result = null;
 
-		var originalText = activeButton.textContent;
+        try {
+          result = JSON.parse(request.responseText);
+        } catch (e) {}
 
-		activeButton.textContent = "IN CORSO...";
-		activeButton.style.backgroundColor = "#000";
-		activeButton.style.color = "#fff";
-		activeButton.style.borderColor = "#000";
-
-        var update = new XMLHttpRequest();
-
-        update.open(
-          "POST",
-          SHOPPING_API_URL + "/shopping/update-batch",
-          true
-        );
-
-        update.setRequestHeader(
-          "Authorization",
-          "Bearer " + authToken
-        );
-
-        update.setRequestHeader(
-          "Content-Type",
-          "application/json"
-        );
-
-        update.timeout = 30000;
-
-        var payload = {
-          view_id: currentView,
-          view_item_id: list.view_item_id,
-          shopping_list_id: list.shopping_list_id,
-          items: []
-        };
-
-        for (var i = 0; i < drafts.length; i++) {
-          payload.items.push({
-            item_id: drafts[i].item_id,
-            completed: desiredStatus
-          });
-        }
-
-        update.onreadystatechange = function () {
-          if (update.readyState !== 4) {
-            return;
-          }
-
-          var result = null;
-
-          try {
-            result = JSON.parse(update.responseText);
-          } catch (e) {}
-
-          if (
-            update.status >= 200 &&
-            update.status < 300 &&
-            result &&
-            result.ok &&
-            result.commands
-          ) {
-            waitForBatchCommands(result.commands, drafts);
-            return;
-          }
-
-          updateCommitButtons();
-
-          alert(
-            result && result.error
-              ? result.error
-              : "Impossibile inviare le modifiche."
+        if (
+          request.status >= 200 &&
+          request.status < 300 &&
+          result &&
+          result.ok &&
+          result.commands
+        ) {
+          waitForDeleteBatchCommands(
+            result.commands,
+            selectedItems
           );
-        };
-
-		update.onerror = function () {
-		  activeButton.textContent = originalText;
-		  activeButton.style.backgroundColor = "";
-		  activeButton.style.color = "";
-		  activeButton.style.borderColor = "";
-
-		  updateCommitButtons();
-		  alert("Errore di connessione a shopping-api.");
-		};
-
-		update.ontimeout = function () {
-		  activeButton.textContent = originalText;
-		  activeButton.style.backgroundColor = "";
-		  activeButton.style.color = "";
-		  activeButton.style.borderColor = "";
-
-		  updateCommitButtons();
-		  alert("Timeout durante l'invio delle modifiche.");
-		};
-
-        update.send(JSON.stringify(payload));
-      }
-
-      // --------------------------------------------------
-      // ATTESA COMPLETAMENTO COMANDI BATCH
-      // --------------------------------------------------
-
-      function waitForBatchCommands(commands, drafts) {
-        var remaining = commands.length;
-        var failed = [];
-        var succeeded = [];
-
-        if (!remaining) {
-          updateCommitButtons();
           return;
         }
 
-        function checkOneCommand(command, attempt) {
-          if (attempt >= 60) {
-            failed.push(command);
-            finishIfComplete();
-            return;
-          }
+        updateCommitButtons();
 
-          var check = new XMLHttpRequest();
-
-          check.open(
-            "GET",
-            SHOPPING_API_URL + "/shopping/command-status?id=" +
-              encodeURIComponent(command.command_id),
-            true
-          );
-
-          check.setRequestHeader(
-            "Authorization",
-            "Bearer " + authToken
-          );
-
-          check.timeout = 15000;
-
-          check.onreadystatechange = function () {
-            if (check.readyState !== 4) {
-              return;
-            }
-
-            var statusData = null;
-
-            try {
-              statusData = JSON.parse(check.responseText);
-            } catch (e) {}
-
-            if (
-              check.status >= 200 &&
-              check.status < 300 &&
-              statusData &&
-              statusData.ok
-            ) {
-              if (statusData.status === "succeeded") {
-                succeeded.push(command);
-                finishIfComplete();
-                return;
-              }
-
-              if (statusData.status === "failed") {
-                failed.push(command);
-                finishIfComplete();
-                return;
-              }
-            }
-
-            setTimeout(function () {
-              checkOneCommand(command, attempt + 1);
-            }, 500);
-          };
-
-          check.onerror = function () {
-            setTimeout(function () {
-              checkOneCommand(command, attempt + 1);
-            }, 500);
-          };
-
-          check.ontimeout = function () {
-            setTimeout(function () {
-              checkOneCommand(command, attempt + 1);
-            }, 500);
-          };
-
-          check.send(null);
-        }
-
-        function finishIfComplete() {
-          remaining--;
-
-          if (remaining > 0) {
-            return;
-          }
-
-          // Rimuove soltanto le modifiche confermate con successo.
-          for (var i = 0; i < succeeded.length; i++) {
-            var command = succeeded[i];
-
-            for (var j = 0; j < drafts.length; j++) {
-              if (
-                String(drafts[j].item_id) ===
-                String(command.item_id)
-              ) {
-                var key = String(drafts[j].shopping_list_id) +
-                  "_" + String(drafts[j].item_id);
-
-                delete shoppingDrafts[key];
-              }
-            }
-          }
-
-          if (failed.length) {
-            alert(
-              failed.length +
-              " articoli non sono stati aggiornati. " +
-              "Le modifiche restano nella dashboard."
-            );
-          }
-
-          checkBatchSync(0, drafts, failed);
-        }
-
-        for (var i = 0; i < commands.length; i++) {
-          checkOneCommand(commands[i], 0);
-        }
-      }
-
-      // --------------------------------------------------
-      // ATTESA SINCRONIZZAZIONE D1
-      // --------------------------------------------------
-
-      function checkBatchSync(attempt, drafts, failed) {
-        if (attempt >= 60) {
-          updateCommitButtons();
-
-          alert(
-            "I comandi sono stati elaborati, ma la lista non è ancora sincronizzata."
-          );
-
-          return;
-        }
-
-        var check = new XMLHttpRequest();
-
-        check.open(
-          "GET",
-          SHOPPING_API_URL + "/shopping?view_id=" +
-            encodeURIComponent(currentView) +
-            "&_=" + Date.now(),
-          true
+        alert(
+          result && result.error
+            ? result.error
+            : "Impossibile inviare le eliminazioni."
         );
+      };
 
-        check.setRequestHeader(
-          "Authorization",
-          "Bearer " + authToken
-        );
+      request.onerror = function () {
+        updateCommitButtons();
+        alert("Errore di connessione a shopping-api.");
+      };
 
-        check.timeout = 15000;
+      request.ontimeout = function () {
+        updateCommitButtons();
+        alert("Timeout durante l'invio delle eliminazioni.");
+      };
 
-        check.onreadystatechange = function () {
-          if (check.readyState !== 4) {
-            return;
-          }
+      request.send(JSON.stringify(payload));
 
-          var data = null;
-
-          try {
-            data = JSON.parse(check.responseText);
-          } catch (e) {}
-
-          if (
-            check.status >= 200 &&
-            check.status < 300 &&
-            data &&
-            data.ok
-          ) {
-            var synced = true;
-            var items = [];
-
-            for (var i = 0; i < data.lists.length; i++) {
-              if (
-                String(data.lists[i].shopping_list_id) ===
-                String(list.shopping_list_id)
-              ) {
-                items = data.lists[i].items || [];
-                break;
-              }
-            }
-
-            for (var i = 0; i < drafts.length; i++) {
-              var found = false;
-
-              for (var j = 0; j < items.length; j++) {
-                if (
-                  String(items[j].id) ===
-                    String(drafts[i].item_id) &&
-                  Boolean(items[j].completed) ===
-                    drafts[i].desiredStatus
-                ) {
-                  found = true;
-                  break;
-                }
-              }
-
-              // Se il comando era fallito, non attendiamo
-              // che D1 raggiunga uno stato che non arriverà.
-              if (!found) {
-                for (var k = 0; k < failed.length; k++) {
-                  if (
-                    String(failed[k].item_id) ===
-                    String(drafts[i].item_id)
-                  ) {
-                    found = true;
-                    break;
-                  }
-                }
-              }
-
-              if (!found) {
-                synced = false;
-                break;
-              }
-            }
-
-            if (synced) {
-              loadShoppingList();
-              return;
-            }
-          }
-
-          setTimeout(function () {
-            checkBatchSync(attempt + 1, drafts, failed);
-          }, 500);
-        };
-
-        check.onerror = function () {
-          setTimeout(function () {
-            checkBatchSync(attempt + 1, drafts, failed);
-          }, 500);
-        };
-
-        check.ontimeout = function () {
-          setTimeout(function () {
-            checkBatchSync(attempt + 1, drafts, failed);
-          }, 500);
-        };
-
-        check.send(null);
-      }
-
-      // --------------------------------------------------
-      // EVENTI PULSANTI
-      // --------------------------------------------------
-
-      commitBought.addEventListener("click", function () {
-        commitShoppingItems(true);
-      });
-
-      commitNotBought.addEventListener("click", function () {
-        commitShoppingItems(false);
-      });
+    }
+  );
+}
 	  
-	  commitDelete.addEventListener("click", function () {
-	    commitShoppingDeletes();
-	  });
+);
 
       updateCommitButtons();
 
@@ -3676,6 +3314,78 @@ console.log("SHOPPING: funzione avviata");
   };
 
   x.send(null);
+}
+
+function showShoppingConfirm(title, names, onConfirm) {
+  var overlay = mk("div", "shopping-confirm-overlay");
+
+  overlay.style.position = "fixed";
+  overlay.style.left = "0";
+  overlay.style.top = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(0,0,0,0.55)";
+  overlay.style.zIndex = "99999";
+  overlay.style.display = "flex";
+  overlay.style.alignItems = "center";
+  overlay.style.justifyContent = "center";
+
+  var popup = mk("div", "shopping-confirm-popup");
+  popup.style.backgroundColor = "#fff";
+  popup.style.color = "#000";
+  popup.style.border = "2px solid #000";
+  popup.style.padding = "14px";
+  popup.style.width = "85%";
+  popup.style.maxWidth = "420px";
+  popup.style.maxHeight = "75%";
+  popup.style.boxSizing = "border-box";
+  popup.style.display = "flex";
+  popup.style.flexDirection = "column";
+
+  var heading = mk("div", "", title);
+  heading.style.fontWeight = "bold";
+  heading.style.marginBottom = "10px";
+
+  var list = mk("div", "shopping-confirm-list");
+  list.style.overflowY = "auto";
+  list.style.maxHeight = "45vh";
+  list.style.minHeight = "40px";
+  list.style.border = "1px solid #999";
+  list.style.padding = "6px";
+
+  for (var i = 0; i < names.length; i++) {
+    list.appendChild(mk("div", "", names[i]));
+  }
+
+  var buttons = mk("div", "");
+  buttons.style.display = "flex";
+  buttons.style.gap = "8px";
+  buttons.style.marginTop = "12px";
+
+  var cancel = mk("button", "", "ANNULLA");
+  var confirm = mk("button", "", "CONFERMA");
+
+  cancel.style.flex = "1";
+  confirm.style.flex = "1";
+
+  buttons.appendChild(cancel);
+  buttons.appendChild(confirm);
+
+  popup.appendChild(heading);
+  popup.appendChild(list);
+  popup.appendChild(buttons);
+  overlay.appendChild(popup);
+
+  cancel.onclick = function () {
+    document.body.removeChild(overlay);
+  };
+
+  confirm.onclick = function () {
+    document.body.removeChild(overlay);
+    onConfirm();
+  };
+
+  document.body.appendChild(overlay);
 }
 
 /* ==================================================
