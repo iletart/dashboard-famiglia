@@ -1564,6 +1564,7 @@ var taskSyncError = false, taskSyncedAt = null;
 var pollTimer = null;
 
 var clockTimer = null;
+var scheduleViewTimer = null;
 var sunTimesTimer = null;
 var shoppingRefreshTimer = null;
 
@@ -5475,7 +5476,6 @@ function restoreAuthSession(){
 safe(startClock);
 safe(updateSyncLabels);
 safe(initViewMenu);
-setTimeout(restoreAuthSession, 0);
 restoreAuthSession();
 
 </script>
