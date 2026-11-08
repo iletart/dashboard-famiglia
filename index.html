@@ -770,25 +770,30 @@ body.k .shopping-delete-checkbox {
   display:inline-block;
 }
 
-body.k .shopping-delete-label .trash-icon {
-  position:static;
-  top:auto;
-  left:auto;
-  display:inline-block;
-  vertical-align:middle;
-  width:11px;
-  height:12px;
-  margin:0 5px 0 0;
-}
-
 body.k .shopping-actions .trash-icon {
   display:inline-block;
   vertical-align:middle;
   margin-left:3px;
 }
 
+body.k .shopping-delete-label .trash-icon {
+  position:relative;
+  top:0;
+  left:0;
+  display:inline-block;
+  box-sizing:content-box;
+  vertical-align:middle;
+  width:11px;
+  height:12px;
+  margin:0 5px 0 0;
+  border:1px solid #000;
+  border-top:0;
+}
+
 body.k .shopping-delete-label .trash-icon:before {
+  content:"";
   position:absolute;
+  display:block;
   left:-2px;
   top:-3px;
   width:13px;
@@ -797,7 +802,9 @@ body.k .shopping-delete-label .trash-icon:before {
 }
 
 body.k .shopping-delete-label .trash-icon:after {
+  content:"";
   position:absolute;
+  display:block;
   left:2px;
   top:-5px;
   width:5px;
