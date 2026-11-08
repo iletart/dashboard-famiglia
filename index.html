@@ -2762,9 +2762,15 @@ console.log("SHOPPING: funzione avviata");
           var ms = parseIso(item.checked_at);
 
           if (ms !== null) {
-            dateText = fullDateText(
-              dayNumOfRome(toRome(ms))
-            );
+			var d = toRome(ms);
+
+			var giorno = d.getDate();
+			var mese = d.getMonth() + 1;
+
+			dateText =
+			  (giorno < 10 ? "0" : "") + giorno + "/" +
+			  (mese < 10 ? "0" : "") + mese + "/" +
+			  d.getFullYear();
           }
         }
 
