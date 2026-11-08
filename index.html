@@ -2289,58 +2289,78 @@ function renderRoutes(){
   if(!found){ box.appendChild(mk("div", "rt", "Nessun percorso disponibile per oggi.")); }
   scheduleAlign();
 }
-
 /* ==================================================
    13. LISTA DELLA SPESA
    ================================================== */
+
 var shoppingDrafts = {};
 var shoppingDeleteSelections = {};
 
-function waitForShoppingUpdate(listId, itemId, desiredStatus, attempt, checkbox, originalStatus){
 
-  if(attempt >= 24){
+function waitForShoppingUpdate(
+  listId,
+  itemId,
+  desiredStatus,
+  attempt,
+  checkbox,
+  originalStatus
+) {
+  if (attempt >= 24) {
     checkbox.checked = originalStatus;
     checkbox.disabled = false;
-    alert("L'aggiornamento è stato inviato, ma la sincronizzazione non è ancora arrivata. Riprova tra poco.");
+
+    alert(
+      "L'aggiornamento è stato inviato, ma la sincronizzazione non è ancora arrivata. Riprova tra poco."
+    );
+
     return;
   }
 
   var check = new XMLHttpRequest();
 
   var url = SHOPPING_API_URL + "/shopping?view_id=" +
-            encodeURIComponent(currentView);
+    encodeURIComponent(currentView);
 
   check.open("GET", url, true);
   check.setRequestHeader("Authorization", "Bearer " + authToken);
   check.timeout = 20000;
 
-  check.onreadystatechange = function(){
-    if(check.readyState !== 4){ return; }
+  check.onreadystatechange = function () {
+    if (check.readyState !== 4) {
+      return;
+    }
 
     var data = null;
 
     try {
       data = JSON.parse(check.responseText);
-    } catch(e){}
+    } catch (e) {}
 
-    if(check.status >= 200 && check.status < 300 && data && data.ok){
-
+    if (
+      check.status >= 200 &&
+      check.status < 300 &&
+      data &&
+      data.ok
+    ) {
       var lists = data.lists || [];
 
-      for(var i = 0; i < lists.length; i++){
+      for (var i = 0; i < lists.length; i++) {
         var listData = lists[i];
 
-        if(String(listData.shopping_list_id) !== String(listId)){
+        if (
+          String(listData.shopping_list_id) !==
+          String(listId)
+        ) {
           continue;
         }
 
         var items = listData.items || [];
 
-        for(var j = 0; j < items.length; j++){
-          if(
+        for (var j = 0; j < items.length; j++) {
+          if (
             String(items[j].id) === String(itemId) &&
             !!items[j].completed === desiredStatus
-          ){
+          ) {
             loadShoppingList();
             return;
           }
@@ -2348,7 +2368,7 @@ function waitForShoppingUpdate(listId, itemId, desiredStatus, attempt, checkbox,
       }
     }
 
-    setTimeout(function(){
+    setTimeout(function () {
       waitForShoppingUpdate(
         listId,
         itemId,
@@ -2360,8 +2380,8 @@ function waitForShoppingUpdate(listId, itemId, desiredStatus, attempt, checkbox,
     }, 5000);
   };
 
-  check.onerror = function(){
-    setTimeout(function(){
+  check.onerror = function () {
+    setTimeout(function () {
       waitForShoppingUpdate(
         listId,
         itemId,
@@ -2378,12 +2398,18 @@ function waitForShoppingUpdate(listId, itemId, desiredStatus, attempt, checkbox,
   check.send(null);
 }
 
+
 function waitForDeleteCommand(commandId, deleteButton) {
+
   function check(attempt) {
     if (attempt >= 240) {
       deleteButton.disabled = false;
       deleteButton.textContent = "🗑";
-      alert("Il comando è ancora in attesa. Aggiorna la lista tra poco.");
+
+      alert(
+        "Il comando è ancora in attesa. Aggiorna la lista tra poco."
+      );
+
       return;
     }
 
@@ -2404,7 +2430,9 @@ function waitForDeleteCommand(commandId, deleteButton) {
     checkRequest.timeout = 15000;
 
     checkRequest.onreadystatechange = function () {
-      if (checkRequest.readyState !== 4) return;
+      if (checkRequest.readyState !== 4) {
+        return;
+      }
 
       var data = null;
 
@@ -2422,13 +2450,18 @@ function waitForDeleteCommand(commandId, deleteButton) {
           setTimeout(function () {
             loadShoppingList();
           }, 500);
+
           return;
         }
 
         if (data.status === "failed") {
           deleteButton.disabled = false;
           deleteButton.textContent = "🗑";
-          alert("Amazon non è riuscito a eliminare l'articolo.");
+
+          alert(
+            "Amazon non è riuscito a eliminare l'articolo."
+          );
+
           return;
         }
       }
@@ -2456,12 +2489,15 @@ function waitForDeleteCommand(commandId, deleteButton) {
   check(0);
 }
 
-function loadShoppingList(){
-console.log("SHOPPING: funzione avviata");
+
+function loadShoppingList() {
+
+  console.log("SHOPPING: funzione avviata");
+
   var box = $("shoppingBox");
-  
+
   console.log("SHOPPING BOX:", box);
-	console.log("SHOPPING VIEW:", currentView);
+  console.log("SHOPPING VIEW:", currentView);
 
   if (!authToken) {
     setText(box, "Sessione non disponibile.");
@@ -2471,6 +2507,7 @@ console.log("SHOPPING: funzione avviata");
   setText(box, "Caricamento...");
 
   var x = new XMLHttpRequest();
+
   var url = SHOPPING_API_URL + "/shopping?view_id=" +
     encodeURIComponent(currentView);
 
@@ -2478,17 +2515,18 @@ console.log("SHOPPING: funzione avviata");
   x.setRequestHeader("Authorization", "Bearer " + authToken);
   x.timeout = 20000;
 
-	x.onreadystatechange = function () {
-	  if (x.readyState !== 4) {
-		return;
-	  }
+  x.onreadystatechange = function () {
 
-	  box = $("shoppingBox");
+    if (x.readyState !== 4) {
+      return;
+    }
 
-	  if (!box) {
-		console.warn("SHOPPING: contenitore non disponibile");
-		return;
-	  }
+    box = $("shoppingBox");
+
+    if (!box) {
+      console.warn("SHOPPING: contenitore non disponibile");
+      return;
+    }
 
     var data = null;
 
@@ -2502,17 +2540,18 @@ console.log("SHOPPING: funzione avviata");
       !data ||
       !data.ok
     ) {
-	
-	clear(box);
 
-	setText(
-	  box,
-	  data && data.error
-		? data.error
-		: "Lista della spesa non disponibile."
-	);
+      clear(box);
+
+      setText(
+        box,
+        data && data.error
+          ? data.error
+          : "Lista della spesa non disponibile."
+      );
 
       setText($("shoppingTimes"), "rete non disponibile");
+
       return;
     }
 
@@ -2529,6 +2568,7 @@ console.log("SHOPPING: funzione avviata");
     }
 
     for (var i = 0; i < lists.length; i++) {
+
       var list = lists[i];
 
       var pending = [];
@@ -2542,16 +2582,21 @@ console.log("SHOPPING: funzione avviata");
         }
       }
 
-		var listHeading = mk("div", "section-heading");
+      // --------------------------------------------------
+      // TITOLO LISTA
+      // --------------------------------------------------
 
-		var listTitle = mk(
-		  "h2",
-		  "",
-		  "LISTA SPESA (" + userName(list.account) + ")"
-		);
+      var listHeading = mk("div", "section-heading");
 
-		listHeading.appendChild(listTitle);
-		box.appendChild(listHeading);
+      var listTitle = mk(
+        "h2",
+        "",
+        "LISTA SPESA (" + userName(list.account) + ")"
+      );
+
+      listHeading.appendChild(listTitle);
+      box.appendChild(listHeading);
+
 
       // --------------------------------------------------
       // TABS
@@ -2577,103 +2622,107 @@ console.log("SHOPPING: funzione avviata");
 
       pendingButton.classList.add("active");
 
-		pendingButton.addEventListener(
-		  "click",
-		  function (ps, cs, pb, cb) {
-			return function () {
-			  ps.style.display = "block";
-			  cs.style.display = "none";
+      pendingButton.addEventListener(
+        "click",
+        function (ps, cs, pb, cb) {
+          return function () {
+            ps.style.display = "block";
+            cs.style.display = "none";
 
-			  pb.classList.add("active");
-			  cb.classList.remove("active");
+            pb.classList.add("active");
+            cb.classList.remove("active");
 
-			  scheduleAlign();
-			};
-		  }(
-			pendingSection,
-			completedSection,
-			pendingButton,
-			completedButton
-		  )
-		);
+            scheduleAlign();
+          };
+        }(
+          pendingSection,
+          completedSection,
+          pendingButton,
+          completedButton
+        )
+      );
 
-		completedButton.addEventListener(
-		  "click",
-		  function (ps, cs, pb, cb) {
-			return function () {
-			  ps.style.display = "none";
-			  cs.style.display = "block";
+      completedButton.addEventListener(
+        "click",
+        function (ps, cs, pb, cb) {
+          return function () {
+            ps.style.display = "none";
+            cs.style.display = "block";
 
-			  pb.classList.remove("active");
-			  cb.classList.add("active");
+            pb.classList.remove("active");
+            cb.classList.add("active");
 
-			  scheduleAlign();
-			};
-		  }(
-			pendingSection,
-			completedSection,
-			pendingButton,
-			completedButton
-		  )
-		);
-		
-		// --------------------------------------------------
-		// PULSANTI DI CONFERMA
-		// --------------------------------------------------
+            scheduleAlign();
+          };
+        }(
+          pendingSection,
+          completedSection,
+          pendingButton,
+          completedButton
+        )
+      );
 
-		var commitButtons = mk("div", "shopping-commit-buttons");
 
-		var commitBought = mk(
-		  "button",
-		  "shopping-commit-button",
-		  "CONFERMA COMPRATI (0)"
-		);
+      // --------------------------------------------------
+      // PULSANTI DI CONFERMA
+      // --------------------------------------------------
 
-		var commitNotBought = mk(
-		  "button",
-		  "shopping-commit-button",
-		  "CONFERMA NON COMPRATI (0)"
-		);
+      var commitButtons = mk("div", "shopping-commit-buttons");
 
-		var commitDelete = mk(
-		  "button",
-		  "shopping-commit-button",
-		  "ELIMINA DEFINITIVAMENTE (0)"
-		);
+      var commitBought = mk(
+        "button",
+        "shopping-commit-button",
+        "CONFERMA COMPRATI (0)"
+      );
 
-		commitBought.type = "button";
-		commitNotBought.type = "button";
-		commitDelete.type = "button";
+      var commitNotBought = mk(
+        "button",
+        "shopping-commit-button",
+        "CONFERMA NON COMPRATI (0)"
+      );
 
-		commitBought.disabled = true;
-		commitNotBought.disabled = true;
-		commitDelete.disabled = true;
+      var commitDelete = mk(
+        "button",
+        "shopping-commit-button",
+        "ELIMINA DEFINITIVAMENTE (0)"
+      );
 
-		commitButtons.appendChild(commitBought);
-		commitButtons.appendChild(commitNotBought);
-		commitButtons.appendChild(commitDelete);
+      commitBought.type = "button";
+      commitNotBought.type = "button";
+      commitDelete.type = "button";
 
-		box.appendChild(commitButtons);
-		
-		commitBought.addEventListener("click", function () {
-		  commitShoppingItems(true);
-		});
+      commitBought.disabled = true;
+      commitNotBought.disabled = true;
+      commitDelete.disabled = true;
 
-		commitNotBought.addEventListener("click", function () {
-		  commitShoppingItems(false);
-		});
+      commitButtons.appendChild(commitBought);
+      commitButtons.appendChild(commitNotBought);
+      commitButtons.appendChild(commitDelete);
 
-		commitDelete.addEventListener("click", function () {
-		  commitShoppingDeletes();
-});
+      box.appendChild(commitButtons);
+
+      commitBought.addEventListener("click", function () {
+        commitShoppingItems(true);
+      });
+
+      commitNotBought.addEventListener("click", function () {
+        commitShoppingItems(false);
+      });
+
+      commitDelete.addEventListener("click", function () {
+        commitShoppingDeletes();
+      });
+
 
       // --------------------------------------------------
       // IDENTIFICATIVO DELLE MODIFICHE TEMPORANEE
       // --------------------------------------------------
 
       function getDraftKey(item) {
-        return String(list.shopping_list_id) + "_" + String(item.id);
+        return String(list.shopping_list_id) +
+          "_" + String(item.id);
       }
+
 
       function getDrafts(desiredStatus) {
         var result = [];
@@ -2697,198 +2746,235 @@ console.log("SHOPPING: funzione avviata");
         return result;
       }
 
+
       // --------------------------------------------------
       // AGGIORNAMENTO CONTATORI PULSANTI
       // --------------------------------------------------
 
-		function updateCommitButtons() {
-		  var boughtDrafts = getDrafts(true);
-		  var notBoughtDrafts = getDrafts(false);
+      function updateCommitButtons() {
 
-		  var deleteKeys = Object.keys(shoppingDeleteSelections).filter(
-			function (key) {
-			  return String(
-				shoppingDeleteSelections[key].shopping_list_id
-			  ) === String(list.shopping_list_id);
-			}
-		  );
+        var boughtDrafts = getDrafts(true);
+        var notBoughtDrafts = getDrafts(false);
 
-		  commitBought.textContent =
-			"CONFERMA COMPRATI (" + boughtDrafts.length + ")";
+        var deleteKeys = Object.keys(shoppingDeleteSelections).filter(
+          function (key) {
+            return String(
+              shoppingDeleteSelections[key].shopping_list_id
+            ) === String(list.shopping_list_id);
+          }
+        );
 
-		  commitNotBought.textContent =
-			"CONFERMA NON COMPRATI (" + notBoughtDrafts.length + ")";
+        commitBought.textContent =
+          "CONFERMA COMPRATI (" + boughtDrafts.length + ")";
 
-		  commitDelete.textContent =
-			"ELIMINA DEFINITIVAMENTE (" + deleteKeys.length + ")";
+        commitNotBought.textContent =
+          "CONFERMA NON COMPRATI (" + notBoughtDrafts.length + ")";
 
-		  commitBought.disabled = boughtDrafts.length === 0;
-		  commitNotBought.disabled = notBoughtDrafts.length === 0;
-		  commitDelete.disabled = deleteKeys.length === 0;
-		}
+        commitDelete.textContent =
+          "ELIMINA DEFINITIVAMENTE (" + deleteKeys.length + ")";
+
+        commitBought.disabled = boughtDrafts.length === 0;
+        commitNotBought.disabled = notBoughtDrafts.length === 0;
+        commitDelete.disabled = deleteKeys.length === 0;
+      }
+
 
       // --------------------------------------------------
       // CREAZIONE RIGA ARTICOLO
       // --------------------------------------------------
 
-		function addShoppingItem(container, item, isCompleted, dateText) {
+      function addShoppingItem(container, item, isCompleted, dateText) {
 
-		  var row = mk(
-			"div",
-			isCompleted
-			  ? "shopping-item completed"
-			  : "shopping-item"
-		  );
+        var row = mk(
+          "div",
+          isCompleted
+            ? "shopping-item completed"
+            : "shopping-item"
+        );
 
-		  var key = getDraftKey(item);
-		  var draft = shoppingDrafts[key];
+        var key = getDraftKey(item);
+        var draft = shoppingDrafts[key];
 
-		  var checkbox = mk("input", "");
-		  checkbox.type = "checkbox";
-		  checkbox.className = "shopping-checkbox";
-		  checkbox.checked = draft
-			? draft.desiredStatus
-			: isCompleted;
+        var checkbox = mk("input", "");
 
-		  var label = mk("span", "", item.name);
+        checkbox.type = "checkbox";
+        checkbox.className = "shopping-checkbox";
+        checkbox.checked = draft
+          ? draft.desiredStatus
+          : isCompleted;
 
-		  // ---------------------------------
-		  // VERSIONE KINDLE
-		  // ---------------------------------
-		  if (IS_KINDLE) {
+        var label = mk("span", "", item.name);
 
-			row.appendChild(
-			  (function () {
-				var cell = mk("span", "shopping-check-cell");
-				cell.appendChild(checkbox);
-				return cell;
-			  })()
-			);
 
-			var content = mk("span", "shopping-content");
-			content.appendChild(label);
-			row.appendChild(content);
+        // ---------------------------------
+        // VERSIONE KINDLE
+        // ---------------------------------
 
-			if (isCompleted) {
+        if (IS_KINDLE) {
 
-			  var deleteKey = String(list.shopping_list_id) +
-				"_" + String(item.id);
+          row.appendChild(
+            (function () {
+              var cell = mk("span", "shopping-check-cell");
+              cell.appendChild(checkbox);
+              return cell;
+            })()
+          );
 
-			  var actions = mk("span", "shopping-actions");
-			  var deleteLabel = mk("label", "shopping-delete-label");
+          var content = mk("span", "shopping-content");
 
-			  var deleteIcon = mk("span", "trash-icon");
-			  deleteIcon.title = "Seleziona per eliminazione";
+          content.appendChild(label);
+          row.appendChild(content);
 
-			  var deleteCheckbox = mk("input", "");
-			  deleteCheckbox.type = "checkbox";
-			  deleteCheckbox.className = "shopping-delete-checkbox";
-			  deleteCheckbox.checked = Boolean(
-				shoppingDeleteSelections[deleteKey]
-			  );
+          if (isCompleted) {
 
-			  // Prima il cestino, poi la checkbox
-			  deleteLabel.appendChild(deleteIcon);
-			  deleteLabel.appendChild(deleteCheckbox);
-			  actions.appendChild(deleteLabel);
-			  row.appendChild(actions);
+            var deleteKey = String(list.shopping_list_id) +
+              "_" + String(item.id);
 
-			  deleteCheckbox.addEventListener("change", function () {
-				if (deleteCheckbox.checked) {
-				  shoppingDeleteSelections[deleteKey] = {
-					view_id: currentView,
-					view_item_id: list.view_item_id,
-					shopping_list_id: list.shopping_list_id,
-					item_id: item.id,
-					name: item.name
-				  };
-				} else {
-				  delete shoppingDeleteSelections[deleteKey];
-				}
+            var actions = mk("span", "shopping-actions");
+            var deleteLabel = mk("label", "shopping-delete-label");
 
-				updateCommitButtons();
-			  });
-			}
+            var deleteIcon = mk("span", "trash-icon");
 
-		  // ---------------------------------
-		  // VERSIONE PC
-		  // ---------------------------------
-		  } else {
+            deleteIcon.title = "Seleziona per eliminazione";
 
-			row.style.display = "flex";
-			row.style.alignItems = "center";
-			row.style.gap = "12px";
+            var deleteCheckbox = mk("input", "");
 
-			row.appendChild(checkbox);
+            deleteCheckbox.type = "checkbox";
+            deleteCheckbox.className = "shopping-delete-checkbox";
 
-			label.style.flex = "1";
-			row.appendChild(label);
+            deleteCheckbox.checked = Boolean(
+              shoppingDeleteSelections[deleteKey]
+            );
 
-			if (isCompleted) {
+            // Prima il cestino, poi la checkbox
+            deleteLabel.appendChild(deleteIcon);
+            deleteLabel.appendChild(deleteCheckbox);
 
-			  row.appendChild(
-				mk("span", "", " (" + dateText + ")")
-			  );
+            actions.appendChild(deleteLabel);
+            row.appendChild(actions);
 
-			  var deleteKey = String(list.shopping_list_id) +
-				"_" + String(item.id);
+            deleteCheckbox.addEventListener("change", function () {
 
-			  var deleteLabel = mk("label", "shopping-delete-label");
+              if (deleteCheckbox.checked) {
 
-			  var deleteCheckbox = mk("input", "");
-			  deleteCheckbox.type = "checkbox";
-			  deleteCheckbox.className = "shopping-delete-checkbox";
-			  deleteCheckbox.checked = Boolean(
-				shoppingDeleteSelections[deleteKey]
-			  );
+                shoppingDeleteSelections[deleteKey] = {
+                  view_id: currentView,
+                  view_item_id: list.view_item_id,
+                  shopping_list_id: list.shopping_list_id,
+                  item_id: item.id,
+                  name: item.name
+                };
 
-			  var deleteIcon = mk("span", "", "🗑");
-			  deleteIcon.title = "Seleziona per eliminazione";
+              } else {
 
-			  deleteLabel.appendChild(deleteCheckbox);
-			  deleteLabel.appendChild(deleteIcon);
-			  row.appendChild(deleteLabel);
+                delete shoppingDeleteSelections[deleteKey];
 
-			  deleteCheckbox.addEventListener("change", function () {
-				if (deleteCheckbox.checked) {
-				  shoppingDeleteSelections[deleteKey] = {
-					view_id: currentView,
-					view_item_id: list.view_item_id,
-					shopping_list_id: list.shopping_list_id,
-					item_id: item.id,
-					name: item.name
-				  };
-				} else {
-				  delete shoppingDeleteSelections[deleteKey];
-				}
+              }
 
-				updateCommitButtons();
-			  });
-			}
-		  }
+              updateCommitButtons();
+            });
+          }
 
-		  // Gestione checkbox articolo
-		  checkbox.addEventListener("change", function () {
-			var desiredStatus = checkbox.checked;
 
-			if (desiredStatus === isCompleted) {
-			  delete shoppingDrafts[key];
-			} else {
-			  shoppingDrafts[key] = {
-				view_id: currentView,
-				view_item_id: list.view_item_id,
-				shopping_list_id: list.shopping_list_id,
-				item_id: item.id,
-				desiredStatus: desiredStatus,
-				originalStatus: isCompleted
-			  };
-			}
+        // ---------------------------------
+        // VERSIONE PC
+        // ---------------------------------
 
-			updateCommitButtons();
-		  });
+        } else {
 
-		  container.appendChild(row);
-		}
+          row.style.display = "flex";
+          row.style.alignItems = "center";
+          row.style.gap = "12px";
+
+          row.appendChild(checkbox);
+
+          label.style.flex = "1";
+          row.appendChild(label);
+
+          if (isCompleted) {
+
+            row.appendChild(
+              mk("span", "", " (" + dateText + ")")
+            );
+
+            var deleteKey = String(list.shopping_list_id) +
+              "_" + String(item.id);
+
+            var deleteLabel = mk("label", "shopping-delete-label");
+
+            var deleteCheckbox = mk("input", "");
+
+            deleteCheckbox.type = "checkbox";
+            deleteCheckbox.className = "shopping-delete-checkbox";
+
+            deleteCheckbox.checked = Boolean(
+              shoppingDeleteSelections[deleteKey]
+            );
+
+            var deleteIcon = mk("span", "", "🗑");
+
+            deleteIcon.title = "Seleziona per eliminazione";
+
+            deleteLabel.appendChild(deleteCheckbox);
+            deleteLabel.appendChild(deleteIcon);
+
+            row.appendChild(deleteLabel);
+
+            deleteCheckbox.addEventListener("change", function () {
+
+              if (deleteCheckbox.checked) {
+
+                shoppingDeleteSelections[deleteKey] = {
+                  view_id: currentView,
+                  view_item_id: list.view_item_id,
+                  shopping_list_id: list.shopping_list_id,
+                  item_id: item.id,
+                  name: item.name
+                };
+
+              } else {
+
+                delete shoppingDeleteSelections[deleteKey];
+
+              }
+
+              updateCommitButtons();
+            });
+          }
+        }
+
+
+        // ---------------------------------
+        // GESTIONE CHECKBOX ARTICOLO
+        // ---------------------------------
+
+        checkbox.addEventListener("change", function () {
+
+          var desiredStatus = checkbox.checked;
+
+          if (desiredStatus === isCompleted) {
+
+            delete shoppingDrafts[key];
+
+          } else {
+
+            shoppingDrafts[key] = {
+              view_id: currentView,
+              view_item_id: list.view_item_id,
+              shopping_list_id: list.shopping_list_id,
+              item_id: item.id,
+              desiredStatus: desiredStatus,
+              originalStatus: isCompleted
+            };
+
+          }
+
+          updateCommitButtons();
+        });
+
+        container.appendChild(row);
+      }
+
 
       // --------------------------------------------------
       // CREAZIONE LISTA DA COMPRARE
@@ -2909,6 +2995,7 @@ console.log("SHOPPING: funzione avviata");
         );
       }
 
+
       // --------------------------------------------------
       // CREAZIONE LISTA COMPRATO
       // --------------------------------------------------
@@ -2920,22 +3007,25 @@ console.log("SHOPPING: funzione avviata");
       }
 
       for (var j = 0; j < completed.length; j++) {
+
         var item = completed[j];
         var dateText = "Data non disponibile";
 
         if (item.checked_at) {
+
           var ms = parseIso(item.checked_at);
 
           if (ms !== null) {
-			var d = toRome(ms);
 
-			var giorno = d.getDate();
-			var mese = d.getMonth() + 1;
+            var d = toRome(ms);
 
-			dateText =
-			  (giorno < 10 ? "0" : "") + giorno + "/" +
-			  (mese < 10 ? "0" : "") + mese + "/" +
-			  d.getFullYear();
+            var giorno = d.getDate();
+            var mese = d.getMonth() + 1;
+
+            dateText =
+              (giorno < 10 ? "0" : "") + giorno + "/" +
+              (mese < 10 ? "0" : "") + mese + "/" +
+              d.getFullYear();
           }
         }
 
@@ -2947,329 +3037,363 @@ console.log("SHOPPING: funzione avviata");
         );
       }
 
+
       // --------------------------------------------------
       // INVIO MODIFICHE RAGGRUPPATE
       // --------------------------------------------------
 
-	function waitForDeleteBatchCommands(commands, selectedItems) {
-	  var remaining = commands.length;
-	  var succeeded = [];
-	  var failed = [];
+      function waitForDeleteBatchCommands(commands, selectedItems) {
 
-	  if (!remaining) {
-		updateCommitButtons();
-		return;
-	  }
+        var remaining = commands.length;
+        var succeeded = [];
+        var failed = [];
 
-	  function checkOneCommand(command, attempt) {
-		if (attempt >= 240) {
-		  failed.push(command);
-		  finishIfComplete();
-		  return;
-		}
-
-		var check = new XMLHttpRequest();
-
-		check.open(
-		  "GET",
-		  SHOPPING_API_URL + "/shopping/command-status?id=" +
-			encodeURIComponent(command.command_id),
-		  true
-		);
-
-		check.setRequestHeader(
-		  "Authorization",
-		  "Bearer " + authToken
-		);
-
-		check.timeout = 15000;
-
-		check.onreadystatechange = function () {
-		  if (check.readyState !== 4) return;
-
-		  var data = null;
-
-		  try {
-			data = JSON.parse(check.responseText);
-		  } catch (e) {}
-
-		  if (
-			check.status >= 200 &&
-			check.status < 300 &&
-			data &&
-			data.ok
-		  ) {
-			if (data.status === "succeeded") {
-			  succeeded.push(command);
-			  finishIfComplete();
-			  return;
-			}
-
-			if (data.status === "failed") {
-			  failed.push(command);
-			  finishIfComplete();
-			  return;
-			}
-		  }
-
-		  setTimeout(function () {
-			checkOneCommand(command, attempt + 1);
-		  }, 500);
-		};
-
-		check.onerror = function () {
-		  setTimeout(function () {
-			checkOneCommand(command, attempt + 1);
-		  }, 500);
-		};
-
-		check.ontimeout = function () {
-		  setTimeout(function () {
-			checkOneCommand(command, attempt + 1);
-		  }, 500);
-		};
-
-		check.send(null);
-	  }
-
-	  function finishIfComplete() {
-		remaining--;
-
-		if (remaining > 0) return;
-
-		for (var i = 0; i < succeeded.length; i++) {
-		  for (var j = 0; j < selectedItems.length; j++) {
-			if (
-			  String(selectedItems[j].item_id) ===
-			  String(succeeded[i].item_id)
-			) {
-			  var key = String(selectedItems[j].shopping_list_id) +
-				"_" + String(selectedItems[j].item_id);
-
-			  delete shoppingDeleteSelections[key];
-			}
-		  }
-		}
-
-		if (failed.length) {
-		  alert(
-			failed.length +
-			" eliminazioni non sono riuscite. Le selezioni restano disponibili."
-		  );
-		}
-
-		checkDeleteBatchSync(0, succeeded);
-	  }
-
-	  for (var i = 0; i < commands.length; i++) {
-		checkOneCommand(commands[i], 0);
-	  }
-	}
-
-	function checkDeleteBatchSync(attempt, succeeded) {
-	  if (!succeeded.length) {
-		updateCommitButtons();
-		return;
-	  }
-
-	  if (attempt >= 60) {
-		updateCommitButtons();
-		alert(
-		  "Le eliminazioni sono state elaborate, ma la lista non è ancora aggiornata. Riprova tra poco."
-		);
-		return;
-	  }
-
-	  var check = new XMLHttpRequest();
-
-	  check.open(
-		"GET",
-		SHOPPING_API_URL + "/shopping?view_id=" +
-		  encodeURIComponent(currentView) +
-		  "&_=" + Date.now(),
-		true
-	  );
-
-	  check.setRequestHeader(
-		"Authorization",
-		"Bearer " + authToken
-	  );
-
-	  check.timeout = 15000;
-
-	  check.onreadystatechange = function () {
-		if (check.readyState !== 4) return;
-
-		var data = null;
-
-		try {
-		  data = JSON.parse(check.responseText);
-		} catch (e) {}
-
-		if (
-		  check.status >= 200 &&
-		  check.status < 300 &&
-		  data &&
-		  data.ok
-		) {
-		  var items = [];
-
-		  for (var i = 0; i < data.lists.length; i++) {
-			if (
-			  String(data.lists[i].shopping_list_id) ===
-			  String(list.shopping_list_id)
-			) {
-			  items = data.lists[i].items || [];
-			  break;
-			}
-		  }
-
-		  var allDeleted = succeeded.every(function (command) {
-			return !items.some(function (item) {
-			  return String(item.id) === String(command.item_id);
-			});
-		  });
-
-		  if (allDeleted) {
-			loadShoppingList();
-			return;
-		  }
-		}
-
-		setTimeout(function () {
-		  checkDeleteBatchSync(attempt + 1, succeeded);
-		}, 500);
-	  };
-
-	  check.onerror = function () {
-		setTimeout(function () {
-		  checkDeleteBatchSync(attempt + 1, succeeded);
-		}, 500);
-	  };
-
-	  check.ontimeout = function () {
-		setTimeout(function () {
-		  checkDeleteBatchSync(attempt + 1, succeeded);
-		}, 500);
-	  };
-
-	  check.send(null);
-	}
-
-function commitShoppingDeletes() {
-  var selectedItems = Object.keys(shoppingDeleteSelections)
-    .map(function (key) {
-      return shoppingDeleteSelections[key];
-    })
-    .filter(function (item) {
-      return String(item.shopping_list_id) ===
-        String(list.shopping_list_id);
-    });
-
-  if (!selectedItems.length) {
-    return;
-  }
-
-  var names = selectedItems.map(function (item) {
-    return item.name;
-  });
-
-  showShoppingConfirm(
-    "ELIMINARE DEFINITIVAMENTE " +
-    selectedItems.length + " ARTICOLI?",
-    names,
-    function () {
-
-      commitBought.disabled = true;
-      commitNotBought.disabled = true;
-      commitDelete.disabled = true;
-
-      commitDelete.textContent = "ELIMINAZIONE IN CORSO...";
-
-      var request = new XMLHttpRequest();
-
-      request.open(
-        "POST",
-        SHOPPING_API_URL + "/shopping/delete-batch",
-        true
-      );
-
-      request.setRequestHeader(
-        "Authorization",
-        "Bearer " + authToken
-      );
-
-      request.setRequestHeader(
-        "Content-Type",
-        "application/json"
-      );
-
-      request.timeout = 30000;
-
-      var payload = {
-        view_id: currentView,
-        view_item_id: list.view_item_id,
-        shopping_list_id: list.shopping_list_id,
-        items: selectedItems.map(function (item) {
-          return {
-            item_id: item.item_id
-          };
-        })
-      };
-
-      request.onreadystatechange = function () {
-        if (request.readyState !== 4) {
+        if (!remaining) {
+          updateCommitButtons();
           return;
         }
 
-        var result = null;
+        function checkOneCommand(command, attempt) {
 
-        try {
-          result = JSON.parse(request.responseText);
-        } catch (e) {}
+          if (attempt >= 240) {
+            failed.push(command);
+            finishIfComplete();
+            return;
+          }
 
-        if (
-          request.status >= 200 &&
-          request.status < 300 &&
-          result &&
-          result.ok &&
-          result.commands
-        ) {
-          waitForDeleteBatchCommands(
-            result.commands,
-            selectedItems
+          var check = new XMLHttpRequest();
+
+          check.open(
+            "GET",
+            SHOPPING_API_URL + "/shopping/command-status?id=" +
+              encodeURIComponent(command.command_id),
+            true
           );
+
+          check.setRequestHeader(
+            "Authorization",
+            "Bearer " + authToken
+          );
+
+          check.timeout = 15000;
+
+          check.onreadystatechange = function () {
+
+            if (check.readyState !== 4) {
+              return;
+            }
+
+            var data = null;
+
+            try {
+              data = JSON.parse(check.responseText);
+            } catch (e) {}
+
+            if (
+              check.status >= 200 &&
+              check.status < 300 &&
+              data &&
+              data.ok
+            ) {
+
+              if (data.status === "succeeded") {
+                succeeded.push(command);
+                finishIfComplete();
+                return;
+              }
+
+              if (data.status === "failed") {
+                failed.push(command);
+                finishIfComplete();
+                return;
+              }
+            }
+
+            setTimeout(function () {
+              checkOneCommand(command, attempt + 1);
+            }, 500);
+          };
+
+          check.onerror = function () {
+            setTimeout(function () {
+              checkOneCommand(command, attempt + 1);
+            }, 500);
+          };
+
+          check.ontimeout = function () {
+            setTimeout(function () {
+              checkOneCommand(command, attempt + 1);
+            }, 500);
+          };
+
+          check.send(null);
+        }
+
+
+        function finishIfComplete() {
+
+          remaining--;
+
+          if (remaining > 0) {
+            return;
+          }
+
+          for (var i = 0; i < succeeded.length; i++) {
+
+            for (var j = 0; j < selectedItems.length; j++) {
+
+              if (
+                String(selectedItems[j].item_id) ===
+                String(succeeded[i].item_id)
+              ) {
+
+                var key = String(selectedItems[j].shopping_list_id) +
+                  "_" + String(selectedItems[j].item_id);
+
+                delete shoppingDeleteSelections[key];
+              }
+            }
+          }
+
+          if (failed.length) {
+            alert(
+              failed.length +
+              " eliminazioni non sono riuscite. Le selezioni restano disponibili."
+            );
+          }
+
+          checkDeleteBatchSync(0, succeeded);
+        }
+
+
+        for (var i = 0; i < commands.length; i++) {
+          checkOneCommand(commands[i], 0);
+        }
+      }
+
+
+      function checkDeleteBatchSync(attempt, succeeded) {
+
+        if (!succeeded.length) {
+          updateCommitButtons();
           return;
         }
 
-        updateCommitButtons();
+        if (attempt >= 60) {
+          updateCommitButtons();
 
-        alert(
-          result && result.error
-            ? result.error
-            : "Impossibile inviare le eliminazioni."
+          alert(
+            "Le eliminazioni sono state elaborate, ma la lista non è ancora aggiornata. Riprova tra poco."
+          );
+
+          return;
+        }
+
+        var check = new XMLHttpRequest();
+
+        check.open(
+          "GET",
+          SHOPPING_API_URL + "/shopping?view_id=" +
+            encodeURIComponent(currentView) +
+            "&_=" + Date.now(),
+          true
         );
-      };
 
-      request.onerror = function () {
-        updateCommitButtons();
-        alert("Errore di connessione a shopping-api.");
-      };
+        check.setRequestHeader(
+          "Authorization",
+          "Bearer " + authToken
+        );
 
-      request.ontimeout = function () {
-        updateCommitButtons();
-        alert("Timeout durante l'invio delle eliminazioni.");
-      };
+        check.timeout = 15000;
 
-      request.send(JSON.stringify(payload));
+        check.onreadystatechange = function () {
 
-    }
-  );
-}
-	  
-);
+          if (check.readyState !== 4) {
+            return;
+          }
+
+          var data = null;
+
+          try {
+            data = JSON.parse(check.responseText);
+          } catch (e) {}
+
+          if (
+            check.status >= 200 &&
+            check.status < 300 &&
+            data &&
+            data.ok
+          ) {
+
+            var items = [];
+
+            for (var i = 0; i < data.lists.length; i++) {
+
+              if (
+                String(data.lists[i].shopping_list_id) ===
+                String(list.shopping_list_id)
+              ) {
+                items = data.lists[i].items || [];
+                break;
+              }
+            }
+
+            var allDeleted = succeeded.every(function (command) {
+
+              return !items.some(function (item) {
+                return String(item.id) === String(command.item_id);
+              });
+
+            });
+
+            if (allDeleted) {
+              loadShoppingList();
+              return;
+            }
+          }
+
+          setTimeout(function () {
+            checkDeleteBatchSync(attempt + 1, succeeded);
+          }, 500);
+        };
+
+        check.onerror = function () {
+          setTimeout(function () {
+            checkDeleteBatchSync(attempt + 1, succeeded);
+          }, 500);
+        };
+
+        check.ontimeout = function () {
+          setTimeout(function () {
+            checkDeleteBatchSync(attempt + 1, succeeded);
+          }, 500);
+        };
+
+        check.send(null);
+      }
+
+
+      // --------------------------------------------------
+      // ELIMINAZIONE DEFINITIVA
+      // --------------------------------------------------
+
+      function commitShoppingDeletes() {
+
+        var selectedItems = Object.keys(shoppingDeleteSelections)
+          .map(function (key) {
+            return shoppingDeleteSelections[key];
+          })
+          .filter(function (item) {
+            return String(item.shopping_list_id) ===
+              String(list.shopping_list_id);
+          });
+
+        if (!selectedItems.length) {
+          return;
+        }
+
+        var names = selectedItems.map(function (item) {
+          return item.name;
+        });
+
+        showShoppingConfirm(
+          "ELIMINARE DEFINITIVAMENTE " +
+            selectedItems.length + " ARTICOLI?",
+          names,
+          function () {
+
+            commitBought.disabled = true;
+            commitNotBought.disabled = true;
+            commitDelete.disabled = true;
+
+            commitDelete.textContent = "ELIMINAZIONE IN CORSO...";
+
+            var request = new XMLHttpRequest();
+
+            request.open(
+              "POST",
+              SHOPPING_API_URL + "/shopping/delete-batch",
+              true
+            );
+
+            request.setRequestHeader(
+              "Authorization",
+              "Bearer " + authToken
+            );
+
+            request.setRequestHeader(
+              "Content-Type",
+              "application/json"
+            );
+
+            request.timeout = 30000;
+
+            var payload = {
+              view_id: currentView,
+              view_item_id: list.view_item_id,
+              shopping_list_id: list.shopping_list_id,
+              items: selectedItems.map(function (item) {
+                return {
+                  item_id: item.item_id
+                };
+              })
+            };
+
+            request.onreadystatechange = function () {
+
+              if (request.readyState !== 4) {
+                return;
+              }
+
+              var result = null;
+
+              try {
+                result = JSON.parse(request.responseText);
+              } catch (e) {}
+
+              if (
+                request.status >= 200 &&
+                request.status < 300 &&
+                result &&
+                result.ok &&
+                result.commands
+              ) {
+
+                waitForDeleteBatchCommands(
+                  result.commands,
+                  selectedItems
+                );
+
+                return;
+              }
+
+              updateCommitButtons();
+
+              alert(
+                result && result.error
+                  ? result.error
+                  : "Impossibile inviare le eliminazioni."
+              );
+            };
+
+            request.onerror = function () {
+              updateCommitButtons();
+              alert("Errore di connessione a shopping-api.");
+            };
+
+            request.ontimeout = function () {
+              updateCommitButtons();
+              alert("Timeout durante l'invio delle eliminazioni.");
+            };
+
+            request.send(JSON.stringify(payload));
+          }
+        );
+      }
+
 
       updateCommitButtons();
+
 
       // --------------------------------------------------
       // INSERIMENTO SEZIONI
@@ -3277,7 +3401,9 @@ function commitShoppingDeletes() {
 
       box.appendChild(pendingSection);
       box.appendChild(completedSection);
+
     }
+
 
     // ----------------------------------------------------
     // ORARIO ULTIMA SINCRONIZZAZIONE
@@ -3286,6 +3412,7 @@ function commitShoppingDeletes() {
     var lastSync = null;
 
     for (var i = 0; i < lists.length; i++) {
+
       var ms = parseIso(lists[i].last_sync_at || "");
 
       if (ms !== null && (lastSync === null || ms > lastSync)) {
@@ -3305,6 +3432,7 @@ function commitShoppingDeletes() {
     scheduleAlign();
   };
 
+
   x.onerror = function () {
     setText(box, "Errore di connessione a shopping-api.");
   };
@@ -3316,7 +3444,9 @@ function commitShoppingDeletes() {
   x.send(null);
 }
 
+
 function showShoppingConfirm(title, names, onConfirm) {
+
   var overlay = mk("div", "shopping-confirm-overlay");
 
   overlay.style.position = "fixed";
@@ -3331,6 +3461,7 @@ function showShoppingConfirm(title, names, onConfirm) {
   overlay.style.justifyContent = "center";
 
   var popup = mk("div", "shopping-confirm-popup");
+
   popup.style.backgroundColor = "#fff";
   popup.style.color = "#000";
   popup.style.border = "2px solid #000";
@@ -3343,10 +3474,12 @@ function showShoppingConfirm(title, names, onConfirm) {
   popup.style.flexDirection = "column";
 
   var heading = mk("div", "", title);
+
   heading.style.fontWeight = "bold";
   heading.style.marginBottom = "10px";
 
   var list = mk("div", "shopping-confirm-list");
+
   list.style.overflowY = "auto";
   list.style.maxHeight = "45vh";
   list.style.minHeight = "40px";
@@ -3358,6 +3491,7 @@ function showShoppingConfirm(title, names, onConfirm) {
   }
 
   var buttons = mk("div", "");
+
   buttons.style.display = "flex";
   buttons.style.gap = "8px";
   buttons.style.marginTop = "12px";
@@ -3374,6 +3508,7 @@ function showShoppingConfirm(title, names, onConfirm) {
   popup.appendChild(heading);
   popup.appendChild(list);
   popup.appendChild(buttons);
+
   overlay.appendChild(popup);
 
   cancel.onclick = function () {
