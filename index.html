@@ -2775,9 +2775,6 @@ function waitForShoppingUpdate(
   var url = SHOPPING_API_URL + "/shopping?view_id=" +
     encodeURIComponent(currentView);
 	
-console.log("SHOPPING currentView:", currentView);
-console.log("SHOPPING URL:", url);
-
   check.open("GET", url, true);
   check.setRequestHeader("Authorization", "Bearer " + authToken);
   check.timeout = 20000;
@@ -5064,10 +5061,11 @@ function renderViewMenu(){
     }
   } else {
     for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
-      addButton(
-        DASHBOARD_VIEWS[i].id,
-        DASHBOARD_VIEWS[i].title
-      );
+		addButton(
+		  DASHBOARD_VIEWS[i].id,
+		  DASHBOARD_VIEWS[i].title.charAt(0).toUpperCase() +
+		  DASHBOARD_VIEWS[i].title.slice(1).toLowerCase()
+		);
     }
   }
 
@@ -5356,15 +5354,11 @@ function startDashboard(preferredView){
       return;
     }
 
-    clear($("err")); // AGGIUNGI QUESTA RIGA
+    clear($("err")); 
 
     setHidden($("head"), false);
     setHidden($("dashboardContent"), false);
     renderViewMenu();
-	
-console.log("AUTH PROFILE:", authProfile);
-console.log("VISTE AUTORIZZATE:", DASHBOARD_VIEWS);
-console.log("VISTA PROGRAMMATA:", getScheduledView());
 
     setView(preferredView || getScheduledView(), false);
 	
