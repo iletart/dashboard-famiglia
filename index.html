@@ -4643,9 +4643,9 @@ function renderMenu(k, err, d){
    15. VISTE: MENU, ORARI, LAYOUT DA D1
    ================================================== */
 function isSharedView(viewId){
-  var view = DASHBOARD_VIEWS.find(function(v){
-    return v.id === viewId;
-  });
+	var view = findItem(DASHBOARD_VIEWS, function(v){
+	  return v.id === viewId;
+	});
 
   return !!view && view.view_type === "shared";
 }
@@ -4665,7 +4665,7 @@ function getScheduledView(){
     }
   }
 
-  var sharedView = DASHBOARD_VIEWS.find(function(v){
+  var sharedView = findItem(DASHBOARD_VIEWS, function(v){
     return v.view_type === "shared";
   });
   
@@ -4785,7 +4785,7 @@ function buildLayout(view){
 function setView(view, manual){
   if(manual){ viewManualUntil = Date.now() + 10 * 60 * 1000; }
   
-  var viewConfig = DASHBOARD_VIEWS.find(function(v){
+  var viewConfig = findItem(DASHBOARD_VIEWS, function(v){
     return v.id === view;
   });
   
