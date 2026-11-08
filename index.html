@@ -2661,6 +2661,11 @@ console.log("SHOPPING: funzione avviata");
 			"_" + String(item.id);
 
 		  var deleteLabel = mk("label", "shopping-delete-label");
+		  
+		  deleteLabel.style.marginLeft = "auto";
+		  deleteLabel.style.flexShrink = "0";
+		  deleteLabel.style.display = "flex";
+		  deleteLabel.style.alignItems = "center";
 
 		  var deleteCheckbox = mk("input", "");
 		  deleteCheckbox.type = "checkbox";
@@ -2669,7 +2674,14 @@ console.log("SHOPPING: funzione avviata");
 			shoppingDeleteSelections[deleteKey]
 		  );
 
-		  var deleteIcon = mk("span", "", "🗑");
+		  var deleteIcon;
+		  
+		  if (IS_KINDLE) {
+		    deleteIcon = mk("span", "trash-icon");
+		  } else {
+		    deleteIcon = mk("span", "", "🗑");
+		  }
+		  
 		  deleteIcon.title = "Seleziona per eliminazione";
 
 		  deleteLabel.appendChild(deleteCheckbox);
