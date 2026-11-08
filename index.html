@@ -2678,6 +2678,7 @@ console.log("SHOPPING: funzione avviata");
       // --------------------------------------------------
 
 		function addShoppingItem(container, item, isCompleted, dateText) {
+
 		  var row = mk(
 			"div",
 			isCompleted
@@ -2685,47 +2686,45 @@ console.log("SHOPPING: funzione avviata");
 			  : "shopping-item"
 		  );
 
-		  var checkbox = mk("input", "");
-		  checkbox.type = "checkbox";
-		  checkbox.className = "shopping-checkbox";
-
 		  var key = getDraftKey(item);
 		  var draft = shoppingDrafts[key];
 
+		  var checkbox = mk("input", "");
+		  checkbox.type = "checkbox";
+		  checkbox.className = "shopping-checkbox";
 		  checkbox.checked = draft
 			? draft.desiredStatus
 			: isCompleted;
 
 		  var label = mk("span", "", item.name);
 
-		  var deleteKey = String(list.shopping_list_id) +
-			"_" + String(item.id);
-
-		  // --------------------------------------------
-		  // LAYOUT KINDLE
-		  // --------------------------------------------
-
+		  // ---------------------------------
+		  // VERSIONE KINDLE
+		  // ---------------------------------
 		  if (IS_KINDLE) {
-			row.style.display = "table";
-			row.style.tableLayout = "fixed";
-			row.style.width = "100%";
-			row.style.borderSpacing = "0";
 
-			var checkCell = mk("span", "shopping-check-cell");
-			checkCell.appendChild(checkbox);
+			row.appendChild(
+			  (function () {
+				var cell = mk("span", "shopping-check-cell");
+				cell.appendChild(checkbox);
+				return cell;
+			  })()
+			);
 
-			var contentCell = mk("span", "shopping-content");
-			contentCell.appendChild(label);
-
-			if (isCompleted) {
-			  var date = mk("span", "shopping-date", " (" + dateText + ")");
-			  contentCell.appendChild(date);
-			}
-
-			var actionsCell = mk("span", "shopping-actions");
+			var content = mk("span", "shopping-content");
+			content.appendChild(label);
+			row.appendChild(content);
 
 			if (isCompleted) {
+
+			  var deleteKey = String(list.shopping_list_id) +
+				"_" + String(item.id);
+
+			  var actions = mk("span", "shopping-actions");
 			  var deleteLabel = mk("label", "shopping-delete-label");
+
+			  var deleteIcon = mk("span", "trash-icon");
+			  deleteIcon.title = "Seleziona per eliminazione";
 
 			  var deleteCheckbox = mk("input", "");
 			  deleteCheckbox.type = "checkbox";
@@ -2734,12 +2733,11 @@ console.log("SHOPPING: funzione avviata");
 				shoppingDeleteSelections[deleteKey]
 			  );
 
-			  var deleteIcon = mk("span", "trash-icon");
-			  deleteIcon.title = "Seleziona per eliminazione";
-
-			  deleteLabel.appendChild(deleteCheckbox);
+			  // Prima il cestino, poi la checkbox
 			  deleteLabel.appendChild(deleteIcon);
-			  actionsCell.appendChild(deleteLabel);
+			  deleteLabel.appendChild(deleteCheckbox);
+			  actions.appendChild(deleteLabel);
+			  row.appendChild(actions);
 
 			  deleteCheckbox.addEventListener("change", function () {
 				if (deleteCheckbox.checked) {
@@ -2758,29 +2756,28 @@ console.log("SHOPPING: funzione avviata");
 			  });
 			}
 
-			row.appendChild(checkCell);
-			row.appendChild(contentCell);
-			row.appendChild(actionsCell);
-
+		  // ---------------------------------
+		  // VERSIONE PC
+		  // ---------------------------------
 		  } else {
-
-			// --------------------------------------------
-			// LAYOUT PC: MANTIENE LA STRUTTURA PRECEDENTE
-			// --------------------------------------------
 
 			row.style.display = "flex";
 			row.style.alignItems = "center";
 			row.style.gap = "12px";
 
-			label.style.flex = "1";
-
 			row.appendChild(checkbox);
+
+			label.style.flex = "1";
 			row.appendChild(label);
 
 			if (isCompleted) {
+
 			  row.appendChild(
 				mk("span", "", " (" + dateText + ")")
 			  );
+
+			  var deleteKey = String(list.shopping_list_id) +
+				"_" + String(item.id);
 
 			  var deleteLabel = mk("label", "shopping-delete-label");
 
@@ -2816,6 +2813,7 @@ console.log("SHOPPING: funzione avviata");
 			}
 		  }
 
+		  // Gestione checkbox articolo
 		  checkbox.addEventListener("change", function () {
 			var desiredStatus = checkbox.checked;
 
