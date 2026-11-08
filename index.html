@@ -1644,10 +1644,12 @@ function safe(f){
   try { f(); } catch(e){ showErr(e && e.message ? e.message : String(e)); }
 }
 
+/*
 window.onerror = function(m, u, l){
   showErr(m + " (riga " + l + ")");
   return true;
 };
+*/
 
 function toMin(s){
   var p = String(s).split(":");
