@@ -4637,8 +4637,14 @@ function getScheduledView(){
 
 function checkScheduledView(){
   if(Date.now() < viewManualUntil){ return; }
+
   var v = getScheduledView();
-  if(currentView !== v){ setView(v, false); }
+
+  if(!v){ return; }
+
+  if(currentView !== v){
+    setView(v, false);
+  }
 }
 
 function closeViewMenu(){
@@ -5360,11 +5366,11 @@ function startDashboard(preferredView){
 
     clear($("err")); 
 
-    setHidden($("head"), false);
-    setHidden($("dashboardContent"), false);
-    renderViewMenu();
+	setHidden($("head"), false);
+	setHidden($("dashboardContent"), false);
 
-    setView(preferredView || getScheduledView(), false);
+	setView(preferredView || getScheduledView(), false);
+	renderViewMenu();
 	
 	bindSeg("taskDays", function(day){
 	  taskSel = day;
