@@ -5410,8 +5410,15 @@ function authLogout(){
 }
 
 function restoreAuthSession(){
-  try { authToken = localStorage.getItem("dashboardAuthToken") || ""; }
-  catch(e){ authToken = ""; }
+  try {
+    authToken = localStorage.getItem("dashboardAuthToken") || "";
+    authProfile = localStorage.getItem("dashboardAuthProfile") || "";
+    authSessionId = localStorage.getItem("dashboardAuthSessionId") || "";
+  } catch(e){
+    authToken = "";
+    authProfile = "";
+    authSessionId = "";
+  }
 
   if(!authToken){
     renderViewMenu();
@@ -5419,14 +5426,27 @@ function restoreAuthSession(){
   }
 
   authRequest("POST", "/session/verify", null, function(err, data){
-    if(err || !data || !data.ok){
+
+    // Errore di rete: conserviamo la sessione e non facciamo logout.
+    if(err){
+      setHidden($("head"), false);
+      setHidden($("dashboardContent"), true);
+      setHidden($("personalView"), true);
+      setText($("err"), "Connessione temporaneamente non disponibile. Riprovo al prossimo accesso.");
+      return;
+    }
+
+    // Sessione realmente scaduta o non valida.
+    if(!data || !data.ok){
       showLoggedOut("Sessione scaduta. Seleziona un profilo dal menu.");
       return;
     }
 
+    authToken = localStorage.getItem("dashboardAuthToken") || authToken;
     authProfile = data.profile;
-	updateLoggedUser();
     authSessionId = data.session_id || "";
+
+    updateLoggedUser();
     startDashboard();
   });
 }
