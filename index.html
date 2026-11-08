@@ -3846,8 +3846,6 @@ function loadShoppingList() {
 
   x.send(null);
 }
-
-
 function showShoppingConfirm(title, names, onConfirm) {
 
   var overlay = mk("div", "shopping-confirm-overlay");
@@ -3871,30 +3869,90 @@ function showShoppingConfirm(title, names, onConfirm) {
   popup.style.padding = "14px";
   popup.style.width = "85%";
   popup.style.maxWidth = "420px";
-  popup.style.maxHeight = "75%";
+  popup.style.maxHeight = "85%";
   popup.style.boxSizing = "border-box";
   popup.style.display = "flex";
   popup.style.flexDirection = "column";
-  popup.style.overflow = "hidden";
 
   var heading = mk("div", "", title);
 
   heading.style.fontWeight = "bold";
   heading.style.marginBottom = "10px";
 
+  var counter = mk("div", "");
+
+  counter.style.textAlign = "center";
+  counter.style.marginBottom = "8px";
+  counter.style.fontSize = "14px";
+
   var list = mk("div", "shopping-confirm-list");
 
-  list.style.overflowY = "scroll";
-  list.style.overflowX = "hidden";
-  list.style.height = "45vh";
-  list.style.maxHeight = "45vh";
-  list.style.minHeight = "40px";
-  list.style.flex = "none";
-  list.style.webkitOverflowScrolling = "touch";
+  list.style.border = "1px solid #999";
+  list.style.padding = "6px";
+  list.style.height = "220px";
+  list.style.boxSizing = "border-box";
+  list.style.overflow = "hidden";
 
-  for (var i = 0; i < names.length; i++) {
-    list.appendChild(mk("div", "", names[i]));
+  var pageSize = 20;
+  var currentPage = 0;
+  var totalPages = Math.ceil(names.length / pageSize);
+
+  function renderPage() {
+
+    while (list.firstChild) {
+      list.removeChild(list.firstChild);
+    }
+
+    var start = currentPage * pageSize;
+    var end = Math.min(start + pageSize, names.length);
+
+    for (var i = start; i < end; i++) {
+
+      var item = mk("div", "", names[i]);
+
+      item.style.padding = "5px 2px";
+      item.style.borderBottom = "1px solid #ddd";
+
+      list.appendChild(item);
+    }
+
+    counter.textContent =
+      "Articoli " + (start + 1) +
+      "-" + end + " di " + names.length;
+
+    previous.disabled = currentPage === 0;
+    next.disabled = currentPage >= totalPages - 1;
   }
+
+  var navigation = mk("div", "");
+
+  navigation.style.display = "flex";
+  navigation.style.gap = "8px";
+  navigation.style.marginTop = "8px";
+  navigation.style.marginBottom = "4px";
+
+  var previous = mk("button", "", "▲ PRECEDENTE");
+  var next = mk("button", "", "SUCCESSIVO ▼");
+
+  previous.style.flex = "1";
+  next.style.flex = "1";
+
+  previous.onclick = function () {
+    if (currentPage > 0) {
+      currentPage--;
+      renderPage();
+    }
+  };
+
+  next.onclick = function () {
+    if (currentPage < totalPages - 1) {
+      currentPage++;
+      renderPage();
+    }
+  };
+
+  navigation.appendChild(previous);
+  navigation.appendChild(next);
 
   var buttons = mk("div", "");
 
@@ -3912,7 +3970,9 @@ function showShoppingConfirm(title, names, onConfirm) {
   buttons.appendChild(confirm);
 
   popup.appendChild(heading);
+  popup.appendChild(counter);
   popup.appendChild(list);
+  popup.appendChild(navigation);
   popup.appendChild(buttons);
 
   overlay.appendChild(popup);
@@ -3927,6 +3987,8 @@ function showShoppingConfirm(title, names, onConfirm) {
   };
 
   document.body.appendChild(overlay);
+
+  renderPage();
 }
 
 /* ==================================================
