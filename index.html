@@ -4627,9 +4627,12 @@ function getScheduledView(){
     }
   }
 
-  return DASHBOARD_VIEWS.length
-    ? DASHBOARD_VIEWS[0].id
-    : null;
+  var sharedView = DASHBOARD_VIEWS.find(function(v){
+    return v.view_type === "shared";
+  });
+  
+  return sharedView ? sharedView.id : null;
+
 }
 
 function checkScheduledView(){
@@ -4743,9 +4746,9 @@ function setView(view, manual){
   });
   
   if(!viewConfig){
-    viewConfig = DASHBOARD_VIEWS.length
-      ? DASHBOARD_VIEWS[0]
-      : null;
+    console.error("Vista non autorizzata o inesistente:", view);
+    currentView = null;
+    return;
   }
   
   if(!viewConfig){
