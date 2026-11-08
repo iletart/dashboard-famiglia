@@ -2729,6 +2729,7 @@ function renderRoutes(){
   scheduleAlign();
 }
 
+
 /* ==================================================
    13. LISTA DELLA SPESA
    ================================================== */
@@ -3107,7 +3108,15 @@ function loadShoppingList() {
       // PULSANTI DI CONFERMA
       // --------------------------------------------------
 
-      var commitButtons = mk("div", "shopping-commit-buttons");
+      var pendingCommitButtons = mk(
+        "div",
+        "shopping-commit-buttons shopping-pending-commit-buttons"
+      );
+
+      var completedCommitButtons = mk(
+        "div",
+        "shopping-commit-buttons shopping-completed-commit-buttons"
+      );
 
       var commitBought = mk(
         "button",
@@ -3135,11 +3144,10 @@ function loadShoppingList() {
       commitNotBought.disabled = true;
       commitDelete.disabled = true;
 
-      commitButtons.appendChild(commitBought);
-      commitButtons.appendChild(commitNotBought);
-      commitButtons.appendChild(commitDelete);
+      pendingCommitButtons.appendChild(commitBought);
 
-      box.appendChild(commitButtons);
+      completedCommitButtons.appendChild(commitNotBought);
+      completedCommitButtons.appendChild(commitDelete);
 
       commitBought.addEventListener("click", function () {
         commitShoppingItems(true);
@@ -4271,13 +4279,14 @@ function loadShoppingList() {
 
 
       // --------------------------------------------------
-      // INSERIMENTO SEZIONI
+      // INSERIMENTO SEZIONI E RELATIVI PULSANTI
       // --------------------------------------------------
+
+      pendingSection.appendChild(pendingCommitButtons);
+      completedSection.appendChild(completedCommitButtons);
 
       box.appendChild(pendingSection);
       box.appendChild(completedSection);
-
-    }
 
 
     // ----------------------------------------------------
