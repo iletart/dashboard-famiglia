@@ -2578,41 +2578,46 @@ console.log("SHOPPING: funzione avviata");
 
       pendingButton.classList.add("active");
 
-      pendingButton.addEventListener(
-        "click",
-        function (ps, cs, pb, cb) {
-          return function () {
-            ps.style.display = "block";
-            cs.style.display = "none";
+		pendingButton.addEventListener(
+		  "click",
+		  function (ps, cs, pb, cb) {
+			return function () {
+			  ps.style.display = "block";
+			  cs.style.display = "none";
 
-            pb.classList.add("active");
-            cb.classList.remove("active");
-          };
-        }(
-          pendingSection,
-          completedSection,
-          pendingButton,
-          completedButton
-        )
-      );
+			  pb.classList.add("active");
+			  cb.classList.remove("active");
 
-      completedButton.addEventListener(
-        "click",
-        function (ps, cs, pb, cb) {
-          return function () {
-            ps.style.display = "none";
-            cs.style.display = "block";
+			  scheduleAlign();
+			};
+		  }(
+			pendingSection,
+			completedSection,
+			pendingButton,
+			completedButton
+		  )
+		);
 
-            pb.classList.remove("active");
-            cb.classList.add("active");
-          };
-        }(
-          pendingSection,
-          completedSection,
-          pendingButton,
-          completedButton
-        )
-      );
+		completedButton.addEventListener(
+		  "click",
+		  function (ps, cs, pb, cb) {
+			return function () {
+			  ps.style.display = "none";
+			  cs.style.display = "block";
+
+			  pb.classList.remove("active");
+			  cb.classList.add("active");
+
+			  scheduleAlign();
+			};
+		  }(
+			pendingSection,
+			completedSection,
+			pendingButton,
+			completedButton
+		  )
+		);
+		
 		// --------------------------------------------------
 		// PULSANTI DI CONFERMA
 		// --------------------------------------------------
