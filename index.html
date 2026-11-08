@@ -1125,6 +1125,10 @@ var taskDays = {}, taskReady = false, taskBusy = false;
 var taskSyncError = false, taskSyncedAt = null;
 var pollTimer = null;
 
+var clockTimer = null;
+var sunTimesTimer = null;
+var shoppingRefreshTimer = null;
+
 /* ==================================================
    2. UTILITÀ
    ================================================== */
@@ -1399,7 +1403,12 @@ function updateClock(){
 
 function startClock(){
   safe(updateClock);
-  setInterval(function(){ safe(updateClock); }, 10000);
+
+  if(!clockTimer){
+    clockTimer = setInterval(function(){
+      safe(updateClock);
+    }, 10000);
+  }
 }
 
 window.addEventListener("focus", function(){ safe(updateClock); });
@@ -4791,18 +4800,27 @@ function startDashboard(preferredView){
     safe(loadMenu);
     safe(loadTodo);
 
-    if(!scheduleViewTimer){
-      scheduleViewTimer = setInterval(checkScheduledView, 15000);
-    }
+	if(!scheduleViewTimer){
+	  scheduleViewTimer = setInterval(checkScheduledView, 15000);
+	}
 
-    setInterval(function(){ safe(loadSunTimes); }, 3600000);
+	if(!sunTimesTimer){
+	  sunTimesTimer = setInterval(function(){
+		safe(loadSunTimes);
+	  }, 3600000);
+	}
 
-    setInterval(function(){
-      safe(loadShoppingList);
-      if(viewHasBox(currentView, "personalRoutes")){
-        safe(function(){ loadRoutes(currentView); });
-      }
-    }, 5 * 60000);
+	if(!shoppingRefreshTimer){
+	  shoppingRefreshTimer = setInterval(function(){
+		safe(loadShoppingList);
+
+		if(viewHasBox(currentView, "personalRoutes")){
+		  safe(function(){
+			loadRoutes(currentView);
+		  });
+		}
+	  }, 5 * 60000);
+	}
   });
 }
 
