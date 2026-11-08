@@ -1544,9 +1544,11 @@ var GIORNI_JSON = ["domenica","lunedi","martedi","mercoledi","giovedi","venerdi"
 var TASK_OFF = {ieri: -1, oggi: 0, domani: 1};
 
 var USERS = [];
+var AUTH_PROFILES = [];
 var DASHBOARD_VIEWS = [];
-var currentView = "famiglia";
+var currentView = null;
 var viewManualUntil = 0;
+var AUTH_PERMISSIONS = [];
 
 var agendaData = null, agendaErr = false, agendaSyncedAt = null;
 var agendaSt = {today: true, week: 0};
@@ -4660,7 +4662,7 @@ function buildLayout(view){
   });
 
   isRows = vc.layout_mode === "rows";
-  host = view === "famiglia" ? $("dashboardContent") : personalRow();
+  ost = vc.view_type === "shared" ? $("dashboardContent") : personalRow();
   stash = $("stash");
 
   if(!host || !stash){ return; }
@@ -4728,7 +4730,14 @@ function setView(view, manual){
     btns[i].className = btns[i].getAttribute("data-view") === view ? "sel" : "";
   }
 
-  var personal = view !== "famiglia";
+  var viewConfig = DASHBOARD_VIEWS.find(function(v){
+    return v.id === view;
+  });
+  
+  if(!viewConfig){ return; }
+  
+  var personal = viewConfig.view_type === "personal";
+  
   setHidden($("dashboardContent"), personal);
   setHidden($("personalView"), !personal);
 
@@ -4746,7 +4755,7 @@ function setView(view, manual){
   if(personal){
     safe(renderPersonalTasks);
   
-    if(view !== "famiglia" && viewHasBox(view, "personalRoutes")){
+    if(viewHasBox(view, "personalRoutes")){
       loadRoutes(view);
     }
   
@@ -4826,7 +4835,7 @@ function openAddUserForm(){
     var pin = pinInput.value.trim();
     var pinConfirm = confirmInput.value.trim();
 
-    if(!/^[a-z0-9_-]{2,30}$/.test(id) || id === "famiglia"){
+    if(!/^[a-z0-9_-]{2,30}$/.test(id)){
       error.textContent = "ID non valido: usa 2-30 caratteri (lettere, numeri, _ o -).";
       idInput.focus();
       return;
@@ -4907,8 +4916,15 @@ function renderViewMenu(){
     box.style.width = "100%";
     box.style.boxSizing = "border-box";
 
-    var title = mk("div", "", "ACCESSO " +
-      (pendingProfile === "famiglia" ? "FAMIGLIA" : userName(pendingProfile)));
+	var profile = AUTH_PROFILES.find(function(u){
+	  return u.profile_key === pendingProfile;
+	});
+
+	var title = mk(
+	  "div",
+	  "",
+	  "ACCESSO " + (profile ? profile.name : "")
+	);
 
     title.style.textAlign = "center";
     title.style.fontSize = "18px";
@@ -5009,19 +5025,37 @@ function renderViewMenu(){
     panel.appendChild(b);
   }
 
-  addButton("famiglia", "FAMIGLIA");
 
-  for(var i = 0; i < USERS.length; i++){
-    addButton(USERS[i].id, USERS[i].name);
+  if(!authToken){
+    for(var i = 0; i < AUTH_PROFILES.length; i++){
+      addButton(
+        AUTH_PROFILES[i].profile_key,
+        AUTH_PROFILES[i].name
+      );
+    }
+  } else {
+    for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
+      addButton(
+        DASHBOARD_VIEWS[i].id,
+        DASHBOARD_VIEWS[i].title
+      );
+    }
   }
 
-  // AGGIUNGI UTENTE: solo nella vista FAMIGLIA,
-  // con sessione autenticata come famiglia.
-  if(authToken && authProfile === "famiglia" &&
-     typeof currentView !== "undefined" && currentView === "famiglia"){
-
+  // AGGIUNGI UTENTE: visibile in base ai permessi
+  var currentViewConfig = DASHBOARD_VIEWS.find(function(v){
+    return v.id === currentView;
+  });
+  
+  if(
+    authToken &&
+    AUTH_PERMISSIONS.indexOf("users.manage") !== -1 &&
+    currentViewConfig &&
+    currentViewConfig.view_type === "shared"
+  ){
     var addUserButton = mk("button", "", "+ AGGIUNGI UTENTE");
     addUserButton.type = "button";
+  
     addUserButton.onclick = function(ev){
       if(ev){
         ev.preventDefault();
@@ -5029,7 +5063,7 @@ function renderViewMenu(){
       }
       openAddUserForm();
     };
-
+  
     panel.appendChild(addUserButton);
   }
 
@@ -5118,9 +5152,14 @@ function growColumn(bs, extra){
 
 
 function alignBoxes(){
-  var host = currentView === "famiglia"
-    ? $("dashboardContent")
-    : personalRow();
+	var currentViewConfig = DASHBOARD_VIEWS.find(function(v){
+	  return v.id === currentView;
+	});
+
+	var host = currentViewConfig &&
+			   currentViewConfig.view_type === "shared"
+	  ? $("dashboardContent")
+	  : personalRow();
 
   if(!host){ return; }
 
@@ -5239,6 +5278,10 @@ function loadAuthorizedConfig(callback){
     }
 
     DASHBOARD_VIEWS = data.views;
+	
+	AUTH_PERMISSIONS = Array.isArray(data.permissions)
+	  ? data.permissions
+	  : [];
 
     USERS = data.users.filter(function(u){
       return u && u.id && u.name;
@@ -5418,7 +5461,7 @@ function authLogin(profile, pin){
     var panel = $("viewMenuPanel");
     if(panel){ panel._pendingLoginProfile = null; }
 
-    startDashboard(profile);
+    startDashboard();
   });
 }
 
@@ -5430,7 +5473,40 @@ function authLogout(){
   });
 }
 
+function loadAuthProfiles(callback){
+  authRequest("GET", "/profiles", null, function(err, data){
+    if(
+      err ||
+      !data ||
+      !data.ok ||
+      !Array.isArray(data.profiles)
+    ){
+      callback(err || "Elenco profili non disponibile");
+      return;
+    }
+
+    AUTH_PROFILES = data.profiles.filter(function(p){
+      return p &&
+        typeof p.profile_key === "string" &&
+        typeof p.name === "string";
+    });
+
+    callback(null);
+  });
+}
+
 function restoreAuthSession(){
+  loadAuthProfiles(function(err){
+    if(err){
+      setText($("err"), "Impossibile caricare i profili: " + err);
+      return;
+    }
+
+    restoreAuthSessionAfterProfiles();
+  });
+}
+
+function restoreAuthSessionAfterProfiles(){
   try {
     authToken = localStorage.getItem("dashboardAuthToken") || "";
     authProfile = localStorage.getItem("dashboardAuthProfile") || "";
