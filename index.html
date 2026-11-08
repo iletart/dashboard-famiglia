@@ -3781,6 +3781,136 @@ function setView(view, manual){
   scheduleAlign();
 }
 
+function openAddUserForm(){
+  var panel = $("viewMenuPanel");
+  clear(panel);
+
+  var box = mk("div", "add-user-panel", "");
+  box.style.padding = "12px";
+  box.style.display = "flex";
+  box.style.flexDirection = "column";
+  box.style.gap = "8px";
+  box.style.width = "100%";
+  box.style.boxSizing = "border-box";
+
+  var title = mk("div", "", "AGGIUNGI UTENTE");
+  title.style.textAlign = "center";
+  title.style.fontSize = "18px";
+  title.style.fontWeight = "bold";
+  box.appendChild(title);
+
+  function createField(placeholder, type, maxLength){
+    var input = document.createElement("input");
+    input.type = type;
+    input.placeholder = placeholder;
+    input.maxLength = maxLength;
+    input.style.width = "100%";
+    input.style.minWidth = "0";
+    input.style.height = "40px";
+    input.style.padding = "6px 10px";
+    input.style.boxSizing = "border-box";
+    input.style.fontSize = "16px";
+    box.appendChild(input);
+    return input;
+  }
+
+  var idInput = createField("ID accesso (es. nonno)", "text", 30);
+  var nameInput = createField("Nome visualizzato", "text", 60);
+  var ownerInput = createField("Codice attività (es. N)", "text", 10);
+  ownerInput.style.textTransform = "uppercase";
+
+  var pinInput = createField("PIN (6-12 cifre)", "password", 12);
+  pinInput.inputMode = "numeric";
+  var confirmInput = createField("Conferma PIN", "password", 12);
+  confirmInput.inputMode = "numeric";
+
+  var error = mk("div", "", "");
+  error.style.color = "#c00";
+  error.style.textAlign = "center";
+  box.appendChild(error);
+
+  var saveButton = mk("button", "", "CREA UTENTE");
+  saveButton.type = "button";
+  saveButton.style.width = "100%";
+  saveButton.style.padding = "14px";
+
+  var cancelButton = mk("button", "", "ANNULLA");
+  cancelButton.type = "button";
+  cancelButton.style.width = "100%";
+  cancelButton.style.padding = "12px";
+  cancelButton.onclick = renderViewMenu;
+
+  saveButton.onclick = function(){
+    var id = idInput.value.trim().toLowerCase();
+    var name = nameInput.value.trim();
+    var taskOwner = ownerInput.value.trim().toUpperCase();
+    var pin = pinInput.value.trim();
+    var pinConfirm = confirmInput.value.trim();
+
+    if(!/^[a-z0-9_-]{2,30}$/.test(id) || id === "famiglia"){
+      error.textContent = "ID non valido: usa 2-30 caratteri (lettere, numeri, _ o -).";
+      idInput.focus();
+      return;
+    }
+
+    if(!name || name.length > 60){
+      error.textContent = "Inserisci un nome valido.";
+      nameInput.focus();
+      return;
+    }
+
+    if(!/^[A-Z0-9_-]{1,10}$/.test(taskOwner)){
+      error.textContent = "Inserisci un codice attività valido.";
+      ownerInput.focus();
+      return;
+    }
+
+    if(!/^\d{6,12}$/.test(pin)){
+      error.textContent = "Il PIN deve contenere da 6 a 12 cifre.";
+      pinInput.focus();
+      return;
+    }
+
+    if(pin !== pinConfirm){
+      error.textContent = "I PIN non coincidono.";
+      confirmInput.focus();
+      return;
+    }
+
+    error.textContent = "";
+    saveButton.disabled = true;
+    saveButton.textContent = "CREAZIONE IN CORSO...";
+
+    authRequest("POST", "/users/create", {
+      id: id,
+      name: name,
+      task_owner: taskOwner,
+      pin: pin,
+      pin_confirm: pinConfirm
+    }, function(err, data){
+
+      if(err || !data || !data.ok){
+        error.textContent = err || "Creazione non riuscita.";
+        saveButton.disabled = false;
+        saveButton.textContent = "CREA UTENTE";
+        return;
+      }
+
+      alert("Utente " + data.user.name + " creato correttamente.");
+
+      // Ricarica la dashboard per aggiornare utenti,
+      // assegnatari e configurazione delle viste.
+      location.reload();
+    });
+  };
+
+  box.appendChild(saveButton);
+  box.appendChild(cancelButton);
+  panel.appendChild(box);
+
+  idInput.focus();
+}
+
 function renderViewMenu(){
   var panel = $("viewMenuPanel");
   clear(panel);
@@ -3790,9 +3920,9 @@ function renderViewMenu(){
   // SCHERMATA DI ACCESSO
   if(pendingProfile){
     var box = mk("div", "pin-login-panel", "");
-	box.style.padding = "12px";
-	box.style.gap = "8px";
-	box.style.alignItems = "center";
+    box.style.padding = "12px";
+    box.style.gap = "8px";
+    box.style.alignItems = "center";
     box.style.display = "flex";
     box.style.flexDirection = "column";
     box.style.width = "100%";
@@ -3811,17 +3941,17 @@ function renderViewMenu(){
     input.autocomplete = "current-password";
     input.maxLength = 12;
     input.placeholder = "Inserisci il PIN";
-	input.style.width = "100%";
-	input.style.maxWidth = "none";
-	input.style.minWidth = "0";
-	input.style.display = "block";
-	input.style.flex = "none";
-	input.style.height = "40px";
-	input.style.fontSize = "18px";
-	input.style.padding = "6px 10px";
-	input.style.letterSpacing = "4px";
-	input.style.textAlign = "center";
-	input.style.boxSizing = "border-box";
+    input.style.width = "100%";
+    input.style.maxWidth = "none";
+    input.style.minWidth = "0";
+    input.style.display = "block";
+    input.style.flex = "none";
+    input.style.height = "40px";
+    input.style.fontSize = "18px";
+    input.style.padding = "6px 10px";
+    input.style.letterSpacing = "4px";
+    input.style.textAlign = "center";
+    input.style.boxSizing = "border-box";
 
     var error = mk("div", "", "");
     error.style.color = "#c00";
@@ -3882,16 +4012,16 @@ function renderViewMenu(){
     b.type = "button";
     b.setAttribute("data-view", id);
 
-	b.onclick = function(ev){
-	  if(ev){
-		ev.preventDefault();
-		ev.stopPropagation();
-	  }
+    b.onclick = function(ev){
+      if(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
 
-	  if(!authToken){
-		panel._pendingLoginProfile = id;
-		renderViewMenu();
-	  } else {
+      if(!authToken){
+        panel._pendingLoginProfile = id;
+        renderViewMenu();
+      } else {
         personalPeriod = "oggi";
         setView(id, true);
       }
@@ -3904,6 +4034,24 @@ function renderViewMenu(){
 
   for(var i = 0; i < USERS.length; i++){
     addButton(USERS[i].id, USERS[i].name);
+  }
+
+  // AGGIUNGI UTENTE: solo nella vista FAMIGLIA,
+  // con sessione autenticata come famiglia.
+  if(authToken && authProfile === "famiglia" &&
+     typeof currentView !== "undefined" && currentView === "famiglia"){
+
+    var addUserButton = mk("button", "", "+ AGGIUNGI UTENTE");
+    addUserButton.type = "button";
+    addUserButton.onclick = function(ev){
+      if(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      openAddUserForm();
+    };
+
+    panel.appendChild(addUserButton);
   }
 
   if(authToken){
