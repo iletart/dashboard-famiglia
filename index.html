@@ -2670,8 +2670,15 @@ console.log("SHOPPING: funzione avviata");
 		  deleteCheckbox.checked = Boolean(
 			shoppingDeleteSelections[deleteKey]
 		  );
-
-		  var deleteIcon = mk("span", "", "🗑");
+		  
+		  var deleteIcon;
+		  
+		  if (IS_KINDLE) {
+		    deleteIcon = mk("span", "trash-icon");
+		  } else {
+		    deleteIcon = mk("span", "", "🗑");
+		  }
+		  
 		  deleteIcon.title = "Seleziona per eliminazione";
 
 		  deleteLabel.appendChild(deleteCheckbox);
