@@ -3875,6 +3875,7 @@ function showShoppingConfirm(title, names, onConfirm) {
   popup.style.boxSizing = "border-box";
   popup.style.display = "flex";
   popup.style.flexDirection = "column";
+  popup.style.overflow = "hidden";
 
   var heading = mk("div", "", title);
 
@@ -3883,11 +3884,13 @@ function showShoppingConfirm(title, names, onConfirm) {
 
   var list = mk("div", "shopping-confirm-list");
 
-  list.style.overflowY = "auto";
+  list.style.overflowY = "scroll";
+  list.style.overflowX = "hidden";
+  list.style.height = "45vh";
   list.style.maxHeight = "45vh";
   list.style.minHeight = "40px";
-  list.style.border = "1px solid #999";
-  list.style.padding = "6px";
+  list.style.flex = "none";
+  list.style.webkitOverflowScrolling = "touch";
 
   for (var i = 0; i < names.length; i++) {
     list.appendChild(mk("div", "", names[i]));
