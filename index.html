@@ -1064,24 +1064,29 @@ body.k .shopping-pending-commit-buttons .shopping-commit-button {
   width:100%;
 }
 
-/* KINDLE: COMPRATO */
+/* KINDLE: COMPRATO - pulsanti affiancati e testo leggibile */
 body.k .shopping-completed-commit-buttons {
   display:flex;
   flex-direction:row;
   flex-wrap:nowrap;
+  width:100%;
+  box-sizing:border-box;
   gap:4px;
 }
 
-/* KINDLE: testo pulsanti conferma */
 body.k .shopping-completed-commit-buttons .shopping-commit-button {
   display:block;
-  flex:1 1 50%;
-  width:50%;
-  font-size:6px;
-  padding-left:0;
-  padding-right:0;
-  white-space:nowrap;
-  letter-spacing:-0.4px;
+  flex:1 1 0;
+  width:0;
+  min-width:0;
+  box-sizing:border-box;
+  font-size:9px;
+  padding:8px 2px;
+  min-height:36px;
+  line-height:1.2;
+  white-space:normal;
+  letter-spacing:normal;
+  text-align:center;
 }
 
 /* Righe articoli */
