@@ -721,6 +721,60 @@ body.k .shopping-commit-button {
   overflow-wrap: break-word;
 }
 
+body.k .shopping-item {
+  display:table !important;
+  table-layout:fixed;
+  width:100%;
+  border-spacing:0;
+}
+
+body.k .shopping-check-cell {
+  display:table-cell;
+  width:28px;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+
+body.k .shopping-content {
+  display:table-cell;
+  width:auto;
+  vertical-align:middle;
+  text-align:left;
+  overflow-wrap:normal;
+  word-wrap:normal;
+  word-break:normal;
+}
+
+body.k .shopping-date {
+  white-space:nowrap;
+  font-size:inherit;
+}
+
+body.k .shopping-actions {
+  display:table-cell;
+  width:52px;
+  text-align:right;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+
+body.k .shopping-delete-label {
+  display:inline-block;
+  white-space:nowrap;
+  vertical-align:middle;
+}
+
+body.k .shopping-delete-checkbox {
+  vertical-align:middle;
+  margin:0;
+}
+
+body.k .shopping-actions .trash-icon {
+  display:inline-block;
+  vertical-align:middle;
+  margin-left:3px;
+}
+
 /* Gruppi di pulsanti */
 
 body.k .seg{
@@ -2631,12 +2685,7 @@ console.log("SHOPPING: funzione avviata");
 			  : "shopping-item"
 		  );
 
-		  row.style.display = "flex";
-		  row.style.alignItems = "center";
-		  row.style.gap = "12px";
-
 		  var checkbox = mk("input", "");
-
 		  checkbox.type = "checkbox";
 		  checkbox.className = "shopping-checkbox";
 
@@ -2649,80 +2698,144 @@ console.log("SHOPPING: funzione avviata");
 
 		  var label = mk("span", "", item.name);
 
-		  label.style.flex = "1";
-
-		  row.appendChild(checkbox);
-		  row.appendChild(label);
-
-		if (isCompleted) {
-		  row.appendChild(
-			mk("span", "", " (" + dateText + ")")
-		  );
-
 		  var deleteKey = String(list.shopping_list_id) +
 			"_" + String(item.id);
 
-		  var deleteLabel = mk("label", "shopping-delete-label");
+		  // --------------------------------------------
+		  // LAYOUT KINDLE
+		  // --------------------------------------------
 
-		  var deleteCheckbox = mk("input", "");
-		  deleteCheckbox.type = "checkbox";
-		  deleteCheckbox.className = "shopping-delete-checkbox";
-		  deleteCheckbox.checked = Boolean(
-			shoppingDeleteSelections[deleteKey]
-		  );
-		  
-		  var deleteIcon;
-		  
 		  if (IS_KINDLE) {
-		    deleteIcon = mk("span", "trash-icon");
+			row.style.display = "table";
+			row.style.tableLayout = "fixed";
+			row.style.width = "100%";
+			row.style.borderSpacing = "0";
+
+			var checkCell = mk("span", "shopping-check-cell");
+			checkCell.appendChild(checkbox);
+
+			var contentCell = mk("span", "shopping-content");
+			contentCell.appendChild(label);
+
+			if (isCompleted) {
+			  var date = mk("span", "shopping-date", " (" + dateText + ")");
+			  contentCell.appendChild(date);
+			}
+
+			var actionsCell = mk("span", "shopping-actions");
+
+			if (isCompleted) {
+			  var deleteLabel = mk("label", "shopping-delete-label");
+
+			  var deleteCheckbox = mk("input", "");
+			  deleteCheckbox.type = "checkbox";
+			  deleteCheckbox.className = "shopping-delete-checkbox";
+			  deleteCheckbox.checked = Boolean(
+				shoppingDeleteSelections[deleteKey]
+			  );
+
+			  var deleteIcon = mk("span", "trash-icon");
+			  deleteIcon.title = "Seleziona per eliminazione";
+
+			  deleteLabel.appendChild(deleteCheckbox);
+			  deleteLabel.appendChild(deleteIcon);
+			  actionsCell.appendChild(deleteLabel);
+
+			  deleteCheckbox.addEventListener("change", function () {
+				if (deleteCheckbox.checked) {
+				  shoppingDeleteSelections[deleteKey] = {
+					view_id: currentView,
+					view_item_id: list.view_item_id,
+					shopping_list_id: list.shopping_list_id,
+					item_id: item.id,
+					name: item.name
+				  };
+				} else {
+				  delete shoppingDeleteSelections[deleteKey];
+				}
+
+				updateCommitButtons();
+			  });
+			}
+
+			row.appendChild(checkCell);
+			row.appendChild(contentCell);
+			row.appendChild(actionsCell);
+
 		  } else {
-		    deleteIcon = mk("span", "", "🗑");
+
+			// --------------------------------------------
+			// LAYOUT PC: MANTIENE LA STRUTTURA PRECEDENTE
+			// --------------------------------------------
+
+			row.style.display = "flex";
+			row.style.alignItems = "center";
+			row.style.gap = "12px";
+
+			label.style.flex = "1";
+
+			row.appendChild(checkbox);
+			row.appendChild(label);
+
+			if (isCompleted) {
+			  row.appendChild(
+				mk("span", "", " (" + dateText + ")")
+			  );
+
+			  var deleteLabel = mk("label", "shopping-delete-label");
+
+			  var deleteCheckbox = mk("input", "");
+			  deleteCheckbox.type = "checkbox";
+			  deleteCheckbox.className = "shopping-delete-checkbox";
+			  deleteCheckbox.checked = Boolean(
+				shoppingDeleteSelections[deleteKey]
+			  );
+
+			  var deleteIcon = mk("span", "", "🗑");
+			  deleteIcon.title = "Seleziona per eliminazione";
+
+			  deleteLabel.appendChild(deleteCheckbox);
+			  deleteLabel.appendChild(deleteIcon);
+			  row.appendChild(deleteLabel);
+
+			  deleteCheckbox.addEventListener("change", function () {
+				if (deleteCheckbox.checked) {
+				  shoppingDeleteSelections[deleteKey] = {
+					view_id: currentView,
+					view_item_id: list.view_item_id,
+					shopping_list_id: list.shopping_list_id,
+					item_id: item.id,
+					name: item.name
+				  };
+				} else {
+				  delete shoppingDeleteSelections[deleteKey];
+				}
+
+				updateCommitButtons();
+			  });
+			}
 		  }
-		  
-		  deleteIcon.title = "Seleziona per eliminazione";
 
-		  deleteLabel.appendChild(deleteCheckbox);
-		  deleteLabel.appendChild(deleteIcon);
-		  row.appendChild(deleteLabel);
+		  checkbox.addEventListener("change", function () {
+			var desiredStatus = checkbox.checked;
 
-		  deleteCheckbox.addEventListener("change", function () {
-			if (deleteCheckbox.checked) {
-			  shoppingDeleteSelections[deleteKey] = {
+			if (desiredStatus === isCompleted) {
+			  delete shoppingDrafts[key];
+			} else {
+			  shoppingDrafts[key] = {
 				view_id: currentView,
 				view_item_id: list.view_item_id,
 				shopping_list_id: list.shopping_list_id,
 				item_id: item.id,
-				name: item.name
+				desiredStatus: desiredStatus,
+				originalStatus: isCompleted
 			  };
-			} else {
-			  delete shoppingDeleteSelections[deleteKey];
 			}
 
 			updateCommitButtons();
 		  });
-		}
 
-		checkbox.addEventListener("change", function () {
-		  var desiredStatus = checkbox.checked;
-
-		  if (desiredStatus === isCompleted) {
-			delete shoppingDrafts[key];
-		  } else {
-			shoppingDrafts[key] = {
-			  view_id: currentView,
-			  view_item_id: list.view_item_id,
-			  shopping_list_id: list.shopping_list_id,
-			  item_id: item.id,
-			  desiredStatus: desiredStatus,
-			  originalStatus: isCompleted
-			};
-		  }
-
-		  updateCommitButtons();
-		});
-
-		container.appendChild(row);
-
+		  container.appendChild(row);
 		}
 
       // --------------------------------------------------
