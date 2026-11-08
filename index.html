@@ -4685,7 +4685,7 @@ function buildLayout(view){
   });
 
   isRows = vc.layout_mode === "rows";
-  ost = vc.view_type === "shared" ? $("dashboardContent") : personalRow();
+  host = vc.view_type === "shared" ? $("dashboardContent") : personalRow();
   stash = $("stash");
 
   if(!host || !stash){ return; }
