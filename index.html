@@ -2762,11 +2762,9 @@ console.log("SHOPPING: funzione avviata");
           var ms = parseIso(item.checked_at);
 
           if (ms !== null) {
-			var d = toRome(ms);
-			dateText =
-			  String(d.getDate()).padStart(2, "0") + "/" +
-			  String(d.getMonth() + 1).padStart(2, "0") + "/" +
-			  d.getFullYear();
+            dateText = fullDateText(
+              dayNumOfRome(toRome(ms))
+            );
           }
         }
 
