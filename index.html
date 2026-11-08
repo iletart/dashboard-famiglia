@@ -4934,6 +4934,15 @@ function openAddUserForm(){
   idInput.focus();
 }
 
+function findItem(list, callback){
+  for(var i = 0; i < list.length; i++){
+    if(callback(list[i], i, list)){
+      return list[i];
+    }
+  }
+  return undefined;
+}
+
 function renderViewMenu(){
   var panel = $("viewMenuPanel");
   clear(panel);
@@ -4951,7 +4960,7 @@ function renderViewMenu(){
     box.style.width = "100%";
     box.style.boxSizing = "border-box";
 
-	var profile = AUTH_PROFILES.find(function(u){
+	var profile = findItem(AUTH_PROFILES, function(u){
 	  return u.profile_key === pendingProfile;
 	});
 
@@ -5080,7 +5089,7 @@ function renderViewMenu(){
   }
 
   // AGGIUNGI UTENTE: visibile in base ai permessi
-  var currentViewConfig = DASHBOARD_VIEWS.find(function(v){
+  var currentViewConfig = findItem(DASHBOARD_VIEWS, function(v){
     return v.id === currentView;
   });
   
@@ -5189,7 +5198,7 @@ function growColumn(bs, extra){
 
 
 function alignBoxes(){
-	var currentViewConfig = DASHBOARD_VIEWS.find(function(v){
+	var currentViewConfig = findItem(DASHBOARD_VIEWS, function(v){
 	  return v.id === currentView;
 	});
 
