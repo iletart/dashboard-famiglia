@@ -98,17 +98,21 @@ h3 {
 /* Intestazione box e sincronizzazione */
 
 .section-heading {
+  position:relative;
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
   gap:8px;
   margin-bottom:5px;
+  padding-right:22px;
   border-bottom:1px solid #000;
 }
 
 .sync-label {
   position:relative;
   top:-4px;
+  margin-left:auto;
+  margin-right:2px;
   font-size:.65em;
   line-height:1.2;
   color:#888;
@@ -910,22 +914,29 @@ body.k .col.full {
 
 body.k .section-heading {
   display:block;
-  overflow:hidden;
+  position:relative;
+  overflow:visible;
+  padding-right:18px;
+  min-height:18px;
 }
 
 body.k .section-heading h2 {
   float:left;
-  width:62%;
+  width:49%;
   font-size:.95em;
   white-space:nowrap;
 }
 
 body.k .sync-label {
   float:right;
-  width:36%;
-  font-size:.55em;
+  width:47%;
+  margin:0;
+  top:0;
+  font-size:.52em;
+  line-height:1.2;
   white-space:nowrap;
   font-weight:bold;
+  text-align:right;
 }
 
 /* Hamburger */
@@ -1400,7 +1411,7 @@ body.k .trash-icon:after {
 
   <div class="box" id="personalGlobalTaskBox">
     <div class="section-heading">
-      <h2 id="personalGlobalTaskTitle">Task giornalieri</h2>
+      <h2 id="personalGlobalTaskTitle">Daily task</h2>
       <div class="sync-label" id="personalGlobalTaskTimes"></div>
     </div>
     <div class="seg" id="personalGlobalTaskDays">
@@ -1455,8 +1466,11 @@ body.k .trash-icon:after {
     </div>
 
 	<div class="box" id="shoppingBox">
+	  <div class="section-heading">
+	    <h2>Lista spesa</h2>
+	    <div class="sync-label" id="shoppingTimes"></div>
+	  </div>
 	  <div id="shoppingList">Caricamento...</div>
-	  <div class="sync-label" id="shoppingTimes"></div>
 	</div>
   </div>
 
@@ -1464,7 +1478,7 @@ body.k .trash-icon:after {
 
     <div class="box" id="sharedTasksBox">
       <div class="section-heading">
-        <h2>Task giornalieri</h2>
+        <h2>Daily task</h2>
         <div class="sync-label" id="taskTimes"></div>
       </div>
       <div class="seg" id="taskDays">
@@ -1482,7 +1496,7 @@ body.k .trash-icon:after {
 
     <div class="box" id="todoBox">
       <div class="section-heading">
-        <h2>Task condivisi</h2>
+        <h2>To-do list</h2>
         <div class="sync-label" id="todoSyncLabel">non connesso</div>
       </div>
       <div class="add-ctl" id="todoCtl" hidden>
@@ -2278,7 +2292,7 @@ function renderPersonalGlobalTasks(){
 
   setText(
     $("personalGlobalTaskTitle"),
-    "Task giornalieri di " + (currentUser ? userName(currentUser.id) : currentView)
+    "Daily task di " + (currentUser ? userName(currentUser.id) : currentView)
   );
 
   if(!currentUser){
@@ -5485,9 +5499,12 @@ function initBoxRefresh() {
     button.title = "Aggiorna";
     button.setAttribute("aria-label", "Aggiorna");
 
-    button.style.marginLeft = "auto";
-    button.style.padding = "2px 8px";
-    button.style.fontSize = "22px";
+    button.style.position = "absolute";
+    button.style.top = "-9px";
+    button.style.right = "-8px";
+    button.style.margin = "0";
+    button.style.padding = "0 2px";
+    button.style.fontSize = "20px";
     button.style.lineHeight = "1";
     button.style.background = "transparent";
     button.style.border = "none";
