@@ -2609,9 +2609,9 @@ function renderPersonalTodo() {
   if (!box) return;
   
   setText(
-	  $("personalTodoTitle"),
-	  "TO-DO LIST PERSONALE DI " + (currentUser ? userName(currentUser.id) : currentView)
-	);
+    $("personalTodoTitle"),
+    "TO-DO LIST PERSONALE DI " + String(currentView || "").toUpperCase()
+  );
 
   clear(box);
 
