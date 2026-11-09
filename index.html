@@ -2607,6 +2607,11 @@ function personalTodoConnect() {
 function renderPersonalTodo() {
   var box = $("personalTodoList");
   if (!box) return;
+  
+  setText(
+	  $("personalTodoTitle"),
+	  "TO-DO LIST PERSONALE DI " + (currentUser ? userName(currentUser.id) : currentView)
+	);
 
   clear(box);
 
