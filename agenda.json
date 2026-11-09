@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-09T09:30:02.834345+01:00",
+  "generated_at": "2026-11-09T09:40:02.942733+01:00",
   "period_days": 14,
   "events": [
     {
@@ -144,6 +144,22 @@
       "location": "",
       "description": "- W: calze antiscivolo",
       "htmlLink": "https://www.google.com/calendar/event?eid=cTFyaGRvdnBrOTdiMzFlZ2ZnZmJnbDNoOGpfMjAyNjExMTZUMDczMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "5c4ceqv0k61m5qce03gt139opf",
+      "title": "Riunione asilo",
+      "start": {
+        "dateTime": "2026-11-16T15:45:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-16T16:45:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NWM0Y2VxdjBrNjFtNXFjZTAzZ3QxMzlvcGYgZmFtaWx5MDI3MjI5Nzk3MDg3MjgwNTUzNzRAZw"
     },
     {
       "id": "12ug354gtoq95bjhtvc2lbvafc_20261116T163000Z",
