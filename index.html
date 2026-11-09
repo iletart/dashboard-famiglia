@@ -1492,7 +1492,6 @@ body.k .trash-icon:after {
     </div>
 
 	<div class="box" id="shoppingBox">
-	    <div class="sync-label" id="shoppingTimes"></div>
 	  <div id="shoppingList">Caricamento...</div>
 	</div>
   </div>
@@ -1612,7 +1611,7 @@ var agendaSt = {today: true, week: 0};
 var userData = null, userErr = false, userSyncedAt = null;
 var userSt = {today: true, week: 0};
 var routesData = null, routesErr = false, routesSyncedAt = null;
-var shoppingSyncedAt = null;
+
 var menuSel = "oggi", menuSyncedAt = null, menuUpdatedAt = null;
 var personalPeriod = "oggi";
 var personalTodoSyncedAt = null;
@@ -1623,15 +1622,19 @@ var personalTodoConnected = false;
 var personalTodoBusy = false;
 var personalTodoPollTimer = null;
 var menuInitialized = false, scheduleViewTimer = null;
-var todoSyncError = false, todoSyncedAt = null;
+
 var taskSel = "oggi", personalGlobalTaskSel = "oggi";
 var taskDays = {}, taskReady = false, taskBusy = false;
+
 var taskSyncError = false, taskSyncedAt = null;
+var todoSyncError = false, todoSyncedAt = null;
 var pollTimer = null;
 
 var clockTimer = null;
 var scheduleViewTimer = null;
 var sunTimesTimer = null;
+
+var shoppingSyncedAt = null;
 var shoppingRefreshTimer = null;
 
 /* ==================================================
