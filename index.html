@@ -2961,10 +2961,12 @@ function loadShoppingList() {
 
   console.log("SHOPPING: funzione avviata");
 
-  var box = $("shoppingBox");
+  var box = $("shoppingList");
 
-  console.log("SHOPPING BOX:", box);
-  console.log("SHOPPING VIEW:", currentView);
+  function showShoppingError(message) {
+    setText(box, message);
+    setTimes($("shoppingTimes"), null, shoppingSyncedAt, true, 0, false);
+  }
 
   if (!authToken) {
     setText(box, "Sessione non disponibile.");
@@ -2988,7 +2990,7 @@ function loadShoppingList() {
       return;
     }
 
-    box = $("shoppingBox");
+    box = $("shoppingList");
 
     if (!box) {
       console.warn("SHOPPING: contenitore non disponibile");
@@ -4403,7 +4405,6 @@ function showShoppingConfirm(title, names, onConfirm) {
   list.style.maxHeight = "55vh";
   list.style.overflow = "hidden";
   list.style.boxSizing = "border-box";
-  list.style.overflow = "hidden";
 
   var pageSize = 10;
   var currentPage = 0;
