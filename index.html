@@ -5249,13 +5249,13 @@ function openAddUserForm(){
     saveButton.disabled = true;
     saveButton.textContent = "CREAZIONE IN CORSO...";
 
-    authRequest("POST", "/users/create", {
-      id: id,
-      name: name,
-      task_owner: taskOwner,
-      pin: pin,
-      pin_confirm: pinConfirm
-    }, function(err, data){
+	usersRequest("POST", "/users", {
+	  id: id,
+	  name: name,
+	  task_owner: taskOwner,
+	  pin: pin,
+	  pin_confirm: pinConfirm
+	}, function(err, data){
 
       if(err || !data || !data.ok){
         error.textContent = err || "Creazione non riuscita.";
