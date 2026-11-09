@@ -2431,7 +2431,15 @@ function todoChange(action, index, text){
   if(!todoConnected || todoBusy){ return false; }
 
   var data = {action: action};
-  if(action === "add"){ data.text = text; } else { data.index = index; }
+  
+  if(action === "add"){
+    data.text = text;
+  } else {
+    data.index = index;
+    if(action === "assign"){
+      data.assignees = text;
+    }
+  }
 
   todoBusy = true;
   renderTodo();
@@ -2464,12 +2472,25 @@ function renderTodo(){
 
   for(var i = 0; i < todoItems.length; i++){
     (function(n){
-      box.appendChild(itemRow(todoItems[n], todoBusy,
+      var assignment = todoAssignControl(n, todoItems[n]);
+
+      var row = itemRow(
+        todoItems[n],
+        todoBusy,
         function(){ todoChange("toggle", n); },
-        function(){ todoChange("delete", n); }));
+        function(){ todoChange("delete", n); },
+        assignment.btn
+      );
+
+      row.appendChild(assignment.menu);
+      box.appendChild(row);
     })(i);
   }
-  if(!todoItems.length){ box.appendChild(mk("div", "", "Nessuna attività.")); }
+
+  if(!todoItems.length){
+    box.appendChild(mk("div", "", "Nessuna attività."));
+  }
+
   scheduleAlign();
 }
 
@@ -2636,6 +2657,78 @@ function assignControl(index, item){
     for(var i = 0; i < checks.length; i++){ if(checks[i].checked){ a.push(checks[i].value); } }
     menu.classList.remove("open");
     taskPost({action: "assign", date: taskKey(taskSel), index: index, assignees: a}, false);
+  };
+
+  return {btn: btn, menu: menu};
+}
+
+function todoAssignControl(index, item){
+  var btn = mk("button", "todo-assign", IS_KINDLE ? "↗" : "👥");
+  btn.type = "button";
+  btn.disabled = todoBusy;
+  btn.title = "Assegna attività";
+  btn.setAttribute("aria-label", "Assegna attività");
+
+  var menu = mk("div", "todo-assign-menu");
+  menu.appendChild(mk("div", "todo-assign-title", "Assegna a:"));
+
+  var selected = Array.isArray(item.assignees) ? item.assignees : [];
+  var checks = [];
+
+  if(!USERS.length){
+    menu.appendChild(mk("div", "", "Elenco utenti non disponibile."));
+  } else {
+    var options = mk("div", "todo-assign-options");
+
+    for(var u = 0; u < USERS.length; u++){
+      var label = mk("label", "todo-assign-option");
+      var c = mk("input");
+      c.type = "checkbox";
+      c.value = USERS[u].id;
+      c.checked = selected.some(function(id){
+        return String(id) === String(USERS[u].id);
+      });
+
+      label.appendChild(c);
+      label.appendChild(document.createTextNode(USERS[u].name));
+      options.appendChild(label);
+      checks.push(c);
+    }
+
+    menu.appendChild(options);
+  }
+
+  var buttons = mk("div", "todo-assign-buttons");
+  var save = mk("button", "", "Salva");
+  var cancel = mk("button", "", "Annulla");
+
+  save.type = "button";
+  cancel.type = "button";
+  save.disabled = todoBusy || !USERS.length;
+
+  buttons.appendChild(save);
+  buttons.appendChild(cancel);
+  menu.appendChild(buttons);
+
+  btn.onclick = function(){
+    var wasOpen = menu.classList.contains("open");
+    closeAssignMenus();
+    if(!wasOpen){ menu.classList.add("open"); }
+  };
+
+  cancel.onclick = function(){
+    menu.classList.remove("open");
+  };
+
+  save.onclick = function(){
+    var a = [];
+
+    for(var i = 0; i < checks.length; i++){
+      if(checks[i].checked){ a.push(checks[i].value); }
+    }
+
+    menu.classList.remove("open");
+    todoChange("assign", index, a);
   };
 
   return {btn: btn, menu: menu};
