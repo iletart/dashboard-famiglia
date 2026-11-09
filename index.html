@@ -2575,7 +2575,7 @@ function personalTodoConnect() {
   personalTodoBusy = true;
   setText($("personalTodoStatus"), "Connessione in corso...");
 
-  api("GET", "?list=personal-todo", null, function(err, data) {
+  api("GET", "?list=personal-todo&view=" + encodeURIComponent(currentView), null, function(err, data) {
     personalTodoBusy = false;
 
     if (err || !data || !Array.isArray(data.items)) {
@@ -2645,14 +2645,7 @@ function personalTodoChange(index) {
   renderPersonalTodo();
   setText($("personalTodoStatus"), "Salvataggio...");
 
-  api(
-    "POST",
-    "?list=personal-todo",
-    {
-      action: "toggle",
-      index: index
-    },
-    function(err, data) {
+  api("POST", "?list=personal-todo&view=" + encodeURIComponent(currentView), {action:"toggle", index:index}, function(err, data) {
       personalTodoBusy = false;
 
       if (err || !data || !Array.isArray(data.items)) {
@@ -2675,7 +2668,7 @@ function personalTodoChange(index) {
 function personalTodoPoll() {
   if (!personalTodoConnected || personalTodoBusy) return;
 
-  api("GET", "?list=personal-todo", null, function(err, data) {
+  api("GET", "?list=personal-todo&view=" + encodeURIComponent(currentView), null, function(err, data) {
     if (!err && data && Array.isArray(data.items)) {
       personalTodoItems = data.items;
       setText($("personalTodoSyncLabel"), "sincronizzato");
@@ -5806,7 +5799,7 @@ function initBoxRefresh() {
     heading.appendChild(button);
   }
   
-  if ($("personalTodoBox")) {
+    if ($("personalTodoBox")) {
     personalTodoConnect();
   }
 }
