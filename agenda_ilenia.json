@@ -1,6 +1,6 @@
 {
   "calendar": "Ilenia Tartamella",
-  "generated_at": "2026-11-09T09:30:02.834345+01:00",
+  "generated_at": "2026-11-09T09:40:02.942733+01:00",
   "period_days": 14,
   "events": [
     {
@@ -50,6 +50,22 @@
       "location": "",
       "description": "",
       "htmlLink": "https://www.google.com/calendar/event?eid=MGYxam80amtoYWQ1cWY3aTBwdnUybmpqZjVfMjAyNjExMTNUMTM0NTAwWiBpbGV0YXJ0YUBt"
+    },
+    {
+      "id": "5c4ceqv0k61m5qce03gt139opf",
+      "title": "Riunione asilo",
+      "start": {
+        "dateTime": "2026-11-16T16:45:00+01:00",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-16T17:45:00+01:00",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NWM0Y2VxdjBrNjFtNXFjZTAzZ3QxMzlvcGYgaWxldGFydGFAbQ"
     },
     {
       "id": "5ftui5186dleqh91q1nrbm67ok_20261116T173000Z",
