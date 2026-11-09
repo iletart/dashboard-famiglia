@@ -4322,28 +4322,9 @@ function loadShoppingList() {
     // ORARIO ULTIMA SINCRONIZZAZIONE
     // ----------------------------------------------------
 
-    var lastSync = null;
-
-    for (var i = 0; i < lists.length; i++) {
-
-      var ms = parseIso(lists[i].last_sync_at || "");
-
-      if (ms !== null && (lastSync === null || ms > lastSync)) {
-        lastSync = ms;
-      }
-    }
-
-    setTimes(
-      $("shoppingTimes"),
-      lastSync,
-      shoppingSyncedAt,
-      false,
-      0,
-      true
-    );
-
-    scheduleAlign();
-  };
+    setTimes($("shoppingTimes"), null, shoppingSyncedAt, false, 0, false);
+      scheduleAlign();
+    };
 
 
   x.onerror = function () {
