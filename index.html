@@ -2786,6 +2786,8 @@ function waitForShoppingUpdate(
   var url = SHOPPING_API_URL + "/shopping?view_id=" +
     encodeURIComponent(currentView);
 	
+console.log("SHOPPING view_id:", currentView);
+	
   check.open("GET", url, true);
   check.setRequestHeader("Authorization", "Bearer " + authToken);
   check.timeout = 20000;
