@@ -5206,7 +5206,7 @@ function openAddUserForm(){
   cancelButton.type = "button";
   cancelButton.style.width = "100%";
   cancelButton.style.padding = "12px";
-  cancelButton.onclick = renderViewMenu;
+  cancelButton.onclick = openUserManagement;
 
   saveButton.onclick = function(){
     var id = idInput.value.trim().toLowerCase();
@@ -5433,31 +5433,33 @@ function renderViewMenu(){
     }
   }
 
-  // AGGIUNGI UTENTE: visibile in base ai permessi
+
+  // GESTIONE UTENTI: visibile in base ai permessi
   var currentViewConfig = findItem(DASHBOARD_VIEWS, function(v){
     return v.id === currentView;
   });
-  
+
   if(
-      authToken &&
-      AUTH_PERMISSIONS &&
-      typeof AUTH_PERMISSIONS.indexOf === "function" &&
-      AUTH_PERMISSIONS.indexOf("users.manage") !== -1 &&
-      currentViewConfig &&
-      currentViewConfig.view_type === "shared"
-    ){
-    var addUserButton = mk("button", "", "+ AGGIUNGI UTENTE");
-    addUserButton.type = "button";
-  
-    addUserButton.onclick = function(ev){
+    authToken &&
+    AUTH_PERMISSIONS &&
+    typeof AUTH_PERMISSIONS.indexOf === "function" &&
+    AUTH_PERMISSIONS.indexOf("users.manage") !== -1 &&
+    currentViewConfig &&
+    currentViewConfig.view_type === "shared"
+  ){
+    var manageUsersButton = mk("button", "", "GESTIONE UTENTI");
+    manageUsersButton.type = "button";
+
+    manageUsersButton.onclick = function(ev){
       if(ev){
         ev.preventDefault();
         ev.stopPropagation();
       }
-      openAddUserForm();
+
+      openUserManagement();
     };
-  
-    panel.appendChild(addUserButton);
+
+    panel.appendChild(manageUsersButton);
   }
 
   if(authToken){
@@ -5467,6 +5469,100 @@ function renderViewMenu(){
     panel.appendChild(logoutButton);
   }
 }
+
+
+function openUserManagement(){
+  var panel = $("viewMenuPanel");
+  clear(panel);
+
+  var box = mk("div", "user-management-panel", "");
+  box.style.padding = "12px";
+  box.style.display = "flex";
+  box.style.flexDirection = "column";
+  box.style.gap = "10px";
+  box.style.width = "100%";
+  box.style.boxSizing = "border-box";
+
+  var title = mk("div", "", "GESTIONE UTENTI");
+  title.style.textAlign = "center";
+  title.style.fontSize = "18px";
+  title.style.fontWeight = "bold";
+  box.appendChild(title);
+
+  var list = mk("div", "", "");
+  list.style.display = "flex";
+  list.style.flexDirection = "column";
+  list.style.gap = "8px";
+  box.appendChild(list);
+
+  var message = mk("div", "", "Caricamento utenti...");
+  message.style.textAlign = "center";
+  box.appendChild(message);
+
+  var addButton = mk("button", "", "+ AGGIUNGI UTENTE");
+  addButton.type = "button";
+  addButton.style.width = "100%";
+  addButton.style.padding = "12px";
+  addButton.onclick = openAddUserForm;
+  box.appendChild(addButton);
+
+  var backButton = mk("button", "", "INDIETRO");
+  backButton.type = "button";
+  backButton.style.width = "100%";
+  backButton.style.padding = "12px";
+  backButton.onclick = renderViewMenu;
+  box.appendChild(backButton);
+
+  panel.appendChild(box);
+
+  usersRequest("GET", "/users", null, function(err, data){
+    clear(list);
+
+    if(err || !data || !data.ok || !Array.isArray(data.users)){
+      message.textContent = err || "Impossibile caricare gli utenti.";
+      return;
+    }
+
+    message.textContent = data.users.length
+      ? "UTENTI REGISTRATI: " + data.users.length
+      : "Nessun utente presente.";
+
+    for(var i = 0; i < data.users.length; i++){
+      (function(user){
+        var item = mk("div", "user-management-item", "");
+        item.style.padding = "10px";
+        item.style.border = "1px solid #ccc";
+        item.style.borderRadius = "6px";
+        item.style.display = "flex";
+        item.style.flexDirection = "column";
+        item.style.gap = "4px";
+
+        var name = mk("div", "", user.name || user.view_id);
+        name.style.fontWeight = "bold";
+        item.appendChild(name);
+
+        var owner = mk(
+          "div",
+          "",
+          "Codice attività: " + (user.task_owner || "—")
+        );
+        item.appendChild(owner);
+
+        var status = mk(
+          "div",
+          "",
+          user.enabled ? "Stato: ATTIVO" : "Stato: DISABILITATO"
+        );
+        status.style.fontSize = "13px";
+        status.style.color = user.enabled ? "#287a36" : "#c00";
+        item.appendChild(status);
+
+        list.appendChild(item);
+      })(data.users[i]);
+    }
+  });
+}
+
 
 function updateLoggedUser(){
   var el = $("loggedUser");
