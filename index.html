@@ -5661,6 +5661,49 @@ function authRequest(method, path, body, callback){
 }
 
 
+function usersRequest(method, path, body, callback){
+  var x = new XMLHttpRequest();
+  x.open(method, USERS_API_URL + path, true);
+  x.timeout = 20000;
+
+  if(body !== null){
+    x.setRequestHeader("Content-Type", "application/json");
+  }
+
+  var token = localStorage.getItem("dashboardAuthToken") || "";
+
+  if(token){
+    x.setRequestHeader("Authorization", "Bearer " + token);
+  }
+
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4){ return; }
+
+    var data = null;
+    try {
+      data = JSON.parse(x.responseText);
+    } catch(e){}
+
+    if(x.status >= 200 && x.status < 300){
+      callback(null, data);
+    } else {
+      callback(
+        data && data.error ? data.error : "Errore HTTP " + x.status
+      );
+    }
+  };
+
+  x.onerror = function(){
+    callback("Errore di connessione");
+  };
+
+  x.ontimeout = function(){
+    callback("Timeout");
+  };
+
+  x.send(body === null ? null : JSON.stringify(body));
+}
+
 function loadAuthorizedConfig(callback){
   var x = new XMLHttpRequest();
   x.open("GET", DASHBOARD_API_URL + "/config", true);
