@@ -477,21 +477,6 @@ input[type=checkbox] {
   background:#fff;
 }
 
-.todo-assign-container {
-  position:relative;
-  display:inline-block;
-}
-
-.todo-assign-container .todo-assign-menu {
-  position:absolute;
-  top:100%;
-  right:0;
-  left:auto;
-  width:220px;
-  margin:4px 0 0;
-  background:#fff;
-}
-
 .todo-assign-menu.open {
   display:block;
 }
@@ -2493,15 +2478,18 @@ function renderTodo(){
       assignContainer.appendChild(assignment.btn);
       assignContainer.appendChild(assignment.menu);
 
-      var row = itemRow(
-        todoItems[n],
-        todoBusy,
-        function(){ todoChange("toggle", n); },
-        function(){ todoChange("delete", n); },
-        assignContainer
-      );
-
-      box.appendChild(row);
+	  var row = itemRow(
+	    todoItems[n],
+	    todoBusy,
+	    function(){ todoChange("toggle", n); },
+	    function(){ todoChange("delete", n); },
+	    assignContainer
+	  );
+	  
+	  var wrapper = mk("div", "todo-assign-row");
+	  wrapper.appendChild(row);
+	  wrapper.appendChild(assignment.menu);
+	  box.appendChild(wrapper);
     })(i);
   }
 
