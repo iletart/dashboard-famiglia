@@ -1887,8 +1887,17 @@ function eventSpan(e){
 }
 
 function agendaNav(st, redraw){
+
   var nav = mk("div", "seg");
-  var defs = [["Oggi", true, 0], ["Settimana", false, 0], ["Prossima", false, 1]];
+
+  var isCompact =
+    document.body.classList.contains("k") ||
+    window.innerWidth <= 800;
+
+  var defs = isCompact
+    ? [["Oggi", true, 0], ["Questa sett.", false, 0], ["Prossima sett.", false, 1]]
+    : [["Oggi", true, 0], ["Questa settimana", false, 0], ["Prossima settimana", false, 1]];
+
   for(var i = 0; i < defs.length; i++){
     (function(d){
       var b = mk("button", "", d[0]);
@@ -1898,6 +1907,7 @@ function agendaNav(st, redraw){
       nav.appendChild(b);
     })(defs[i]);
   }
+
   return nav;
 }
 
