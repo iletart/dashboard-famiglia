@@ -202,6 +202,15 @@ input[type=checkbox] {
   white-space:nowrap;
 }
 
+/* Pulstante refresh */
+
+.box-refresh {
+  flex-shrink: 0;
+}
+
+.box-refresh:disabled {
+  opacity: 0.5;
+}
 
 /* ==================================================
    3. HEADER
@@ -649,6 +658,7 @@ input[type=checkbox] {
   width:0;
   min-width:0;
 }
+
 
 
 /* ==================================================
@@ -1444,12 +1454,10 @@ body.k .trash-icon:after {
       <div id="agenda">Caricamento...</div>
     </div>
 
-    <div class="box" id="shoppingBox">
-      <div class="section-heading">
-        <div class="sync-label" id="shoppingTimes"></div>
-      </div>
-      <div id="shoppingList">Caricamento...</div>
-    </div>
+	<div class="box" id="shoppingBox">
+	  <div id="shoppingList">Caricamento...</div>
+	  <div class="sync-label" id="shoppingTimes"></div>
+	</div>
   </div>
 
   <div class="col">
@@ -5375,6 +5383,116 @@ function showLoggedOut(message){
   closeViewMenu();
 }
 
+function initBoxRefresh() {
+
+  var boxes = [
+    {
+      id: "personalGlobalTaskBox",
+      load: function () { loadTasks(); }
+    },
+    {
+      id: "personalTasksBox",
+      load: function () { loadAgenda(); }
+    },
+    {
+      id: "personalRoutesBox",
+      load: function () { loadRoutes(currentView); }
+    },
+    {
+      id: "userAgendaBox",
+      load: function () { loadUserAgenda(currentView); }
+    },
+    {
+      id: "agendaBox",
+      load: function () { loadAgenda(); }
+    },
+    {
+      id: "shoppingBox",
+      load: function () { loadShoppingList(); }
+    },
+    {
+      id: "sharedTasksBox",
+      load: function () { loadTasks(); }
+    },
+    {
+      id: "todoBox",
+      load: function () { todoConnect(); }
+    },
+    {
+      id: "schoolMenuBox",
+      load: function () { loadMenu(); }
+    }
+  ];
+
+  for (var i = 0; i < boxes.length; i++) {
+
+    var box = $(boxes[i].id);
+
+    if (!box) {
+      continue;
+    }
+
+    var headings = box.getElementsByClassName("section-heading");
+
+    if (!headings.length) {
+      continue;
+    }
+
+    var heading = headings[0];
+
+    if (heading.getElementsByClassName("box-refresh").length) {
+      continue;
+    }
+
+    var button = mk("button", "box-refresh", "↻");
+
+    button.type = "button";
+    button.title = "Aggiorna";
+    button.setAttribute("aria-label", "Aggiorna");
+
+    button.style.marginLeft = "auto";
+    button.style.padding = "2px 8px";
+    button.style.fontSize = "22px";
+    button.style.lineHeight = "1";
+    button.style.background = "transparent";
+    button.style.border = "none";
+    button.style.color = "#000";
+    button.style.cursor = "pointer";
+
+    (function (loader, btn) {
+
+      var busy = false;
+
+      btn.addEventListener("click", function () {
+
+        if (busy) {
+          return;
+        }
+
+        busy = true;
+        btn.disabled = true;
+        btn.textContent = "…";
+
+        try {
+          loader();
+        } catch (e) {
+          console.error("Errore refresh:", e);
+        }
+
+        setTimeout(function () {
+          busy = false;
+          btn.disabled = false;
+          btn.textContent = "↻";
+        }, 1500);
+
+      });
+
+    })(boxes[i].load, button);
+
+    heading.appendChild(button);
+  }
+}
+
 function startDashboard(preferredView){
   loadAuthorizedConfig(function(err){
     if(err){
@@ -5452,6 +5570,8 @@ function startDashboard(preferredView){
 		$("todoAddButton").click();
 	  }
 	};
+
+	initBoxRefresh();
 
 	safe(loadAgenda, "loadAgenda");
 	safe(loadShoppingList, "loadShoppingList");
