@@ -5624,6 +5624,7 @@ function scheduleAlign(){
 window.onresize = scheduleAlign;
 window.addEventListener("load", scheduleAlign);
 
+
 function authRequest(method, path, body, callback){
   var x = new XMLHttpRequest();
   x.open(method, AUTH_URL + path, true);
@@ -5633,8 +5634,10 @@ function authRequest(method, path, body, callback){
     x.setRequestHeader("Content-Type", "application/json");
   }
 
-  if(authToken){
-    x.setRequestHeader("Authorization", "Bearer " + authToken);
+  var token = localStorage.getItem("dashboardAuthToken") || "";
+
+  if(token){
+    x.setRequestHeader("Authorization", "Bearer " + token);
   }
 
   x.onreadystatechange = function(){
@@ -5655,6 +5658,7 @@ function authRequest(method, path, body, callback){
 
   x.send(body === null ? null : JSON.stringify(body));
 }
+
 
 function loadAuthorizedConfig(callback){
   var x = new XMLHttpRequest();
