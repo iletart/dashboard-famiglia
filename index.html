@@ -2581,7 +2581,7 @@ function personalTodoConnect() {
 
     if (err || !data || !Array.isArray(data.items)) {
       personalTodoConnected = false;
-      setTimes($("personalTodoTimes"), null, personalTodoSyncedAt, true, 0, false);
+      setTimes($("personalTodoSyncLabel"), null, personalTodoSyncedAt, true, 0, false);
       setText(
         $("personalTodoStatus"),
         "Sincronizzazione non disponibile: " + (err || "risposta non valida")
@@ -2593,7 +2593,7 @@ function personalTodoConnect() {
     personalTodoConnected = true;
 
     personalTodoSyncedAt = new Date();
-	setTimes($("personalTodoTimes"), null, personalTodoSyncedAt, false, 0, false);
+	setTimes($("personalTodoSyncLabel"), null, personalTodoSyncedAt, false, 0, false);
     setText($("personalTodoStatus"), "");
 
     renderPersonalTodo();
@@ -5093,7 +5093,14 @@ function setView(view, manual){
   setHidden($("personalView"), !personal);
 
   buildLayout(view);
-  
+
+  console.log("DEBUG PERSONAL TODO", {
+    view: view,
+    hasBox: viewHasBox(view, "personalTodo"),
+    boxExists: !!$("personalTodoBox"),
+    authenticated: !!authToken
+  });
+
   if (
     viewHasBox(view, "personalTodo") &&
     $("personalTodoBox")
