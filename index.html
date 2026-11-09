@@ -3137,6 +3137,10 @@ console.log("SHOPPING view_id:", currentView);
 
       for (var i = 0; i < lists.length; i++) {
         var listData = lists[i];
+		
+		var shoppingUpdatedAt = list.last_sync_at
+		  ? new Date(list.last_sync_at).getTime()
+		  : null;
 
         if (
           String(listData.shopping_list_id) !==
@@ -3353,6 +3357,8 @@ function loadShoppingList() {
     clear(box);
 
     var lists = data.lists || [];
+	
+	var shoppingSyncLabel = null;
 
     if (!lists.length) {
       box.appendChild(
@@ -3375,21 +3381,27 @@ function loadShoppingList() {
         }
       }
 
-      // --------------------------------------------------
-      // TITOLO LISTA
-      // --------------------------------------------------
-
-      var listHeading = mk("div", "section-heading");
-
-      var listTitle = mk(
-        "h2",
-        "",
-        "LISTA SPESA (" + userName(list.account) + ")"
-      );
-
-      listHeading.appendChild(listTitle);
-      box.appendChild(listHeading);
-
+	  // --------------------------------------------------
+	  // TITOLO LISTA
+	  // --------------------------------------------------
+	  
+	  var listHeading = mk("div", "section-heading");
+	  
+	  var listTitle = mk(
+	  "h2",
+	  "",
+	  "LISTA SPESA (" + userName(list.account) + ")"
+	  );
+	  
+	  listHeading.appendChild(listTitle);
+	  
+	  if (!shoppingSyncLabel) {
+	  shoppingSyncLabel = mk("div", "sync-label");
+	  shoppingSyncLabel.id = "shoppingTimes";
+	  listHeading.appendChild(shoppingSyncLabel);
+	  }
+	  
+	  box.appendChild(listHeading);
 
       // --------------------------------------------------
       // TABS
@@ -4646,17 +4658,18 @@ function loadShoppingList() {
     // ORARIO ULTIMA SINCRONIZZAZIONE
     // ----------------------------------------------------
 
-    setTimes($("shoppingTimes"), null, shoppingSyncedAt, false, 0, false);
-      scheduleAlign();
+	setTimes(shoppingSyncLabel, null, shoppingSyncedAt, false, 0, false);
+	scheduleAlign();
     };
 
-
   x.onerror = function () {
-    setText(box, "Errore di connessione a shopping-api.");
+    setText($("shoppingList"), "Errore di connessione a shopping-api.");
+    setTimes($("shoppingTimes"), null, shoppingSyncedAt, true, 0, false);
   };
-
+  
   x.ontimeout = function () {
-    setText(box, "Timeout di connessione a shopping-api.");
+    setText($("shoppingList"), "Timeout di connessione a shopping-api.");
+    setTimes($("shoppingTimes"), null, shoppingSyncedAt, true, 0, false);
   };
 
   x.send(null);
