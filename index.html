@@ -4622,6 +4622,7 @@ function isSharedView(viewId){
   return !!view && view.view_type === "shared";
 }
 
+
 function getScheduledView(){
   var r = toRome(Date.now());
   var m = r.getUTCHours() * 60 + r.getUTCMinutes();
@@ -4633,16 +4634,15 @@ function getScheduledView(){
     var a = toMin(s.schedule_start), b = toMin(s.schedule_end);
 
     if(a < b ? (m >= a && m < b) : (m >= a || m < b)){
-      return s.id;
+      return s.view_id;
     }
   }
 
   var sharedView = findItem(DASHBOARD_VIEWS, function(v){
     return v.view_type === "shared";
   });
-  
-  return sharedView ? sharedView.id : null;
 
+  return sharedView ? sharedView.id : null;
 }
 
 function checkScheduledView(){
