@@ -5805,6 +5805,10 @@ function initBoxRefresh() {
 
     heading.appendChild(button);
   }
+  
+  if ($("personalTodoBox")) {
+    personalTodoConnect();
+  }
 }
 
 function startDashboard(preferredView){
