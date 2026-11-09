@@ -1,33 +1,33 @@
 {
   "available": true,
-  "date": "2026-11-06",
+  "date": "2026-11-09",
   "site": "U003128",
-  "generated_at": "2026-11-07T00:01:02.112490+01:00",
+  "generated_at": "2026-11-10T00:01:02.032296+01:00",
   "plates": [
     {
-      "position": "4532",
-      "dishCode": "P101197",
-      "name": "Malloreddus biologici con ragù di pesce"
+      "position": "1132",
+      "dishCode": "P02029",
+      "name": "Passato di verdura con crostini con farina integrale biologica"
     },
     {
-      "position": "4533",
-      "dishCode": "P10401",
-      "name": "Tonno"
+      "position": "1133",
+      "dishCode": "P100196",
+      "name": "Rustichelle di pollo biologico"
     },
     {
-      "position": "4536",
-      "dishCode": "P101205",
-      "name": "Insalata, mais e carote julienne"
+      "position": "1136",
+      "dishCode": "P00439",
+      "name": "Erbette all'olio"
     },
     {
-      "position": "4537",
-      "dishCode": "P00009",
+      "position": "1137",
+      "dishCode": "P00007",
       "name": "Frutta fresca di stagione"
     },
     {
-      "position": "4539",
-      "dishCode": "P01891",
-      "name": "Pane ai cereali "
+      "position": "1139",
+      "dishCode": "P01889",
+      "name": "Pane tipo 0"
     }
   ]
 }
