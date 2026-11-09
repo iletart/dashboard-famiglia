@@ -5086,6 +5086,14 @@ function setView(view, manual){
   setHidden($("personalView"), !personal);
 
   buildLayout(view);
+  
+  if (
+    viewHasBox(view, "personalTodo") &&
+    $("personalTodoBox")
+  ) {
+    personalTodoConnect();
+  }
+
   safe(loadShoppingList);
 
   /* box riservati a una sola vista (data-only) */
@@ -5797,10 +5805,6 @@ function initBoxRefresh() {
     })(boxes[i].load, button);
 
     heading.appendChild(button);
-  }
-  
-    if ($("personalTodoBox")) {
-    personalTodoConnect();
   }
 }
 
