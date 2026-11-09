@@ -1538,7 +1538,8 @@ var CONFIG = {
   todoWorkerUrl: "https://todo-sync.iletarta-633.workers.dev"
 };
 CONFIG.routesUrl = function(userId){
-  return CONFIG.base + "routes_" + String(userId).toLowerCase() + ".json";
+ // return CONFIG.base + "routes_" + String(userId).toLowerCase() + ".json";
+ return CONFIG.base + "routes.json";
 };
 
 var MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
