@@ -1618,6 +1618,7 @@ var routesData = null, routesErr = false, routesSyncedAt = null;
 var shoppingSyncedAt = null;
 var menuSel = "oggi", menuSyncedAt = null, menuUpdatedAt = null;
 var personalPeriod = "oggi";
+var personalTodoSyncedAt = null;
 
 var todoItems = [], todoConnected = false, todoBusy = false;
 var personalTodoItems = [];
@@ -2580,7 +2581,7 @@ function personalTodoConnect() {
 
     if (err || !data || !Array.isArray(data.items)) {
       personalTodoConnected = false;
-      setText($("personalTodoSyncLabel"), "non connesso");
+      setTimes($("personalTodoTimes"), null, personalTodoSyncedAt, true, 0, false);
       setText(
         $("personalTodoStatus"),
         "Sincronizzazione non disponibile: " + (err || "risposta non valida")
@@ -2591,7 +2592,8 @@ function personalTodoConnect() {
     personalTodoItems = data.items;
     personalTodoConnected = true;
 
-    setText($("personalTodoSyncLabel"), "sincronizzato");
+    personalTodoSyncedAt = new Date();
+	setTimes($("personalTodoTimes"), null, personalTodoSyncedAt, false, 0, false);
     setText($("personalTodoStatus"), "");
 
     renderPersonalTodo();
