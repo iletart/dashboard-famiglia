@@ -2263,23 +2263,58 @@ function renderPersonalGlobalTasks(){
 
   var box = $("personalGlobalTaskList");
   clear(box);
-  setText($("personalGlobalTaskTitle"), "Task giornalieri di " + userName(currentView));
+
   markSeg("personalGlobalTaskDays", personalGlobalTaskSel);
   updateSyncLabels();
+
+  var currentUser = null;
+
+  for(var i = 0; i < USERS.length; i++){
+    if(String(USERS[i].name).toLowerCase() === String(currentView).toLowerCase()){
+      currentUser = USERS[i];
+      break;
+    }
+  }
+
+  setText(
+    $("personalGlobalTaskTitle"),
+    "Task giornalieri di " + (currentUser ? userName(currentUser.id) : currentView)
+  );
+
+  if(!currentUser){
+    setText(box, "Utente non presente nella configurazione.");
+    return;
+  }
 
   if(!taskReady){
     setText(box, taskSyncError ? "Task non disponibili." : "Caricamento...");
     return;
   }
 
-  var items = taskDays[taskKey(personalGlobalTaskSel)] || [], count = 0;
+  var items = taskDays[taskKey(personalGlobalTaskSel)] || [];
+  var count = 0;
+
   for(var i = 0; i < items.length; i++){
-    if(Array.isArray(items[i].assignees) && items[i].assignees.indexOf(currentView) !== -1){
+    var assignees = items[i].assignees || [];
+    var assigned = false;
+
+    for(var j = 0; j < assignees.length; j++){
+      if(Number(assignees[j]) === Number(currentUser.id)){
+        assigned = true;
+        break;
+      }
+    }
+
+    if(assigned){
       box.appendChild(taskRowEl(i, items[i], true));
       count++;
     }
   }
-  if(!count){ box.appendChild(mk("div", "", "Nessuna attività assegnata.")); }
+
+  if(!count){
+    box.appendChild(mk("div", "", "Nessuna attività assegnata."));
+  }
+
   setText($("personalGlobalTaskStatus"), "");
   scheduleAlign();
 }
