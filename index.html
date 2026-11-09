@@ -529,6 +529,23 @@ input[type=checkbox] {
   padding:4px 8px;
 }
 
+#personalTodoList .todo-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+#personalTodoList .todo-row input[type="checkbox"] {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+#personalTodoList .todo-text.done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
 /* Menu scuola */
 
 #menuList ul {
@@ -1515,6 +1532,15 @@ body.k .trash-icon:after {
       <div id="todoList"></div>
       <div class="small" id="todoStatus"></div>
     </div>
+	
+	<div class="box" id="personalTodoBox">
+	  <div class="section-heading">
+		<h2 id="personalTodoTitle">TO-DO LIST PERSONALE</h2>
+		<div class="sync-label" id="personalTodoSyncLabel">non connesso</div>
+	  </div>
+	  <div id="personalTodoList"></div>
+	  <div class="small" id="personalTodoStatus"></div>
+	</div>
 
     <div class="box" id="schoolMenuBox">
       <div class="section-heading">
@@ -1594,6 +1620,10 @@ var menuSel = "oggi", menuSyncedAt = null, menuUpdatedAt = null;
 var personalPeriod = "oggi";
 
 var todoItems = [], todoConnected = false, todoBusy = false;
+var personalTodoItems = [];
+var personalTodoConnected = false;
+var personalTodoBusy = false;
+var personalTodoPollTimer = null;
 var menuInitialized = false, scheduleViewTimer = null;
 var todoSyncError = false, todoSyncedAt = null;
 var taskSel = "oggi", personalGlobalTaskSel = "oggi";
@@ -2535,6 +2565,126 @@ function schedulePoll(){
     }
     schedulePoll();
   }, 30000);
+}
+
+/* personal to-do */
+
+function personalTodoConnect() {
+  if (!authToken) return;
+
+  personalTodoBusy = true;
+  setText($("personalTodoStatus"), "Connessione in corso...");
+
+  api("GET", "?list=personal-todo", null, function(err, data) {
+    personalTodoBusy = false;
+
+    if (err || !data || !Array.isArray(data.items)) {
+      personalTodoConnected = false;
+      setText($("personalTodoSyncLabel"), "non connesso");
+      setText(
+        $("personalTodoStatus"),
+        "Sincronizzazione non disponibile: " + (err || "risposta non valida")
+      );
+      return;
+    }
+
+    personalTodoItems = data.items;
+    personalTodoConnected = true;
+
+    setText($("personalTodoSyncLabel"), "sincronizzato");
+    setText($("personalTodoStatus"), "");
+
+    renderPersonalTodo();
+
+    if (!personalTodoPollTimer) {
+      personalTodoPollTimer = setInterval(personalTodoPoll, 30000);
+    }
+  });
+}
+
+function renderPersonalTodo() {
+  var box = $("personalTodoList");
+  if (!box) return;
+
+  clear(box);
+
+  for (var i = 0; i < personalTodoItems.length; i++) {
+    (function(index) {
+      var item = personalTodoItems[index];
+
+      var row = mk("div", "todo-row");
+
+      var checkbox = mk("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = Boolean(item.done);
+      checkbox.disabled = personalTodoBusy;
+      checkbox.addEventListener("change", function() {
+        personalTodoChange(index);
+      });
+
+      var label = mk("span", "todo-text", item.text);
+      if (item.done) {
+        label.classList.add("done");
+      }
+
+      row.appendChild(checkbox);
+      row.appendChild(label);
+      box.appendChild(row);
+    })(i);
+  }
+
+  if (!personalTodoItems.length) {
+    box.appendChild(mk("div", "", "Nessuna attività assegnata."));
+  }
+}
+
+function personalTodoChange(index) {
+  if (!personalTodoConnected || personalTodoBusy) return;
+
+  personalTodoBusy = true;
+  renderPersonalTodo();
+  setText($("personalTodoStatus"), "Salvataggio...");
+
+  api(
+    "POST",
+    "?list=personal-todo",
+    {
+      action: "toggle",
+      index: index
+    },
+    function(err, data) {
+      personalTodoBusy = false;
+
+      if (err || !data || !Array.isArray(data.items)) {
+        setText(
+          $("personalTodoStatus"),
+          "Salvataggio non riuscito: " + (err || "errore")
+        );
+        renderPersonalTodo();
+        return;
+      }
+
+      personalTodoItems = data.items;
+      setText($("personalTodoSyncLabel"), "sincronizzato");
+      setText($("personalTodoStatus"), "");
+      renderPersonalTodo();
+    }
+  );
+}
+
+function personalTodoPoll() {
+  if (!personalTodoConnected || personalTodoBusy) return;
+
+  api("GET", "?list=personal-todo", null, function(err, data) {
+    if (!err && data && Array.isArray(data.items)) {
+      personalTodoItems = data.items;
+      setText($("personalTodoSyncLabel"), "sincronizzato");
+      setText($("personalTodoStatus"), "");
+      renderPersonalTodo();
+    } else {
+      setText($("personalTodoSyncLabel"), "sincronizzazione non disponibile");
+    }
+  });
 }
 
 /* ==================================================
@@ -5575,6 +5725,10 @@ function initBoxRefresh() {
       id: "todoBox",
       load: function () { todoConnect(); }
     },
+	{
+	  id: "personalTodoBox",
+	  load: function () { personalTodoConnect(); }
+	},
     {
       id: "schoolMenuBox",
       load: function () { loadMenu(); }
