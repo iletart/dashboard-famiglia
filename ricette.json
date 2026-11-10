@@ -1,140 +1,8 @@
 {
-  "generated_at": "2026-11-10T00:01:02.032296+01:00",
+  "generated_at": "2026-11-11T00:01:02.562255+01:00",
   "site": "U003128",
   "siteType": "02",
   "menus": {
-    "2026-11-09": {
-      "P02029": {
-        "dishCode": "P02029",
-        "name": "Passato di verdura con crostini con farina integrale biologica",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "MINESTRONE",
-            "quantity": "72",
-            "unit": "Gr"
-          },
-          {
-            "name": "CROSTINI CON FARINA INTEGRALE BIOLOGICA",
-            "quantity": "20",
-            "unit": "Gr"
-          },
-          {
-            "name": "PATATE",
-            "quantity": "8",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "4",
-            "unit": "Gr"
-          },
-          {
-            "name": "PARMIGIANO REGGIANO",
-            "quantity": "3",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P100196": {
-        "dishCode": "P100196",
-        "name": "Rustichelle di pollo biologico",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "SOVRACOSCE DI POLLO BIOLOGICO",
-            "quantity": "67",
-            "unit": "Gr"
-          },
-          {
-            "name": "PANE GRATTUGIATO",
-            "quantity": "8",
-            "unit": "Gr"
-          },
-          {
-            "name": "UOVA BIOLOGICHE",
-            "quantity": "5,3",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "3,5",
-            "unit": "Gr"
-          },
-          {
-            "name": "AMIDO DI MAIS",
-            "quantity": "2",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P00439": {
-        "dishCode": "P00439",
-        "name": "Erbette all'olio",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "ERBETTE",
-            "quantity": "80",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "2,8",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P00007": {
-        "dishCode": "P00007",
-        "name": "Frutta fresca di stagione",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "ARANCE",
-            "quantity": "143",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P01889": {
-        "dishCode": "P01889",
-        "name": "Pane tipo 0",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PANE",
-            "quantity": "30",
-            "unit": "Gr"
-          }
-        ]
-      }
-    },
     "2026-11-10": {
       "P102033": {
         "dishCode": "P102033",
@@ -407,6 +275,84 @@
         "ingredients": [
           {
             "name": "PANE",
+            "quantity": "30",
+            "unit": "Gr"
+          }
+        ]
+      }
+    },
+    "2026-11-12": {
+      "P01982": {
+        "dishCode": "P01982",
+        "name": "Pizza margherita",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PIZZA MARGHERITA",
+            "quantity": "133",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P101205": {
+        "dishCode": "P101205",
+        "name": "Insalata, mais e carote julienne",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "CAROTE",
+            "quantity": "11",
+            "unit": "Gr"
+          },
+          {
+            "name": "INSALATA",
+            "quantity": "11",
+            "unit": "Gr"
+          },
+          {
+            "name": "MAIS",
+            "quantity": "11",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "3,3",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P00005": {
+        "dishCode": "P00005",
+        "name": "Frutta fresca di stagione",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PERA",
+            "quantity": "145",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P01893": {
+        "dishCode": "P01893",
+        "name": "Pane di farina integrale biologica ",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PANE INTEGRALE BIOLOGICO",
             "quantity": "30",
             "unit": "Gr"
           }
