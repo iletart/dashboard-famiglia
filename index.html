@@ -5607,19 +5607,42 @@ function openUserManagement(){
     status.style.color = !enabled ? "#c00" : (hidden ? "#a66b00" : "#287a36");
     item.appendChild(status);
 	
-	var renameButton = mk("button", "", "RINOMINA");
+	var renameActions = mk("div", "", "");
+	renameActions.style.display = "flex";
+	renameActions.style.gap = "8px";
+	renameActions.style.width = "100%";
+	
+	var renameButton = mk("button", "", "RINOMINA UTENTE");
 	renameButton.type = "button";
-	renameButton.style.width = "100%";
-	renameButton.style.padding = "9px";
+	renameButton.style.flex = "1";
+	renameButton.style.padding = "9px 5px";
 	renameButton.style.backgroundColor = "#455a64";
-	renameButton.style.color = "#ffffff";
+	renameButton.style.color = "#fff";
 	renameButton.style.border = "1px solid #777";
-
+	
 	renameButton.onclick = function(){
-	  renameUser(user, renameButton);
+	renameUser(user, renameButton);
 	};
-
-	item.appendChild(renameButton);
+	
+	var renameOwnerButton = mk(
+	"button",
+	"",
+	"RINOMINA CODICE ATTIVITÀ"
+	);
+	renameOwnerButton.type = "button";
+	renameOwnerButton.style.flex = "1";
+	renameOwnerButton.style.padding = "9px 5px";
+	renameOwnerButton.style.backgroundColor = "#455a64";
+	renameOwnerButton.style.color = "#fff";
+	renameOwnerButton.style.border = "1px solid #777";
+	
+	renameOwnerButton.onclick = function(){
+	renameTaskOwner(user, renameOwnerButton);
+	};
+	
+	renameActions.appendChild(renameButton);
+	renameActions.appendChild(renameOwnerButton);
+	item.appendChild(renameActions);
 
     var actions = mk("div", "", "");
     actions.style.display = "flex";
@@ -5882,6 +5905,58 @@ function openUserManagement(){
       }
     );
   }
+  
+  function renameTaskOwner(user, button){
+	var oldCode = user.task_owner || "";
+	
+	var newCode = prompt(
+		"Inserisci il nuovo codice attività:",
+		oldCode
+	);
+	
+	if(newCode === null){
+		return;
+	}
+	
+	newCode = newCode.trim().toUpperCase();
+	
+	if(!newCode){
+		alert("Il codice attività non può essere vuoto.");
+		return;
+	}
+	
+	if(newCode.length > 30){
+		alert("Il codice attività può contenere al massimo 30 caratteri.");
+		return;
+	}
+	
+	if(newCode === oldCode){
+		return;
+	}
+	
+	button.disabled = true;
+	message.textContent = "Aggiornamento codice attività...";
+	
+	usersRequest(
+		"PUT",
+		"/users/" + user.id,
+		{ task_owner: newCode },
+		function(err, data){
+	
+			if(err || !data || !data.ok){
+				message.textContent =
+				err || (data && data.error) ||
+				"Aggiornamento non riuscito.";
+		
+				button.disabled = false;
+				return;
+			}
+		
+			message.textContent = "Codice attività aggiornato.";
+		
+			loadUsers();
+		});
+	}
 
   loadUsers();
 }
