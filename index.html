@@ -1683,6 +1683,10 @@ body.k .trash-icon:after {
     </div>
 
 	<div class="box" id="shoppingBox">
+		<div class="section-heading">
+		  <h2 data-box-title="shopping"></h2>
+		  <div class="sync-label" id="shoppingTimes"></div>
+		</div>
 	  <div id="shoppingList">Caricamento...</div>
 	</div>
   </div>
@@ -3499,6 +3503,7 @@ function waitForDeleteCommand(commandId, deleteButton) {
 function loadShoppingList() {
 
   var box = $("shoppingList");
+  var shoppingSyncLabel = $("shoppingTimes");
 
   function showShoppingError(message) {
     setText(box, message);
@@ -3562,13 +3567,10 @@ function loadShoppingList() {
     }
 
     shoppingSyncedAt = new Date();
-
-    clear(box);
-
-    var lists = data.lists || [];
 	
-	var shoppingSyncLabel = null;
-
+	clear(box);
+	var lists = data.lists || [];
+	
     if (!lists.length) {
       box.appendChild(
         mk("div", "", "Nessuna lista associata a questa vista.")
@@ -3589,28 +3591,6 @@ function loadShoppingList() {
           pending.push(list.items[j]);
         }
       }
-
-	  // --------------------------------------------------
-	  // TITOLO LISTA
-	  // --------------------------------------------------
-	  
-	  var listHeading = mk("div", "section-heading");
-	  
-	  var listTitle = mk(
-	  "h2",
-	  "",
-	  "LISTA SPESA (" + userName(list.account) + ")"
-	  );
-	  
-	  listHeading.appendChild(listTitle);
-	  
-	  if (!shoppingSyncLabel) {
-	  shoppingSyncLabel = mk("div", "sync-label");
-	  shoppingSyncLabel.id = "shoppingTimes";
-	  listHeading.appendChild(shoppingSyncLabel);
-	  }
-	  
-	  box.appendChild(listHeading);
 
       // --------------------------------------------------
       // TABS
