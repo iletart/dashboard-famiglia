@@ -1,48 +1,34 @@
 {
-  "day": "martedi",
+  "day": "mercoledi",
   "routes": {
     "casa_lavoro": {
       "id": "casa_lavoro",
       "from": "Casa",
       "to": "Lavoro",
       "mode": "arrival",
-      "target_time": "08:00",
-      "departure": "2026-11-10T07:36:34+01:00",
-      "arrival": "2026-11-10T08:00:00+01:00",
-      "duration_minutes": 18,
+      "target_time": "08:10",
+      "departure": "2026-11-11T07:48:47+01:00",
+      "arrival": "2026-11-11T08:10:00+01:00",
+      "duration_minutes": 16,
       "static_duration_minutes": 14,
       "buffer_minutes": 5,
       "distance_meters": 10717,
-      "calculated_at": "2026-11-10T07:00:02.489766+01:00"
+      "calculated_at": "2026-11-11T00:01:02.575085+01:00"
     },
-    "lavoro_asilo": {
-      "id": "lavoro_asilo",
+    "lavoro_campo": {
+      "id": "lavoro_campo",
       "from": "Lavoro",
-      "to": "Asilo",
+      "to": "Campo sportivo",
       "mode": "arrival",
-      "target_time": "17:15",
-      "departure": "2026-11-10T16:53:46+01:00",
-      "arrival": "2026-11-10T17:15:00+01:00",
-      "duration_minutes": 16,
-      "static_duration_minutes": 11,
+      "target_time": "17:35",
+      "departure": "2026-11-11T17:09:59+01:00",
+      "arrival": "2026-11-11T17:35:00+01:00",
+      "duration_minutes": 20,
+      "static_duration_minutes": 18,
       "buffer_minutes": 5,
-      "distance_meters": 9927,
-      "calculated_at": "2026-11-10T07:30:02.867805+01:00"
-    },
-    "asilo_piscina": {
-      "id": "asilo_piscina",
-      "from": "Asilo",
-      "to": "Piscina",
-      "mode": "arrival",
-      "target_time": "17:45",
-      "departure": "2026-11-10T17:30:36+01:00",
-      "arrival": "2026-11-10T17:45:00+01:00",
-      "duration_minutes": 9,
-      "static_duration_minutes": 8,
-      "buffer_minutes": 5,
-      "distance_meters": 4798,
-      "calculated_at": "2026-11-10T07:30:02.867805+01:00"
+      "distance_meters": 8835,
+      "calculated_at": "2026-11-11T00:01:02.575085+01:00"
     }
   },
-  "generated_at": "2026-11-10T07:30:02.867805+01:00"
+  "generated_at": "2026-11-11T00:01:02.575085+01:00"
 }
