@@ -1765,6 +1765,8 @@ var DASHBOARD_API_URL = "https://dashboard-api.iletarta-633.workers.dev";
 var SHOPPING_API_URL = "https://shopping-api.iletarta-633.workers.dev";
 
 var authToken = "";
+var authUserType = "";
+var authUserName = "";
 var authProfile = "";
 var authSessionId = "";
 
@@ -6499,11 +6501,16 @@ function loadAuthorizedConfig(callback){
 }
 
 function clearAuthStorage(){
-  try {
-    localStorage.removeItem("dashboardAuthToken");
-    localStorage.removeItem("dashboardAuthProfile");
-    localStorage.removeItem("dashboardAuthSessionId");
-  } catch(e){}
+	try {
+		localStorage.removeItem("dashboardAuthToken");
+		localStorage.removeItem("dashboardAuthProfile");
+		localStorage.removeItem("dashboardAuthSessionId");
+		localStorage.removeItem("dashboardAuthUserType");
+		localStorage.removeItem("dashboardAuthUserName");
+	} catch(e){}
+
+	authUserType = "";
+	authUserName = "";
 }
 
 function showLoggedOut(message){
@@ -6776,13 +6783,17 @@ function authLogin(userId, pin){
 
     authToken = data.token;
     authProfile = String(data.user_id);
+	authUserType = String(data.user_type || "");
+	authUserName = String(data.user_name || "");
     updateLoggedUser();
     authSessionId = data.session_id || "";
 
     try {
-      localStorage.setItem("dashboardAuthToken", authToken);
-      localStorage.setItem("dashboardAuthProfile", authProfile);
-      localStorage.setItem("dashboardAuthSessionId", authSessionId);
+		localStorage.setItem("dashboardAuthToken", authToken);
+		localStorage.setItem("dashboardAuthProfile", authProfile);
+		localStorage.setItem("dashboardAuthSessionId", authSessionId);
+		localStorage.setItem("dashboardAuthUserType", authUserType);
+		localStorage.setItem("dashboardAuthUserName", authUserName);
     } catch(e){}
 
     var panel = $("viewMenuPanel");
@@ -6838,6 +6849,8 @@ function restoreAuthSessionAfterProfiles(){
     authToken = localStorage.getItem("dashboardAuthToken") || "";
     authProfile = localStorage.getItem("dashboardAuthProfile") || "";
     authSessionId = localStorage.getItem("dashboardAuthSessionId") || "";
+	authUserType = localStorage.getItem("dashboardAuthUserType") || "";
+	authUserName = localStorage.getItem("dashboardAuthUserName") || "";
   } catch(e){
     authToken = "";
     authProfile = "";
@@ -6869,6 +6882,8 @@ function restoreAuthSessionAfterProfiles(){
     authToken = localStorage.getItem("dashboardAuthToken") || authToken;
     authProfile = String(data.user_id || "");
     authSessionId = data.session_id || "";
+	authUserType = String(data.user_type || "");
+	authUserName = String(data.user_name || "");
 
     updateLoggedUser();
     startDashboard();
