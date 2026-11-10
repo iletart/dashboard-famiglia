@@ -5447,9 +5447,7 @@ function renderViewMenu(){
     authToken &&
     AUTH_PERMISSIONS &&
     typeof AUTH_PERMISSIONS.indexOf === "function" &&
-    AUTH_PERMISSIONS.indexOf("users.manage") !== -1 &&
-    currentViewConfig &&
-    currentViewConfig.view_type === "shared"
+    AUTH_PERMISSIONS.indexOf("users.manage") !== -1
   ){
     var manageUsersButton = mk("button", "", "GESTIONE UTENTI");
     manageUsersButton.type = "button";
