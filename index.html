@@ -1796,6 +1796,7 @@ var TASK_OFF = {ieri: -1, oggi: 0, domani: 1};
 var USERS = [];
 var AUTH_PROFILES = [];
 var DASHBOARD_VIEWS = [];
+var DASHBOARD_BOXES = [];
 var currentView = null;
 var viewManualUntil = 0;
 var AUTH_PERMISSIONS = [];
@@ -5699,6 +5700,22 @@ function renderViewMenu(){
 		}
   }
 
+  // CONFIGURAZIONE LAYOUT
+  if(authToken){
+  	var layoutButton = mk("button", "", "CONFIGURAZIONE LAYOUT");
+  	layoutButton.type = "button";
+  
+  	layoutButton.onclick = function(ev){
+  		if(ev){
+  			ev.preventDefault();
+  			ev.stopPropagation();
+  		}
+  
+  		openLayoutManagement();
+  	};
+  
+  	panel.appendChild(layoutButton);
+  }
 
   // GESTIONE UTENTI: visibile in base ai permessi
   var currentViewConfig = findItem(DASHBOARD_VIEWS, function(v){
@@ -6477,12 +6494,17 @@ function loadAuthorizedConfig(callback){
 
     if(x.status !== 200 || !data || !data.ok ||
        !Array.isArray(data.views) ||
-       !Array.isArray(data.users)){
+       !Array.isArray(data.users) ||
+	   !Array.isArray(data.boxes)){
       callback("Configurazione non disponibile");
       return;
     }
 
     DASHBOARD_VIEWS = data.views;
+	
+	DASHBOARD_BOXES = data.boxes.filter(function(box){
+		return box && box.id && box.element_id && box.view_type;
+	});
 	
 	AUTH_PERMISSIONS = Array.isArray(data.permissions)
 	  ? data.permissions
