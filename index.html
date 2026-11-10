@@ -5587,6 +5587,14 @@ function updateLoggedUser(){
 function initViewMenu(){
   var toggle = $("viewMenuToggle");
   var panel = $("viewMenuPanel");
+  
+    if(!panel._clickPropagationInitialized){
+      panel.addEventListener("click", function(ev){
+        ev.stopPropagation();
+      });
+  
+      panel._clickPropagationInitialized = true;
+    }
 
   if(!menuInitialized){
     toggle.onclick = function(){
