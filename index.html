@@ -216,12 +216,13 @@ input[type=checkbox] {
   opacity: 0.5;
 }
 
-/* login button */
-.family-view-button {
-  background-color: #dcefe3;
-  color: #245c38;
-  font-weight: bold;
-  border-color: #9bc9a9;
+/* Family e Users button */
+
+.family-view-button,
+.user-rename-button {
+  background-color: #455a64;
+  color: #fff;
+  border: 1px solid #777;
 }
 
 /* ==================================================
@@ -5419,9 +5420,15 @@ function renderViewMenu(){
 
   // ELENCO PROFILI
   function addButton(id, label){
+
+	
 	var b = mk("button", "", label);
 	b.type = "button";
 	b.setAttribute("data-view", id);
+
+    if(view && view.view_type === "shared"){
+      b.classList.add("family-view-button");
+    }
 
 	var view = findItem(DASHBOARD_VIEWS, function(v){
 	  return v.id === id;
@@ -5451,30 +5458,46 @@ function renderViewMenu(){
 
 
 	if(!authToken){
-	  for(var i = 0; i < AUTH_PROFILES.length; i++){
-		addButton(
-		  AUTH_PROFILES[i].user_id,
-		  AUTH_PROFILES[i].name.charAt(0).toUpperCase() +
-		  AUTH_PROFILES[i].name.slice(1).toLowerCase()
-		);
-	  }
+		var sortedProfiles = AUTH_PROFILES.slice().sort(function(a, b){
+		  if(a.type === "family") return -1;
+		  if(b.type === "family") return 1;
+
+		  return a.name.localeCompare(b.name, "it", {
+			sensitivity: "base"
+		  });
+		});
+
+		for(var i = 0; i < sortedProfiles.length; i++){
+		  var profile = sortedProfiles[i];
+
+		  addButton(
+			profile.user_id,
+			profile.name.charAt(0).toUpperCase() +
+			profile.name.slice(1).toLowerCase()
+		  );
+
+		  if(profile.type === "family"){
+			var buttons = panel.querySelectorAll("button[data-view]");
+			buttons[buttons.length - 1].classList.add("family-view-button");
+		  }
+		}
 	} else {
-	  var sortedViews = DASHBOARD_VIEWS.slice().sort(function(a, b){
-	  if(a.view_type === "shared") return -1;
-	  if(b.view_type === "shared") return 1;
-	  
-	  return a.title.localeCompare(b.title, "it", {
-	  	sensitivity: "base"
-	  });
-	  });
-	  
-	  for(var i = 0; i < sortedViews.length; i++){
-	  addButton(
-	  	sortedViews[i].id,
-	  	sortedViews[i].title.charAt(0).toUpperCase() +
-	  	sortedViews[i].title.slice(1).toLowerCase()
-	  );
-	  }
+		var sortedViews = DASHBOARD_VIEWS.slice().sort(function(a, b){
+		if(a.view_type === "shared") return -1;
+		if(b.view_type === "shared") return 1;
+
+		return a.title.localeCompare(b.title, "it", {
+			sensitivity: "base"
+		});
+		});
+
+		for(var i = 0; i < sortedViews.length; i++){
+			addButton(
+			sortedViews[i].id,
+			sortedViews[i].title.charAt(0).toUpperCase() +
+			sortedViews[i].title.slice(1).toLowerCase()
+			);
+		}
   }
 
 
@@ -5631,9 +5654,7 @@ function openUserManagement(){
 	renameButton.type = "button";
 	renameButton.style.flex = "1";
 	renameButton.style.padding = "9px 5px";
-	renameButton.style.backgroundColor = "#455a64";
-	renameButton.style.color = "#fff";
-	renameButton.style.border = "1px solid #777";
+	renameButton.classList.add("user-rename-button");
 	
 	renameButton.onclick = function(){
 	renameUser(user, renameButton);
@@ -5647,9 +5668,7 @@ function openUserManagement(){
 	renameOwnerButton.type = "button";
 	renameOwnerButton.style.flex = "1";
 	renameOwnerButton.style.padding = "9px 5px";
-	renameOwnerButton.style.backgroundColor = "#455a64";
-	renameOwnerButton.style.color = "#fff";
-	renameOwnerButton.style.border = "1px solid #777";
+	renameOwnerButton.classList.add("user-rename-button");
 	
 	renameOwnerButton.onclick = function(){
 	renameTaskOwner(user, renameOwnerButton);
