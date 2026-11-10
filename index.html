@@ -4972,22 +4972,24 @@ function getScheduledView(){
   var r = toRome(Date.now());
   var m = r.getUTCHours() * 60 + r.getUTCMinutes();
 
-  for(var i = 0; i < USERS.length; i++){
-    var s = USERS[i];
-    if(!s.schedule_start || !s.schedule_end){ continue; }
+  for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
+    var v = DASHBOARD_VIEWS[i];
 
-    var a = toMin(s.schedule_start), b = toMin(s.schedule_end);
+    if(!v.schedule_start || !v.schedule_end){ continue; }
+
+    var a = toMin(v.schedule_start);
+    var b = toMin(v.schedule_end);
 
     if(a < b ? (m >= a && m < b) : (m >= a || m < b)){
-      return s.view_id;
+      return v.id;
     }
   }
 
-  var sharedView = findItem(DASHBOARD_VIEWS, function(v){
+  var defaultView = findItem(DASHBOARD_VIEWS, function(v){
     return v.view_type === "shared";
   });
 
-  return sharedView ? sharedView.id : null;
+  return defaultView ? defaultView.id : null;
 }
 
 function checkScheduledView(){
@@ -5962,7 +5964,6 @@ function openUserManagement(){
 }
 
 
-
 function updateLoggedUser(){
   var el = $("loggedUser");
 
@@ -5973,7 +5974,15 @@ function updateLoggedUser(){
     return;
   }
 
-  el.textContent = "Utente collegato: " + userName(authProfile);
+  var user = userById(authProfile);
+
+  if(!user){
+    el.textContent = "Utente collegato: " + userName(authProfile);
+    return;
+  }
+
+  el.textContent = "Utente collegato: " + user.name +
+    (user.type ? " (" + user.type + ")" : "");
 }
 
 function initViewMenu(){
