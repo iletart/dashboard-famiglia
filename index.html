@@ -5629,12 +5629,6 @@ function openUserManagement(){
     status.style.color = !enabled ? "#c00" : (hidden ? "#a66b00" : "#287a36");
     item.appendChild(status);
 
-	renameButton.onclick = function(){
-	  renameUser(user, renameButton);
-	};
-
-	item.appendChild(renameButton);
-
     var actions = mk("div", "", "");
     actions.style.display = "flex";
     actions.style.gap = "8px";
