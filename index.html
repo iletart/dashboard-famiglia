@@ -1528,44 +1528,50 @@ body.k .trash-icon:after {
   }
 }
 
-/* LOGIN NESTPLAN */
+/* ===== PAGINA LOGIN NESTPLAN ===== */
 
-.welcome-login {
-  max-width: 390px;
-  margin: 30px auto;
-  padding: 26px;
+#loginPage {
+  max-width: 430px;
+  margin: 55px auto;
+  padding: 20px;
+}
+
+.login-card {
   background: #fff;
   border: 1px solid #dce4e8;
   border-radius: 18px;
-  box-shadow: 0 8px 30px rgba(38,50,56,.08);
-  text-align: left;
+  padding: 32px;
+  box-shadow: 0 8px 30px rgba(38,50,56,.09);
+  text-align: center;
 }
 
-.welcome-login h2 {
-  text-align: center;
+.login-logo {
   color: #3985a8;
-  margin: 0 0 8px;
+  font-size: 2em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
 }
 
-.welcome-login p {
-  text-align: center;
+.login-subtitle {
   color: #607d8b;
-  margin-bottom: 22px;
+  margin-bottom: 28px;
 }
 
-.welcome-login select,
-.welcome-login input {
+.login-card select,
+.login-card input {
+  display: block;
   width: 100%;
   box-sizing: border-box;
-  padding: 13px;
-  margin-bottom: 14px;
+  padding: 14px;
+  margin-bottom: 15px;
   border: 1px solid #cbd7dd;
   border-radius: 9px;
-  font-size: 17px;
   background: #fff;
+  font-size: 16px;
 }
 
-.welcome-login button {
+.login-card button {
   width: 100%;
   padding: 14px;
   border: 0;
@@ -1577,19 +1583,25 @@ body.k .trash-icon:after {
   cursor: pointer;
 }
 
-.welcome-login button:disabled {
+.login-card button.login-back {
+  margin-top: 10px;
+  background: #eceff1;
+  color: #455a64;
+}
+
+.login-card button:disabled {
   opacity: .6;
 }
 
-.welcome-login-error {
-  color: #c62828;
-  text-align: center;
-  min-height: 20px;
-  margin-bottom: 10px;
-}
+@media (max-width: 600px) {
+  #loginPage {
+    margin: 25px auto;
+    padding: 15px;
+  }
 
-.welcome-actions {
-  display: none;
+  .login-card {
+    padding: 24px 18px;
+  }
 }
 
 </style>
@@ -1643,32 +1655,6 @@ body.k .trash-icon:after {
     </div>
 
   </div>
-  
-  <div class="welcome-login">
-  
-    <h2>Bentornati!</h2>
-    <p>Accedi al tuo spazio familiare</p>
-  
-    <select id="welcomeProfile">
-      <option value="">Seleziona il tuo profilo</option>
-    </select>
-  
-    <input
-      type="password"
-      id="welcomePin"
-      inputmode="numeric"
-      autocomplete="current-password"
-      maxlength="12"
-      placeholder="Inserisci il PIN"
-    >
-  
-    <div class="welcome-login-error" id="welcomeLoginError"></div>
-  
-    <button type="button" id="welcomeLoginSubmit">
-      ACCEDI
-    </button>
-  
-  </div>
 
   <div class="welcome-actions">
     <button type="button" id="welcomeLoginButton">ACCEDI</button>
@@ -1679,6 +1665,43 @@ body.k .trash-icon:after {
 
   <div class="welcome-footer">
     Un unico spazio. Tutta la famiglia.
+  </div>
+
+</div>
+
+<!-- ===== PAGINA LOGIN ===== -->
+
+<div id="loginPage" hidden>
+
+  <div class="login-card">
+
+    <div class="login-logo">NestPlan</div>
+
+    <div class="login-subtitle">
+      Accedi al tuo spazio familiare
+    </div>
+
+    <select id="loginProfile">
+      <option value="">Seleziona il tuo profilo</option>
+    </select>
+
+    <input
+      type="password"
+      id="loginPin"
+      inputmode="numeric"
+      autocomplete="current-password"
+      maxlength="12"
+      placeholder="Inserisci il PIN"
+    >
+
+    <button type="button" id="loginSubmit">
+      ACCEDI
+    </button>
+
+    <button type="button" class="login-back" id="loginBack">
+      INDIETRO
+    </button>
+
   </div>
 
 </div>
@@ -6861,14 +6884,10 @@ function updateLoggedUser() {
   el.textContent = `Utente collegato: ${user.name} (${typeLabel})`;
 }
 
-function renderWelcomeLogin(){
+function openLoginPage(){
 
-  var select = $("welcomeProfile");
-  var pin = $("welcomePin");
-  var button = $("welcomeLoginSubmit");
-  var error = $("welcomeLoginError");
-
-  if(!select || !pin || !button){ return; }
+  var select = $("loginProfile");
+  var pin = $("loginPin");
 
   clear(select);
 
@@ -6888,41 +6907,45 @@ function renderWelcomeLogin(){
     select.appendChild(option);
   }
 
-  function submit(){
+  pin.value = "";
 
-    var userId = select.value;
-    var value = pin.value.trim();
+  setHidden($("welcomePage"), true);
+  setHidden($("loginPage"), false);
+  setHidden($("head"), true);
 
-    error.textContent = "";
+  select.focus();
+}
+
+function initLoginPage(){
+
+  $("loginSubmit").onclick = function(){
+
+    var userId = $("loginProfile").value;
+    var pin = $("loginPin").value.trim();
 
     if(!userId){
-      error.textContent = "Seleziona un profilo.";
+      alert("Seleziona il tuo profilo.");
       return;
     }
 
-    if(!/^\d{6,12}$/.test(value)){
-      error.textContent = "Inserisci un PIN da 6 a 12 cifre.";
+    if(!/^\d{6,12}$/.test(pin)){
+      alert("Inserisci un PIN da 6 a 12 cifre.");
       return;
     }
 
-    button.disabled = true;
-    button.textContent = "ACCESSO IN CORSO...";
+    authLogin(Number(userId), pin);
+  };
 
-    authLogin(Number(userId), value);
-
-    setTimeout(function(){
-      button.disabled = false;
-      button.textContent = "ACCEDI";
-    }, 3000);
-  }
-
-  button.onclick = submit;
-
-  pin.onkeydown = function(ev){
+  $("loginPin").onkeydown = function(ev){
     if(ev.key === "Enter"){
       ev.preventDefault();
-      submit();
+      $("loginSubmit").click();
     }
+  };
+
+  $("loginBack").onclick = function(){
+    setHidden($("loginPage"), true);
+    setHidden($("welcomePage"), false);
   };
 }
 
@@ -6970,18 +6993,14 @@ function initViewMenu(){
 	var welcomeLoginButton = $("welcomeLoginButton");
 
 	if(welcomeLoginButton && !welcomeLoginButton._initialized){
-	welcomeLoginButton.onclick = function(){
-		setHidden($("welcomePage"), true);
-		setHidden($("head"), false);
 
-		setHidden(panel, false);
-		toggle.setAttribute("aria-expanded", "true");
+	  welcomeLoginButton.onclick = function(){
+		openLoginPage();
+	  };
 
-		renderViewMenu();
-	};
-
-	welcomeLoginButton._initialized = true;
+	  welcomeLoginButton._initialized = true;
 	}
+	
 	renderViewMenu();
 }
 
@@ -7283,6 +7302,7 @@ function showLoggedOut(message){
 
 	clearAuthStorage();
 	setHidden($("welcomePage"), false);
+	setHidden($("loginPage"), true);
 	setHidden($("head"), true);
 	setHidden($("dashboardContent"), true);
 	setHidden($("personalView"), true);
@@ -7602,7 +7622,6 @@ function restoreAuthSession(){
     }
 
     restoreAuthSessionAfterProfiles();
-	renderWelcomeLogin();
   });
 }
 
@@ -7620,8 +7639,8 @@ function restoreAuthSessionAfterProfiles(){
   }
 
   if(!authToken){
-    renderViewMenu();
-    return;
+      showLoggedOut();
+      return;
   }
 
   authRequest("POST", "/session/verify", null, function(err, data){
@@ -7658,6 +7677,7 @@ function restoreAuthSessionAfterProfiles(){
 safe(startClock);
 safe(updateSyncLabels);
 safe(initViewMenu);
+safe(initLoginPage);
 restoreAuthSession();
 
 </script>
