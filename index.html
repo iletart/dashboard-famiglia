@@ -2572,7 +2572,7 @@ function schedulePoll(){
 /* personal to-do */
 
 function personalTodoConnect() {
-  if (!authToken) return;
+  if (!authToken || !viewHasBox(currentView, "personalTodo")) return;
 
   personalTodoBusy = true;
   setText($("personalTodoStatus"), "Connessione in corso...");
@@ -2674,7 +2674,11 @@ function personalTodoChange(index) {
 }
 
 function personalTodoPoll() {
-  if (!personalTodoConnected || personalTodoBusy) return;
+  if (
+    !personalTodoConnected ||
+    personalTodoBusy ||
+    !viewHasBox(currentView, "personalTodo")
+  ) return;
 
   api("GET", "?list=personal-todo&view=" + encodeURIComponent(currentView), null, function(err, data) {
     if (!err && data && Array.isArray(data.items)) {
