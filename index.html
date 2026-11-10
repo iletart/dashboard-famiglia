@@ -5611,44 +5611,52 @@ function openUserManagement(){
     actions.style.display = "flex";
     actions.style.gap = "8px";
     actions.style.width = "100%";
-
-    var enabledButton = mk(
-      "button",
-      "",
-      enabled ? "DISATTIVA" : "ATTIVA"
-    );
-    enabledButton.type = "button";
-    enabledButton.style.flex = "1";
-    enabledButton.style.padding = "9px 5px";
-
-    enabledButton.onclick = function(){
-      updateUserStatus(
-        user,
-        "enabled",
-        !enabled,
-        enabledButton,
-        hiddenButton
-      );
-    };
-
-    var hiddenButton = mk(
-      "button",
-      "",
-      hidden ? "MOSTRA" : "NASCONDI"
-    );
-    hiddenButton.type = "button";
-    hiddenButton.style.flex = "1";
-    hiddenButton.style.padding = "9px 5px";
-
-    hiddenButton.onclick = function(){
-      updateUserStatus(
-        user,
-        "hidden",
-        !hidden,
-        enabledButton,
-        hiddenButton
-      );
-    };
+	var enabledButton = mk(
+	"button",
+	"",
+	enabled ? "DISATTIVA" : "ATTIVA"
+	);
+	enabledButton.type = "button";
+	enabledButton.style.flex = "1";
+	enabledButton.style.padding = "9px 5px";
+	enabledButton.style.backgroundColor =
+	enabled ? "#c62828" : "#2e7d32";
+	enabledButton.style.color = "#ffffff";
+	enabledButton.style.border = "1px solid #777";
+	
+	enabledButton.onclick = function(){
+		updateUserStatus(
+			user,
+			"enabled",
+			!enabled,
+			enabledButton,
+			hiddenButton
+		);
+	};
+	
+	var hiddenButton = mk(
+		"button",
+		"",
+		hidden ? "MOSTRA" : "NASCONDI"
+	);
+	
+	hiddenButton.type = "button";
+	hiddenButton.style.flex = "1";
+	hiddenButton.style.padding = "9px 5px";
+	hiddenButton.style.backgroundColor =
+	hidden ? "#2e7d32" : "#ef8f00";
+	hiddenButton.style.color = "#ffffff";
+	hiddenButton.style.border = "1px solid #777";
+	
+	hiddenButton.onclick = function(){
+		updateUserStatus(
+			user,
+			"hidden",
+			!hidden,
+			enabledButton,
+			hiddenButton
+		);
+	};
 
     actions.appendChild(enabledButton);
     actions.appendChild(hiddenButton);
