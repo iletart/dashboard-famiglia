@@ -7068,6 +7068,8 @@ function loadAuthorizedConfig(callback){
 		return box && box.id && box.element_id && box.view_type;
 	});
 	
+	updateDashboardBoxTitles();
+	
 	AUTH_PERMISSIONS = Array.isArray(data.permissions)
 	  ? data.permissions
 	  : [];
@@ -7082,6 +7084,24 @@ function loadAuthorizedConfig(callback){
   x.onerror = function(){ callback("Errore di connessione"); };
   x.ontimeout = function(){ callback("Timeout"); };
   x.send(null);
+}
+
+
+function updateDashboardBoxTitles(){
+	if(!Array.isArray(DASHBOARD_BOXES)){
+		return;
+	}
+
+	for(var i = 0; i < DASHBOARD_BOXES.length; i++){
+		var box = DASHBOARD_BOXES[i];
+		var title = document.getElementById(
+			box.element_id.replace(/Box$/, "Title")
+		);
+
+		if(title){
+			title.textContent = box.title;
+		}
+	}
 }
 
 function clearAuthStorage(){
