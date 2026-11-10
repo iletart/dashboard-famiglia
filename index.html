@@ -3135,8 +3135,6 @@ function waitForShoppingUpdate(
   var url = SHOPPING_API_URL + "/shopping?view_id=" +
     encodeURIComponent(currentView);
 	
-console.log("SHOPPING view_id:", currentView);
-	
   check.open("GET", url, true);
   check.setRequestHeader("Authorization", "Bearer " + authToken);
   check.timeout = 20000;
@@ -3311,8 +3309,6 @@ function waitForDeleteCommand(commandId, deleteButton) {
 
 
 function loadShoppingList() {
-
-  console.log("SHOPPING: funzione avviata");
 
   var box = $("shoppingList");
 
@@ -5134,13 +5130,6 @@ function setView(view, manual){
 
   buildLayout(view);
 
-  console.log("DEBUG PERSONAL TODO", {
-    view: view,
-    hasBox: viewHasBox(view, "personalTodo"),
-    boxExists: !!$("personalTodoBox"),
-    authenticated: !!authToken
-  });
-
   if (
     viewHasBox(view, "personalTodo") &&
     $("personalTodoBox")
@@ -6622,11 +6611,6 @@ function restoreAuthSessionAfterProfiles(){
     authToken = localStorage.getItem("dashboardAuthToken") || authToken;
     authProfile = String(data.user_id || "");
     authSessionId = data.session_id || "";
-
-console.log("DEBUG UTENTE", {
-  authProfile: authProfile,
-  AUTH_PROFILES: AUTH_PROFILES
-});
 
     updateLoggedUser();
     startDashboard();
