@@ -5681,8 +5681,30 @@ function openUserManagement(){
         return;
       }
 
-      message.textContent = "Utente aggiornato.";
-      loadUsers();
+	  message.textContent = "Utente aggiornato.";
+	  
+	  loadAuthorizedConfig(function(configErr){
+	  
+	  if(configErr){
+	  	message.textContent =
+	  	"Utente aggiornato, ma aggiornamento della configurazione non riuscito.";
+	  	loadUsers();
+	  	return;
+	  }
+	  
+	  // Se la vista corrente non è più autorizzata,
+	  // passa alla prima vista disponibile.
+	  if(!findItem(DASHBOARD_VIEWS, function(v){
+	  	return v.id === currentView;
+	  })){
+	  	if(DASHBOARD_VIEWS.length){
+	  	setView(DASHBOARD_VIEWS[0].id, false);
+	  	}
+	  }
+	  
+	  loadUsers();
+	  });
+
     });
   }
 
