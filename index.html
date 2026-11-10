@@ -5323,10 +5323,10 @@ function renderViewMenu(){
   panel.style.maxWidth = "";
   panel.style.boxSizing = "";
 
-  var pendingProfile = !authToken ? panel._pendingLoginProfile : null;
+  var pendingUserId = !authToken ? panel._pendingLoginUserId : null;
 
   // SCHERMATA DI ACCESSO
-  if(pendingProfile){
+  if(pendingUserId){
     var box = mk("div", "pin-login-panel", "");
     box.style.padding = "12px";
     box.style.gap = "8px";
@@ -5337,7 +5337,7 @@ function renderViewMenu(){
     box.style.boxSizing = "border-box";
 
 	var profile = findItem(AUTH_PROFILES, function(u){
-	  return u.profile_key === pendingProfile;
+	  return Number(u.user_id) === Number(pendingUserId);
 	});
 
 	var title = mk(
@@ -5383,7 +5383,7 @@ function renderViewMenu(){
     cancelButton.style.width = "100%";
     cancelButton.style.padding = "12px";
     cancelButton.onclick = function(){
-      panel._pendingLoginProfile = null;
+      panel._pendingLoginUserId = null;
       renderViewMenu();
     };
 
@@ -5398,7 +5398,7 @@ function renderViewMenu(){
 
       error.textContent = "";
       loginButton.disabled = true;
-      authLogin(pendingProfile, pin);
+      authLogin(Number(pendingUserId), pin);
     }
 
     loginButton.onclick = submitPin;
@@ -5434,7 +5434,7 @@ function renderViewMenu(){
       }
 
       if(!authToken){
-        panel._pendingLoginProfile = id;
+        panel._pendingLoginUserId = id;
         renderViewMenu();
       } else {
         personalPeriod = "oggi";
@@ -5446,15 +5446,15 @@ function renderViewMenu(){
   }
 
 
-  if(!authToken){
-    for(var i = 0; i < AUTH_PROFILES.length; i++){
+	if(!authToken){
+	  for(var i = 0; i < AUTH_PROFILES.length; i++){
 		addButton(
-		  AUTH_PROFILES[i].profile_key,
+		  AUTH_PROFILES[i].user_id,
 		  AUTH_PROFILES[i].name.charAt(0).toUpperCase() +
 		  AUTH_PROFILES[i].name.slice(1).toLowerCase()
 		);
-    }
-  } else {
+	  }
+	} else {
     for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
 		addButton(
 		  DASHBOARD_VIEWS[i].id,
@@ -6506,8 +6506,10 @@ function startDashboard(preferredView){
   });
 }
 
-function authLogin(profile, pin){
-  if(!profile){ return; }
+function authLogin(userId, pin){
+  userId = Number(userId);
+
+  if(!Number.isInteger(userId) || userId <= 0){ return; }
 
   pin = String(pin || "").trim();
 
@@ -6517,7 +6519,7 @@ function authLogin(profile, pin){
   }
 
   authRequest("POST", "/login", {
-    profile: profile,
+    user_id: userId,
     pin: pin
   }, function(err, data){
     if(err || !data || !data.ok){
@@ -6526,8 +6528,8 @@ function authLogin(profile, pin){
     }
 
     authToken = data.token;
-    authProfile = data.profile;
-	updateLoggedUser();
+    authProfile = String(data.user_id);
+    updateLoggedUser();
     authSessionId = data.session_id || "";
 
     try {
@@ -6537,7 +6539,7 @@ function authLogin(profile, pin){
     } catch(e){}
 
     var panel = $("viewMenuPanel");
-    if(panel){ panel._pendingLoginProfile = null; }
+    if(panel){ panel._pendingLoginUserId = null; }
 
     startDashboard();
   });
@@ -6618,7 +6620,7 @@ function restoreAuthSessionAfterProfiles(){
     }
 
     authToken = localStorage.getItem("dashboardAuthToken") || authToken;
-    authProfile = data.profile;
+    authProfile = String(data.user_id || "");
     authSessionId = data.session_id || "";
 
     updateLoggedUser();
