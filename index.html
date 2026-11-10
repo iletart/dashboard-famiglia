@@ -216,6 +216,14 @@ input[type=checkbox] {
   opacity: 0.5;
 }
 
+/* login button */
+.family-view-button {
+  background-color: #dcefe3;
+  color: #245c38;
+  font-weight: bold;
+  border-color: #9bc9a9;
+}
+
 /* ==================================================
    3. HEADER
    ================================================== */
@@ -5411,9 +5419,17 @@ function renderViewMenu(){
 
   // ELENCO PROFILI
   function addButton(id, label){
-    var b = mk("button", "", label);
-    b.type = "button";
-    b.setAttribute("data-view", id);
+	var b = mk("button", "", label);
+	b.type = "button";
+	b.setAttribute("data-view", id);
+
+	var view = findItem(DASHBOARD_VIEWS, function(v){
+	  return v.id === id;
+	});
+
+	if(view && view.view_type === "shared"){
+	  b.classList.add("family-view-button");
+	}
 
     b.onclick = function(ev){
       if(ev){
@@ -5443,13 +5459,22 @@ function renderViewMenu(){
 		);
 	  }
 	} else {
-    for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
-		addButton(
-		  DASHBOARD_VIEWS[i].id,
-		  DASHBOARD_VIEWS[i].title.charAt(0).toUpperCase() +
-		  DASHBOARD_VIEWS[i].title.slice(1).toLowerCase()
-		);
-    }
+	  var sortedViews = DASHBOARD_VIEWS.slice().sort(function(a, b){
+	  if(a.view_type === "shared") return -1;
+	  if(b.view_type === "shared") return 1;
+	  
+	  return a.title.localeCompare(b.title, "it", {
+	  	sensitivity: "base"
+	  });
+	  });
+	  
+	  for(var i = 0; i < sortedViews.length; i++){
+	  addButton(
+	  	sortedViews[i].id,
+	  	sortedViews[i].title.charAt(0).toUpperCase() +
+	  	sortedViews[i].title.slice(1).toLowerCase()
+	  );
+	  }
   }
 
 
