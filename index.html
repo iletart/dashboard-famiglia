@@ -1528,6 +1528,70 @@ body.k .trash-icon:after {
   }
 }
 
+/* LOGIN NESTPLAN */
+
+.welcome-login {
+  max-width: 390px;
+  margin: 30px auto;
+  padding: 26px;
+  background: #fff;
+  border: 1px solid #dce4e8;
+  border-radius: 18px;
+  box-shadow: 0 8px 30px rgba(38,50,56,.08);
+  text-align: left;
+}
+
+.welcome-login h2 {
+  text-align: center;
+  color: #3985a8;
+  margin: 0 0 8px;
+}
+
+.welcome-login p {
+  text-align: center;
+  color: #607d8b;
+  margin-bottom: 22px;
+}
+
+.welcome-login select,
+.welcome-login input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px;
+  margin-bottom: 14px;
+  border: 1px solid #cbd7dd;
+  border-radius: 9px;
+  font-size: 17px;
+  background: #fff;
+}
+
+.welcome-login button {
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 9px;
+  background: #3985a8;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.welcome-login button:disabled {
+  opacity: .6;
+}
+
+.welcome-login-error {
+  color: #c62828;
+  text-align: center;
+  min-height: 20px;
+  margin-bottom: 10px;
+}
+
+.welcome-actions {
+  display: none;
+}
+
 </style>
 
 </head>
@@ -1578,6 +1642,32 @@ body.k .trash-icon:after {
       <p>Percorsi, tempi di viaggio e informazioni utili.</p>
     </div>
 
+  </div>
+  
+  <div class="welcome-login">
+  
+    <h2>Bentornati!</h2>
+    <p>Accedi al tuo spazio familiare</p>
+  
+    <select id="welcomeProfile">
+      <option value="">Seleziona il tuo profilo</option>
+    </select>
+  
+    <input
+      type="password"
+      id="welcomePin"
+      inputmode="numeric"
+      autocomplete="current-password"
+      maxlength="12"
+      placeholder="Inserisci il PIN"
+    >
+  
+    <div class="welcome-login-error" id="welcomeLoginError"></div>
+  
+    <button type="button" id="welcomeLoginSubmit">
+      ACCEDI
+    </button>
+  
   </div>
 
   <div class="welcome-actions">
@@ -6771,6 +6861,71 @@ function updateLoggedUser() {
   el.textContent = `Utente collegato: ${user.name} (${typeLabel})`;
 }
 
+function renderWelcomeLogin(){
+
+  var select = $("welcomeProfile");
+  var pin = $("welcomePin");
+  var button = $("welcomeLoginSubmit");
+  var error = $("welcomeLoginError");
+
+  if(!select || !pin || !button){ return; }
+
+  clear(select);
+
+  var placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Seleziona il tuo profilo";
+  select.appendChild(placeholder);
+
+  for(var i = 0; i < AUTH_PROFILES.length; i++){
+
+    var profile = AUTH_PROFILES[i];
+    var option = document.createElement("option");
+
+    option.value = profile.user_id;
+    option.textContent = profile.name;
+
+    select.appendChild(option);
+  }
+
+  function submit(){
+
+    var userId = select.value;
+    var value = pin.value.trim();
+
+    error.textContent = "";
+
+    if(!userId){
+      error.textContent = "Seleziona un profilo.";
+      return;
+    }
+
+    if(!/^\d{6,12}$/.test(value)){
+      error.textContent = "Inserisci un PIN da 6 a 12 cifre.";
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "ACCESSO IN CORSO...";
+
+    authLogin(Number(userId), value);
+
+    setTimeout(function(){
+      button.disabled = false;
+      button.textContent = "ACCEDI";
+    }, 3000);
+  }
+
+  button.onclick = submit;
+
+  pin.onkeydown = function(ev){
+    if(ev.key === "Enter"){
+      ev.preventDefault();
+      submit();
+    }
+  };
+}
+
 function initViewMenu(){
 	var toggle = $("viewMenuToggle");
 	var panel = $("viewMenuPanel");
@@ -7447,6 +7602,7 @@ function restoreAuthSession(){
     }
 
     restoreAuthSessionAfterProfiles();
+	renderWelcomeLogin();
   });
 }
 
