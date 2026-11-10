@@ -2288,7 +2288,7 @@ function renderPersonalTasks(){
     }
   }
   
-  var name = currentUser ? userName(currentUser.id) : currentView;
+  var name = currentUser ? currentUser.name : currentView;
   var owner = currentUser
     ? String(currentUser.task_owner || "").toUpperCase()
     : "";
@@ -2632,7 +2632,7 @@ function renderPersonalTodo() {
   setText(
     $("personalTodoTitle"),
     "TO-DO LIST PERSONALE" +
-      (currentUser ? " DI " + userName(currentUser.id).toUpperCase() : "")
+      (currentUser ? " DI " + currentUser.name.toUpperCase() : "")
   );
 
   clear(box);
