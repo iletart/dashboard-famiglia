@@ -5251,7 +5251,7 @@ function buildLayout(view){
 
 	clear(host);
 
-	/* Ogni riga può contenere uno o due box */
+	/* Ogni riga può contenere al massimo due box */
 	for(i = 0; i < rows.length; i++){
 		row = rows[i];
 		items = (row.items || []).slice();
@@ -5260,22 +5260,24 @@ function buildLayout(view){
 			return a.position - b.position;
 		});
 
-		var container = mk("div", "row layout-row");
-		host.appendChild(container);
+		for(var start = 0; start < items.length; start += 2){
+			var container = mk("div", "row layout-row");
+			host.appendChild(container);
 
-		var n = Math.min(items.length, 2);
+			var n = Math.min(2, items.length - start);
 
-		for(j = 0; j < n; j++){
-			item = items[j];
-			b = $(item.element_id);
+			for(j = 0; j < n; j++){
+				item = items[start + j];
+				b = $(item.element_id);
 
-			if(!b){ continue; }
+				if(!b){ continue; }
 
-			setHidden(b, false);
+				setHidden(b, false);
 
-			var col = mk("div", n === 1 ? "col full" : "col");
-			col.appendChild(b);
-			container.appendChild(col);
+				var col = mk("div", n === 1 ? "col full" : "col");
+				col.appendChild(b);
+				container.appendChild(col);
+			}
 		}
 	}
 }
