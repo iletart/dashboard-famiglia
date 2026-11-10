@@ -1691,7 +1691,7 @@ body.k .trash-icon:after {
 
     <div class="box" id="sharedTasksBox">
       <div class="section-heading">
-        <h2>Daily task</h2>
+        <h2 data-box-title="sharedTasks"></h2>
         <div class="sync-label" id="taskTimes"></div>
       </div>
       <div class="seg" id="taskDays">
@@ -7088,20 +7088,26 @@ function loadAuthorizedConfig(callback){
 
 
 function updateDashboardBoxTitles(){
-	if(!Array.isArray(DASHBOARD_BOXES)){
-		return;
-	}
+    if(!Array.isArray(DASHBOARD_BOXES)){
+        return;
+    }
 
-	for(var i = 0; i < DASHBOARD_BOXES.length; i++){
-		var box = DASHBOARD_BOXES[i];
-		var title = document.getElementById(
-			box.element_id.replace(/Box$/, "Title")
-		);
+    for(var i = 0; i < DASHBOARD_BOXES.length; i++){
+        var box = DASHBOARD_BOXES[i];
+        var container = document.getElementById(box.element_id);
 
-		if(title){
-			title.textContent = box.title;
-		}
-	}
+        if(!container){
+            continue;
+        }
+
+        var title = container.querySelector(
+            '[data-box-title="' + box.id + '"]'
+        );
+
+        if(title){
+            title.textContent = box.title || "";
+        }
+    }
 }
 
 function clearAuthStorage(){
