@@ -5575,9 +5575,31 @@ function openUserManagement(){
     item.style.flexDirection = "column";
     item.style.gap = "7px";
 
-    var name = mk("div", "", user.name || user.view_id);
-    name.style.fontWeight = "bold";
-    item.appendChild(name);
+	var nameRow = mk("div", "", "");
+	nameRow.style.display = "flex";
+	nameRow.style.alignItems = "center";
+	nameRow.style.gap = "8px";
+	nameRow.style.width = "100%";
+	
+	var name = mk("div", "", user.name || user.view_id);
+	name.style.fontWeight = "bold";
+	name.style.flex = "1";
+	nameRow.appendChild(name);
+	
+	var renameButton = mk("button", "", "RINOMINA");
+	renameButton.type = "button";
+	renameButton.style.padding = "7px 10px";
+	renameButton.style.backgroundColor = "#455a64";
+	renameButton.style.color = "#fff";
+	renameButton.style.border = "1px solid #777";
+	renameButton.style.whiteSpace = "nowrap";
+	
+	renameButton.onclick = function(){
+	renameUser(user, renameButton);
+	};
+	
+	nameRow.appendChild(renameButton);
+	item.appendChild(nameRow);
 
     var owner = mk(
       "div",
@@ -5606,14 +5628,6 @@ function openUserManagement(){
     status.style.fontWeight = "bold";
     status.style.color = !enabled ? "#c00" : (hidden ? "#a66b00" : "#287a36");
     item.appendChild(status);
-	
-	var renameButton = mk("button", "", "RINOMINA");
-	renameButton.type = "button";
-	renameButton.style.width = "100%";
-	renameButton.style.padding = "9px";
-	renameButton.style.backgroundColor = "#455a64";
-	renameButton.style.color = "#ffffff";
-	renameButton.style.border = "1px solid #777";
 
 	renameButton.onclick = function(){
 	  renameUser(user, renameButton);
