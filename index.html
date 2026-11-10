@@ -5963,26 +5963,26 @@ function openUserManagement(){
 }
 
 function updateLoggedUser() {
-    const el = document.getElementById("loggedUser");
-    if (!el) return;
+  const el = document.getElementById("loggedUser");
+  if (!el) return;
 
-    if (!authToken || !authProfile) {
-        el.textContent = "";
-        return;
-    }
+  if (!authToken || !authProfile) {
+    el.textContent = "";
+    return;
+  }
 
-    const user = USERS.find(u =>
-        String(u.user_id ?? u.id) === String(authProfile)
-    );
+  const user = AUTH_PROFILES.find(function(u) {
+    return String(u.user_id) === String(authProfile);
+  });
 
-    if (!user) {
-        el.textContent = "Utente collegato";
-        return;
-    }
+  if (!user) {
+    el.textContent = "Utente collegato";
+    return;
+  }
 
-    const typeLabel = user.type === "family" ? "Famiglia" : "Utente";
+  const typeLabel = user.type === "family" ? "Famiglia" : "Utente";
 
-    el.textContent = `Utente collegato: ${user.name} (${typeLabel})`;
+  el.textContent = `Utente collegato: ${user.name} (${typeLabel})`;
 }
 
 function initViewMenu(){
