@@ -2279,8 +2279,19 @@ function renderPersonalTasks(){
   var box = $("personalTasks");
   clear(box);
 
-  var name = userName(currentView);
-  var owner = currentView.charAt(0).toUpperCase();
+  var currentUser = null;
+  
+  for (var i = 0; i < USERS.length; i++) {
+    if (String(USERS[i].view_id) === String(currentView)) {
+      currentUser = USERS[i];
+      break;
+    }
+  }
+  
+  var name = currentUser ? userName(currentUser.id) : currentView;
+  var owner = currentUser
+    ? String(currentUser.task_owner || "").toUpperCase()
+    : "";
   var target = todayNum() + TASK_OFF[personalPeriod];
 
   setText($("personalTasksTitle"), "Agenda di " + name);
@@ -2609,9 +2620,19 @@ function renderPersonalTodo() {
   var box = $("personalTodoList");
   if (!box) return;
   
+  var currentUser = null;
+  
+  for (var i = 0; i < USERS.length; i++) {
+    if (String(USERS[i].view_id) === String(currentView)) {
+      currentUser = USERS[i];
+      break;
+    }
+  }
+  
   setText(
     $("personalTodoTitle"),
-    "TO-DO LIST PERSONALE DI " + String(currentView || "").toUpperCase()
+    "TO-DO LIST PERSONALE" +
+      (currentUser ? " DI " + userName(currentUser.id).toUpperCase() : "")
   );
 
   clear(box);
