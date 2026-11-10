@@ -5606,6 +5606,20 @@ function openUserManagement(){
     status.style.fontWeight = "bold";
     status.style.color = !enabled ? "#c00" : (hidden ? "#a66b00" : "#287a36");
     item.appendChild(status);
+	
+	var renameButton = mk("button", "", "RINOMINA");
+	renameButton.type = "button";
+	renameButton.style.width = "100%";
+	renameButton.style.padding = "9px";
+	renameButton.style.backgroundColor = "#455a64";
+	renameButton.style.color = "#ffffff";
+	renameButton.style.border = "1px solid #777";
+
+	renameButton.onclick = function(){
+	  renameUser(user, renameButton);
+	};
+
+	item.appendChild(renameButton);
 
     var actions = mk("div", "", "");
     actions.style.display = "flex";
@@ -5801,6 +5815,66 @@ function openUserManagement(){
             if(DASHBOARD_VIEWS.length){
               setView(DASHBOARD_VIEWS[0].id, false);
             }
+          }
+  
+          loadUsers();
+        });
+      }
+    );
+  }
+
+  function renameUser(user, renameButton){
+    var oldName = user.name || "";
+  
+    var newName = prompt(
+      "Inserisci il nuovo nome dell'utente:",
+      oldName
+    );
+  
+    if(newName === null){
+      return;
+    }
+  
+    newName = newName.trim();
+  
+    if(!newName){
+      alert("Il nome non può essere vuoto.");
+      return;
+    }
+  
+    if(newName === oldName){
+      return;
+    }
+  
+    renameButton.disabled = true;
+    message.textContent = "Rinomina in corso...";
+  
+    usersRequest(
+      "PUT",
+      "/users/" + user.id,
+      { name: newName },
+      function(err, data){
+  
+        if(err || !data || !data.ok){
+          message.textContent =
+            err || (data && data.error) ||
+            "Rinomina non riuscita.";
+  
+          renameButton.disabled = false;
+          return;
+        }
+  
+        message.textContent =
+          "Utente rinominato correttamente.";
+  
+        loadAuthorizedConfig(function(configErr){
+  
+          if(configErr){
+            message.textContent =
+              "Nome aggiornato, ma configurazione non aggiornata.";
+  
+            loadUsers();
+            return;
           }
   
           loadUsers();
