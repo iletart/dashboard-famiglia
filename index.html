@@ -5208,84 +5208,78 @@ function personalRow(){
 
 
 function buildLayout(view){
-  var views = DASHBOARD_VIEWS || [];
-  var vc = null;
-  var i, j, el, b;
-  var rows, items, row, item;
-  var isRows, host, stash;
+	var views = DASHBOARD_VIEWS || [];
+	var vc = null;
+	var i, j, el, b;
+	var rows, items, row, item;
+	var host, stash;
 
-  for(i = 0; i < views.length; i++){
-    if(views[i].id === view){
-      vc = views[i];
-      break;
-    }
-  }
-
-  if(!vc){ return; }
-
-  rows = (vc.rows || []).slice();
-  rows.sort(function(a, b){
-    return a.position - b.position;
-  });
-
-  isRows = vc.layout_mode === "rows";
-  host = vc.view_type === "shared" ? $("dashboardContent") : personalRow();
-  stash = $("stash");
-
-  if(!host || !stash){ return; }
-
-	for(var v = 0; v < views.length; v++){
-	  var allRows = views[v].rows || [];
-
-	  for(i = 0; i < allRows.length; i++){
-		items = allRows[i].items || [];
-
-		for(j = 0; j < items.length; j++){
-		  el = $(items[j].element_id);
-		  if(el && el.parentNode !== stash){
-			stash.appendChild(el);
-		  }
+	for(i = 0; i < views.length; i++){
+		if(views[i].id === view){
+			vc = views[i];
+			break;
 		}
-	  }
 	}
 
-  clear(host);
+	if(!vc){ return; }
 
-  for(i = 0; i < rows.length; i++){
-    row = rows[i];
-    items = (row.items || []).slice();
+	rows = (vc.rows || []).slice();
+	rows.sort(function(a, b){
+		return a.position - b.position;
+	});
 
-    items.sort(function(a, b){
-      return a.position - b.position;
-    });
+	host = vc.view_type === "shared" ? $("dashboardContent") : personalRow();
+	stash = $("stash");
 
-    var container = mk(
-      "div",
-      isRows ? "row layout-row" : "col layout-column"
-    );
+	if(!host || !stash){ return; }
 
-    host.appendChild(container);
+	/* Sposta tutti i box nello stash prima di ricostruire il layout */
+	for(var v = 0; v < views.length; v++){
+		var allRows = views[v].rows || [];
 
-    var n = isRows ? Math.min(items.length, 2) : items.length;
+		for(i = 0; i < allRows.length; i++){
+			items = allRows[i].items || [];
 
-    for(j = 0; j < n; j++){
-      item = items[j];
-      b = $(item.element_id);
+			for(j = 0; j < items.length; j++){
+				el = $(items[j].element_id);
+				if(el && el.parentNode !== stash){
+					stash.appendChild(el);
+				}
+			}
+		}
+	}
 
-      if(!b){ continue; }
+	clear(host);
 
-      setHidden(b, false);
+	/* Ogni riga può contenere uno o due box */
+	for(i = 0; i < rows.length; i++){
+		row = rows[i];
+		items = (row.items || []).slice();
 
-      if(isRows){
-        var col = mk("div", n === 1 ? "col full" : "col");
-        col.appendChild(b);
-        container.appendChild(col);
-      } else {
-        container.appendChild(b);
-      }
-    }
-  }
+		items.sort(function(a, b){
+			return a.position - b.position;
+		});
+
+		var container = mk("div", "row layout-row");
+		host.appendChild(container);
+
+		var n = Math.min(items.length, 2);
+
+		for(j = 0; j < n; j++){
+			item = items[j];
+			b = $(item.element_id);
+
+			if(!b){ continue; }
+
+			setHidden(b, false);
+
+			var col = mk("div", n === 1 ? "col full" : "col");
+			col.appendChild(b);
+			container.appendChild(col);
+		}
+	}
 }
+
 
 
 function setView(view, manual){
