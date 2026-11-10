@@ -1676,7 +1676,7 @@ body.k .trash-icon:after {
 
     <div class="box" id="agendaBox">
       <div class="section-heading">
-        <h2>Agenda famiglia</h2>
+        <h2 data-box-title="agenda"></h2>
         <div class="sync-label" id="agendaTimes"></div>
       </div>
       <div id="agenda">Caricamento...</div>
@@ -1709,7 +1709,7 @@ body.k .trash-icon:after {
 
     <div class="box" id="todoBox">
       <div class="section-heading">
-        <h2>To-do list</h2>
+        <h2 data-box-title="todo"></h2>
         <div class="sync-label" id="todoSyncLabel">non connesso</div>
       </div>
       <div class="add-ctl" id="todoCtl" hidden>
@@ -1722,7 +1722,7 @@ body.k .trash-icon:after {
 	
 	<div class="box" id="personalTodoBox">
 	  <div class="section-heading">
-		<h2 id="personalTodoTitle">TO-DO LIST PERSONALE</h2>
+		<h2 data-box-title="personalTodo"></h2>
 		<div class="sync-label" id="personalTodoSyncLabel">non connesso</div>
 	  </div>
 	  <div id="personalTodoList"></div>
@@ -1731,7 +1731,7 @@ body.k .trash-icon:after {
 
     <div class="box" id="schoolMenuBox">
       <div class="section-heading">
-        <h2>Menu scuola</h2>
+        <h2 data-box-title="schoolMenu"></h2>
         <div class="sync-label" id="menuTimes"></div>
       </div>
       <div class="seg" id="menuDays">
@@ -2488,7 +2488,6 @@ function renderPersonalTasks(){
     : "";
   var target = todayNum() + TASK_OFF[personalPeriod];
 
-  setText($("personalTasksTitle"), "Agenda di " + name);
   markSeg("personalPeriod", personalPeriod);
   setTimes($("personalTasksTimes"),
            agendaData ? parseIso(agendaData.generated_at || agendaData.updated_at) : null,
@@ -2822,12 +2821,6 @@ function renderPersonalTodo() {
       break;
     }
   }
-  
-  setText(
-    $("personalTodoTitle"),
-    "TO-DO LIST PERSONALE" +
-      (currentUser ? " DI " + currentUser.name.toUpperCase() : "")
-  );
 
   clear(box);
 
@@ -5304,6 +5297,8 @@ function setView(view, manual){
   currentView = viewConfig.id;
   view = currentView;
   
+  updateDashboardBoxTitles();
+  
   var btns = $("viewMenuPanel").getElementsByTagName("button");
   
   for(var i = 0; i < btns.length; i++){
@@ -7092,6 +7087,15 @@ function updateDashboardBoxTitles(){
         return;
     }
 
+    var currentUser = null;
+
+    for(var i = 0; i < USERS.length; i++){
+        if(String(USERS[i].view_id) === String(currentView)){
+            currentUser = USERS[i];
+            break;
+        }
+    }
+
     for(var i = 0; i < DASHBOARD_BOXES.length; i++){
         var box = DASHBOARD_BOXES[i];
         var container = document.getElementById(box.element_id);
@@ -7104,9 +7108,21 @@ function updateDashboardBoxTitles(){
             '[data-box-title="' + box.id + '"]'
         );
 
-        if(title){
-            title.textContent = box.title || "";
+        if(!title){
+            continue;
         }
+
+        var text = box.title || "";
+
+        if(
+            Number(box.append_user_name) === 1 &&
+            currentUser &&
+            currentUser.name
+        ){
+            text += " di " + currentUser.name;
+        }
+
+        title.textContent = text;
     }
 }
 
