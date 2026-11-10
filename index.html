@@ -1404,11 +1404,194 @@ body.k .trash-icon:after {
   border:1px solid #000;
   border-bottom:0;
 }
+
+/* ===== PAGINA INIZIALE NESTPLAN ===== */
+
+#welcomePage {
+  max-width: 850px;
+  margin: 35px auto;
+  padding: 25px;
+  text-align: center;
+  color: #263238;
+}
+
+.welcome-header h1 {
+  margin: 0;
+  color: #3985a8;
+  font-size: 2.8em;
+  letter-spacing: 1px;
+}
+
+.welcome-tagline {
+  color: #455a64;
+  font-size: 1em;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.welcome-header p {
+  color: #607d8b;
+  margin: 8px 0 35px;
+}
+
+.welcome-intro h2 {
+  font-size: 1.65em;
+  margin-bottom: 10px;
+}
+
+.welcome-intro p {
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.6;
+  color: #607d8b;
+}
+
+.welcome-features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 35px 0;
+  text-align: left;
+}
+
+.welcome-feature {
+  padding: 20px;
+  border: 1px solid #dce4e8;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.welcome-feature span {
+  font-size: 1.7em;
+}
+
+.welcome-feature h3 {
+  margin: 10px 0 5px;
+  color: #3985a8;
+}
+
+.welcome-feature p {
+  margin: 0;
+  color: #607d8b;
+  font-size: .9em;
+  line-height: 1.5;
+}
+
+.welcome-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.welcome-actions button {
+  min-width: 210px;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 8px;
+  background: #455a64;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.welcome-actions button:last-child {
+  background: #3985a8;
+}
+
+.welcome-footer {
+  margin-top: 25px;
+  color: #78909c;
+  font-size: .85em;
+}
+
+@media (max-width: 600px) {
+  #welcomePage {
+    margin: 15px auto;
+    padding: 15px;
+  }
+
+  .welcome-features {
+    gap: 10px;
+  }
+
+  .welcome-feature {
+    padding: 14px;
+  }
+
+  .welcome-actions {
+    flex-direction: column;
+  }
+
+  .welcome-actions button {
+    width: 100%;
+  }
+}
+
 </style>
 
 </head>
 <body>
 <div class="wrap">
+
+<!-- ===== PAGINA INIZIALE NESTPLAN ===== -->
+<div id="welcomePage" hidden>
+
+  <div class="welcome-header">
+    <h1>NestPlan</h1>
+    <div class="welcome-tagline">Everything in its place.</div>
+    <p>La tua famiglia, organizzata meglio.</p>
+  </div>
+
+  <div class="welcome-intro">
+    <h2>La quotidianità, senza caos.</h2>
+    <p>
+      NestPlan è lo spazio digitale che aiuta tutta la famiglia
+      a organizzare impegni, attività e vita quotidiana,
+      in modo semplice e condiviso.
+    </p>
+  </div>
+
+  <div class="welcome-features">
+
+    <div class="welcome-feature">
+      <span>📅</span>
+      <h3>Agende</h3>
+      <p>Impegni personali e familiari sempre sotto controllo.</p>
+    </div>
+
+    <div class="welcome-feature">
+      <span>☑️</span>
+      <h3>Attività</h3>
+      <p>Task condivisi e personali, con assegnazioni e promemoria.</p>
+    </div>
+
+    <div class="welcome-feature">
+      <span>🛒</span>
+      <h3>Spesa</h3>
+      <p>Una lista condivisa, aggiornata da tutti.</p>
+    </div>
+
+    <div class="welcome-feature">
+      <span>🚗</span>
+      <h3>Spostamenti</h3>
+      <p>Percorsi, tempi di viaggio e informazioni utili.</p>
+    </div>
+
+  </div>
+
+  <div class="welcome-actions">
+    <button type="button" id="welcomeLoginButton">ACCEDI</button>
+    <button type="button" id="welcomeRegisterButton">
+      CREA LA TUA FAMIGLIA
+    </button>
+  </div>
+
+  <div class="welcome-footer">
+    Un unico spazio. Tutta la famiglia.
+  </div>
+
+</div>
 
 <!-- ===== HEADER ===== -->
 <div class="box" id="head">
@@ -5379,10 +5562,15 @@ function renderViewMenu(){
     cancelButton.type = "button";
     cancelButton.style.width = "100%";
     cancelButton.style.padding = "12px";
-    cancelButton.onclick = function(){
-      panel._pendingLoginUserId = null;
-      renderViewMenu();
-    };
+	cancelButton.onclick = function(){
+		panel._pendingLoginUserId = null;
+		closeViewMenu();
+
+		setHidden($("head"), true);
+		setHidden($("welcomePage"), false);
+
+		renderViewMenu();
+	};
 
     function submitPin(){
       var pin = input.value.trim();
@@ -5481,6 +5669,23 @@ function renderViewMenu(){
 			buttons[buttons.length - 1].classList.add("family-view-button");
 		  }
 		}
+		
+		var backButton = mk("button", "", "← INDIETRO");
+		backButton.type = "button";
+		backButton.onclick = function(ev){
+			if(ev){
+				ev.preventDefault();
+				ev.stopPropagation();
+			}
+
+			panel._pendingLoginUserId = null;
+			closeViewMenu();
+
+			setHidden($("head"), true);
+			setHidden($("welcomePage"), false);
+		};
+		panel.appendChild(backButton);
+		
 	} else {
 		var sortedViews = DASHBOARD_VIEWS.slice().sort(function(a, b){
 		if(a.view_type === "shared") return -1;
@@ -6019,47 +6224,62 @@ function updateLoggedUser() {
 }
 
 function initViewMenu(){
-  var toggle = $("viewMenuToggle");
-  var panel = $("viewMenuPanel");
-  
-    if(!panel._clickPropagationInitialized){
-      panel.addEventListener("click", function(ev){
-        ev.stopPropagation();
-      });
-  
-      panel._clickPropagationInitialized = true;
-    }
+	var toggle = $("viewMenuToggle");
+	var panel = $("viewMenuPanel");
 
-  if(!menuInitialized){
-    toggle.onclick = function(){
-      var open = panel.hasAttribute("hidden");
-      setHidden(panel, !open);
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
-    };
-
-	document.addEventListener("click", function(ev){
-	  var menu = $("viewMenu");
-	  var target = ev.target;
-
-	  while(target && target !== menu){
-		target = target.parentNode;
-	  }
-
-	  if(menu && target !== menu){
-		closeViewMenu();
-	  }
+	if(!panel._clickPropagationInitialized){
+	panel.addEventListener("click", function(ev){
+		ev.stopPropagation();
 	});
 
-    document.addEventListener("keydown", function(ev){
-      if(ev.key === "Escape"){
-        closeViewMenu();
-      }
-    });
+	panel._clickPropagationInitialized = true;
+	}
 
-    menuInitialized = true;
-  }
+	if(!menuInitialized){
+	toggle.onclick = function(){
+		var open = panel.hasAttribute("hidden");
+		setHidden(panel, !open);
+		toggle.setAttribute("aria-expanded", open ? "true" : "false");
+	};
 
-  renderViewMenu();
+	document.addEventListener("click", function(ev){
+		var menu = $("viewMenu");
+		var target = ev.target;
+
+		while(target && target !== menu){
+		target = target.parentNode;
+		}
+
+		if(menu && target !== menu){
+		closeViewMenu();
+		}
+	});
+
+	document.addEventListener("keydown", function(ev){
+		if(ev.key === "Escape"){
+		closeViewMenu();
+		}
+	});
+
+	menuInitialized = true;
+	}
+
+	var welcomeLoginButton = $("welcomeLoginButton");
+
+	if(welcomeLoginButton && !welcomeLoginButton._initialized){
+	welcomeLoginButton.onclick = function(){
+		setHidden($("welcomePage"), true);
+		setHidden($("head"), false);
+
+		setHidden(panel, false);
+		toggle.setAttribute("aria-expanded", "true");
+
+		renderViewMenu();
+	};
+
+	welcomeLoginButton._initialized = true;
+	}
+	renderViewMenu();
 }
 
 /* ==================================================
@@ -6295,20 +6515,21 @@ function clearAuthStorage(){
 }
 
 function showLoggedOut(message){
-  authToken = "";
-  authProfile = "";
-  authSessionId = "";
-  updateLoggedUser();
-  DASHBOARD_VIEWS = [];
+	authToken = "";
+	authProfile = "";
+	authSessionId = "";
+	updateLoggedUser();
+	DASHBOARD_VIEWS = [];
 
-  clearAuthStorage();
-  setHidden($("head"), false);
-  setHidden($("dashboardContent"), true);
-  setHidden($("personalView"), true);
-  clear($("err"));
-  if(message){ setText($("err"), message); }
-  renderViewMenu();
-  closeViewMenu();
+	clearAuthStorage();
+	setHidden($("welcomePage"), false);
+	setHidden($("head"), true);
+	setHidden($("dashboardContent"), true);
+	setHidden($("personalView"), true);
+	clear($("err"));
+	if(message){ setText($("err"), message); }
+	renderViewMenu();
+	closeViewMenu();
 }
 
 function initBoxRefresh() {
@@ -6437,6 +6658,7 @@ function startDashboard(preferredView){
 
     clear($("err")); 
 
+	setHidden($("welcomePage"), true);
 	setHidden($("head"), false);
 	setHidden($("dashboardContent"), false);
 
