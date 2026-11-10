@@ -6623,6 +6623,11 @@ function restoreAuthSessionAfterProfiles(){
     authProfile = String(data.user_id || "");
     authSessionId = data.session_id || "";
 
+console.log("DEBUG UTENTE", {
+  authProfile: authProfile,
+  AUTH_PROFILES: AUTH_PROFILES
+});
+
     updateLoggedUser();
     startDashboard();
   });
