@@ -21,13 +21,13 @@
       "to": "Asilo",
       "mode": "arrival",
       "target_time": "17:15",
-      "departure": "2026-11-10T16:53:45+01:00",
+      "departure": "2026-11-10T16:53:46+01:00",
       "arrival": "2026-11-10T17:15:00+01:00",
       "duration_minutes": 16,
       "static_duration_minutes": 11,
       "buffer_minutes": 5,
       "distance_meters": 9927,
-      "calculated_at": "2026-11-10T07:00:02.489766+01:00"
+      "calculated_at": "2026-11-10T07:30:02.867805+01:00"
     },
     "asilo_piscina": {
       "id": "asilo_piscina",
@@ -41,8 +41,8 @@
       "static_duration_minutes": 8,
       "buffer_minutes": 5,
       "distance_meters": 4798,
-      "calculated_at": "2026-11-10T07:00:02.489766+01:00"
+      "calculated_at": "2026-11-10T07:30:02.867805+01:00"
     }
   },
-  "generated_at": "2026-11-10T07:00:02.489766+01:00"
+  "generated_at": "2026-11-10T07:30:02.867805+01:00"
 }
