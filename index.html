@@ -5652,9 +5652,29 @@ function openUserManagement(){
 
     actions.appendChild(enabledButton);
     actions.appendChild(hiddenButton);
+    
+    var deleteButton = mk("button", "", "ELIMINA");
+    deleteButton.type = "button";
+    deleteButton.style.flex = "1";
+    deleteButton.style.padding = "9px 5px";
+    deleteButton.style.background = "#c62828";
+    deleteButton.style.color = "#fff";
+    deleteButton.style.border = "none";
+    
+    deleteButton.onclick = function(){
+      deleteUser(
+        user,
+        deleteButton,
+        enabledButton,
+        hiddenButton
+      );
+    };
+    
+    actions.appendChild(deleteButton);
     item.appendChild(actions);
-
+    
     list.appendChild(item);
+
   }
 
   function updateUserStatus(
@@ -5706,6 +5726,79 @@ function openUserManagement(){
 	  });
 
     });
+  }
+  
+    function deleteUser(
+    user,
+    deleteButton,
+    enabledButton,
+    hiddenButton
+  ){
+    var userName = user.name || user.view_id;
+  
+    var confirmed = confirm(
+      "Vuoi eliminare definitivamente dalla dashboard l'utente " +
+      userName +
+      "?\n\n" +
+      "L'utente non sarà più visibile e non potrà accedere.\n" +
+      "I suoi dati storici resteranno conservati nel database."
+    );
+  
+    if(!confirmed){
+      return;
+    }
+  
+    deleteButton.disabled = true;
+    enabledButton.disabled = true;
+    hiddenButton.disabled = true;
+  
+    message.textContent = "Eliminazione in corso...";
+  
+    usersRequest(
+      "PATCH",
+      "/users/" + user.id + "/deleted",
+      { deleted: true },
+      function(err, data){
+  
+        if(err || !data || !data.ok){
+          message.textContent =
+            err ||
+            (data && data.error) ||
+            "Eliminazione non riuscita.";
+  
+          deleteButton.disabled = false;
+          enabledButton.disabled = false;
+          hiddenButton.disabled = false;
+          return;
+        }
+  
+        message.textContent =
+          "Utente " + userName + " eliminato.";
+  
+        loadAuthorizedConfig(function(configErr){
+  
+          if(configErr){
+            message.textContent =
+              "Utente eliminato, ma aggiornamento della configurazione non riuscito.";
+  
+            loadUsers();
+            return;
+          }
+  
+          // Se la vista corrente non è più autorizzata,
+          // passa alla prima vista disponibile.
+          if(!findItem(DASHBOARD_VIEWS, function(v){
+            return v.id === currentView;
+          })){
+            if(DASHBOARD_VIEWS.length){
+              setView(DASHBOARD_VIEWS[0].id, false);
+            }
+          }
+  
+          loadUsers();
+        });
+      }
+    );
   }
 
   loadUsers();
