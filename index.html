@@ -5752,6 +5752,568 @@ function renderViewMenu(){
 }
 
 
+function openLayoutManagement(){
+	var panel = $("viewMenuPanel");
+	clear(panel);
+
+	panel.style.width = "700px";
+	panel.style.maxWidth = "94vw";
+	panel.style.boxSizing = "border-box";
+
+	var box = mk("div", "layout-management-panel", "");
+	box.style.padding = "12px";
+	box.style.display = "flex";
+	box.style.flexDirection = "column";
+	box.style.gap = "10px";
+	box.style.width = "100%";
+	box.style.boxSizing = "border-box";
+
+	var title = mk("div", "", "CONFIGURAZIONE LAYOUT");
+	title.style.textAlign = "center";
+	title.style.fontSize = "18px";
+	title.style.fontWeight = "bold";
+	box.appendChild(title);
+
+	var message = mk("div", "", "Caricamento viste...");
+	message.style.textAlign = "center";
+	box.appendChild(message);
+
+	var viewSelect = document.createElement("select");
+	viewSelect.style.width = "100%";
+	viewSelect.style.padding = "10px";
+	viewSelect.style.boxSizing = "border-box";
+	box.appendChild(viewSelect);
+
+	var editor = mk("div", "", "");
+	editor.style.display = "flex";
+	editor.style.flexDirection = "column";
+	editor.style.gap = "10px";
+	box.appendChild(editor);
+
+	var backButton = mk("button", "", "INDIETRO");
+	backButton.type = "button";
+	backButton.style.width = "100%";
+	backButton.style.padding = "12px";
+	backButton.onclick = renderViewMenu;
+	box.appendChild(backButton);
+
+	panel.appendChild(box);
+
+	usersRequest("GET", "/views", null, function(err, data){
+		if(err || !data || !data.ok || !Array.isArray(data.views)){
+			message.textContent = err || "Impossibile caricare le viste.";
+			return;
+		}
+
+		DASHBOARD_VIEWS = DASHBOARD_VIEWS || [];
+
+		var availableViews = data.views;
+
+		if(!availableViews.length){
+			message.textContent = "Nessuna vista disponibile.";
+			return;
+		}
+
+		clear(viewSelect);
+
+		for(var i = 0; i < availableViews.length; i++){
+			var view = availableViews[i];
+			var option = document.createElement("option");
+			option.value = view.id;
+			option.textContent = view.title;
+			viewSelect.appendChild(option);
+		}
+
+		message.textContent = "Seleziona la vista da configurare.";
+
+		viewSelect.onchange = function(){
+			renderLayoutEditor(viewSelect.value);
+		};
+
+		renderLayoutEditor(viewSelect.value);
+	});
+
+	function renderLayoutEditor(viewId){
+		clear(editor);
+
+		var view = findItem(DASHBOARD_VIEWS, function(v){
+			return v.id === viewId;
+		});
+
+		var metadata = findItem(
+			dataViews,
+			function(v){
+				return v.id === viewId;
+			}
+		);
+
+	}
+}
+
+
+function openLayoutManagement(){
+	var panel = $("viewMenuPanel");
+	clear(panel);
+
+	panel.style.width = "700px";
+	panel.style.maxWidth = "94vw";
+	panel.style.boxSizing = "border-box";
+
+	var box = mk("div", "layout-management-panel", "");
+	box.style.padding = "12px";
+	box.style.display = "flex";
+	box.style.flexDirection = "column";
+	box.style.gap = "10px";
+	box.style.width = "100%";
+	box.style.boxSizing = "border-box";
+
+	var title = mk("div", "", "CONFIGURAZIONE LAYOUT");
+	title.style.textAlign = "center";
+	title.style.fontSize = "18px";
+	title.style.fontWeight = "bold";
+	box.appendChild(title);
+
+	var message = mk("div", "", "Caricamento viste...");
+	message.style.textAlign = "center";
+	box.appendChild(message);
+
+	var viewSelect = document.createElement("select");
+	viewSelect.style.width = "100%";
+	viewSelect.style.padding = "10px";
+	viewSelect.style.boxSizing = "border-box";
+	box.appendChild(viewSelect);
+
+	var lockButton = mk("button", "", "");
+	lockButton.type = "button";
+	lockButton.style.width = "100%";
+	lockButton.style.padding = "10px";
+	box.appendChild(lockButton);
+
+	var editor = mk("div", "", "");
+	editor.style.display = "flex";
+	editor.style.flexDirection = "column";
+	editor.style.gap = "10px";
+	box.appendChild(editor);
+
+	var addArea = mk("div", "", "");
+	addArea.style.display = "flex";
+	addArea.style.gap = "8px";
+	box.appendChild(addArea);
+
+	var addSelect = document.createElement("select");
+	addSelect.style.flex = "1";
+	addSelect.style.minWidth = "0";
+	addSelect.style.padding = "10px";
+
+	var addButton = mk("button", "", "AGGIUNGI BOX");
+	addButton.type = "button";
+	addButton.style.padding = "10px";
+
+	addArea.appendChild(addSelect);
+	addArea.appendChild(addButton);
+
+	var saveButton = mk("button", "", "SALVA CONFIGURAZIONE");
+	saveButton.type = "button";
+	saveButton.style.width = "100%";
+	saveButton.style.padding = "12px";
+	box.appendChild(saveButton);
+
+	var backButton = mk("button", "", "INDIETRO");
+	backButton.type = "button";
+	backButton.style.width = "100%";
+	backButton.style.padding = "12px";
+	backButton.onclick = renderViewMenu;
+	box.appendChild(backButton);
+
+	panel.appendChild(box);
+
+	var viewMetadata = [];
+	var currentRows = [];
+	var selectedView = null;
+	var canEdit = false;
+
+	usersRequest("GET", "/views", null, function(err, data){
+		if(err || !data || !data.ok || !Array.isArray(data.views)){
+			message.textContent = err || "Impossibile caricare le viste.";
+			return;
+		}
+
+		viewMetadata = data.views;
+
+		if(!viewMetadata.length){
+			message.textContent = "Nessuna vista disponibile.";
+			return;
+		}
+
+		clear(viewSelect);
+
+		for(var i = 0; i < viewMetadata.length; i++){
+			var option = document.createElement("option");
+			option.value = viewMetadata[i].id;
+			option.textContent = viewMetadata[i].title;
+			viewSelect.appendChild(option);
+		}
+
+		viewSelect.onchange = function(){
+			loadSelectedView(viewSelect.value);
+		};
+
+		loadSelectedView(viewSelect.value);
+	});
+
+	function loadSelectedView(viewId){
+		selectedView = findItem(viewMetadata, function(v){
+			return v.id === viewId;
+		});
+
+		var config = findItem(DASHBOARD_VIEWS, function(v){
+			return v.id === viewId;
+		});
+
+		if(!selectedView || !config){
+			message.textContent = "Configurazione della vista non disponibile.";
+			clear(editor);
+			return;
+		}
+
+		var isOwner =
+			Number(selectedView.owner_user_id) === Number(authProfile);
+
+		var locked = Number(selectedView.layout_locked) === 1;
+
+		canEdit = isOwner || (
+			authUserType === "family" && !locked
+		);
+
+		currentRows = [];
+
+		if(Array.isArray(config.rows)){
+			for(var r = 0; r < config.rows.length; r++){
+				var rowItems = [];
+
+				var items = config.rows[r].items || [];
+
+				for(var j = 0; j < items.length; j++){
+					rowItems.push({
+						box_id: items[j].box_id,
+						is_public: items[j].is_public === undefined
+							? 1
+							: items[j].is_public
+					});
+				}
+
+				if(rowItems.length){
+					currentRows.push(rowItems);
+				}
+			}
+		}
+
+		message.textContent = locked
+			? "Configurazione bloccata."
+			: "Configurazione modificabile.";
+
+		renderEditor();
+		renderLockButton();
+	}
+
+	function renderLockButton(){
+		clear(lockButton);
+
+		var isOwner =
+			selectedView &&
+			Number(selectedView.owner_user_id) === Number(authProfile);
+
+		var locked = selectedView &&
+			Number(selectedView.layout_locked) === 1;
+
+		if(!isOwner){
+			setHidden(lockButton, true);
+			return;
+		}
+
+		setHidden(lockButton, false);
+
+		lockButton.textContent = locked
+			? "SBLOCCA CONFIGURAZIONE"
+			: "BLOCCA CONFIGURAZIONE";
+
+		lockButton.onclick = function(){
+			lockButton.disabled = true;
+
+			usersRequest(
+				"PUT",
+				"/views/" + selectedView.id + "/lock",
+				{ locked: !locked },
+				function(err, result){
+					lockButton.disabled = false;
+
+					if(err || !result || !result.ok){
+						message.textContent =
+							err || (result && result.error) ||
+							"Operazione non riuscita.";
+						return;
+					}
+
+					selectedView.layout_locked =
+						result.layout_locked;
+
+					loadSelectedView(selectedView.id);
+				}
+			);
+		};
+	}
+
+	function renderEditor(){
+		clear(editor);
+
+		var availableBoxes = DASHBOARD_BOXES.filter(function(b){
+			return b.view_type === selectedView.view_type ||
+				b.view_type === "both";
+		});
+
+		var used = [];
+
+		for(var r = 0; r < currentRows.length; r++){
+			for(var j = 0; j < currentRows[r].length; j++){
+				used.push(currentRows[r][j].box_id);
+			}
+		}
+
+		for(var r = 0; r < currentRows.length; r++){
+			var row = currentRows[r];
+
+			var rowBox = mk("div", "", "");
+			rowBox.style.border = "1px solid #aaa";
+			rowBox.style.borderRadius = "6px";
+			rowBox.style.padding = "8px";
+			rowBox.style.display = "flex";
+			rowBox.style.flexDirection = "column";
+			rowBox.style.gap = "7px";
+
+			var rowTitle = mk("div", "", "RIGA " + (r + 1));
+			rowTitle.style.fontWeight = "bold";
+			rowBox.appendChild(rowTitle);
+
+			for(var j = 0; j < row.length; j++){
+				renderBox(rowBox, row[j], r, j);
+			}
+
+			editor.appendChild(rowBox);
+		}
+
+		if(!currentRows.length){
+			var empty = mk("div", "", "Nessun box configurato.");
+			empty.style.textAlign = "center";
+			editor.appendChild(empty);
+		}
+
+		clear(addSelect);
+
+		var firstOption = document.createElement("option");
+		firstOption.value = "";
+		firstOption.textContent = "Seleziona un box...";
+		addSelect.appendChild(firstOption);
+
+		for(var i = 0; i < availableBoxes.length; i++){
+			var catalogBox = availableBoxes[i];
+
+			if(used.indexOf(catalogBox.id) !== -1){
+				continue;
+			}
+
+			var option = document.createElement("option");
+			option.value = catalogBox.id;
+			option.textContent = catalogBox.title;
+			addSelect.appendChild(option);
+		}
+
+		addButton.disabled = !canEdit || addSelect.options.length <= 1;
+		addSelect.disabled = !canEdit;
+		saveButton.disabled = !canEdit;
+
+		if(!canEdit){
+			addButton.style.display = "none";
+			addSelect.style.display = "none";
+			saveButton.style.display = "none";
+		}else{
+			addButton.style.display = "";
+			addSelect.style.display = "";
+			saveButton.style.display = "";
+		}
+	}
+
+	function renderBox(rowBox, item, rowIndex, itemIndex){
+		var catalogBox = findItem(DASHBOARD_BOXES, function(b){
+			return b.id === item.box_id;
+		});
+
+		var itemBox = mk("div", "", "");
+		itemBox.style.border = "1px solid #ccc";
+		itemBox.style.borderRadius = "5px";
+		itemBox.style.padding = "8px";
+		itemBox.style.display = "flex";
+		itemBox.style.flexDirection = "column";
+		itemBox.style.gap = "7px";
+
+		var name = mk(
+			"div",
+			"",
+			catalogBox ? catalogBox.title : item.box_id
+		);
+		name.style.fontWeight = "bold";
+		itemBox.appendChild(name);
+
+		var actions = mk("div", "", "");
+		actions.style.display = "flex";
+		actions.style.gap = "6px";
+
+		var upButton = mk("button", "", "↑");
+		upButton.type = "button";
+		upButton.style.flex = "1";
+		upButton.disabled = !canEdit ||
+			(rowIndex === 0 && itemIndex === 0);
+
+		upButton.onclick = function(){
+			moveItem(rowIndex, itemIndex, -1);
+		};
+
+		var downButton = mk("button", "", "↓");
+		downButton.type = "button";
+		downButton.style.flex = "1";
+
+		var isLast =
+			rowIndex === currentRows.length - 1 &&
+			itemIndex === currentRows[rowIndex].length - 1;
+
+		downButton.disabled = !canEdit || isLast;
+
+		downButton.onclick = function(){
+			moveItem(rowIndex, itemIndex, 1);
+		};
+
+		var removeButton = mk("button", "", "RIMUOVI");
+		removeButton.type = "button";
+		removeButton.style.flex = "2";
+		removeButton.disabled = !canEdit;
+
+		removeButton.onclick = function(){
+			currentRows[rowIndex].splice(itemIndex, 1);
+
+			if(!currentRows[rowIndex].length){
+				currentRows.splice(rowIndex, 1);
+			}
+
+			renderEditor();
+		};
+
+		actions.appendChild(upButton);
+		actions.appendChild(downButton);
+		actions.appendChild(removeButton);
+		itemBox.appendChild(actions);
+
+		rowBox.appendChild(itemBox);
+	}
+
+	function moveItem(rowIndex, itemIndex, direction){
+		var flat = [];
+
+		for(var r = 0; r < currentRows.length; r++){
+			for(var j = 0; j < currentRows[r].length; j++){
+				flat.push(currentRows[r][j]);
+			}
+		}
+
+		var index = 0;
+
+		for(var r = 0; r < rowIndex; r++){
+			index += currentRows[r].length;
+		}
+
+		index += itemIndex;
+
+		var target = index + direction;
+
+		if(target < 0 || target >= flat.length){
+			return;
+		}
+
+		var temp = flat[index];
+		flat[index] = flat[target];
+		flat[target] = temp;
+
+		currentRows = [];
+
+		for(var i = 0; i < flat.length; i += 2){
+			currentRows.push(flat.slice(i, i + 2));
+		}
+
+		renderEditor();
+	}
+
+	addButton.onclick = function(){
+		var boxId = addSelect.value;
+
+		if(!boxId || !canEdit){
+			return;
+		}
+
+		currentRows.push([{
+			box_id: boxId,
+			is_public: 1
+		}]);
+
+		renderEditor();
+	};
+
+	saveButton.onclick = function(){
+		if(!canEdit || !selectedView){
+			return;
+		}
+
+		saveButton.disabled = true;
+		message.textContent = "Salvataggio in corso...";
+
+		usersRequest(
+			"PUT",
+			"/views/" + selectedView.id + "/layout",
+			{
+				rows: currentRows.map(function(row){
+					return row.map(function(item){
+						return {
+							box_id: item.box_id,
+							enabled: true,
+							is_public: item.is_public === true ||
+								Number(item.is_public) === 1
+						};
+					});
+				})
+			},
+			function(err, result){
+				saveButton.disabled = false;
+
+				if(err || !result || !result.ok){
+					message.textContent =
+						err || (result && result.error) ||
+						"Salvataggio non riuscito.";
+					return;
+				}
+
+				message.textContent = "Configurazione salvata.";
+
+				loadAuthorizedConfig(function(configErr){
+					if(configErr){
+						message.textContent =
+							"Salvata, ma aggiornamento della dashboard non riuscito.";
+						return;
+					}
+
+					loadSelectedView(selectedView.id);
+				});
+			}
+		);
+	};
+}
+
 
 function openUserManagement(){
   var panel = $("viewMenuPanel");
