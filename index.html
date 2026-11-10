@@ -325,7 +325,7 @@ input[type=checkbox] {
   font-size:.75em;
   color:#555;
   text-align:right;
-  margin-top:-8px;
+  margin-top:-16px;
   margin-right:0;
   margin-bottom:0;
   margin-left:0;
@@ -5964,25 +5964,31 @@ function openUserManagement(){
 }
 
 
-function updateLoggedUser(){
-  var el = $("loggedUser");
+function updateLoggedUser() {
+    const el = document.getElementById("loggedUser");
+    if (!el) return;
 
-  if(!el){ return; }
+    if (!authToken || !authProfile) {
+        el.textContent = "";
+        return;
+    }
 
-  if(!authToken || !authProfile){
-    el.textContent = "";
-    return;
-  }
+    let user = null;
 
-  var user = userById(authProfile);
+    if (String(authProfile).toLowerCase() === "famiglia") {
+        user = USERS.find(u => u.type === "family");
+    } else {
+        user = USERS.find(u => String(u.id) === String(authProfile));
+    }
 
-  if(!user){
-    el.textContent = "Utente collegato: " + userName(authProfile);
-    return;
-  }
+    if (!user) {
+        el.textContent = "Utente collegato";
+        return;
+    }
 
-  el.textContent = "Utente collegato: " + user.name +
-    (user.type ? " (" + user.type + ")" : "");
+    const typeLabel = user.type === "family" ? "Famiglia" : "Utente";
+
+    el.textContent = `Utente collegato: ${user.name} (${typeLabel})`;
 }
 
 function initViewMenu(){
