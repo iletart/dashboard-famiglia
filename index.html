@@ -7564,6 +7564,9 @@ function authLogin(userId, pin){
 
     authToken = data.token;
     authProfile = String(data.user_id);
+	setHidden($("loginPage"), true);
+	setHidden($("welcomePage"), true);
+	setHidden($("head"), false);
 	authUserType = String(data.user_type || "");
 	authUserName = String(data.user_name || "");
     updateLoggedUser();
