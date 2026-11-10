@@ -5963,7 +5963,6 @@ function openUserManagement(){
   loadUsers();
 }
 
-
 function updateLoggedUser() {
     const el = document.getElementById("loggedUser");
     if (!el) return;
@@ -5973,13 +5972,9 @@ function updateLoggedUser() {
         return;
     }
 
-    let user = null;
-
-    if (String(authProfile).toLowerCase() === "famiglia") {
-        user = USERS.find(u => u.type === "family");
-    } else {
-        user = USERS.find(u => String(u.id) === String(authProfile));
-    }
+    const user = USERS.find(u =>
+        String(u.user_id ?? u.id) === String(authProfile)
+    );
 
     if (!user) {
         el.textContent = "Utente collegato";
