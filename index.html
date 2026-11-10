@@ -2325,7 +2325,7 @@ function renderPersonalGlobalTasks(){
   var currentUser = null;
 
   for(var i = 0; i < USERS.length; i++){
-    if(String(USERS[i].name).toLowerCase() === String(currentView).toLowerCase()){
+    if(String(USERS[i].view_id) === String(currentView)){
       currentUser = USERS[i];
       break;
     }
