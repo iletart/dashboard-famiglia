@@ -5608,64 +5608,34 @@ function buildLayout(view){
 
 	clear(host);
 
-	/* Le viste columns hanno una riga DB per ogni colonna;
-	   le viste rows hanno una riga DB per ogni riga visuale. */
-	if(vc.layout_mode === "columns" && vc.view_type !== "shared"){
+	/* Tutte le viste usano righe: un solo box = larghezza piena;
+	   più box = affiancati nella stessa riga. */
+	for(i = 0; i < rows.length; i++){
+		row = rows[i];
+		items = (row.items || []).slice();
+
+		items.sort(function(a, b){
+			return a.position - b.position;
+		});
+
+		if(items.length === 0){ continue; }
+
 		var container = mk("div", "row layout-row");
 		host.appendChild(container);
 
-		for(i = 0; i < rows.length; i++){
-			row = rows[i];
-			items = (row.items || []).slice();
+		for(j = 0; j < items.length; j++){
+			item = items[j];
+			b = $(item.element_id);
 
-			items.sort(function(a, b){
-				return a.position - b.position;
-			});
+			if(!b){ continue; }
 
-			if(items.length === 0){ continue; }
+			setHidden(b, false);
 
-			var col = mk("div", "col layout-column");
+			var col = mk("div", items.length === 1 ? "col full" : "col");
+			col.appendChild(b);
 			container.appendChild(col);
-
-			for(j = 0; j < items.length; j++){
-				item = items[j];
-				b = $(item.element_id);
-
-				if(!b){ continue; }
-
-				setHidden(b, false);
-				col.appendChild(b);
-			}
 		}
-	} else {
-		for(i = 0; i < rows.length; i++){
-			row = rows[i];
-			items = (row.items || []).slice();
-
-			items.sort(function(a, b){
-				return a.position - b.position;
-			});
-
-			if(items.length === 0){ continue; }
-
-			var container = mk("div", "row layout-row");
-			host.appendChild(container);
-
-			for(j = 0; j < items.length; j++){
-				item = items[j];
-				b = $(item.element_id);
-
-				if(!b){ continue; }
-
-				setHidden(b, false);
-
-				var col = mk("div", items.length === 1 ? "col full" : "col");
-				col.appendChild(b);
-				container.appendChild(col);
-			}
-		}
-	}
-}
+	}}
 
 function setView(view, manual){
   if(manual){ viewManualUntil = Date.now() + 10 * 60 * 1000; }
@@ -7403,10 +7373,8 @@ function alignBoxes(){
     }
   }
 
-  /* RIGHE: uniforma i box affiancati solo nelle viste rows.
-     Nelle viste columns le colonne contengono box impilati: non
-     bisogna allungare il primo box di ogni colonna. */
-  if(!isSmallScreen && (currentViewConfig.layout_mode !== "columns" || currentViewConfig.view_type === "shared")){
+  /* RIGHE: uniforma in altezza i box affiancati nella stessa riga. */
+  if(!isSmallScreen){
     for(i = 0; i < rows.length; i++){
       var firsts = [];
       var max = 0;
