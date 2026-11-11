@@ -8015,13 +8015,16 @@ function restoreAuthSessionAfterProfiles(){
   authRequest("POST", "/session/verify", null, function(err, data){
 
     // Errore di rete: conserviamo la sessione e non facciamo logout.
-    if(err){
-      setHidden($("head"), false);
-      setHidden($("dashboardContent"), true);
-      setHidden($("personalView"), true);
-      setText($("err"), "Connessione temporaneamente non disponibile. Riprovo al prossimo accesso.");
-      return;
-    }
+	if(err){
+	  setHidden($("head"), false);
+	  setHidden($("dashboardContent"), true);
+	  setHidden($("personalView"), true);
+
+	  setText($("err"), "ERRORE VERIFY: " + err);
+	  console.log("SESSION VERIFY ERROR:", err);
+
+	  return;
+	}
 
     // Sessione realmente scaduta o non valida.
     if(!data || !data.ok){
