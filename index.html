@@ -7633,16 +7633,20 @@ function updateDashboardBoxTitles(){
 }
 
 function clearAuthStorage(){
-	try {
-		localStorage.removeItem("dashboardAuthToken");
-		localStorage.removeItem("dashboardAuthProfile");
-		localStorage.removeItem("dashboardAuthSessionId");
-		localStorage.removeItem("dashboardAuthUserType");
-		localStorage.removeItem("dashboardAuthUserName");
-	} catch(e){}
+  try {
+    localStorage.removeItem("dashboardAuthToken");
+    localStorage.removeItem("dashboardAuthProfile");
+    localStorage.removeItem("dashboardAuthSessionId");
+    localStorage.removeItem("dashboardAuthUserType");
+    localStorage.removeItem("dashboardAuthUserName");
+  } catch(e){}
 
-	authUserType = "";
-	authUserName = "";
+  // Elimina anche il cookie di autenticazione
+  document.cookie =
+    "nestplan_auth=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax";
+
+  authUserType = "";
+  authUserName = "";
 }
 
 function showLoggedOut(message){
@@ -7660,8 +7664,8 @@ function showLoggedOut(message){
 	setHidden($("personalView"), true);
 	clear($("err"));
 	if(message){ setText($("err"), message); }
-	renderViewMenu();
 	closeViewMenu();
+	renderViewMenu();
 }
 
 function initBoxRefresh() {
@@ -8031,16 +8035,17 @@ function getAuthCookie() {
   return "";
 }
 
+
 function restoreAuthSession(){
   var token = "";
 
   try {
     token = localStorage.getItem("dashboardAuthToken") || "";
   } catch(e){}
-  
+
   if (!token) {
     token = getAuthCookie();
-  
+
     if (token) {
       try {
         localStorage.setItem("dashboardAuthToken", token);
@@ -8053,15 +8058,10 @@ function restoreAuthSession(){
     return;
   }
 
-  loadAuthProfiles(function(err){
-    if(err){
-      setText($("err"), "Impossibile caricare i profili: " + err);
-      return;
-    }
-
-    restoreAuthSessionAfterProfiles();
-  });
+  // Verifica direttamente la sessione, senza caricare i profili.
+  restoreAuthSessionAfterProfiles();
 }
+
 
 function restoreAuthSessionAfterProfiles(){
   try {
