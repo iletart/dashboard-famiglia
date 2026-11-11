@@ -7626,7 +7626,9 @@ function authLogin(userId, pin){
     user_id: userId,
     pin: pin
   }, function(err, data){
+    setText($("err"), "RISPOSTA LOGIN RICEVUTA");
     if(err || !data || !data.ok){
+	  setText($("err"), "LOGIN OK - TOKEN: " + !!data.token);
       alert(err || "Accesso non riuscito.");
       return;
     }
