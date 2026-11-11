@@ -7637,6 +7637,7 @@ function authLogin(userId, pin){
 setText($("err"), "LOGIN ACCETTATO");
 
     authToken = data.token;
+	setText($("err"), "TOKEN RICEVUTO");
     authProfile = String(data.user_id);
 	setHidden($("loginPage"), true);
 	setHidden($("welcomePage"), true);
@@ -7653,6 +7654,9 @@ setText($("err"), "LOGIN ACCETTATO");
 		localStorage.setItem("dashboardAuthUserType", authUserType);
 		localStorage.setItem("dashboardAuthUserName", authUserName);
     } catch(e){}
+	
+	
+	setText($("err"), "SESSIONE SALVATA: " + !!localStorage.getItem("dashboardAuthToken"));
 
     var panel = $("viewMenuPanel");
     if(panel){ panel._pendingLoginUserId = null; }
