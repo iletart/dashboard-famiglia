@@ -6881,7 +6881,7 @@ function openUserManagement(){
 }
 
 function updateLoggedUser() {
-  const el = document.getElementById("loggedUser");
+  var el = document.getElementById("loggedUser");
   if (!el) return;
 
   if (!authToken || !authProfile) {
@@ -6889,7 +6889,7 @@ function updateLoggedUser() {
     return;
   }
 
-  const user = AUTH_PROFILES.find(function(u) {
+  var user = AUTH_PROFILES.find(function(u) {
     return String(u.user_id) === String(authProfile);
   });
 
@@ -6898,9 +6898,9 @@ function updateLoggedUser() {
     return;
   }
 
-  const typeLabel = user.type === "family" ? "Famiglia" : "Utente";
+  var typeLabel = user.type === "family" ? "Famiglia" : "Utente";
 
-  el.textContent = `Utente collegato: ${user.name} (${typeLabel})`;
+  el.textContent = "Utente collegato: " + user.name + " (" + typeLabel + ")";
 }
 
 function openLoginPage(){
