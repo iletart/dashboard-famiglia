@@ -1641,6 +1641,16 @@ body.k #personalTodoList .todo-row .todo-text {
   }
 }
 
+body.k #authDiagnosticButton {
+  display:block;
+  position:fixed;
+  bottom:5px;
+  right:5px;
+  z-index:99999;
+  font-size:12px;
+  padding:5px;
+}
+
 </style>
 
 </head>
@@ -1742,6 +1752,14 @@ body.k #personalTodoList .todo-row .todo-text {
   </div>
 
 </div>
+
+<!-- ===== PULSANTE DIAGNOSTICA ===== -->
+<button
+  type="button"
+  onclick="showAuthDiagnostic()"
+  id="authDiagnosticButton">
+  DIAGNOSTICA LOGIN
+</button>
 
 <!-- ===== HEADER ===== -->
 <div class="box" id="head">
@@ -7697,6 +7715,26 @@ function authLogin(userId, pin){
 		startDashboard();
 
 	});
+}
+
+function showAuthDiagnostic() {
+  var token = "";
+  var profile = "";
+  var session = "";
+
+  try {
+    token = localStorage.getItem("dashboardAuthToken") || "";
+    profile = localStorage.getItem("dashboardAuthProfile") || "";
+    session = localStorage.getItem("dashboardAuthSessionId") || "";
+  } catch(e) {}
+
+  alert(
+    "DIAGNOSTICA LOGIN\n\n" +
+    "Token presente: " + (token ? "SI" : "NO") + "\n" +
+    "Lunghezza token: " + token.length + "\n" +
+    "Profilo: " + (profile || "ASSENTE") + "\n" +
+    "Sessione presente: " + (session ? "SI" : "NO")
+  );
 }
 
 function authLogout(){
