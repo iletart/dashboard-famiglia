@@ -2048,10 +2048,11 @@ function api(method, query, data, cb){
   if(authToken){ x.setRequestHeader("Authorization", "Bearer " + authToken); }
   if(method === "POST"){ x.setRequestHeader("Content-Type", "application/json"); }
   x.timeout = 20000;
+  
   x.onreadystatechange = function(){
     if(x.readyState !== 4){ return; }
     if(x.status === 0){
-      setTimeout(function(){ fin("Errore di connessione", null); }, 0);
+      fin("Errore di connessione", null);
       return;
     }
     var res = null;
@@ -2059,8 +2060,19 @@ function api(method, query, data, cb){
     if(x.status >= 200 && x.status < 300){ fin(null, res); }
     else { fin(res && res.error ? res.error : "Errore HTTP " + x.status, res); }
   };
-  x.onerror = function(){ fin("Errore di connessione", null); };
-  x.ontimeout = function(){ fin("Timeout di connessione", null); };
+
+  x.onerror = function(){
+    fin("Errore di rete o CORS", null);
+  };
+
+  x.ontimeout = function(){
+    fin("Timeout di connessione", null);
+  };
+
+  x.onabort = function(){
+    fin("Richiesta annullata", null);
+  };
+  
   try { x.send(method === "POST" ? JSON.stringify(data) : null); }
   catch(e){ fin("Errore di invio richiesta", null); }
 }
@@ -7256,6 +7268,8 @@ function loadAuthorizedConfig(callback){
 	  callback("Errore di connessione");
 	};
   x.ontimeout = function(){ callback("Timeout"); };
+  console.log("DASHBOARD TOKEN:", !!authToken);
+  console.log("DASHBOARD URL:", DASHBOARD_API_URL + "/config");
   x.send(null);
 }
 
