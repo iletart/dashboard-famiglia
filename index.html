@@ -7067,6 +7067,9 @@ function alignBoxes(){
 	  : personalRow();
 
   if(!host){ return; }
+  
+  var isSmallScreen = window.matchMedia &&
+                    window.matchMedia("(max-width:600px)").matches;
 
   var columns = host.querySelectorAll(".layout-column");
   var rows = host.querySelectorAll(".layout-row");
@@ -7086,19 +7089,21 @@ function alignBoxes(){
     var height = columnHeight(boxes);
     maxHeight = Math.max(maxHeight, height);
   }
-
-  /* Allunga solo l'ultimo box di ogni colonna */
-  for(i = 0; i < columns.length; i++){
-    boxes = boxesOf(columns[i]);
-
-    if(!boxes.length){ continue; }
-
-    var currentHeight = columnHeight(boxes);
-    var extra = maxHeight - currentHeight;
-
-    if(extra > 1){
-      var last = boxes[boxes.length - 1];
-      last.style.height = (last.offsetHeight + extra) + "px";
+  
+  /* Allunga solo su schermi più larghi di 600px */
+  if(!isSmallScreen){
+    for(i = 0; i < columns.length; i++){
+      boxes = boxesOf(columns[i]);
+  
+      if(!boxes.length){ continue; }
+  
+      var currentHeight = columnHeight(boxes);
+      var extra = maxHeight - currentHeight;
+  
+      if(extra > 1){
+        var last = boxes[boxes.length - 1];
+        last.style.height = (last.offsetHeight + extra) + "px";
+      }
     }
   }
 
