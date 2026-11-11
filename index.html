@@ -7602,7 +7602,10 @@ function startDashboard(preferredView){
 function authLogin(userId, pin){
   userId = Number(userId);
 
-  if(!Number.isInteger(userId) || userId <= 0){ return; }
+  if(!isFinite(userId) || Math.floor(userId) !== userId || userId <= 0){
+    alert("Profilo non valido.");
+    return;
+  }
 
   pin = String(pin || "").trim();
 
