@@ -7666,7 +7666,11 @@ setText($("err"), "LOGIN ACCETTATO");
 	authUserName = String(data.user_name || "");
 
 	setText($("err"), "DOPO USER NAME");
-    updateLoggedUser();
+	
+	setText($("err"), "PRIMA UPDATE");
+	updateLoggedUser();
+	setText($("err"), "DOPO UPDATE");
+	
 	setText($("err"), "UPDATE LOGGED USER COMPLETATO");
     authSessionId = data.session_id || "";
 	setText($("err"), "DOPO SESSION ID");
