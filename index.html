@@ -7664,6 +7664,17 @@ function loadAuthProfiles(callback){
 }
 
 function restoreAuthSession(){
+  var token = "";
+
+  try {
+    token = localStorage.getItem("dashboardAuthToken") || "";
+  } catch(e){}
+
+  if(!token){
+    showLoggedOut();
+    return;
+  }
+
   loadAuthProfiles(function(err){
     if(err){
       setText($("err"), "Impossibile caricare i profili: " + err);
