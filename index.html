@@ -7659,8 +7659,13 @@ setText($("err"), "LOGIN ACCETTATO");
 
 	setText($("err"), "HIDE COMPLETATO");
 
+	setText($("err"), "PRIMA USER TYPE");
 	authUserType = String(data.user_type || "");
+
+	setText($("err"), "PRIMA USER NAME");
 	authUserName = String(data.user_name || "");
+
+	setText($("err"), "DOPO USER NAME");
     updateLoggedUser();
 	setText($("err"), "UPDATE LOGGED USER COMPLETATO");
     authSessionId = data.session_id || "";
