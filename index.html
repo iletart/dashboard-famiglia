@@ -963,6 +963,20 @@ body.k .col.full {
   width:100%;
 }
 
+/* Pulsanti nei box: maggiore larghezza e margini laterali simmetrici */
+body.k .box button {
+  box-sizing:border-box;
+  margin-right:0;
+  padding-left:12px;
+  padding-right:12px;
+}
+
+/* I pulsanti segmentati occupano già tutta la riga: mantieni il padding compatto */
+body.k .box .seg > button {
+  padding-left:3px;
+  padding-right:3px;
+}
+
 /* Intestazione box */
 
 body.k .section-heading {
