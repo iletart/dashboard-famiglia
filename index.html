@@ -5583,7 +5583,7 @@ function buildLayout(view){
 
 	/* Le viste columns hanno una riga DB per ogni colonna;
 	   le viste rows hanno una riga DB per ogni riga visuale. */
-	if(vc.layout_mode === "columns"){
+	if(vc.layout_mode === "columns" && vc.view_type !== "shared"){
 		var container = mk("div", "row layout-row");
 		host.appendChild(container);
 
@@ -7388,7 +7388,7 @@ function alignBoxes(){
   /* RIGHE: uniforma i box affiancati solo nelle viste rows.
      Nelle viste columns le colonne contengono box impilati: non
      bisogna allungare il primo box di ogni colonna. */
-  if(!isSmallScreen && currentViewConfig.layout_mode !== "columns"){
+  if(!isSmallScreen && (currentViewConfig.layout_mode !== "columns" || currentViewConfig.view_type === "shared")){
     for(i = 0; i < rows.length; i++){
       var firsts = [];
       var max = 0;
