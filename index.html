@@ -7164,47 +7164,21 @@ function updateLoggedUser() {
 
 function openLoginPage(){
 
-  var select = $("loginProfile");
+  var family = $("loginFamily");
+  var user = $("loginUser");
   var pin = $("loginPin");
-  
-  if(!AUTH_PROFILES || !AUTH_PROFILES.length){
-    loadAuthProfiles(function(err){
-      if(err){
-        alert("Impossibile caricare i profili: " + err);
-        return;
-      }
-  
-      openLoginPage();
-    });
-    return;
-  }
 
-  clear(select);
-
-  var placeholder = document.createElement("option");
-  placeholder.value = "";
-  placeholder.textContent = "Seleziona il tuo profilo";
-  select.appendChild(placeholder);
-
-  for(var i = 0; i < AUTH_PROFILES.length; i++){
-
-    var profile = AUTH_PROFILES[i];
-    var option = document.createElement("option");
-
-    option.value = profile.user_id;
-    option.textContent = profile.name;
-
-    select.appendChild(option);
-  }
-
+  family.value = "";
+  user.value = "";
   pin.value = "";
 
   setHidden($("welcomePage"), true);
   setHidden($("loginPage"), false);
   setHidden($("head"), true);
 
-  select.focus();
+  family.focus();
 }
+
 
 function initLoginPage(){
 
