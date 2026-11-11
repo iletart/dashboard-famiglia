@@ -1265,30 +1265,11 @@ body.k .shopping-delete-label .trash-icon:after {
 
 body.k .settings-gear {
   display:inline-block;
+  font-size:25px;
+  line-height:18px;
   vertical-align:middle;
-  position:relative;
-  width:22px;
-  height:22px;
   margin-right:9px;
-  border-radius:50%;
-  background:
-    radial-gradient(circle, currentColor 0 3px, transparent 3.5px),
-    radial-gradient(circle, transparent 0 7px, currentColor 7px 8px, transparent 8.5px);
 }
-
-body.k .settings-gear:before {
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(currentColor,currentColor) center top / 2px 4px no-repeat,
-    linear-gradient(currentColor,currentColor) center bottom / 2px 4px no-repeat,
-    linear-gradient(currentColor,currentColor) left center / 4px 2px no-repeat,
-    linear-gradient(currentColor,currentColor) right center / 4px 2px no-repeat,
-    linear-gradient(45deg,transparent 43%,currentColor 44% 56%,transparent 57%) center / 22px 22px no-repeat,
-    linear-gradient(-45deg,transparent 43%,currentColor 44% 56%,transparent 57%) center / 22px 22px no-repeat;
-}
-
 
 /* Gruppi di pulsanti Kindle */
 
@@ -6027,7 +6008,7 @@ function renderViewMenu(){
 	);
 
 	if(IS_KINDLE){
-	  var gearIcon = mk("span", "settings-gear", "");
+	  var gearIcon = mk("span", "settings-gear", "☼");
 	  layoutButton.insertBefore(gearIcon, layoutButton.firstChild);
 	}
 
