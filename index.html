@@ -5635,7 +5635,8 @@ function buildLayout(view){
 			col.appendChild(b);
 			container.appendChild(col);
 		}
-	}}
+	}
+}
 
 function setView(view, manual){
   if(manual){ viewManualUntil = Date.now() + 10 * 60 * 1000; }
@@ -7337,40 +7338,15 @@ function alignBoxes(){
                     window.matchMedia &&
                     window.matchMedia("(max-width:600px)").matches;
 
-  var columns = host.querySelectorAll(".layout-column");
   var rows = host.querySelectorAll(".layout-row");
   var all = host.querySelectorAll(".box");
-  var i, j, boxes, maxHeight = 0;
+  var i, j, boxes;
 
   /* Reset delle altezze */
   for(i = 0; i < all.length; i++){
-	all[i].style.minHeight = "";
-	all[i].style.height = "";
-	all[i].style.flexGrow = "";
-  }
-
-  /* COLONNE: calcola l'altezza naturale della più alta */
-  for(i = 0; i < columns.length; i++){
-    boxes = boxesOf(columns[i]);
-    var height = columnHeight(boxes);
-    maxHeight = Math.max(maxHeight, height);
-  }
-  
-  /* Allunga solo su schermi più larghi di 600px */
-  if(!isSmallScreen){
-    for(i = 0; i < columns.length; i++){
-      boxes = boxesOf(columns[i]);
-  
-      if(!boxes.length){ continue; }
-  
-      var currentHeight = columnHeight(boxes);
-      var extra = maxHeight - currentHeight;
-  
-      if(extra > 1){
-        var last = boxes[boxes.length - 1];
-        last.style.height = (last.offsetHeight + extra) + "px";
-      }
-    }
+    all[i].style.minHeight = "";
+    all[i].style.height = "";
+    all[i].style.flexGrow = "";
   }
 
   /* RIGHE: uniforma in altezza i box affiancati nella stessa riga. */
