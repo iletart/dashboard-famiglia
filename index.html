@@ -6103,21 +6103,12 @@ function renderViewMenu(){
   	panel.appendChild(layoutButton);
   }
 
-  // GESTIONE UTENTI: visibile in base ai permessi
-  var currentViewConfig = findItem(DASHBOARD_VIEWS, function(v){
-    return v.id === currentView;
-  });
-
-  if(
-    authToken &&
-    AUTH_PERMISSIONS &&
-    typeof AUTH_PERMISSIONS.indexOf === "function" &&
-    AUTH_PERMISSIONS.indexOf("users.manage") !== -1
-  ){
+  // GESTIONE UTENTI: disponibile per ogni sessione autenticata
+  if(authToken){
     var manageUsersButton = mk("button", "", "GESTIONE UTENTI");
-	
+
     manageUsersButton.type = "button";
-	manageUsersButton.classList.add("menu-action-button");
+    manageUsersButton.classList.add("menu-action-button");
 
     manageUsersButton.onclick = function(ev){
       if(ev){
