@@ -7647,9 +7647,18 @@ setText($("err"), "LOGIN ACCETTATO");
     setText($("err"), "PRIMA DI AUTH PROFILE");
 	authProfile = String(data.user_id);
 	setText($("err"), "DOPO AUTH PROFILE");
+	
+	setText($("err"), "HIDE 1");
 	setHidden($("loginPage"), true);
+
+	setText($("err"), "HIDE 2");
 	setHidden($("welcomePage"), true);
+
+	setText($("err"), "HIDE 3");
 	setHidden($("head"), false);
+
+	setText($("err"), "HIDE COMPLETATO");
+
 	authUserType = String(data.user_type || "");
 	authUserName = String(data.user_name || "");
     updateLoggedUser();
