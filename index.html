@@ -7147,7 +7147,17 @@ function authRequest(method, path, body, callback){
     }
   };
 
-  x.onerror = function(){ callback("Errore di connessione"); };
+   x.onerror = function(){
+	   console.log("AUTH XHR ERROR", {
+		 url: AUTH_API_URL + path,
+		 status: x.status,
+		 readyState: x.readyState,
+		 response: x.responseText
+	   });
+	 
+	   callback("Errore di connessione");
+};
+
   x.ontimeout = function(){ callback("Timeout"); };
 
   x.send(body === null ? null : JSON.stringify(body));
