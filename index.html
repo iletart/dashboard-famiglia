@@ -1566,6 +1566,123 @@ body.k #personalTodoList .todo-row .todo-text {
   }
 }
 
+/* ===== KINDLE - HOME NESTPLAN ===== */
+
+body.k #welcomePage {
+  box-sizing:border-box;
+  width:100%;
+  height:100vh;
+  max-height:100vh;
+  min-height:0;
+  max-width:none;
+  margin:0;
+  padding:8px 12px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+/* HEADER */
+body.k #welcomePage .welcome-header h1 {
+  font-size:25px;
+  margin:0;
+}
+
+body.k #welcomePage .welcome-tagline {
+  font-size:11px;
+  margin:0;
+}
+
+body.k #welcomePage .welcome-header p {
+  font-size:12px;
+  margin:3px 0;
+}
+
+/* INTRO */
+body.k #welcomePage .welcome-intro {
+  margin:3px 0;
+}
+
+body.k #welcomePage .welcome-intro h2 {
+  font-size:16px;
+  margin:3px 0;
+}
+
+body.k #welcomePage .welcome-intro p {
+  font-size:11px;
+  line-height:1.25;
+  margin:3px auto;
+}
+
+/* BOX 2x2 */
+body.k #welcomePage .welcome-features {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-rows:repeat(2,minmax(0,1fr));
+  gap:8px;
+  width:100%;
+  flex:1;
+  min-height:0;
+  margin:6px 0;
+  text-align:center;
+}
+
+body.k #welcomePage .welcome-feature {
+  box-sizing:border-box;
+  min-height:0;
+  padding:5px;
+  border:1px solid #dce4e8;
+  border-radius:6px;
+  background:#fff;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+body.k #welcomePage .welcome-feature span {
+  font-size:19px;
+  font-family:Arial,sans-serif;
+}
+
+body.k #welcomePage .welcome-feature h3 {
+  font-size:14px;
+  margin:2px 0;
+}
+
+body.k #welcomePage .welcome-feature p {
+  font-size:10px;
+  line-height:1.2;
+  margin:2px 0;
+}
+
+/* PULSANTI AFFIANCATI */
+body.k #welcomePage .welcome-actions {
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  justify-content:center;
+  gap:8px;
+  margin:5px 0;
+}
+
+body.k #welcomePage .welcome-actions button {
+  box-sizing:border-box;
+  flex:1;
+  min-width:0;
+  width:50%;
+  padding:8px 3px;
+  font-size:11px;
+}
+
+/* FOOTER */
+body.k #welcomePage .welcome-footer {
+  font-size:10px;
+  margin:2px 0 0;
+}
+
 /* ===== PAGINA LOGIN NESTPLAN ===== */
 
 #loginPage {
@@ -1683,25 +1800,25 @@ body.k #authDiagnosticButton {
   <div class="welcome-features">
 
     <div class="welcome-feature">
-      <span>📅</span>
+      <span class="welcome-icon" data-kindle="▦">📅</span>
       <h3>Agende</h3>
       <p>Impegni personali e familiari sempre sotto controllo.</p>
     </div>
 
     <div class="welcome-feature">
-      <span>☑️</span>
+      <span class="welcome-icon" data-kindle="☑">☑️</span>
       <h3>Attività</h3>
       <p>Task condivisi e personali, con assegnazioni e promemoria.</p>
     </div>
 
     <div class="welcome-feature">
-      <span>🛒</span>
+      <span class="welcome-icon" data-kindle="▤">🛒</span>
       <h3>Spesa</h3>
       <p>Una lista condivisa, aggiornata da tutti.</p>
     </div>
 
     <div class="welcome-feature">
-      <span>🚗</span>
+      <span class="welcome-icon" data-kindle="➜">🚗</span>
       <h3>Spostamenti</h3>
       <p>Percorsi, tempi di viaggio e informazioni utili.</p>
     </div>
