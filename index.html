@@ -7450,8 +7450,19 @@ function usersRequest(method, path, body, callback){
 }
 
 function loadAuthorizedConfig(callback){
+function loadAuthorizedConfig(callback){
   var x = new XMLHttpRequest();
-  x.open("GET", DASHBOARD_API_URL + "/config", true);
+  var completed = false;
+
+  function finish(err){
+    if(completed){ return; }
+    completed = true;
+    callback(err);
+  }
+
+  var url = DASHBOARD_API_URL + "/config";
+
+  x.open("GET", url, true);
   x.setRequestHeader("Authorization", "Bearer " + authToken);
   x.timeout = 20000;
 
@@ -7459,57 +7470,57 @@ function loadAuthorizedConfig(callback){
     if(x.readyState !== 4){ return; }
 
     var data = null;
-    try { data = JSON.parse(x.responseText); } catch(e){}
 
-    if(x.status !== 200 || !data || !data.ok ||
+    try {
+      data = JSON.parse(x.responseText);
+    } catch(e){}
+
+    if(x.status !== 200){
+      finish(
+        "Config HTTP " + x.status +
+        (data && data.error ? ": " + data.error : "")
+      );
+      return;
+    }
+
+    if(!data || !data.ok ||
        !Array.isArray(data.views) ||
        !Array.isArray(data.users) ||
-	   !Array.isArray(data.boxes)){
-      callback("Configurazione non disponibile");
+       !Array.isArray(data.boxes)){
+      finish("Risposta configurazione non valida");
       return;
     }
 
     DASHBOARD_VIEWS = data.views;
-	
-	DASHBOARD_BOXES = data.boxes.filter(function(box){
-		return box && box.id && box.element_id && box.view_type;
-	});
-	
-	updateDashboardBoxTitles();
-	
-	AUTH_PERMISSIONS = Array.isArray(data.permissions)
-	  ? data.permissions
-	  : [];
+
+    DASHBOARD_BOXES = data.boxes.filter(function(box){
+      return box && box.id && box.element_id && box.view_type;
+    });
+
+    updateDashboardBoxTitles();
+
+    AUTH_PERMISSIONS = Array.isArray(data.permissions)
+      ? data.permissions
+      : [];
 
     USERS = data.users.filter(function(u){
       return u && u.id && u.name;
     });
 
-	if(IS_KINDLE){
-		setText($("err"),
-			"VISTE: " + DASHBOARD_VIEWS.length +
-			" | BOX: " + DASHBOARD_BOXES.length +
-			" | UTENTI: " + USERS.length
-		);
-	}
-
-    callback(null);
+    finish(null);
   };
 
   x.onerror = function(){
-	  console.log("DASHBOARD API ERROR", {
-		url: DASHBOARD_API_URL + "/config",
-		status: x.status,
-		readyState: x.readyState
-	  });
+    finish("Errore rete durante il caricamento della configurazione");
+  };
 
-	  callback("Errore di connessione");
-	};
-  x.ontimeout = function(){ callback("Timeout"); };
-  console.log("DASHBOARD TOKEN:", !!authToken);
-  console.log("DASHBOARD URL:", DASHBOARD_API_URL + "/config");
+  x.ontimeout = function(){
+    finish("Timeout caricamento configurazione");
+  };
+
   x.send(null);
 }
+
 
 
 function updateDashboardBoxTitles(){
