@@ -7647,16 +7647,17 @@ setText($("err"), "LOGIN ACCETTATO");
     updateLoggedUser();
     authSessionId = data.session_id || "";
 
-    try {
+	try {
 		localStorage.setItem("dashboardAuthToken", authToken);
 		localStorage.setItem("dashboardAuthProfile", authProfile);
 		localStorage.setItem("dashboardAuthSessionId", authSessionId);
 		localStorage.setItem("dashboardAuthUserType", authUserType);
 		localStorage.setItem("dashboardAuthUserName", authUserName);
-    } catch(e){}
-	
-	
-	setText($("err"), "SESSIONE SALVATA: " + !!localStorage.getItem("dashboardAuthToken"));
+
+		setText($("err"), "SESSIONE SALVATA");
+	} catch(e){
+		setText($("err"), "ERRORE LOCALSTORAGE: " + e.message);
+	}
 
     var panel = $("viewMenuPanel");
     if(panel){ panel._pendingLoginUserId = null; }
