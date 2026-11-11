@@ -7627,11 +7627,14 @@ function authLogin(userId, pin){
     pin: pin
   }, function(err, data){
     setText($("err"), "RISPOSTA LOGIN RICEVUTA");
-    if(err || !data || !data.ok){
-	  setText($("err"), "LOGIN OK - TOKEN: " + !!data.token);
-      alert(err || "Accesso non riuscito.");
-      return;
-    }
+	if(err || !data || !data.ok){
+	  setText($("err"),
+		"LOGIN FALLITO: " + (err || (data && data.error) || "Risposta non valida")
+	  );
+	  return;
+	}
+
+setText($("err"), "LOGIN ACCETTATO");
 
     authToken = data.token;
     authProfile = String(data.user_id);
