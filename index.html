@@ -1076,7 +1076,8 @@ body.k #headerRight {
 body.k #loggedUser {
   display:block;
   position:relative;
-  top:-5px;
+  top:3px;
+  right:6px;
   font-size:.55em;
   margin:0;
   text-align:right;
@@ -7497,6 +7498,7 @@ function initBoxRefresh() {
     }
 
     var heading = headings[0];
+	heading.style.position = "relative";
 
     if (heading.getElementsByClassName("box-refresh").length) {
       continue;
@@ -7508,10 +7510,10 @@ function initBoxRefresh() {
     button.title = "Aggiorna";
     button.setAttribute("aria-label", "Aggiorna");
 
-	button.style.position = "static";
-	button.style.display = "inline-block";
-	button.style.verticalAlign = "middle";
-	button.style.margin = "0 0 0 5px";
+	button.style.position = "absolute";
+	button.style.top = "0";
+	button.style.right = "0";
+	button.style.margin = "0";
     button.style.padding = "0 2px";
     button.style.fontSize = "20px";
     button.style.lineHeight = "1";
