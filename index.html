@@ -7638,7 +7638,9 @@ setText($("err"), "LOGIN ACCETTATO");
 
     authToken = data.token;
 	setText($("err"), "TOKEN RICEVUTO");
-    authProfile = String(data.user_id);
+    setText($("err"), "PRIMA DI AUTH PROFILE");
+	authProfile = String(data.user_id);
+	setText($("err"), "DOPO AUTH PROFILE");
 	setHidden($("loginPage"), true);
 	setHidden($("welcomePage"), true);
 	setHidden($("head"), false);
