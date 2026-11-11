@@ -575,6 +575,12 @@ input[type=checkbox] {
   align-items:center;
 }
 
+.menu-action-button {
+  background-color: #704052 !important;
+  color: #ffffff !important;
+  border: 1px solid #704052 !important;
+}
+
 #menuDate {
   margin:10px 0;
 }
@@ -6013,6 +6019,7 @@ function renderViewMenu(){
 	}
 
 	layoutButton.type = "button";
+	layoutButton.classList.add("menu-action-button");
   
   	layoutButton.onclick = function(ev){
   		if(ev){
@@ -6038,7 +6045,9 @@ function renderViewMenu(){
     AUTH_PERMISSIONS.indexOf("users.manage") !== -1
   ){
     var manageUsersButton = mk("button", "", "GESTIONE UTENTI");
+	
     manageUsersButton.type = "button";
+	manageUsersButton.classList.add("menu-action-button");
 
     manageUsersButton.onclick = function(ev){
       if(ev){
@@ -6054,7 +6063,10 @@ function renderViewMenu(){
 
   if(authToken){
     var logoutButton = mk("button", "", "↪ ESCI");
+	
     logoutButton.type = "button";
+	logoutButton.classList.add("menu-action-button");
+	
     logoutButton.onclick = authLogout;
     panel.appendChild(logoutButton);
   }
