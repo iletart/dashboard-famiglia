@@ -7330,8 +7330,17 @@ window.onresize = scheduleAlign;
 window.addEventListener("load", scheduleAlign);
 
 
+
 function authRequest(method, path, body, callback){
   var x = new XMLHttpRequest();
+  var completed = false;
+
+  function finish(err, data, status){
+    if(completed){ return; }
+    completed = true;
+    callback(err, data, status);
+  }
+
   x.open(method, AUTH_API_URL + path, true);
   x.timeout = 20000;
 
@@ -7339,7 +7348,11 @@ function authRequest(method, path, body, callback){
     x.setRequestHeader("Content-Type", "application/json");
   }
 
-  var token = localStorage.getItem("dashboardAuthToken") || "";
+  var token = "";
+
+  try {
+    token = localStorage.getItem("dashboardAuthToken") || "";
+  } catch(e){}
 
   if(token){
     x.setRequestHeader("Authorization", "Bearer " + token);
@@ -7349,30 +7362,48 @@ function authRequest(method, path, body, callback){
     if(x.readyState !== 4){ return; }
 
     var data = null;
-    try { data = JSON.parse(x.responseText); } catch(e){}
+
+    try {
+      data = JSON.parse(x.responseText);
+    } catch(e){}
 
     if(x.status >= 200 && x.status < 300){
-      callback(null, data);
+      finish(null, data, x.status);
     } else {
-      callback(data && data.error ? data.error : "Errore HTTP " + x.status);
+      finish(
+        data && data.error ? data.error : "Errore HTTP " + x.status,
+        data,
+        x.status
+      );
     }
   };
 
-   x.onerror = function(){
-	   console.log("AUTH XHR ERROR", {
-		 url: AUTH_API_URL + path,
-		 status: x.status,
-		 readyState: x.readyState,
-		 response: x.responseText
-	   });
-	 
-	   callback("Errore di connessione");
-};
+  x.onerror = function(){
+    console.log("AUTH XHR ERROR", {
+      url: AUTH_API_URL + path,
+      status: x.status,
+      readyState: x.readyState,
+      response: x.responseText
+    });
 
-  x.ontimeout = function(){ callback("Timeout"); };
+    finish("Errore di connessione", null, 0);
+  };
 
-  x.send(body === null ? null : JSON.stringify(body));
+  x.ontimeout = function(){
+    finish("Timeout", null, 0);
+  };
+
+  x.onabort = function(){
+    finish("Richiesta interrotta", null, 0);
+  };
+
+  try {
+    x.send(body === null ? null : JSON.stringify(body));
+  } catch(e) {
+    finish("Errore di invio: " + e.message, null, 0);
+  }
 }
+
 
 
 function usersRequest(method, path, body, callback){
