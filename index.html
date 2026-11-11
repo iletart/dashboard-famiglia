@@ -7726,6 +7726,7 @@ function authLogin(userId, pin){
 
 function showAuthDiagnostic() {
   var token = "";
+  var cookie = "";
   var profile = "";
   var session = "";
 
@@ -7733,14 +7734,15 @@ function showAuthDiagnostic() {
     token = localStorage.getItem("dashboardAuthToken") || "";
     profile = localStorage.getItem("dashboardAuthProfile") || "";
     session = localStorage.getItem("dashboardAuthSessionId") || "";
+    cookie = getAuthCookie();
   } catch(e) {}
 
   alert(
     "DIAGNOSTICA LOGIN\n\n" +
-    "Token presente: " + (token ? "SI" : "NO") + "\n" +
-    "Lunghezza token: " + token.length + "\n" +
+    "LocalStorage token: " + (token ? "SI" : "NO") + "\n" +
+    "Cookie token: " + (cookie ? "SI" : "NO") + "\n" +
     "Profilo: " + (profile || "ASSENTE") + "\n" +
-    "Sessione presente: " + (session ? "SI" : "NO")
+    "Sessione: " + (session ? "SI" : "NO")
   );
 }
 
