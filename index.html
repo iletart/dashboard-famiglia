@@ -1642,6 +1642,10 @@ body.k #personalTodoList .todo-row .todo-text {
   }
 }
 
+#authDiagnosticButton {
+  display:none;
+}
+
 body.k #authDiagnosticButton {
   display:block;
   position:fixed;
@@ -7692,6 +7696,7 @@ function authLogin(userId, pin){
 		  return;
 		}
 		authToken = data.token;
+		saveAuthCookie(authToken);
 		authProfile = String(data.user_id);
 		setHidden($("loginPage"), true);
 		setHidden($("welcomePage"), true);
@@ -7772,12 +7777,47 @@ function loadAuthProfiles(callback){
   });
 }
 
+function saveAuthCookie(token) {
+  var expires = new Date();
+  expires.setDate(expires.getDate() + 30);
+
+  document.cookie =
+    "nestplan_auth=" + encodeURIComponent(token) +
+    "; expires=" + expires.toUTCString() +
+    "; path=/; SameSite=Lax; Secure";
+}
+
+function getAuthCookie() {
+  var name = "nestplan_auth=";
+  var cookies = document.cookie.split(";");
+
+  for (var i = 0; i < cookies.length; i++) {
+    var c = cookies[i].trim();
+
+    if (c.indexOf(name) === 0) {
+      return decodeURIComponent(c.substring(name.length));
+    }
+  }
+
+  return "";
+}
+
 function restoreAuthSession(){
   var token = "";
 
   try {
     token = localStorage.getItem("dashboardAuthToken") || "";
   } catch(e){}
+  
+  if (!token) {
+    token = getAuthCookie();
+  
+    if (token) {
+      try {
+        localStorage.setItem("dashboardAuthToken", token);
+      } catch(e){}
+    }
+  }
 
   if(!token){
     showLoggedOut();
