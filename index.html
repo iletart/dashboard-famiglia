@@ -1661,10 +1661,10 @@ body.k #welcomePage .welcome-feature p {
 
 /* PULSANTI AFFIANCATI */
 body.k #welcomePage .welcome-actions {
-  display:flex;
-  flex-direction:row;
-  flex-wrap:nowrap;
-  justify-content:center;
+  display:flex !important;
+  flex-direction:row !important;
+  flex-wrap:nowrap !important;
+  justify-content:space-between;
   align-items:center;
   gap:8px;
   width:100%;
@@ -1672,13 +1672,13 @@ body.k #welcomePage .welcome-actions {
 }
 
 body.k #welcomePage .welcome-actions button {
-  display:block;
-  box-sizing:border-box;
-  flex:1 1 50%;
-  min-width:0;
-  width:50%;
-  margin:0;
-  padding:10px 3px;
+  display:inline-block !important;
+  flex:0 0 calc(50% - 4px) !important;
+  width:calc(50% - 4px) !important;
+  min-width:0 !important;
+  max-width:calc(50% - 4px) !important;
+  margin:0 !important;
+  padding:10px 2px;
   font-size:15px;
   white-space:nowrap;
 }
