@@ -7342,71 +7342,45 @@ function alignBoxes(){
 	  ? $("dashboardContent")
 	  : personalRow();
 
-  if(!host){ return; }
-  
-  /* Kindle mantiene le colonne anche con viewport stretto. */
-  var isSmallScreen = !document.body.classList.contains("k") &&
-                    window.matchMedia &&
-                    window.matchMedia("(max-width:600px)").matches;
+	if(!host){ return; }
 
-  var columns = host.querySelectorAll(".layout-column");
-  var rows = host.querySelectorAll(".layout-row");
-  var all = host.querySelectorAll(".box");
-  var i, j, boxes, maxHeight = 0;
+	/* Kindle mantiene le colonne anche con viewport stretto. */
+	var isSmallScreen = !document.body.classList.contains("k") &&
+		window.matchMedia &&
+		window.matchMedia("(max-width:600px)").matches;
 
-  /* Reset delle altezze */
-  for(i = 0; i < all.length; i++){
-	all[i].style.minHeight = "";
-	all[i].style.height = "";
-	all[i].style.flexGrow = "";
-  }
+	var rows = host.querySelectorAll(".layout-row");
+	var all = host.querySelectorAll(".box");
+	var i, j, boxes;
 
-  /* COLONNE: calcola l'altezza naturale della più alta */
-  for(i = 0; i < columns.length; i++){
-    boxes = boxesOf(columns[i]);
-    var height = columnHeight(boxes);
-    maxHeight = Math.max(maxHeight, height);
-  }
-  
-  /* Allunga solo su schermi più larghi di 600px */
-  if(!isSmallScreen){
-    for(i = 0; i < columns.length; i++){
-      boxes = boxesOf(columns[i]);
-  
-      if(!boxes.length){ continue; }
-  
-      var currentHeight = columnHeight(boxes);
-      var extra = maxHeight - currentHeight;
-  
-      if(extra > 1){
-        var last = boxes[boxes.length - 1];
-        last.style.height = (last.offsetHeight + extra) + "px";
-      }
-    }
-  }
+	/* Rimuove qualsiasi altezza residua: le colonne mantengono
+	   l'altezza naturale dei propri riquadri, senza deformarli. */
+	for(i = 0; i < all.length; i++){
+		all[i].style.minHeight = "";
+		all[i].style.height = "";
+		all[i].style.flexGrow = "";
+	}
 
-  /* RIGHE: uniforma i box affiancati solo nelle viste rows.
-     Nelle viste columns le colonne contengono box impilati: non
-     bisogna allungare il primo box di ogni colonna. */
-  if(!isSmallScreen && currentViewConfig.layout_mode !== "columns"){
-    for(i = 0; i < rows.length; i++){
-      var firsts = [];
-      var max = 0;
-  
-      for(j = 0; j < rows[i].children.length; j++){
-        boxes = boxesOf(rows[i].children[j]);
-  
-        if(boxes.length){
-          firsts.push(boxes[0]);
-          max = Math.max(max, boxes[0].offsetHeight);
-        }
-      }
-  
-      for(j = 0; j < firsts.length; j++){
-        firsts[j].style.minHeight = max + "px";
-      }
-    }
-  }
+	/* Nelle viste a righe uniforma soltanto i box affiancati. */
+	if(!isSmallScreen && currentViewConfig.layout_mode !== "columns"){
+		for(i = 0; i < rows.length; i++){
+			var firsts = [];
+			var max = 0;
+
+			for(j = 0; j < rows[i].children.length; j++){
+				boxes = boxesOf(rows[i].children[j]);
+
+				if(boxes.length){
+					firsts.push(boxes[0]);
+					max = Math.max(max, boxes[0].offsetHeight);
+				}
+			}
+
+			for(j = 0; j < firsts.length; j++){
+				firsts[j].style.minHeight = max + "px";
+			}
+		}
+	}
 }
 
 
