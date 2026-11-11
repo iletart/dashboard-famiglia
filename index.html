@@ -1817,6 +1817,17 @@ body.k #authDiagnosticButton {
   padding:5px;
 }
 
+
+/* KINDLE: pulsanti dei box a larghezza piena, con margini laterali simmetrici.
+   Esclusi i controlli con layout dedicato. */
+body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.shopping-commit-button):not(.add-ctl button):not(.todo-actions button):not(.shopping-completed-commit-buttons button) {
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  margin-left:0;
+  margin-right:0;
+}
+
 </style>
 
 </head>
