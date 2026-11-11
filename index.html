@@ -1870,6 +1870,9 @@ body.k #authDiagnosticButton {
 
 <!-- ===== PAGINA LOGIN ===== -->
 
+
+<!-- ===== PAGINA LOGIN ===== -->
+
 <div id="loginPage" hidden>
 
   <div class="login-card">
@@ -1880,9 +1883,21 @@ body.k #authDiagnosticButton {
       Accedi al tuo spazio familiare
     </div>
 
-    <select id="loginProfile">
-      <option value="">Seleziona il tuo profilo</option>
-    </select>
+    <input
+      type="text"
+      id="loginFamily"
+      autocomplete="organization"
+      maxlength="60"
+      placeholder="Nome della famiglia"
+    >
+
+    <input
+      type="text"
+      id="loginUser"
+      autocomplete="username"
+      maxlength="60"
+      placeholder="Il tuo nome"
+    >
 
     <input
       type="password"
@@ -1904,6 +1919,7 @@ body.k #authDiagnosticButton {
   </div>
 
 </div>
+
 
 <!-- ===== PULSANTE DIAGNOSTICA ===== -->
 <button
