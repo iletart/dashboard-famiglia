@@ -1,34 +1,34 @@
 {
-  "day": "mercoledi",
+  "day": "giovedi",
   "routes": {
     "casa_lavoro": {
       "id": "casa_lavoro",
       "from": "Casa",
       "to": "Lavoro",
       "mode": "arrival",
-      "target_time": "08:10",
-      "departure": "2026-11-11T07:46:27+01:00",
-      "arrival": "2026-11-11T08:10:00+01:00",
-      "duration_minutes": 19,
+      "target_time": "08:00",
+      "departure": "2026-11-12T07:39:38+01:00",
+      "arrival": "2026-11-12T08:00:00+01:00",
+      "duration_minutes": 15,
       "static_duration_minutes": 14,
       "buffer_minutes": 5,
       "distance_meters": 10717,
-      "calculated_at": "2026-11-11T07:00:03.026867+01:00"
+      "calculated_at": "2026-11-12T00:01:02.278106+01:00"
     },
-    "lavoro_campo": {
-      "id": "lavoro_campo",
+    "lavoro_asilo": {
+      "id": "lavoro_asilo",
       "from": "Lavoro",
-      "to": "Campo sportivo",
+      "to": "Asilo",
       "mode": "arrival",
-      "target_time": "17:35",
-      "departure": "2026-11-11T17:10:37+01:00",
-      "arrival": "2026-11-11T17:35:00+01:00",
+      "target_time": "17:15",
+      "departure": "2026-11-12T16:51:27+01:00",
+      "arrival": "2026-11-12T17:15:00+01:00",
       "duration_minutes": 19,
-      "static_duration_minutes": 17,
+      "static_duration_minutes": 11,
       "buffer_minutes": 5,
-      "distance_meters": 8719,
-      "calculated_at": "2026-11-11T07:30:02.253422+01:00"
+      "distance_meters": 9927,
+      "calculated_at": "2026-11-12T00:01:02.278106+01:00"
     }
   },
-  "generated_at": "2026-11-11T07:30:02.253422+01:00"
+  "generated_at": "2026-11-12T00:01:02.278106+01:00"
 }
