@@ -7637,70 +7637,36 @@ function authLogin(userId, pin){
     user_id: userId,
     pin: pin
   }, function(err, data){
-    setText($("err"), "RISPOSTA LOGIN RICEVUTA");
-	if(err || !data || !data.ok){
-	  setText($("err"),
-		"LOGIN FALLITO: " + (err || (data && data.error) || "Risposta non valida")
-	  );
-	  return;
-	}
+		if(err || !data || !data.ok){
+		  alert(err || "Accesso non riuscito.");
+		  return;
+		}
+		authToken = data.token;
+		authProfile = String(data.user_id);
+		setHidden($("loginPage"), true);
+		setHidden($("welcomePage"), true);
+		setHidden($("head"), false);
+		authUserType = String(data.user_type || "");
+		authUserName = String(data.user_name || "");
+		updateLoggedUser();
+		authSessionId = data.session_id || "";
 
-setText($("err"), "LOGIN ACCETTATO");
+		try {
+			localStorage.setItem("dashboardAuthToken", authToken);
+			localStorage.setItem("dashboardAuthProfile", authProfile);
+			localStorage.setItem("dashboardAuthSessionId", authSessionId);
+			localStorage.setItem("dashboardAuthUserType", authUserType);
+			localStorage.setItem("dashboardAuthUserName", authUserName);
+		} catch(e){
+			setText($("err"), "ERRORE LOCALSTORAGE: " + e.message);
+		}
 
-    authToken = data.token;
-	setText($("err"), "TOKEN RICEVUTO");
-    setText($("err"), "PRIMA DI AUTH PROFILE");
-	authProfile = String(data.user_id);
-	setText($("err"), "DOPO AUTH PROFILE");
-	
-	setText($("err"), "HIDE 1");
-	setHidden($("loginPage"), true);
+		var panel = $("viewMenuPanel");
+		if(panel){ panel._pendingLoginUserId = null; }
 
-	setText($("err"), "HIDE 2");
-	setHidden($("welcomePage"), true);
+		startDashboard();
 
-	setText($("err"), "HIDE 3");
-	setHidden($("head"), false);
-
-	setText($("err"), "HIDE COMPLETATO");
-
-	setText($("err"), "PRIMA USER TYPE");
-	authUserType = String(data.user_type || "");
-
-	setText($("err"), "PRIMA USER NAME");
-	authUserName = String(data.user_name || "");
-
-	setText($("err"), "DOPO USER NAME");
-	
-	setText($("err"), "PRIMA UPDATE");
-	updateLoggedUser();
-	setText($("err"), "DOPO UPDATE");
-	
-	setText($("err"), "UPDATE LOGGED USER COMPLETATO");
-    authSessionId = data.session_id || "";
-	setText($("err"), "DOPO SESSION ID");
-
-	try {
-		localStorage.setItem("dashboardAuthToken", authToken);
-		localStorage.setItem("dashboardAuthProfile", authProfile);
-		localStorage.setItem("dashboardAuthSessionId", authSessionId);
-		localStorage.setItem("dashboardAuthUserType", authUserType);
-		localStorage.setItem("dashboardAuthUserName", authUserName);
-
-		setText($("err"), "SESSIONE SALVATA");
-	} catch(e){
-		setText($("err"), "ERRORE LOCALSTORAGE: " + e.message);
-	}
-
-    var panel = $("viewMenuPanel");
-    if(panel){ panel._pendingLoginUserId = null; }
-
-    startDashboard();
-	
-	if(IS_KINDLE){
-	  setText($("err"), "LOGIN OK - AVVIO DASHBOARD");
-	}
-  });
+	});
 }
 
 function authLogout(){
