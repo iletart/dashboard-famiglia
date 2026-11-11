@@ -7194,11 +7194,12 @@ function initLoginPage(){
 
   $("loginSubmit").onclick = function(){
 
-    var userId = $("loginProfile").value;
+    var family = $("loginFamily").value.trim();
+    var user = $("loginUser").value.trim();
     var pin = $("loginPin").value.trim();
 
-    if(!userId){
-      alert("Seleziona il tuo profilo.");
+    if(!family || !user){
+      alert("Inserisci famiglia e nome utente.");
       return;
     }
 
@@ -7207,7 +7208,7 @@ function initLoginPage(){
       return;
     }
 
-    authLogin(Number(userId), pin);
+    authLogin(family, user, pin);
   };
 
   $("loginPin").onkeydown = function(ev){
