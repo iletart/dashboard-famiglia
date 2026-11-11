@@ -7653,6 +7653,10 @@ function authLogin(userId, pin){
     if(panel){ panel._pendingLoginUserId = null; }
 
     startDashboard();
+	
+	if(IS_KINDLE){
+	  setText($("err"), "LOGIN OK - AVVIO DASHBOARD");
+	}
   });
 }
 
