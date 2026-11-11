@@ -858,7 +858,7 @@ input[type=checkbox] {
 
   body:not(.k) #loggedUser {
     position:relative;
-    top:-6px;
+    top: 0;
     font-size:.65em;
     margin:0;
     text-align:right;
@@ -1901,7 +1901,7 @@ var IS_KINDLE = (function(){
 if(IS_KINDLE){ document.body.className += " k"; }
 
 var CONFIG = {
-  base: "https://iletart.github.io/dashboard-famiglia/",
+  base: "https://raw.githubusercontent.com/iletart/dashboard-famiglia/main/",
   lat: 45.484, lon: 9.233,
   weatherMin: 5,
   todoWorkerUrl: "https://todo-sync.iletarta-633.workers.dev"
