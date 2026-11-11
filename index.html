@@ -7275,6 +7275,14 @@ function loadAuthorizedConfig(callback){
       return u && u.id && u.name;
     });
 
+	if(IS_KINDLE){
+		setText($("err"),
+			"VISTE: " + DASHBOARD_VIEWS.length +
+			" | BOX: " + DASHBOARD_BOXES.length +
+			" | UTENTI: " + USERS.length
+		);
+	}
+
     callback(null);
   };
 
