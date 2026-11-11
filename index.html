@@ -7246,7 +7246,15 @@ function loadAuthorizedConfig(callback){
     callback(null);
   };
 
-  x.onerror = function(){ callback("Errore di connessione"); };
+  x.onerror = function(){
+	  console.log("DASHBOARD API ERROR", {
+		url: DASHBOARD_API_URL + "/config",
+		status: x.status,
+		readyState: x.readyState
+	  });
+
+	  callback("Errore di connessione");
+	};
   x.ontimeout = function(){ callback("Timeout"); };
   x.send(null);
 }
