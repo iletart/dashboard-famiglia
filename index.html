@@ -1261,6 +1261,39 @@ body.k .shopping-delete-label .trash-icon:after {
   border-bottom:0;
 }
 
+/* Icona impostazioni disegnata in CSS */
+
+body.k .settings-gear {
+  display:inline-block;
+  position:relative;
+  vertical-align:middle;
+  width:12px;
+  height:12px;
+  margin-right:9px;
+  border:2px solid currentColor;
+  border-radius:50%;
+  box-shadow:
+    0 -5px 0 -2px currentColor,
+    0 5px 0 -2px currentColor,
+    5px 0 0 -2px currentColor,
+    -5px 0 0 -2px currentColor,
+    4px 4px 0 -2px currentColor,
+    -4px -4px 0 -2px currentColor,
+    4px -4px 0 -2px currentColor,
+    -4px 4px 0 -2px currentColor;
+}
+
+body.k .settings-gear:after {
+  content:"";
+  position:absolute;
+  width:4px;
+  height:4px;
+  top:2px;
+  left:2px;
+  border:1px solid currentColor;
+  border-radius:50%;
+}
+
 /* Gruppi di pulsanti Kindle */
 
 body.k .seg {
@@ -5991,8 +6024,18 @@ function renderViewMenu(){
 
   // CONFIGURAZIONE LAYOUT
   if(authToken){
-  	var layoutButton = mk("button", "", "⚙ IMPOSTAZIONI");
-  	layoutButton.type = "button";
+	var layoutButton = mk(
+	  "button",
+	  "",
+	  IS_KINDLE ? "IMPOSTAZIONI" : "⚙ IMPOSTAZIONI"
+	);
+
+	if(IS_KINDLE){
+	  var gearIcon = mk("span", "settings-gear", "");
+	  layoutButton.insertBefore(gearIcon, layoutButton.firstChild);
+	}
+
+	layoutButton.type = "button";
   
   	layoutButton.onclick = function(ev){
   		if(ev){
