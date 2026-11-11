@@ -1,33 +1,28 @@
 {
   "available": true,
-  "date": "2026-11-11",
+  "date": "2026-11-12",
   "site": "U003128",
-  "generated_at": "2026-11-11T00:47:49.608524+01:00",
+  "generated_at": "2026-11-12T00:01:02.156566+01:00",
   "plates": [
     {
-      "position": "1332",
-      "dishCode": "P100202",
-      "name": "Ravioli di magro olio parmigiano"
+      "position": "1434",
+      "dishCode": "P01982",
+      "name": "Pizza margherita"
     },
     {
-      "position": "1333",
-      "dishCode": "P100194",
-      "name": "Frittata"
+      "position": "1436",
+      "dishCode": "P101205",
+      "name": "Insalata, mais e carote julienne"
     },
     {
-      "position": "1336",
-      "dishCode": "P01887",
-      "name": "Finocchi in insalata"
-    },
-    {
-      "position": "1337",
-      "dishCode": "P00959",
+      "position": "1437",
+      "dishCode": "P00005",
       "name": "Frutta fresca di stagione"
     },
     {
-      "position": "1339",
-      "dishCode": "P01889",
-      "name": "Pane tipo 0"
+      "position": "1439",
+      "dishCode": "P01893",
+      "name": "Pane di farina integrale biologica "
     }
   ]
 }
