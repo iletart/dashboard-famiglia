@@ -6065,7 +6065,7 @@ function renderViewMenu(){
     var logoutButton = mk("button", "", "↪ ESCI");
 	
     logoutButton.type = "button";
-	logoutButton.classList.add("menu-action-button");
+	logoutButton.classList.add("menu-action-button", "menu-logout-button");
 	
     logoutButton.onclick = authLogout;
     panel.appendChild(logoutButton);
