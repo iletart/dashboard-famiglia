@@ -6907,6 +6907,18 @@ function openLoginPage(){
 
   var select = $("loginProfile");
   var pin = $("loginPin");
+  
+  if(!AUTH_PROFILES || !AUTH_PROFILES.length){
+    loadAuthProfiles(function(err){
+      if(err){
+        alert("Impossibile caricare i profili: " + err);
+        return;
+      }
+  
+      openLoginPage();
+    });
+    return;
+  }
 
   clear(select);
 
