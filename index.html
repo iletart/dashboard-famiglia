@@ -7490,10 +7490,10 @@ function initBoxRefresh() {
     button.title = "Aggiorna";
     button.setAttribute("aria-label", "Aggiorna");
 
-    button.style.position = "absolute";
-    button.style.top = "-9px";
-    button.style.right = "-8px";
-    button.style.margin = "0";
+	button.style.position = "static";
+	button.style.display = "inline-block";
+	button.style.verticalAlign = "middle";
+	button.style.margin = "0 0 0 5px";
     button.style.padding = "0 2px";
     button.style.fontSize = "20px";
     button.style.lineHeight = "1";
