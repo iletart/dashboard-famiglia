@@ -5814,7 +5814,7 @@ function renderViewMenu(){
   var pendingUserId = !authToken ? panel._pendingLoginUserId : null;
 
   // SCHERMATA DI ACCESSO
-  if(pendingUserId){
+  if(!authToken){
     var box = mk("div", "pin-login-panel", "");
     box.style.padding = "12px";
     box.style.gap = "8px";
@@ -5823,96 +5823,112 @@ function renderViewMenu(){
     box.style.flexDirection = "column";
     box.style.width = "100%";
     box.style.boxSizing = "border-box";
-
-	var profile = findItem(AUTH_PROFILES, function(u){
-	  return Number(u.user_id) === Number(pendingUserId);
-	});
-
-	var title = mk(
-	  "div",
-	  "",
-	  "ACCESSO " + (profile ? profile.name : "")
-	);
-
+  
+    var title = mk("div", "", "ACCEDI");
     title.style.textAlign = "center";
     title.style.fontSize = "18px";
     title.style.fontWeight = "bold";
-
-    var input = document.createElement("input");
-    input.type = "password";
-    input.inputMode = "numeric";
-    input.autocomplete = "current-password";
-    input.maxLength = 12;
-    input.placeholder = "Inserisci il PIN";
-    input.style.width = "100%";
-    input.style.maxWidth = "none";
-    input.style.minWidth = "0";
-    input.style.display = "block";
-    input.style.flex = "none";
-    input.style.height = "40px";
-    input.style.fontSize = "18px";
-    input.style.padding = "6px 10px";
-    input.style.letterSpacing = "4px";
-    input.style.textAlign = "center";
-    input.style.boxSizing = "border-box";
-
+  
+    function createLoginInput(placeholder, type){
+      var input = document.createElement("input");
+      input.type = type || "text";
+      input.autocomplete = "off";
+      input.placeholder = placeholder;
+      input.style.width = "100%";
+      input.style.maxWidth = "none";
+      input.style.minWidth = "0";
+      input.style.height = "40px";
+      input.style.fontSize = "16px";
+      input.style.padding = "6px 10px";
+      input.style.boxSizing = "border-box";
+      return input;
+    }
+  
+    var familyInput = createLoginInput("Nome famiglia");
+    familyInput.autocomplete = "organization";
+  
+    var userInput = createLoginInput("Nome utente");
+    userInput.autocomplete = "username";
+  
+    var pinInput = createLoginInput("PIN", "password");
+    pinInput.inputMode = "numeric";
+    pinInput.autocomplete = "current-password";
+    pinInput.maxLength = 12;
+    pinInput.style.letterSpacing = "4px";
+    pinInput.style.textAlign = "center";
+  
     var error = mk("div", "", "");
     error.style.color = "#c00";
     error.style.textAlign = "center";
-
+  
     var loginButton = mk("button", "", "ACCEDI");
     loginButton.type = "button";
     loginButton.style.width = "100%";
     loginButton.style.padding = "14px";
     loginButton.style.fontSize = "16px";
-
-    var cancelButton = mk("button", "", "ANNULLA");
-    cancelButton.type = "button";
-    cancelButton.style.width = "100%";
-    cancelButton.style.padding = "12px";
-	cancelButton.onclick = function(){
-		panel._pendingLoginUserId = null;
-		closeViewMenu();
-
-		setHidden($("head"), true);
-		setHidden($("welcomePage"), false);
-
-		renderViewMenu();
-	};
-
-    function submitPin(){
-      var pin = input.value.trim();
-
-      if(!/^\d{6,12}$/.test(pin)){
-        error.textContent = "Inserisci da 6 a 12 cifre.";
-        input.focus();
+  
+    function submitLogin(){
+      var family = familyInput.value.trim();
+      var username = userInput.value.trim();
+      var pin = pinInput.value.trim();
+  
+      if(!family || !username){
+        error.textContent = "Inserisci famiglia e nome utente.";
         return;
       }
-
+  
+      if(!/^\d{6,12}$/.test(pin)){
+        error.textContent = "Il PIN deve contenere da 6 a 12 cifre.";
+        pinInput.focus();
+        return;
+      }
+  
       error.textContent = "";
       loginButton.disabled = true;
-      authLogin(Number(pendingUserId), pin);
+  
+      authLogin(family, username, pin);
     }
-
-    loginButton.onclick = submitPin;
-
-    input.onkeydown = function(ev){
+  
+    loginButton.onclick = submitLogin;
+  
+    pinInput.onkeydown = function(ev){
       if(ev.key === "Enter"){
         ev.preventDefault();
-        submitPin();
+        submitLogin();
       }
     };
-
+  
+    userInput.onkeydown = pinInput.onkeydown;
+    familyInput.onkeydown = userInput.onkeydown;
+  
+    var backButton = mk("button", "", "← INDIETRO");
+    backButton.type = "button";
+    backButton.style.width = "100%";
+    backButton.style.padding = "12px";
+    backButton.onclick = function(ev){
+      if(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+  
+      closeViewMenu();
+      setHidden($("head"), true);
+      setHidden($("welcomePage"), false);
+    };
+  
     box.appendChild(title);
-    box.appendChild(input);
+    box.appendChild(familyInput);
+    box.appendChild(userInput);
+    box.appendChild(pinInput);
     box.appendChild(error);
     box.appendChild(loginButton);
-    box.appendChild(cancelButton);
-
+    box.appendChild(backButton);
+  
     panel.appendChild(box);
-    input.focus();
+    familyInput.focus();
     return;
   }
+
 
   // ELENCO PROFILI
   function addButton(id, label){
@@ -7878,15 +7894,16 @@ function startDashboard(preferredView){
   });
 }
 
-function authLogin(userId, pin){
-  userId = Number(userId);
 
-  if(!isFinite(userId) || Math.floor(userId) !== userId || userId <= 0){
-    alert("Profilo non valido.");
+function authLogin(familyName, userName, pin){
+  familyName = String(familyName || "").trim();
+  userName = String(userName || "").trim();
+  pin = String(pin || "").trim();
+
+  if(!familyName || !userName){
+    alert("Inserisci famiglia e nome utente.");
     return;
   }
-
-  pin = String(pin || "").trim();
 
   if(!/^\d{6,12}$/.test(pin)){
     alert("Il PIN deve contenere da 6 a 12 cifre.");
@@ -7894,41 +7911,45 @@ function authLogin(userId, pin){
   }
 
   authRequest("POST", "/login", {
-    user_id: userId,
+    family_name: familyName,
+    user_name: userName,
     pin: pin
   }, function(err, data){
-		if(err || !data || !data.ok){
-		  alert(err || "Accesso non riuscito.");
-		  return;
-		}
-		authToken = data.token;
-		saveAuthCookie(authToken);
-		authProfile = String(data.user_id);
-		setHidden($("loginPage"), true);
-		setHidden($("welcomePage"), true);
-		setHidden($("head"), false);
-		authUserType = String(data.user_type || "");
-		authUserName = String(data.user_name || "");
-		updateLoggedUser();
-		authSessionId = data.session_id || "";
+    if(err || !data || !data.ok){
+      alert(err || "Credenziali non valide.");
+      return;
+    }
 
-		try {
-			localStorage.setItem("dashboardAuthToken", authToken);
-			localStorage.setItem("dashboardAuthProfile", authProfile);
-			localStorage.setItem("dashboardAuthSessionId", authSessionId);
-			localStorage.setItem("dashboardAuthUserType", authUserType);
-			localStorage.setItem("dashboardAuthUserName", authUserName);
-		} catch(e){
-			setText($("err"), "ERRORE LOCALSTORAGE: " + e.message);
-		}
+    authToken = data.token;
+    saveAuthCookie(authToken);
+    authProfile = String(data.user_id);
+    setHidden($("loginPage"), true);
+    setHidden($("welcomePage"), true);
+    setHidden($("head"), false);
+    authUserType = String(data.user_type || "");
+    authUserName = String(data.user_name || "");
+    updateLoggedUser();
+    authSessionId = data.session_id || "";
 
-		var panel = $("viewMenuPanel");
-		if(panel){ panel._pendingLoginUserId = null; }
+    try {
+      localStorage.setItem("dashboardAuthToken", authToken);
+      localStorage.setItem("dashboardAuthProfile", authProfile);
+      localStorage.setItem("dashboardAuthSessionId", authSessionId);
+      localStorage.setItem("dashboardAuthUserType", authUserType);
+      localStorage.setItem("dashboardAuthUserName", authUserName);
+    } catch(e){
+      setText($("err"), "ERRORE LOCALSTORAGE: " + e.message);
+    }
 
-		startDashboard();
+    var panel = $("viewMenuPanel");
+    if(panel){
+      panel._pendingLoginUserId = null;
+    }
 
-	});
+    startDashboard();
+  });
 }
+
 
 function showAuthDiagnostic() {
   var token = "";
