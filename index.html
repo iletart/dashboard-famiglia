@@ -1967,7 +1967,13 @@ function clear(el){
 }
 
 function setHidden(el, h){
-  if(h){ el.setAttribute("hidden", "hidden"); } else { el.removeAttribute("hidden"); }
+  if(!el){ return; }
+
+  if(h){
+    el.setAttribute("hidden", "hidden");
+  } else {
+    el.removeAttribute("hidden");
+  }
 }
 
 function setText(el, t){
@@ -7648,6 +7654,7 @@ setText($("err"), "LOGIN ACCETTATO");
 	authUserName = String(data.user_name || "");
     updateLoggedUser();
     authSessionId = data.session_id || "";
+	setText($("err"), "DOPO SESSION ID");
 
 	try {
 		localStorage.setItem("dashboardAuthToken", authToken);
