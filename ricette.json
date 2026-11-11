@@ -1,175 +1,8 @@
 {
-  "generated_at": "2026-11-11T00:47:49.608524+01:00",
+  "generated_at": "2026-11-12T00:01:02.156566+01:00",
   "site": "U003128",
   "siteType": "02",
   "menus": {
-    "2026-11-10": {
-      "P102033": {
-        "dishCode": "P102033",
-        "name": "Pasta biologica al pomodoro ",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PASTA BIOLOGICA",
-            "quantity": "50",
-            "unit": "Gr"
-          },
-          {
-            "name": "POLPA DI POMODORO",
-            "quantity": "33",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "3,6",
-            "unit": "Gr"
-          },
-          {
-            "name": "CAROTE",
-            "quantity": "3,3",
-            "unit": "Gr"
-          },
-          {
-            "name": "CIPOLLE",
-            "quantity": "2,8",
-            "unit": "Gr"
-          },
-          {
-            "name": "PARMIGIANO REGGIANO",
-            "quantity": "3",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P100571": {
-        "dishCode": "P100571",
-        "name": "Burger con legumi con maionese 100% vegetale biologica",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PATATE",
-            "quantity": "11,95",
-            "unit": "Gr"
-          },
-          {
-            "name": "ASIAGO E/O CACIOTTA BIOLOGICA",
-            "quantity": "6,72",
-            "unit": "Gr"
-          },
-          {
-            "name": "LENTICCHIE SECCHE DECORTICATE",
-            "quantity": "7,13",
-            "unit": "Gr"
-          },
-          {
-            "name": "PANE GRATTUGIATO",
-            "quantity": "4,98",
-            "unit": "Gr"
-          },
-          {
-            "name": "CAROTE",
-            "quantity": "3,32",
-            "unit": "Gr"
-          },
-          {
-            "name": "CIPOLLE",
-            "quantity": "2,32",
-            "unit": "Gr"
-          },
-          {
-            "name": "PARMIGIANO REGGIANO",
-            "quantity": "2,16",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "1,99",
-            "unit": "Gr"
-          },
-          {
-            "name": "UOVA BIOLOGICHE",
-            "quantity": "1,49",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          },
-          {
-            "name": "MAIONESE 100% VEGETALE BIOLOGICA",
-            "quantity": "10",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P02100": {
-        "dishCode": "P02100",
-        "name": "Broccoli al parmigiano",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "BROCCOLI",
-            "quantity": "80",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "3,8",
-            "unit": "Gr"
-          },
-          {
-            "name": "PARMIGIANO REGGIANO",
-            "quantity": "3",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P00001": {
-        "dishCode": "P00001",
-        "name": "Frutta fresca di stagione",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "MELE",
-            "quantity": "150",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P01891": {
-        "dishCode": "P01891",
-        "name": "Pane ai cereali ",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PANE AI CEREALI",
-            "quantity": "30",
-            "unit": "Gr"
-          }
-        ]
-      }
-    },
     "2026-11-11": {
       "P100202": {
         "dishCode": "P100202",
@@ -353,6 +186,123 @@
         "ingredients": [
           {
             "name": "PANE INTEGRALE BIOLOGICO",
+            "quantity": "30",
+            "unit": "Gr"
+          }
+        ]
+      }
+    },
+    "2026-11-13": {
+      "P00769": {
+        "dishCode": "P00769",
+        "name": "Risotto al pomodoro ",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "RISO",
+            "quantity": "50",
+            "unit": "Gr"
+          },
+          {
+            "name": "POLPA DI POMODORO BIOLOGICA",
+            "quantity": "33",
+            "unit": "Gr"
+          },
+          {
+            "name": "PARMIGIANO REGGIANO",
+            "quantity": "3,6",
+            "unit": "Gr"
+          },
+          {
+            "name": "ESTRATTO PER BRODO VEGETALE",
+            "quantity": "2,1",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "2,1",
+            "unit": "Gr"
+          },
+          {
+            "name": "BURRO",
+            "quantity": "1,8",
+            "unit": "Gr"
+          },
+          {
+            "name": "CIPOLLE",
+            "quantity": "1,1",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P101305": {
+        "dishCode": "P101305",
+        "name": "Totano dei marinai",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "BASTONCINI DI PESCE",
+            "quantity": "60",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P101204": {
+        "dishCode": "P101204",
+        "name": "Insalata di stagione",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "INSALATA",
+            "quantity": "25",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "5",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P02036": {
+        "dishCode": "P02036",
+        "name": "Frutta fresca di stagione",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "MANDARANCI e CLEMENTINE",
+            "quantity": "136",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P01889": {
+        "dishCode": "P01889",
+        "name": "Pane tipo 0",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PANE",
             "quantity": "30",
             "unit": "Gr"
           }
