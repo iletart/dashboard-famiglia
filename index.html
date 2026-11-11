@@ -7107,22 +7107,24 @@ function alignBoxes(){
     }
   }
 
-  /* RIGHE: uniforma i box affiancati */
-  for(i = 0; i < rows.length; i++){
-    var firsts = [];
-    var max = 0;
-
-    for(j = 0; j < rows[i].children.length; j++){
-      boxes = boxesOf(rows[i].children[j]);
-
-      if(boxes.length){
-        firsts.push(boxes[0]);
-        max = Math.max(max, boxes[0].offsetHeight);
+  /* RIGHE: uniforma i box affiancati solo sopra 600px */
+  if(!isSmallScreen){
+    for(i = 0; i < rows.length; i++){
+      var firsts = [];
+      var max = 0;
+  
+      for(j = 0; j < rows[i].children.length; j++){
+        boxes = boxesOf(rows[i].children[j]);
+  
+        if(boxes.length){
+          firsts.push(boxes[0]);
+          max = Math.max(max, boxes[0].offsetHeight);
+        }
       }
-    }
-
-    for(j = 0; j < firsts.length; j++){
-      firsts[j].style.minHeight = max + "px";
+  
+      for(j = 0; j < firsts.length; j++){
+        firsts[j].style.minHeight = max + "px";
+      }
     }
   }
 }
