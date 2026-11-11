@@ -969,8 +969,9 @@ body.k .section-heading h2 {
 body.k .sync-label {
   float:right;
   width:47%;
-  margin:0;
-  top:0;
+  margin:0 8px 0 0;
+  position:relative;
+  top:3px;
   font-size:.52em;
   line-height:1.2;
   white-space:nowrap;
@@ -1412,25 +1413,27 @@ body.k .trash-icon:after {
   border-bottom:0;
 }
 
+/* checkbox */
+
 body.k #personalTodoList .todo-row {
-  display:table;
+  display:block;
   width:100%;
-  table-layout:fixed;
+  overflow:hidden;
   margin:6px 0;
 }
 
 body.k #personalTodoList .todo-row input[type="checkbox"] {
-  display:table-cell;
-  width:28px;
-  vertical-align:middle;
+  float:left;
+  width:22px;
+  margin:2px 8px 0 0;
 }
 
 body.k #personalTodoList .todo-row .todo-text {
-  display:table-cell;
-  vertical-align:middle;
+  display:block;
+  margin-left:30px;
   text-align:left;
-  overflow-wrap:normal;
-  word-wrap:normal;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
   word-break:normal;
 }
 
