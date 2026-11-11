@@ -6895,10 +6895,15 @@ function updateLoggedUser() {
     return;
   }
 
-  var user = AUTH_PROFILES.find(function(u) {
-    return String(u.user_id) === String(authProfile);
-  });
-
+  var user = null;
+  
+  for (var i = 0; i < AUTH_PROFILES.length; i++) {
+    if (String(AUTH_PROFILES[i].user_id) === String(authProfile)) {
+      user = AUTH_PROFILES[i];
+      break;
+    }
+  }
+  
   if (!user) {
     el.textContent = "Utente collegato";
     return;
