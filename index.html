@@ -7385,8 +7385,10 @@ function alignBoxes(){
     }
   }
 
-  /* RIGHE: uniforma i box affiancati solo sopra 600px */
-  if(!isSmallScreen){
+  /* RIGHE: uniforma i box affiancati solo nelle viste rows.
+     Nelle viste columns le colonne contengono box impilati: non
+     bisogna allungare il primo box di ogni colonna. */
+  if(!isSmallScreen && currentViewConfig.layout_mode !== "columns"){
     for(i = 0; i < rows.length; i++){
       var firsts = [];
       var max = 0;
