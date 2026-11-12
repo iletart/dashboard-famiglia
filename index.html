@@ -557,6 +557,111 @@ input[type=checkbox] {
   opacity: 0.6;
 }
 
+
+/* Attività ricorrenti */
+.recurring-config-button {
+  margin:0 4px 0 auto;
+  padding:3px 7px;
+  font-size:.75em;
+  white-space:nowrap;
+}
+#recurringTasksBox .section-heading {
+  align-items:center;
+}
+#recurringTasksBox .section-heading h2 {
+  margin-right:4px;
+}
+.recurring-task-row {
+  margin:4px 0;
+}
+.recurring-task-time {
+  display:inline-block;
+  min-width:48px;
+  margin-right:5px;
+  font-weight:bold;
+}
+.recurring-task-owners {
+  margin:0 0 5px 29px;
+  font-size:.75em;
+  color:#555;
+}
+.recurring-config-panel {
+  max-width:680px;
+  margin:0 auto;
+}
+.recurring-config-form {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.recurring-field {
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  font-size:.9em;
+}
+.recurring-field input[type="text"],
+.recurring-field input[type="time"],
+.recurring-field input[type="number"],
+.recurring-field select {
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  min-height:34px;
+  padding:5px;
+  border:1px solid #555;
+  background:#fff;
+  color:#111;
+  font:inherit;
+}
+.recurring-field[hidden] {
+  display:none!important;
+}
+.recurring-owner-options {
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px 12px;
+  padding:5px 0;
+}
+.recurring-owner-options label {
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  white-space:nowrap;
+}
+.recurring-config-actions {
+  display:flex;
+  gap:8px;
+}
+.recurring-config-actions button {
+  flex:1 1 0;
+  margin:0;
+}
+.recurring-definition {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 0;
+  border-bottom:1px solid #ccc;
+}
+.recurring-definition-main {
+  flex:1 1 auto;
+  min-width:0;
+}
+.recurring-definition-actions {
+  flex:0 0 auto;
+  display:flex;
+  gap:4px;
+}
+.recurring-definition-actions button {
+  margin:0;
+  padding:4px 7px;
+  font-size:.8em;
+}
+body.k .recurring-config-panel {
+  padding:10px;
+}
+
 /* Menu scuola */
 
 #menuList ul {
@@ -2139,6 +2244,22 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
       <div class="small" id="taskStatus"></div>
     </div>
 
+
+    <div class="box" id="recurringTasksBox" hidden>
+      <div class="section-heading">
+        <h2 data-box-title="recurringTasks">Attività ricorrenti</h2>
+        <button type="button" id="recurringConfigButton" class="recurring-config-button">Configura</button>
+        <div class="sync-label" id="recurringTasksTimes"></div>
+      </div>
+      <div class="seg" id="recurringTaskDays">
+        <button type="button" class="seg-button" data-day="ieri">Ieri</button>
+        <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+        <button type="button" class="seg-button" data-day="domani">Domani</button>
+      </div>
+      <div id="recurringTaskList">Caricamento...</div>
+      <div class="small" id="recurringTaskStatus"></div>
+    </div>
+
     <div class="box" id="todoBox">
       <div class="section-heading">
         <h2 data-box-title="todo"></h2>
@@ -2177,6 +2298,74 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
       </div>
       <div id="menuList"></div>
     </div>
+  </div>
+</div>
+
+
+<div id="recurringConfigOverlay" class="overlay" hidden>
+  <div class="panel recurring-config-panel">
+    <div class="overlay-head">
+      <h2>Configurazione attività ricorrenti</h2>
+      <button type="button" id="recurringConfigClose">Chiudi</button>
+    </div>
+    <div class="recurring-config-form">
+      <label class="recurring-field">
+        <span>Attività</span>
+        <input type="text" id="recurringText" maxlength="200" placeholder="Descrizione attività">
+      </label>
+      <label class="recurring-field">
+        <span>Ricorrenza</span>
+        <select id="recurringType">
+          <option value="weekly">Settimanale</option>
+          <option value="monthly">Mensile</option>
+          <option value="yearly">Annuale</option>
+        </select>
+      </label>
+      <div class="recurring-field" id="recurringWeeklyFields">
+        <label for="recurringWeekday">Giorno della settimana</label>
+        <select id="recurringWeekday">
+          <option value="1">Lunedì</option>
+          <option value="2">Martedì</option>
+          <option value="3">Mercoledì</option>
+          <option value="4">Giovedì</option>
+          <option value="5">Venerdì</option>
+          <option value="6">Sabato</option>
+          <option value="0">Domenica</option>
+        </select>
+      </div>
+      <div class="recurring-field" id="recurringMonthlyFields" hidden>
+        <label for="recurringDayOfMonth">Giorno del mese</label>
+        <input type="number" id="recurringDayOfMonth" min="1" max="31" value="1">
+      </div>
+      <div class="recurring-field" id="recurringYearlyFields" hidden>
+        <label for="recurringMonth">Mese</label>
+        <select id="recurringMonth">
+          <option value="1">Gennaio</option><option value="2">Febbraio</option>
+          <option value="3">Marzo</option><option value="4">Aprile</option>
+          <option value="5">Maggio</option><option value="6">Giugno</option>
+          <option value="7">Luglio</option><option value="8">Agosto</option>
+          <option value="9">Settembre</option><option value="10">Ottobre</option>
+          <option value="11">Novembre</option><option value="12">Dicembre</option>
+        </select>
+        <label for="recurringYearlyDay">Giorno</label>
+        <input type="number" id="recurringYearlyDay" min="1" max="31" value="1">
+      </div>
+      <label class="recurring-field">
+        <span>Ora</span>
+        <input type="time" id="recurringTime" value="09:00">
+      </label>
+      <div class="recurring-field">
+        <span>Proprietari / assegnatari</span>
+        <div id="recurringOwners" class="recurring-owner-options"></div>
+      </div>
+      <div class="recurring-config-actions">
+        <button type="button" id="recurringSaveButton">Salva attività</button>
+        <button type="button" id="recurringCancelEditButton">Annulla</button>
+      </div>
+      <div class="small" id="recurringConfigStatus"></div>
+    </div>
+    <h3>Attività configurate</h3>
+    <div id="recurringDefinitions"></div>
   </div>
 </div>
 
@@ -2255,6 +2444,15 @@ var taskSel = "oggi", personalGlobalTaskSel = "oggi";
 var taskDays = {}, taskReady = false, taskBusy = false;
 
 var taskSyncError = false, taskSyncedAt = null;
+
+var recurringTasksDays = {};
+var recurringDefinitions = [];
+var recurringReady = false;
+var recurringBusy = false;
+var recurringSel = "oggi";
+var recurringConfigEditingId = null;
+var recurringConfigBusy = false;
+
 var todoSyncError = false, todoSyncedAt = null;
 var pollTimer = null;
 
@@ -3434,6 +3632,287 @@ function renderTasks(){
 
   renderPersonalGlobalTasks();
   scheduleAlign();
+}
+
+
+/* ==================================================
+   ATTIVITA' RICORRENTI
+   ================================================== */
+function recurringDateKey(sel) {
+  return fmtDay(todayNum() + TASK_OFF[sel]);
+}
+
+function loadRecurringTasks(silent) {
+  if (!authToken) return;
+  if (!silent) setText($("recurringTaskStatus"), "Caricamento...");
+  var date = recurringDateKey(recurringSel);
+  api("GET", "?list=recurring-tasks&date=" + encodeURIComponent(date), null, function(err, data) {
+    if (err || !data || !data.days || !Array.isArray(data.definitions)) {
+      if (!silent) setText($("recurringTaskStatus"), "Attività ricorrenti non disponibili: " + (err || "risposta non valida"));
+      setText($("recurringTasksTimes"), "sync error");
+      return;
+    }
+    recurringTasksDays = data.days;
+    recurringDefinitions = data.definitions;
+    recurringReady = true;
+    setText($("recurringTasksTimes"), "sincronizzato");
+    setText($("recurringTaskStatus"), "");
+    renderRecurringTasks();
+    if ($("recurringConfigOverlay") && !$("recurringConfigOverlay").hasAttribute("hidden")) {
+      renderRecurringDefinitions();
+    }
+  });
+}
+
+function recurringPost(data, statusMessage) {
+  if (recurringBusy) return;
+  recurringBusy = true;
+  renderRecurringTasks();
+  setText($("recurringTaskStatus"), statusMessage || "Salvataggio...");
+  api("POST", "?list=recurring-tasks&date=" + encodeURIComponent(recurringDateKey(recurringSel)), data, function(err, result) {
+    recurringBusy = false;
+    if (err || !result || !result.days || !Array.isArray(result.definitions)) {
+      setText($("recurringTaskStatus"), "Salvataggio non riuscito: " + (err || "risposta non valida"));
+      renderRecurringTasks();
+      return;
+    }
+    recurringTasksDays = result.days;
+    recurringDefinitions = result.definitions;
+    recurringReady = true;
+    setText($("recurringTaskStatus"), "");
+    renderRecurringTasks();
+    renderRecurringDefinitions();
+  });
+}
+
+function renderRecurringTasks() {
+  markSeg("recurringTaskDays", recurringSel);
+  var list = $("recurringTaskList");
+  if (!list) return;
+  clear(list);
+  if (!recurringReady) {
+    list.appendChild(mk("div", "", "Caricamento..."));
+    return;
+  }
+  var date = recurringDateKey(recurringSel);
+  var items = recurringTasksDays[date] || [];
+  if (!items.length) {
+    list.appendChild(mk("div", "", "Nessuna attività ricorrente."));
+    return;
+  }
+  for (var i = 0; i < items.length; i++) {
+    (function(item) {
+      var row = mk("div", "todo recurring-task-row");
+      var cell = mk("span", "todo-check-cell");
+      var check = mk("input", "todo-check");
+      check.type = "checkbox";
+      check.checked = !!item.done;
+      check.disabled = recurringBusy;
+      check.onchange = function() {
+        recurringPost({
+          action: "toggle",
+          task_id: item.id,
+          date: date,
+          done: check.checked
+        }, "Salvataggio...");
+      };
+      cell.appendChild(check);
+      row.appendChild(cell);
+
+      var textCell = mk("span", item.done ? "todo-text done" : "todo-text");
+      textCell.appendChild(mk("span", "recurring-task-time", item.time || ""));
+      textCell.appendChild(document.createTextNode(item.text));
+      row.appendChild(textCell);
+      list.appendChild(row);
+
+      if (item.owners && item.owners.length) {
+        var names = [];
+        for (var j = 0; j < item.owners.length; j++) names.push(userName(item.owners[j]));
+        list.appendChild(mk("div", "recurring-task-owners", "A: " + names.join(", ")));
+      }
+    })(items[i]);
+  }
+}
+
+function recurringDescription(item) {
+  var days = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+  var months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+  if (item.recurrence_type === "weekly") return "Ogni " + days[Number(item.weekday)] + " alle " + item.time;
+  if (item.recurrence_type === "monthly") return "Ogni mese, giorno " + item.day_of_month + " alle " + item.time;
+  return "Ogni " + months[Number(item.month_of_year) - 1] + " " + item.day_of_month + " alle " + item.time;
+}
+
+function resetRecurringForm() {
+  recurringConfigEditingId = null;
+  $("recurringText").value = "";
+  $("recurringType").value = "weekly";
+  $("recurringWeekday").value = "1";
+  $("recurringDayOfMonth").value = "1";
+  $("recurringMonth").value = "1";
+  $("recurringYearlyDay").value = "1";
+  $("recurringTime").value = "09:00";
+  $("recurringSaveButton").textContent = "Salva attività";
+  var checks = $("recurringOwners").querySelectorAll("input[type=checkbox]");
+  for (var i = 0; i < checks.length; i++) checks[i].checked = false;
+  updateRecurringFields();
+}
+
+function updateRecurringFields() {
+  var type = $("recurringType").value;
+  setHidden($("recurringWeeklyFields"), type !== "weekly");
+  setHidden($("recurringMonthlyFields"), type !== "monthly");
+  setHidden($("recurringYearlyFields"), type !== "yearly");
+}
+
+function buildRecurringOwners() {
+  var container = $("recurringOwners");
+  clear(container);
+  for (var i = 0; i < USERS.length; i++) {
+    var label = mk("label", "");
+    var check = mk("input", "");
+    check.type = "checkbox";
+    check.value = USERS[i].id;
+    label.appendChild(check);
+    label.appendChild(document.createTextNode(USERS[i].name));
+    container.appendChild(label);
+  }
+  if (!USERS.length) container.appendChild(mk("div", "small", "Nessun utente disponibile."));
+}
+
+function editRecurringDefinition(id) {
+  var item = null;
+  for (var i = 0; i < recurringDefinitions.length; i++) {
+    if (Number(recurringDefinitions[i].id) === Number(id)) item = recurringDefinitions[i];
+  }
+  if (!item) return;
+  recurringConfigEditingId = item.id;
+  $("recurringText").value = item.text || "";
+  $("recurringType").value = item.recurrence_type;
+  $("recurringWeekday").value = String(item.weekday === null ? 1 : item.weekday);
+  $("recurringDayOfMonth").value = String(item.day_of_month || 1);
+  $("recurringMonth").value = String(item.month_of_year || 1);
+  $("recurringYearlyDay").value = String(item.day_of_month || 1);
+  $("recurringTime").value = item.time || "09:00";
+  $("recurringSaveButton").textContent = "Aggiorna attività";
+  var checks = $("recurringOwners").querySelectorAll("input[type=checkbox]");
+  for (var j = 0; j < checks.length; j++) {
+    checks[j].checked = (item.owners || []).some(function(ownerId) {
+      return String(ownerId) === String(checks[j].value);
+    });
+  }
+  updateRecurringFields();
+  $("recurringText").focus();
+}
+
+function renderRecurringDefinitions() {
+  var list = $("recurringDefinitions");
+  if (!list) return;
+  clear(list);
+  if (!recurringDefinitions.length) {
+    list.appendChild(mk("div", "small", "Nessuna attività configurata."));
+    return;
+  }
+  for (var i = 0; i < recurringDefinitions.length; i++) {
+    (function(item) {
+      var row = mk("div", "recurring-definition");
+      var main = mk("div", "recurring-definition-main");
+      main.appendChild(mk("div", "", item.text));
+      main.appendChild(mk("div", "small", recurringDescription(item)));
+      row.appendChild(main);
+      var actions = mk("div", "recurring-definition-actions");
+      var edit = mk("button", "", "Modifica");
+      edit.type = "button";
+      edit.onclick = function() { editRecurringDefinition(item.id); };
+      var del = mk("button", "", "Elimina");
+      del.type = "button";
+      del.onclick = function() {
+        if (!confirm("Eliminare questa attività ricorrente?")) return;
+        recurringConfigBusy = true;
+        api("POST", "?list=recurring-tasks&date=" + encodeURIComponent(recurringDateKey(recurringSel)), {
+          action: "delete",
+          task_id: item.id
+        }, function(err, result) {
+          recurringConfigBusy = false;
+          if (err || !result || !result.definitions) {
+            setText($("recurringConfigStatus"), "Eliminazione non riuscita: " + (err || "errore"));
+            return;
+          }
+          recurringDefinitions = result.definitions;
+          recurringTasksDays = result.days || {};
+          resetRecurringForm();
+          renderRecurringDefinitions();
+          renderRecurringTasks();
+          setText($("recurringConfigStatus"), "");
+        });
+      };
+      actions.appendChild(edit);
+      actions.appendChild(del);
+      row.appendChild(actions);
+      list.appendChild(row);
+    })(recurringDefinitions[i]);
+  }
+}
+
+function openRecurringConfig() {
+  buildRecurringOwners();
+  resetRecurringForm();
+  setText($("recurringConfigStatus"), "");
+  setHidden($("recurringConfigOverlay"), false);
+  loadRecurringTasks(true);
+  renderRecurringDefinitions();
+}
+
+function closeRecurringConfig() {
+  setHidden($("recurringConfigOverlay"), true);
+}
+
+function saveRecurringDefinition() {
+  var text = $("recurringText").value.replace(/^\s+|\s+$/g, "");
+  var type = $("recurringType").value;
+  var time = $("recurringTime").value;
+  if (!text || !time) {
+    setText($("recurringConfigStatus"), "Inserisci attività e orario.");
+    return;
+  }
+  var owners = [];
+  var checks = $("recurringOwners").querySelectorAll("input[type=checkbox]");
+  for (var i = 0; i < checks.length; i++) if (checks[i].checked) owners.push(Number(checks[i].value));
+
+  var data = {
+    action: recurringConfigEditingId ? "update" : "add",
+    task_id: recurringConfigEditingId,
+    text: text,
+    recurrence_type: type,
+    time: time,
+    weekday: type === "weekly" ? Number($("recurringWeekday").value) : null,
+    day_of_month: type === "monthly" ? Number($("recurringDayOfMonth").value) :
+      (type === "yearly" ? Number($("recurringYearlyDay").value) : null),
+    month_of_year: type === "yearly" ? Number($("recurringMonth").value) : null,
+    owners: owners
+  };
+  if ((type === "monthly" && (data.day_of_month < 1 || data.day_of_month > 31)) ||
+      (type === "yearly" && (data.day_of_month < 1 || data.day_of_month > 31))) {
+    setText($("recurringConfigStatus"), "Il giorno deve essere compreso tra 1 e 31.");
+    return;
+  }
+  recurringConfigBusy = true;
+  $("recurringSaveButton").disabled = true;
+  setText($("recurringConfigStatus"), "Salvataggio...");
+  api("POST", "?list=recurring-tasks&date=" + encodeURIComponent(recurringDateKey(recurringSel)), data, function(err, result) {
+    recurringConfigBusy = false;
+    $("recurringSaveButton").disabled = false;
+    if (err || !result || !result.definitions || !result.days) {
+      setText($("recurringConfigStatus"), "Salvataggio non riuscito: " + (err || "risposta non valida"));
+      return;
+    }
+    recurringDefinitions = result.definitions;
+    recurringTasksDays = result.days;
+    recurringReady = true;
+    resetRecurringForm();
+    renderRecurringDefinitions();
+    renderRecurringTasks();
+    setText($("recurringConfigStatus"), "Attività salvata.");
+  });
 }
 
 function closeAssignMenus(){
@@ -5960,6 +6439,11 @@ function setView(view, manual){
     safe(loadFamilyShoppingList);
   }
 
+  if (viewHasBox(view, "recurringTasks")) {
+    safe(loadRecurringTasks, "loadRecurringTasks");
+  }
+
+
   /* box riservati a una sola vista (data-only) */
   var only = document.querySelectorAll(".box[data-only]");
   for(i = 0; i < only.length; i++){
@@ -7941,6 +8425,12 @@ function showLoggedOut(message){
 function initBoxRefresh() {
 
   var boxes = [
+
+    {
+      id: "recurringTasksBox",
+      load: function () { loadRecurringTasks(); }
+    },
+
     {
       id: "personalGlobalTaskBox",
       load: function () { loadTasks(); }
