@@ -613,7 +613,10 @@ body.k #recurringTasksBox .recurring-config-button {
 .recurring-subtask-row .todo-check-cell { width:25px; }
 .recurring-subtask-row .todo-text { font-size:.95em; }
 .recurring-subtask-editor { display:flex; flex-direction:column; gap:5px; }
-.recurring-subtask-edit-row { display:flex; align-items:center; gap:6px; }
+.recurring-subtask-edit-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.recurring-subtask-assign { flex:1 0 100%; display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; padding:0 0 5px 2px; }
+.recurring-subtask-assign label { display:inline-flex; align-items:center; gap:3px; white-space:nowrap; font-size:.8em; }
+.recurring-subtask-owners { margin:0 0 4px 54px; font-size:.72em; color:#555; }
 .recurring-subtask-edit-row input[type="text"] { flex:1 1 auto; min-width:0; width:auto; box-sizing:border-box; }
 .recurring-subtask-edit-row button { flex:0 0 34px; width:34px; min-width:34px; margin:0; padding:4px; }
 .recurring-subtask-add { align-self:flex-start; margin:2px 0 0; }
@@ -3772,6 +3775,11 @@ function renderRecurringTasks() {
             row.appendChild(cell);
             row.appendChild(mk("span", subtask.done ? "todo-text done" : "todo-text", subtask.text));
             list.appendChild(row);
+            if (subtask.owners && subtask.owners.length) {
+              var subNames = [];
+              for (var su = 0; su < subtask.owners.length; su++) subNames.push(userName(subtask.owners[su]));
+              list.appendChild(mk("div", "recurring-subtask-owners", "A: " + subNames.join(", ")));
+            }
           })(subtasks[s]);
         }
       } else {
