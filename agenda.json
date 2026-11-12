@@ -1,6 +1,6 @@
 {
   "calendar": "Famiglia",
-  "generated_at": "2026-11-12T15:20:02.316532+01:00",
+  "generated_at": "2026-11-12T15:30:02.458589+01:00",
   "period_days": 14,
   "events": [
     {
@@ -222,6 +222,22 @@
       "location": "",
       "description": "",
       "htmlLink": "https://www.google.com/calendar/event?eid=MDcybmdmbWhrdjgwYjVzNW44aDgzcWdhdGpfMjAyNjExMTlUMTYzMDAwWiBmYW1pbHkwMjcyMjk3OTcwODcyODA1NTM3NEBn"
+    },
+    {
+      "id": "5qoa02pl5k02rq7lmilo9ci5qh",
+      "title": "Riunione condominio",
+      "start": {
+        "dateTime": "2026-11-20T16:30:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": "2026-11-20T18:00:00Z",
+        "timeZone": "Europe/Rome"
+      },
+      "all_day": false,
+      "location": "",
+      "description": "",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NXFvYTAycGw1azAycnE3bG1pbG85Y2k1cWggZmFtaWx5MDI3MjI5Nzk3MDg3MjgwNTUzNzRAZw"
     },
     {
       "id": "ckrj2o9icpj3eb9gchi3cb9k71hj0bb1c4r68b9l74qj6dhm6ph32c1i64_20261120T163000Z",
