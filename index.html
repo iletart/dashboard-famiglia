@@ -3753,7 +3753,7 @@ function renderRecurringTasks() {
       var subtasks = Array.isArray(item.subtasks) ? item.subtasks : [];
       if (subtasks.length) {
         var parent = mk("div", "recurring-task-parent");
-        parent.appendChild(mk("span", "recurring-task-time", item.time || ""));
+        if (item.time) parent.appendChild(mk("span", "recurring-task-time", item.time));
         parent.appendChild(document.createTextNode(item.text));
         list.appendChild(parent);
         for (var s = 0; s < subtasks.length; s++) {
@@ -3787,7 +3787,7 @@ function renderRecurringTasks() {
         cell.appendChild(check);
         row.appendChild(cell);
         var textCell = mk("span", item.done ? "todo-text done" : "todo-text");
-        textCell.appendChild(mk("span", "recurring-task-time", item.time || ""));
+        if (item.time) textCell.appendChild(mk("span", "recurring-task-time", item.time));
         textCell.appendChild(document.createTextNode(item.text));
         row.appendChild(textCell);
         list.appendChild(row);
@@ -3804,9 +3804,10 @@ function renderRecurringTasks() {
 function recurringDescription(item) {
   var days = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
   var months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-  if (item.recurrence_type === "weekly") return "Ogni " + days[Number(item.weekday)] + " alle " + item.time;
-  if (item.recurrence_type === "monthly") return "Ogni mese, giorno " + item.day_of_month + " alle " + item.time;
-  return "Ogni " + months[Number(item.month_of_year) - 1] + " " + item.day_of_month + " alle " + item.time;
+  var at = item.time ? " alle " + item.time : "";
+  if (item.recurrence_type === "weekly") return "Ogni " + days[Number(item.weekday)] + at;
+  if (item.recurrence_type === "monthly") return "Ogni mese, giorno " + item.day_of_month + at;
+  return "Ogni " + months[Number(item.month_of_year) - 1] + " " + item.day_of_month + at;
 }
 
 function resetRecurringForm() {
@@ -3817,7 +3818,7 @@ function resetRecurringForm() {
   $("recurringDayOfMonth").value = "1";
   $("recurringMonth").value = "1";
   $("recurringYearlyDay").value = "1";
-  $("recurringTime").value = "09:00";
+  $("recurringTime").value = "";
   $("recurringSaveButton").textContent = "Salva attività";
   renderRecurringSubtasks([]);
   var checks = $("recurringOwners").querySelectorAll("input[type=checkbox]");
@@ -3825,7 +3826,7 @@ function resetRecurringForm() {
   updateRecurringFields();
 }
 
-function addRecurringSubtask(value, id) {
+function addRecurringSubtask(value, id, owners) {
   var container = $("recurringSubtasks");
   var row = mk("div", "recurring-subtask-edit-row");
   var input = mk("input");
@@ -3835,19 +3836,32 @@ function addRecurringSubtask(value, id) {
   var remove = mk("button", "", "×");
   remove.type = "button"; remove.title = "Rimuovi sottoattività";
   remove.onclick = function() { container.removeChild(row); };
-  row.appendChild(input); row.appendChild(remove); container.appendChild(row);
+  row.appendChild(input); row.appendChild(remove);
+  var assign = mk("div", "recurring-subtask-assign");
+  assign.appendChild(mk("span", "small", "Assegnatari (vuoto = eredita dal task):"));
+  for (var u = 0; u < USERS.length; u++) {
+    var label = mk("label", "");
+    var check = mk("input"); check.type = "checkbox"; check.value = USERS[u].id;
+    check.checked = (owners || []).some(function(ownerId) { return String(ownerId) === String(USERS[u].id); });
+    label.appendChild(check); label.appendChild(document.createTextNode(USERS[u].name)); assign.appendChild(label);
+  }
+  row.appendChild(assign); container.appendChild(row);
 }
 function renderRecurringSubtasks(items) {
   var container = $("recurringSubtasks"); clear(container);
-  for (var i = 0; i < (items || []).length; i++) addRecurringSubtask(items[i].text, items[i].id);
+  for (var i = 0; i < (items || []).length; i++) addRecurringSubtask(items[i].text, items[i].id, items[i].owners || []);
 }
 function collectRecurringSubtasks() {
-  var inputs = $("recurringSubtasks").querySelectorAll(".recurring-subtask-input");
+  var rows = $("recurringSubtasks").querySelectorAll(".recurring-subtask-edit-row");
   var result = [];
-  for (var i = 0; i < inputs.length; i++) {
-    var text = inputs[i].value.replace(/^\s+|\s+$/g, "");
+  for (var i = 0; i < rows.length; i++) {
+    var input = rows[i].querySelector(".recurring-subtask-input");
+    var text = input.value.replace(/^\\s+|\\s+$/g, "");
     if (!text) continue;
-    result.push({ id: inputs[i].getAttribute("data-subtask-id") || null, text: text });
+    var checks = rows[i].querySelectorAll(".recurring-subtask-assign input[type=checkbox]");
+    var owners = [];
+    for (var j = 0; j < checks.length; j++) if (checks[j].checked) owners.push(Number(checks[j].value));
+    result.push({ id: input.getAttribute("data-subtask-id") || null, text: text, owners: owners });
   }
   return result;
 }
@@ -3887,7 +3901,7 @@ function editRecurringDefinition(id) {
   $("recurringDayOfMonth").value = String(item.day_of_month || 1);
   $("recurringMonth").value = String(item.month_of_year || 1);
   $("recurringYearlyDay").value = String(item.day_of_month || 1);
-  $("recurringTime").value = item.time || "09:00";
+  $("recurringTime").value = item.time || "";
   renderRecurringSubtasks(item.subtasks || []);
   $("recurringSaveButton").textContent = "Aggiorna attività";
   var checks = $("recurringOwners").querySelectorAll("input[type=checkbox]");
@@ -3968,8 +3982,8 @@ function saveRecurringDefinition() {
   var text = $("recurringText").value.replace(/^\s+|\s+$/g, "");
   var type = $("recurringType").value;
   var time = $("recurringTime").value;
-  if (!text || !time) {
-    setText($("recurringConfigStatus"), "Inserisci attività e orario.");
+  if (!text) {
+    setText($("recurringConfigStatus"), "Inserisci il titolo.");
     return;
   }
   var owners = [];
@@ -3981,7 +3995,7 @@ function saveRecurringDefinition() {
     task_id: recurringConfigEditingId,
     text: text,
     recurrence_type: type,
-    time: time,
+    time: time || null,
     weekday: type === "weekly" ? Number($("recurringWeekday").value) : null,
     day_of_month: type === "monthly" ? Number($("recurringDayOfMonth").value) :
       (type === "yearly" ? Number($("recurringYearlyDay").value) : null),
