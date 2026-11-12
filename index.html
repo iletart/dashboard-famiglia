@@ -716,6 +716,36 @@ input[type=checkbox] {
 
 
 
+/* Lista spesa interna famiglia */
+.family-shopping-add input:first-child { flex: 1 1 auto; }
+.family-shopping-add input:nth-child(2) { flex: 0 0 62px; width:62px; }
+.family-shopping-item {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:5px 0;
+  min-height:28px;
+}
+.family-shopping-item input[type="checkbox"] { flex:0 0 auto; }
+.family-shopping-item-name { flex:1 1 auto; min-width:0; overflow-wrap:anywhere; }
+.family-shopping-item.completed .family-shopping-item-name {
+  text-decoration:line-through;
+  color:#777;
+}
+.family-shopping-delete {
+  flex:0 0 auto;
+  margin:0;
+  padding:2px 7px;
+  min-width:28px;
+}
+.family-shopping-section-title {
+  margin:9px 0 4px;
+  padding-bottom:3px;
+  border-bottom:1px solid #999;
+  font-size:.85em;
+  font-weight:bold;
+}
+
 /* ==================================================
    6. PC (> 800px)
    ================================================== */
@@ -2056,6 +2086,19 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
 
   <div class="col">
 
+    <div class="box" id="familyShoppingBox" hidden>
+      <div class="section-heading">
+        <h2 data-box-title="familyShopping">Lista della spesa</h2>
+        <div class="sync-label" id="familyShoppingTimes"></div>
+      </div>
+      <div class="add-ctl family-shopping-add">
+        <input type="text" id="familyShoppingInput" maxlength="200" placeholder="Aggiungi un articolo">
+        <input type="text" id="familyShoppingQuantity" maxlength="50" placeholder="Qtà" aria-label="Quantità">
+        <button type="button" id="familyShoppingAdd">+</button>
+      </div>
+      <div id="familyShoppingList">Caricamento...</div>
+    </div>
+
     <div class="box" id="sharedTasksBox">
       <div class="section-heading">
         <h2 data-box-title="sharedTasks"></h2>
@@ -2130,6 +2173,7 @@ var AUTH_API_URL = "https://auth-api.iletarta-633.workers.dev";
 var USERS_API_URL = "https://users-api.iletarta-633.workers.dev";
 var DASHBOARD_API_URL = "https://dashboard-api.iletarta-633.workers.dev";
 var SHOPPING_API_URL = "https://amazon-shopping-api.iletarta-633.workers.dev";
+var FAMILY_SHOPPING_API_URL = "https://shopping-api.iletarta-633.workers.dev";
 
 var authToken = "";
 var authUserType = "";
@@ -3675,6 +3719,168 @@ function renderRoutes(){
   scheduleAlign();
 }
 
+
+/* ==================================================
+   LISTA DELLA SPESA INTERNA FAMIGLIA
+   ================================================== */
+
+var familyShoppingBusy = false;
+
+function familyShoppingRequest(method, path, payload, done) {
+  var x = new XMLHttpRequest();
+  var url = FAMILY_SHOPPING_API_URL + path;
+  x.open(method, url, true);
+  x.setRequestHeader("Authorization", "Bearer " + authToken);
+  if (payload !== null) x.setRequestHeader("Content-Type", "application/json");
+  x.timeout = 15000;
+  x.onreadystatechange = function() {
+    if (x.readyState !== 4) return;
+    var data = null;
+    try { data = JSON.parse(x.responseText); } catch(e) {}
+    done(x.status >= 200 && x.status < 300 && data && data.ok, data);
+  };
+  x.onerror = function() { done(false, {error:"Errore di connessione"}); };
+  x.ontimeout = function() { done(false, {error:"Timeout"}); };
+  x.send(payload === null ? null : JSON.stringify(payload));
+}
+
+function loadFamilyShoppingList() {
+  var list = $("familyShoppingList");
+  if (!list) return;
+  if (!authToken || !currentView) {
+    setText(list, "Sessione non disponibile.");
+    return;
+  }
+
+  setText(list, "Caricamento...");
+  familyShoppingRequest(
+    "GET",
+    "/shopping?view_id=" + encodeURIComponent(currentView),
+    null,
+    function(ok, data) {
+      list = $("familyShoppingList");
+      if (!list) return;
+      if (!ok) {
+        setText(list, data && data.error ? data.error : "Lista non disponibile.");
+        setText($("familyShoppingTimes"), "rete non disponibile");
+        return;
+      }
+
+      clear(list);
+      var items = data.items || [];
+      var pending = [];
+      var completed = [];
+      for (var i=0; i<items.length; i++) {
+        (items[i].completed ? completed : pending).push(items[i]);
+      }
+
+      function renderSection(title, rows, isCompleted) {
+        if (!rows.length) return;
+        list.appendChild(mk("div", "family-shopping-section-title", title));
+        for (var j=0; j<rows.length; j++) {
+          (function(item) {
+            var row = mk("div", "family-shopping-item" + (isCompleted ? " completed" : ""));
+            var checkbox = mk("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = !!item.completed;
+            checkbox.disabled = familyShoppingBusy;
+            checkbox.onchange = function() {
+              if (familyShoppingBusy) return;
+              familyShoppingBusy = true;
+              checkbox.disabled = true;
+              familyShoppingRequest(
+                "PATCH",
+                "/shopping/" + encodeURIComponent(item.id) + "?view_id=" + encodeURIComponent(currentView),
+                {completed: checkbox.checked},
+                function(ok, result) {
+                  familyShoppingBusy = false;
+                  if (!ok) alert(result && result.error ? result.error : "Aggiornamento non riuscito.");
+                  loadFamilyShoppingList();
+                }
+              );
+            };
+
+            var label = mk("span", "family-shopping-item-name");
+            label.textContent = item.name + (item.quantity ? " · " + item.quantity : "");
+            row.appendChild(checkbox);
+            row.appendChild(label);
+
+            var remove = mk("button", "family-shopping-delete", "×");
+            remove.type = "button";
+            remove.title = "Elimina articolo";
+            remove.disabled = familyShoppingBusy;
+            remove.onclick = function() {
+              if (!window.confirm("Eliminare " + item.name + "?")) return;
+              familyShoppingBusy = true;
+              remove.disabled = true;
+              familyShoppingRequest(
+                "DELETE",
+                "/shopping/" + encodeURIComponent(item.id) + "?view_id=" + encodeURIComponent(currentView),
+                null,
+                function(ok, result) {
+                  familyShoppingBusy = false;
+                  if (!ok) alert(result && result.error ? result.error : "Eliminazione non riuscita.");
+                  loadFamilyShoppingList();
+                }
+              );
+            };
+            row.appendChild(remove);
+            list.appendChild(row);
+          })(rows[j]);
+        }
+      }
+
+      renderSection("DA COMPRARE", pending, false);
+      renderSection("ACQUISTATI", completed, true);
+      if (!items.length) list.appendChild(mk("div", "small", "La lista è vuota."));
+      setTimes($("familyShoppingTimes"), null, new Date(), false, 0, false);
+      scheduleAlign();
+    }
+  );
+}
+
+function addFamilyShoppingItem() {
+  if (familyShoppingBusy) return;
+  var nameInput = $("familyShoppingInput");
+  var quantityInput = $("familyShoppingQuantity");
+  var name = nameInput ? nameInput.value.trim() : "";
+  var quantity = quantityInput ? quantityInput.value.trim() : "";
+  if (!name) {
+    if (nameInput) nameInput.focus();
+    return;
+  }
+
+  familyShoppingBusy = true;
+  familyShoppingRequest(
+    "POST",
+    "/shopping?view_id=" + encodeURIComponent(currentView),
+    {name:name, quantity:quantity},
+    function(ok, data) {
+      familyShoppingBusy = false;
+      if (!ok) {
+        alert(data && data.error ? data.error : "Inserimento non riuscito.");
+        return;
+      }
+      nameInput.value = "";
+      quantityInput.value = "";
+      loadFamilyShoppingList();
+      nameInput.focus();
+    }
+  );
+}
+
+(function initFamilyShoppingControls() {
+  var add = $("familyShoppingAdd");
+  var input = $("familyShoppingInput");
+  if (add) add.onclick = addFamilyShoppingItem;
+  if (input) input.onkeydown = function(event) {
+    if (event.key === "Enter") addFamilyShoppingItem();
+  };
+  var quantity = $("familyShoppingQuantity");
+  if (quantity) quantity.onkeydown = function(event) {
+    if (event.key === "Enter") addFamilyShoppingItem();
+  };
+})();
 
 /* ==================================================
    13. LISTA DELLA SPESA
@@ -5682,6 +5888,7 @@ function setView(view, manual){
   }
 
   safe(loadShoppingList);
+  safe(loadFamilyShoppingList);
 
   /* box riservati a una sola vista (data-only) */
   var only = document.querySelectorAll(".box[data-only]");
@@ -7681,6 +7888,10 @@ function initBoxRefresh() {
     {
       id: "shoppingBox",
       load: function () { loadShoppingList(); }
+    },
+    {
+      id: "familyShoppingBox",
+      load: function () { loadFamilyShoppingList(); }
     },
     {
       id: "sharedTasksBox",
