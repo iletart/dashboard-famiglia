@@ -562,6 +562,7 @@ input[type=checkbox] {
 #recurringTasksBox .recurring-config-button {
   display:inline-block;
   position:relative;
+  top:-5px;
   left:-4px;
   flex:0 0 auto;
   width:27px;
@@ -590,6 +591,15 @@ input[type=checkbox] {
 .recurring-task-row {
   margin:4px 0;
 }
+.recurring-task-parent { margin:5px 0 2px; font-weight:bold; }
+.recurring-subtask-row { display:table; width:100%; margin:3px 0 3px 28px; }
+.recurring-subtask-row .todo-check-cell { width:25px; }
+.recurring-subtask-row .todo-text { font-size:.95em; }
+.recurring-subtask-editor { display:flex; flex-direction:column; gap:5px; }
+.recurring-subtask-edit-row { display:flex; align-items:center; gap:6px; }
+.recurring-subtask-edit-row input[type="text"] { flex:1 1 auto; min-width:0; width:auto; box-sizing:border-box; }
+.recurring-subtask-edit-row button { flex:0 0 34px; width:34px; min-width:34px; margin:0; padding:4px; }
+.recurring-subtask-add { align-self:flex-start; margin:2px 0 0; }
 .recurring-task-time {
   display:inline-block;
   min-width:48px;
@@ -2326,9 +2336,14 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
     </div>
     <div class="recurring-config-form">
       <label class="recurring-field">
-        <span>Attività</span>
-        <input type="text" id="recurringText" maxlength="200" placeholder="Descrizione attività">
+        <span>Titolo attività</span>
+        <input type="text" id="recurringText" maxlength="200" placeholder="Es. Piscina">
       </label>
+      <div class="recurring-field">
+        <span>Sottoattività (facoltative)</span>
+        <div id="recurringSubtasks" class="recurring-subtask-editor"></div>
+        <button type="button" id="recurringSubtaskAddButton" class="recurring-subtask-add">+ Aggiungi sottoattività</button>
+      </div>
       <label class="recurring-field">
         <span>Ricorrenza</span>
         <select id="recurringType">
@@ -3718,29 +3733,48 @@ function renderRecurringTasks() {
   }
   for (var i = 0; i < items.length; i++) {
     (function(item) {
-      var row = mk("div", "todo recurring-task-row");
-      var cell = mk("span", "todo-check-cell");
-      var check = mk("input", "todo-check");
-      check.type = "checkbox";
-      check.checked = !!item.done;
-      check.disabled = recurringBusy;
-      check.onchange = function() {
-        recurringPost({
-          action: "toggle",
-          task_id: item.id,
-          date: date,
-          done: check.checked
-        }, "Salvataggio...");
-      };
-      cell.appendChild(check);
-      row.appendChild(cell);
-
-      var textCell = mk("span", item.done ? "todo-text done" : "todo-text");
-      textCell.appendChild(mk("span", "recurring-task-time", item.time || ""));
-      textCell.appendChild(document.createTextNode(item.text));
-      row.appendChild(textCell);
-      list.appendChild(row);
-
+      var subtasks = Array.isArray(item.subtasks) ? item.subtasks : [];
+      if (subtasks.length) {
+        var parent = mk("div", "recurring-task-parent");
+        parent.appendChild(mk("span", "recurring-task-time", item.time || ""));
+        parent.appendChild(document.createTextNode(item.text));
+        list.appendChild(parent);
+        for (var s = 0; s < subtasks.length; s++) {
+          (function(subtask) {
+            var row = mk("div", "todo recurring-subtask-row");
+            var cell = mk("span", "todo-check-cell");
+            var check = mk("input", "todo-check");
+            check.type = "checkbox";
+            check.checked = !!subtask.done;
+            check.disabled = recurringBusy;
+            check.onchange = function() {
+              recurringPost({ action: "toggle", task_id: item.id, subtask_id: subtask.id,
+                date: date, done: check.checked }, "Salvataggio...");
+            };
+            cell.appendChild(check);
+            row.appendChild(cell);
+            row.appendChild(mk("span", subtask.done ? "todo-text done" : "todo-text", subtask.text));
+            list.appendChild(row);
+          })(subtasks[s]);
+        }
+      } else {
+        var row = mk("div", "todo recurring-task-row");
+        var cell = mk("span", "todo-check-cell");
+        var check = mk("input", "todo-check");
+        check.type = "checkbox";
+        check.checked = !!item.done;
+        check.disabled = recurringBusy;
+        check.onchange = function() {
+          recurringPost({ action: "toggle", task_id: item.id, date: date, done: check.checked }, "Salvataggio...");
+        };
+        cell.appendChild(check);
+        row.appendChild(cell);
+        var textCell = mk("span", item.done ? "todo-text done" : "todo-text");
+        textCell.appendChild(mk("span", "recurring-task-time", item.time || ""));
+        textCell.appendChild(document.createTextNode(item.text));
+        row.appendChild(textCell);
+        list.appendChild(row);
+      }
       if (item.owners && item.owners.length) {
         var names = [];
         for (var j = 0; j < item.owners.length; j++) names.push(userName(item.owners[j]));
@@ -3768,9 +3802,37 @@ function resetRecurringForm() {
   $("recurringYearlyDay").value = "1";
   $("recurringTime").value = "09:00";
   $("recurringSaveButton").textContent = "Salva attività";
+  renderRecurringSubtasks([]);
   var checks = $("recurringOwners").querySelectorAll("input[type=checkbox]");
   for (var i = 0; i < checks.length; i++) checks[i].checked = false;
   updateRecurringFields();
+}
+
+function addRecurringSubtask(value, id) {
+  var container = $("recurringSubtasks");
+  var row = mk("div", "recurring-subtask-edit-row");
+  var input = mk("input");
+  input.type = "text"; input.maxLength = 200; input.placeholder = "Es. Costume";
+  input.className = "recurring-subtask-input"; input.value = value || "";
+  if (id !== null && id !== undefined) input.setAttribute("data-subtask-id", String(id));
+  var remove = mk("button", "", "×");
+  remove.type = "button"; remove.title = "Rimuovi sottoattività";
+  remove.onclick = function() { container.removeChild(row); };
+  row.appendChild(input); row.appendChild(remove); container.appendChild(row);
+}
+function renderRecurringSubtasks(items) {
+  var container = $("recurringSubtasks"); clear(container);
+  for (var i = 0; i < (items || []).length; i++) addRecurringSubtask(items[i].text, items[i].id);
+}
+function collectRecurringSubtasks() {
+  var inputs = $("recurringSubtasks").querySelectorAll(".recurring-subtask-input");
+  var result = [];
+  for (var i = 0; i < inputs.length; i++) {
+    var text = inputs[i].value.replace(/^\s+|\s+$/g, "");
+    if (!text) continue;
+    result.push({ id: inputs[i].getAttribute("data-subtask-id") || null, text: text });
+  }
+  return result;
 }
 
 function updateRecurringFields() {
@@ -3809,6 +3871,7 @@ function editRecurringDefinition(id) {
   $("recurringMonth").value = String(item.month_of_year || 1);
   $("recurringYearlyDay").value = String(item.day_of_month || 1);
   $("recurringTime").value = item.time || "09:00";
+  renderRecurringSubtasks(item.subtasks || []);
   $("recurringSaveButton").textContent = "Aggiorna attività";
   var checks = $("recurringOwners").querySelectorAll("input[type=checkbox]");
   for (var j = 0; j < checks.length; j++) {
@@ -3833,7 +3896,9 @@ function renderRecurringDefinitions() {
       var row = mk("div", "recurring-definition");
       var main = mk("div", "recurring-definition-main");
       main.appendChild(mk("div", "", item.text));
-      main.appendChild(mk("div", "small", recurringDescription(item)));
+      var detail = recurringDescription(item);
+      if (item.subtasks && item.subtasks.length) detail += " · " + item.subtasks.length + " sottoattività";
+      main.appendChild(mk("div", "small", detail));
       row.appendChild(main);
       var actions = mk("div", "recurring-definition-actions");
       var edit = mk("button", "", "Modifica");
@@ -3904,7 +3969,8 @@ function saveRecurringDefinition() {
     day_of_month: type === "monthly" ? Number($("recurringDayOfMonth").value) :
       (type === "yearly" ? Number($("recurringYearlyDay").value) : null),
     month_of_year: type === "yearly" ? Number($("recurringMonth").value) : null,
-    owners: owners
+    owners: owners,
+    subtasks: collectRecurringSubtasks()
   };
   if ((type === "monthly" && (data.day_of_month < 1 || data.day_of_month > 31)) ||
       (type === "yearly" && (data.day_of_month < 1 || data.day_of_month > 31))) {
@@ -8609,6 +8675,7 @@ function startDashboard(preferredView){
 	$("recurringCancelEditButton").onclick = resetRecurringForm;
 	$("recurringType").onchange = updateRecurringFields;
 	$("recurringSaveButton").onclick = saveRecurringDefinition;
+  $("recurringSubtaskAddButton").onclick = function() { addRecurringSubtask("", null); };
 
 	// Aggiunta task giornalieri
 	$("taskAddButton").onclick = function(){
