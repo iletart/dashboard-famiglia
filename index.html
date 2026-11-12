@@ -250,6 +250,8 @@ input[type=checkbox] {
 
 #viewMenuToggle {
   display:flex;
+  background:#d8c3a5;
+  border:1px solid #b89d78;
   flex-direction:column;
   justify-content:space-around;
   width:28px;
@@ -262,6 +264,7 @@ input[type=checkbox] {
 
 #viewMenuToggle span {
   display:block;
+  background:#704f32;
   width:100%;
   height:2px;
   background:#000;
@@ -3698,7 +3701,12 @@ function loadRecurringTasks(silent) {
   if (!authToken) return;
   if (!silent) setText($("recurringTaskStatus"), "Caricamento...");
   var date = recurringDateKey(recurringSel);
-  api("GET", "?list=recurring-tasks&date=" + encodeURIComponent(date), null, function(err, data) {
+  var recurringUrl = "?list=recurring-tasks&date=" + encodeURIComponent(date);
+  var currentViewConfig = findItem(DASHBOARD_VIEWS, function(v) { return v.id === currentView; });
+  if (currentViewConfig && currentViewConfig.view_type === "personal") {
+    recurringUrl += "&view=" + encodeURIComponent(currentView);
+  }
+  api("GET", recurringUrl, null, function(err, data) {
     if (err || !data || !data.days || !Array.isArray(data.definitions)) {
       if (!silent) setText($("recurringTaskStatus"), "Attività ricorrenti non disponibili: " + (err || "risposta non valida"));
       setText($("recurringTasksTimes"), "sync error");
@@ -6539,7 +6547,7 @@ function setView(view, manual){
   var btns = $("viewMenuPanel").getElementsByTagName("button");
   
   for(var i = 0; i < btns.length; i++){
-    btns[i].className = btns[i].getAttribute("data-view") === view ? "sel" : "";
+    btns[i].classList.toggle("sel", btns[i].getAttribute("data-view") === view);
   }
 
   var personal = viewConfig.view_type === "personal";
@@ -6864,10 +6872,6 @@ function renderViewMenu(){
 	var b = mk("button", "", label);
 	b.type = "button";
 	b.setAttribute("data-view", id);
-
-    if(view && view.view_type === "shared"){
-      b.classList.add("family-view-button");
-    }
 
 	var view = findItem(DASHBOARD_VIEWS, function(v){
 	  return v.id === id;
