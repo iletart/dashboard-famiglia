@@ -559,19 +559,24 @@ input[type=checkbox] {
 
 
 /* Attività ricorrenti */
-.recurring-config-button {
+#recurringTasksBox .recurring-config-button {
   display:inline-block;
+  position:relative;
+  left:-4px;
   flex:0 0 auto;
-  width:24px;
-  height:24px;
-  margin:0 4px 0 2px;
+  width:27px;
+  height:27px;
+  min-width:27px;
+  margin:0 4px 0 0;
   padding:0;
-  border:0;
-  background:transparent;
-  color:#000;
+  box-sizing:border-box;
+  border:1px solid #704052;
+  border-radius:4px;
+  background:#704052;
+  color:#fff;
   font-family:Arial,sans-serif;
-  font-size:20px;
-  line-height:24px;
+  font-size:19px;
+  line-height:25px;
   text-align:center;
   vertical-align:middle;
   cursor:pointer;
