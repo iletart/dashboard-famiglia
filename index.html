@@ -5888,7 +5888,9 @@ function setView(view, manual){
   }
 
   safe(loadShoppingList);
-  safe(loadFamilyShoppingList);
+  if (viewHasBox(view, "familyShopping")) {
+    safe(loadFamilyShoppingList);
+  }
 
   /* box riservati a una sola vista (data-only) */
   var only = document.querySelectorAll(".box[data-only]");
