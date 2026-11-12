@@ -560,10 +560,21 @@ input[type=checkbox] {
 
 /* Attività ricorrenti */
 .recurring-config-button {
-  margin:0 4px 0 auto;
-  padding:3px 7px;
-  font-size:.75em;
-  white-space:nowrap;
+  display:inline-block;
+  flex:0 0 auto;
+  width:24px;
+  height:24px;
+  margin:0 4px 0 2px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:#000;
+  font-family:Arial,sans-serif;
+  font-size:20px;
+  line-height:24px;
+  text-align:center;
+  vertical-align:middle;
+  cursor:pointer;
 }
 #recurringTasksBox .section-heading {
   align-items:center;
@@ -2248,7 +2259,7 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
     <div class="box" id="recurringTasksBox" hidden>
       <div class="section-heading">
         <h2 data-box-title="recurringTasks">Attività ricorrenti</h2>
-        <button type="button" id="recurringConfigButton" class="recurring-config-button">Configura</button>
+        <button type="button" id="recurringConfigButton" class="recurring-config-button" title="Configura attività ricorrenti" aria-label="Configura attività ricorrenti"><span aria-hidden="true">⚙</span></button>
         <div class="sync-label" id="recurringTasksTimes"></div>
       </div>
       <div class="seg" id="recurringTaskDays">
