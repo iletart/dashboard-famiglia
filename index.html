@@ -7431,23 +7431,29 @@ function updateLoggedUser() {
     return;
   }
 
-  var user = null;
-  
-  for (var i = 0; i < AUTH_PROFILES.length; i++) {
-    if (String(AUTH_PROFILES[i].user_id) === String(authProfile)) {
-      user = AUTH_PROFILES[i];
-      break;
+  // Il nome e il tipo arrivano dalla sessione verificata e sono
+  // disponibili anche al ripristino dopo un refresh della pagina.
+  var name = authUserName || "";
+  var type = authUserType || "";
+
+  // Fallback sui profili caricati, se la sessione non contiene i dati.
+  if (!name) {
+    for (var i = 0; i < AUTH_PROFILES.length; i++) {
+      if (String(AUTH_PROFILES[i].user_id) === String(authProfile)) {
+        name = AUTH_PROFILES[i].name || "";
+        type = type || AUTH_PROFILES[i].type || "";
+        break;
+      }
     }
   }
-  
-  if (!user) {
+
+  if (!name) {
     el.textContent = "Utente collegato";
     return;
   }
 
-  var typeLabel = user.type === "family" ? "Famiglia" : "Utente";
-
-  el.textContent = "Utente collegato: " + user.name + " (" + typeLabel + ")";
+  var typeLabel = type === "family" ? "Famiglia" : "Utente";
+  el.textContent = "Utente collegato: " + name + " (" + typeLabel + ")";
 }
 
 function openLoginPage(){
