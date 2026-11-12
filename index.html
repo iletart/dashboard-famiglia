@@ -8562,6 +8562,12 @@ function startDashboard(preferredView){
 	setView(preferredView || getScheduledView(), false);
 	renderViewMenu();
 	
+	bindSeg("recurringTaskDays", function(day){
+	  recurringSel = day;
+	  renderRecurringTasks();
+	  loadRecurringTasks(true);
+	});
+
 	bindSeg("taskDays", function(day){
 	  taskSel = day;
 	  renderTasks();
@@ -8582,6 +8588,12 @@ function startDashboard(preferredView){
 	  renderPersonalTasks();
 	});
 	
+	$("recurringConfigButton").onclick = openRecurringConfig;
+	$("recurringConfigClose").onclick = closeRecurringConfig;
+	$("recurringCancelEditButton").onclick = resetRecurringForm;
+	$("recurringType").onchange = updateRecurringFields;
+	$("recurringSaveButton").onclick = saveRecurringDefinition;
+
 	// Aggiunta task giornalieri
 	$("taskAddButton").onclick = function(){
 	  var input = $("taskInput");
