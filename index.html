@@ -716,15 +716,17 @@ input[type=checkbox] {
 
 
 
-/* Lista spesa interna famiglia */
-.family-shopping-add input:first-child { flex: 1 1 auto; }
-.family-shopping-add input:nth-child(2) { flex: 0 0 62px; width:62px; }
+/* Lista della spesa interna famiglia */
+.family-shopping-add input:first-child { flex:1 1 auto; min-width:0; }
+.family-shopping-add input:nth-child(2) { flex:0 0 62px; width:62px; }
+.family-shopping-tabs { margin:0 0 7px; }
+.family-shopping-section { margin:0; }
 .family-shopping-item {
   display:flex;
   align-items:center;
   gap:8px;
-  margin:5px 0;
-  min-height:28px;
+  margin:3px 0;
+  min-height:26px;
 }
 .family-shopping-item input[type="checkbox"] { flex:0 0 auto; }
 .family-shopping-item-name { flex:1 1 auto; min-width:0; overflow-wrap:anywhere; }
@@ -735,15 +737,43 @@ input[type=checkbox] {
 .family-shopping-delete {
   flex:0 0 auto;
   margin:0;
-  padding:2px 7px;
+  padding:2px 5px;
   min-width:28px;
 }
-.family-shopping-section-title {
-  margin:9px 0 4px;
-  padding-bottom:3px;
-  border-bottom:1px solid #999;
-  font-size:.85em;
-  font-weight:bold;
+body.k .family-shopping-delete {
+  border:0;
+  background:transparent;
+  box-shadow:none;
+}
+body.k .family-shopping-delete .trash-icon {
+  position:relative;
+  left:2px;
+  top:7px;
+  display:block;
+  width:11px;
+  height:12px;
+  margin-top:4px;
+  border:1px solid #000;
+  border-top:0;
+}
+body.k .family-shopping-delete .trash-icon:before {
+  content:"";
+  position:absolute;
+  left:-2px;
+  top:-3px;
+  width:13px;
+  height:1px;
+  background:#000;
+}
+body.k .family-shopping-delete .trash-icon:after {
+  content:"";
+  position:absolute;
+  left:2px;
+  top:-5px;
+  width:5px;
+  height:2px;
+  border:1px solid #000;
+  border-bottom:0;
 }
 
 /* ==================================================
@@ -2075,17 +2105,6 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
       <div id="agenda">Caricamento...</div>
     </div>
 
-	<div class="box" id="shoppingBox">
-		<div class="section-heading">
-		  <h2 data-box-title="shopping"></h2>
-		  <div class="sync-label" id="shoppingTimes"></div>
-		</div>
-	  <div id="shoppingList">Caricamento...</div>
-	</div>
-  </div>
-
-  <div class="col">
-
     <div class="box" id="familyShoppingBox" hidden>
       <div class="section-heading">
         <h2 data-box-title="familyShopping">Lista della spesa</h2>
@@ -2098,6 +2117,9 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
       </div>
       <div id="familyShoppingList">Caricamento...</div>
     </div>
+  </div>
+
+  <div class="col">
 
     <div class="box" id="sharedTasksBox">
       <div class="section-heading">
@@ -3726,24 +3748,6 @@ function renderRoutes(){
 
 var familyShoppingBusy = false;
 
-function familyShoppingRequest(method, path, payload, done) {
-  var x = new XMLHttpRequest();
-  var url = FAMILY_SHOPPING_API_URL + path;
-  x.open(method, url, true);
-  x.setRequestHeader("Authorization", "Bearer " + authToken);
-  if (payload !== null) x.setRequestHeader("Content-Type", "application/json");
-  x.timeout = 15000;
-  x.onreadystatechange = function() {
-    if (x.readyState !== 4) return;
-    var data = null;
-    try { data = JSON.parse(x.responseText); } catch(e) {}
-    done(x.status >= 200 && x.status < 300 && data && data.ok, data);
-  };
-  x.onerror = function() { done(false, {error:"Errore di connessione"}); };
-  x.ontimeout = function() { done(false, {error:"Timeout"}); };
-  x.send(payload === null ? null : JSON.stringify(payload));
-}
-
 function loadFamilyShoppingList() {
   var list = $("familyShoppingList");
   if (!list) return;
@@ -3752,7 +3756,6 @@ function loadFamilyShoppingList() {
     return;
   }
 
-  setText(list, "Caricamento...");
   familyShoppingRequest(
     "GET",
     "/shopping?view_id=" + encodeURIComponent(currentView),
@@ -3774,9 +3777,44 @@ function loadFamilyShoppingList() {
         (items[i].completed ? completed : pending).push(items[i]);
       }
 
-      function renderSection(title, rows, isCompleted) {
-        if (!rows.length) return;
-        list.appendChild(mk("div", "family-shopping-section-title", title));
+      var tabs = mk("div", "seg two family-shopping-tabs");
+      var pendingButton = mk("button", "", "DA COMPRARE");
+      var completedButton = mk("button", "", "COMPRATO");
+      pendingButton.type = "button";
+      completedButton.type = "button";
+      pendingButton.classList.add("active");
+      tabs.appendChild(pendingButton);
+      tabs.appendChild(completedButton);
+      list.appendChild(tabs);
+
+      var pendingSection = mk("div", "family-shopping-section");
+      var completedSection = mk("div", "family-shopping-section");
+      completedSection.style.display = "none";
+      list.appendChild(pendingSection);
+      list.appendChild(completedSection);
+
+      pendingButton.onclick = function() {
+        pendingSection.style.display = "block";
+        completedSection.style.display = "none";
+        pendingButton.classList.add("active");
+        completedButton.classList.remove("active");
+        scheduleAlign();
+      };
+      completedButton.onclick = function() {
+        pendingSection.style.display = "none";
+        completedSection.style.display = "block";
+        pendingButton.classList.remove("active");
+        completedButton.classList.add("active");
+        scheduleAlign();
+      };
+
+      function renderRows(target, rows, isCompleted) {
+        if (!rows.length) {
+          target.appendChild(mk("div", "small", isCompleted ?
+            "Nessun articolo comprato." : "Nessun articolo da comprare."));
+          return;
+        }
+
         for (var j=0; j<rows.length; j++) {
           (function(item) {
             var row = mk("div", "family-shopping-item" + (isCompleted ? " completed" : ""));
@@ -3784,17 +3822,18 @@ function loadFamilyShoppingList() {
             checkbox.type = "checkbox";
             checkbox.checked = !!item.completed;
             checkbox.disabled = familyShoppingBusy;
+            checkbox.setAttribute("aria-label", item.completed ?
+              "Segna come da comprare" : "Segna come comprato");
             checkbox.onchange = function() {
               if (familyShoppingBusy) return;
               familyShoppingBusy = true;
-              checkbox.disabled = true;
               familyShoppingRequest(
                 "PATCH",
                 "/shopping/" + encodeURIComponent(item.id) + "?view_id=" + encodeURIComponent(currentView),
                 {completed: checkbox.checked},
-                function(ok, result) {
+                function(saved, result) {
                   familyShoppingBusy = false;
-                  if (!ok) alert(result && result.error ? result.error : "Aggiornamento non riuscito.");
+                  if (!saved) alert(result && result.error ? result.error : "Aggiornamento non riuscito.");
                   loadFamilyShoppingList();
                 }
               );
@@ -3805,34 +3844,38 @@ function loadFamilyShoppingList() {
             row.appendChild(checkbox);
             row.appendChild(label);
 
-            var remove = mk("button", "family-shopping-delete", "×");
+            var remove = mk("button", "todo-delete family-shopping-delete", "");
             remove.type = "button";
             remove.title = "Elimina articolo";
+            remove.setAttribute("aria-label", "Elimina " + item.name);
             remove.disabled = familyShoppingBusy;
+            if (IS_KINDLE) {
+              remove.appendChild(mk("span", "trash-icon"));
+            } else {
+              remove.textContent = "🗑";
+            }
             remove.onclick = function() {
               if (!window.confirm("Eliminare " + item.name + "?")) return;
               familyShoppingBusy = true;
-              remove.disabled = true;
               familyShoppingRequest(
                 "DELETE",
                 "/shopping/" + encodeURIComponent(item.id) + "?view_id=" + encodeURIComponent(currentView),
                 null,
-                function(ok, result) {
+                function(saved, result) {
                   familyShoppingBusy = false;
-                  if (!ok) alert(result && result.error ? result.error : "Eliminazione non riuscita.");
+                  if (!saved) alert(result && result.error ? result.error : "Eliminazione non riuscita.");
                   loadFamilyShoppingList();
                 }
               );
             };
             row.appendChild(remove);
-            list.appendChild(row);
+            target.appendChild(row);
           })(rows[j]);
         }
       }
 
-      renderSection("DA COMPRARE", pending, false);
-      renderSection("ACQUISTATI", completed, true);
-      if (!items.length) list.appendChild(mk("div", "small", "La lista è vuota."));
+      renderRows(pendingSection, pending, false);
+      renderRows(completedSection, completed, true);
       setTimes($("familyShoppingTimes"), null, new Date(), false, 0, false);
       scheduleAlign();
     }
@@ -7886,10 +7929,6 @@ function initBoxRefresh() {
     {
       id: "agendaBox",
       load: function () { loadAgenda(); }
-    },
-    {
-      id: "shoppingBox",
-      load: function () { loadShoppingList(); }
     },
     {
       id: "familyShoppingBox",
