@@ -2407,7 +2407,11 @@ function setTimes(el, gen, synced, err, staleMs, needGen){
 
 /* Gruppi di pulsanti (.seg) con data-day */
 function bindSeg(id, fn){
-  var b = $(id).getElementsByTagName("button");
+  var container = $(id);
+  // Alcune viste possono non avere il box che contiene questo selettore.
+  if(!container){ return; }
+
+  var b = container.getElementsByTagName("button");
   for(var i = 0; i < b.length; i++){
     b[i].onclick = (function(btn){
       return function(){ fn(btn.getAttribute("data-day")); };
@@ -2416,7 +2420,11 @@ function bindSeg(id, fn){
 }
 
 function markSeg(id, sel){
-  var b = $(id).getElementsByTagName("button");
+  var container = $(id);
+  // Un box non configurato non deve bloccare il rendering della vista.
+  if(!container){ return; }
+
+  var b = container.getElementsByTagName("button");
   for(var i = 0; i < b.length; i++){
     b[i].className = b[i].getAttribute("data-day") === sel ? "sel" : "";
   }
