@@ -3731,7 +3731,12 @@ function recurringPost(data, statusMessage) {
   recurringBusy = true;
   renderRecurringTasks();
   setText($("recurringTaskStatus"), statusMessage || "Salvataggio...");
-  api("POST", "?list=recurring-tasks&date=" + encodeURIComponent(recurringDateKey(recurringSel)), data, function(err, result) {
+  var recurringPostUrl = "?list=recurring-tasks&date=" + encodeURIComponent(recurringDateKey(recurringSel));
+  var postViewConfig = findItem(DASHBOARD_VIEWS, function(v) { return v.id === currentView; });
+  if (postViewConfig && postViewConfig.view_type === "personal") {
+    recurringPostUrl += "&view=" + encodeURIComponent(currentView);
+  }
+  api("POST", recurringPostUrl, data, function(err, result) {
     recurringBusy = false;
     if (err || !result || !result.days || !Array.isArray(result.definitions)) {
       setText($("recurringTaskStatus"), "Salvataggio non riuscito: " + (err || "risposta non valida"));
