@@ -244,8 +244,7 @@ input[type=checkbox] {
 #viewMenu {
   position:absolute;
   left:7px;
-  top:50%;
-  transform:translateY(-50%);
+  top:7px;
   z-index:1000;
 }
 
@@ -594,9 +593,11 @@ input[type=checkbox] {
 }
 #recurringTasksBox .recurring-config-button span {
   display:block;
+  width:100%;
   font-size:10px;
   line-height:1;
-  transform:translateY(-.5px);
+  text-align:center;
+  transform:none;
 }
 #recurringTasksBox .section-heading {
   align-items:center;
@@ -637,9 +638,12 @@ body.k #recurringTasksBox .recurring-config-button {
   font-weight:bold;
 }
 .recurring-task-owners {
-  margin:0 0 5px 29px;
+  display:inline-block;
+  margin:0 0 0 8px;
   font-size:.75em;
+  font-weight:normal;
   color:#555;
+  vertical-align:baseline;
 }
 .recurring-config-panel {
   max-width:680px;
@@ -3778,6 +3782,11 @@ function renderRecurringTasks() {
         var parent = mk("div", "recurring-task-parent");
         if (item.time) parent.appendChild(mk("span", "recurring-task-time", item.time));
         parent.appendChild(document.createTextNode(item.text));
+        if (item.owners && item.owners.length) {
+          var parentNames = [];
+          for (var po = 0; po < item.owners.length; po++) parentNames.push(userName(item.owners[po]));
+          parent.appendChild(mk("span", "recurring-task-owners", "A: " + parentNames.join(", ")));
+        }
         list.appendChild(parent);
         for (var s = 0; s < subtasks.length; s++) {
           (function(subtask) {
@@ -3817,13 +3826,13 @@ function renderRecurringTasks() {
         var textCell = mk("span", item.done ? "todo-text done" : "todo-text");
         if (item.time) textCell.appendChild(mk("span", "recurring-task-time", item.time));
         textCell.appendChild(document.createTextNode(item.text));
+        if (item.owners && item.owners.length) {
+          var names = [];
+          for (var j = 0; j < item.owners.length; j++) names.push(userName(item.owners[j]));
+          textCell.appendChild(mk("span", "recurring-task-owners", "A: " + names.join(", ")));
+        }
         row.appendChild(textCell);
         list.appendChild(row);
-      }
-      if (item.owners && item.owners.length) {
-        var names = [];
-        for (var j = 0; j < item.owners.length; j++) names.push(userName(item.owners[j]));
-        list.appendChild(mk("div", "recurring-task-owners", "A: " + names.join(", ")));
       }
     })(items[i]);
   }
