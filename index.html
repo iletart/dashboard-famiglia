@@ -6727,9 +6727,13 @@ function loadShoppingList() {
 
         var row = mk(
           "div",
-          isCompleted
-            ? "shopping-item completed"
-            : "shopping-item"
+          IS_KINDLE
+            ? (isCompleted
+                ? "todo shopping-item completed"
+                : "todo shopping-item")
+            : (isCompleted
+                ? "shopping-item completed"
+                : "shopping-item")
         );
 
         var key = getDraftKey(item);
@@ -6738,7 +6742,9 @@ function loadShoppingList() {
         var checkbox = mk("input", "");
 
         checkbox.type = "checkbox";
-        checkbox.className = "shopping-checkbox";
+        checkbox.className = IS_KINDLE
+          ? "todo-check"
+          : "shopping-checkbox";
         checkbox.checked = draft
           ? draft.desiredStatus
           : isCompleted;
@@ -6754,13 +6760,13 @@ function loadShoppingList() {
 
           row.appendChild(
             (function () {
-              var cell = mk("span", "shopping-check-cell");
+              var cell = mk("span", "todo-check-cell");
               cell.appendChild(checkbox);
               return cell;
             })()
           );
 
-          var content = mk("span", "shopping-content");
+          var content = mk("span", "todo-text");
 
           content.appendChild(label);
           row.appendChild(content);
