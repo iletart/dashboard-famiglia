@@ -2425,49 +2425,6 @@ body.k #loggedUser {
   opacity:.6;
 }
 
-/* Nuovo cestino disegnato sul pulsante, uguale su PC, smartphone e Kindle. */
-.todo-delete,
-.family-shopping-delete {
-  position:relative!important;
-  color:#5E5B55!important;
-  background:none!important;
-  background-image:none!important;
-  font-size:0!important;
-  line-height:0!important;
-}
-.todo-delete .trash-icon,
-.family-shopping-delete .trash-icon {
-  display:none!important;
-}
-.todo-delete::before,
-.family-shopping-delete::before {
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  left:50%!important;
-  top:13px!important;
-  width:9px!important;
-  height:9px!important;
-  margin-left:-5px!important;
-  border:1.5px solid currentColor!important;
-  border-top:0!important;
-  border-radius:0 0 2px 2px!important;
-  box-sizing:border-box!important;
-}
-.todo-delete::after,
-.family-shopping-delete::after {
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  left:50%!important;
-  top:8px!important;
-  width:15px!important;
-  height:2px!important;
-  margin-left:-7.5px!important;
-  border-top:1.5px solid currentColor!important;
-  background:linear-gradient(currentColor,currentColor) center 3px/6px 1px no-repeat!important;
-}
-
 /* Kindle non gestisce in modo affidabile flex sulle righe spesa: usa celle. */
 body.k .family-shopping-item {
   display:table!important;
@@ -2531,10 +2488,14 @@ body.k #recurringTasksBox .recurring-subtask-row .todo-text {
   vertical-align:middle!important;
   overflow-wrap:anywhere!important;
 }
-body.k #recurringTasksBox .recurring-subtask-owners {
-  display:inline!important;
-  white-space:normal!important;
-  margin-left:5px!important;
+body.k #recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
+  display:table-cell!important;
+  width:1%!important;
+  max-width:35%!important;
+  padding-left:8px!important;
+  vertical-align:middle!important;
+  text-align:right!important;
+  white-space:nowrap!important;
 }
 /* Header ricorrenti: titolo, impostazioni e sync sulla stessa riga. */
 body.k #recurringTasksBox .section-heading {
@@ -4348,12 +4309,12 @@ function renderRecurringTasks() {
             cell.appendChild(check);
             row.appendChild(cell);
             var subtaskText = mk("span", subtask.done ? "todo-text done" : "todo-text", subtask.text);
+            row.appendChild(subtaskText);
             if (subtask.owners && subtask.owners.length) {
               var subNames = [];
               for (var su = 0; su < subtask.owners.length; su++) subNames.push(userName(subtask.owners[su]));
-              subtaskText.appendChild(mk("span", "recurring-subtask-owners", " · A: " + subNames.join(", ")));
+              row.appendChild(mk("span", "recurring-subtask-owners", "A: " + subNames.join(", ")));
             }
-            row.appendChild(subtaskText);
             list.appendChild(row);
           })(subtasks[s]);
         }
