@@ -3258,38 +3258,45 @@ body.k #authDiagnosticButton {
   display:none!important;
 }
 
-/* Il testo del sottotask resta sulla stessa riga della checkbox. */
+/* Sottotask: stessa struttura e stessi stili assegnatario della To-do list. */
 #recurringTasksBox .recurring-subtask-row,
 body.k #recurringTasksBox .recurring-subtask-row {
   display:flex!important;
-  flex-flow:row wrap!important;
+  flex-flow:row nowrap!important;
   align-items:center!important;
   padding-left:0!important;
   margin-left:28px!important;
   width:calc(100% - 28px)!important;
+  min-width:0!important;
   overflow:visible!important;
 }
 #recurringTasksBox .recurring-subtask-row .todo-check-cell,
 body.k #recurringTasksBox .recurring-subtask-row .todo-check-cell {
-  display:flex!important;
+  display:block!important;
   flex:0 0 25px!important;
   width:25px!important;
-  align-items:center;
+  min-width:25px!important;
   padding:0!important;
 }
 #recurringTasksBox .recurring-subtask-row .todo-text,
 body.k #recurringTasksBox .recurring-subtask-row .todo-text {
   display:block!important;
-  flex:1 1 0!important;
+  flex:0 1 auto!important;
   width:auto!important;
   min-width:0!important;
   padding:0!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
 }
-#recurringTasksBox .recurring-subtask-row .recurring-subtask-owners,
-body.k #recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
-  flex:0 1 calc(100% - 25px)!important;
-  max-width:calc(100% - 25px)!important;
-  margin:0 0 0 25px!important;
+#recurringTasksBox .recurring-subtask-row .task-assignees {
+  display:inline!important;
+  margin-left:5px!important;
+  font-size:.78em!important;
+  font-weight:normal!important;
+  color:#666!important;
+  white-space:normal!important;
+  vertical-align:baseline!important;
+  text-decoration:none!important;
 }
 
 /* L'ingranaggio rimane accanto al titolo anche con le regole Kindle
@@ -5346,7 +5353,7 @@ function renderRecurringTasks() {
             if (subtask.owners && subtask.owners.length) {
               var subNames = [];
               for (var su = 0; su < subtask.owners.length; su++) subNames.push(userName(subtask.owners[su]));
-              subtaskText.appendChild(mk("span", "recurring-subtask-owners", " · A: " + subNames.join(", ")));
+              subtaskText.appendChild(mk("span", "task-assignees", " · A: " + subNames.join(", ")));
             }
             row.appendChild(subtaskText);
             list.appendChild(row);
