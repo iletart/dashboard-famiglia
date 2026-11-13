@@ -2508,6 +2508,62 @@ body.k .family-shopping-item .family-shopping-delete {
   content:none!important;
   display:none!important;
 }
+
+/* Kindle: riga ricorrente a celle, checkbox e testo affiancati. */
+body.k #recurringTasksBox .recurring-task-row,
+body.k #recurringTasksBox .recurring-subtask-row {
+  display:table!important;
+  table-layout:fixed!important;
+  width:100%!important;
+  margin:4px 0!important;
+}
+body.k #recurringTasksBox .recurring-task-row .todo-check-cell,
+body.k #recurringTasksBox .recurring-subtask-row .todo-check-cell {
+  display:table-cell!important;
+  width:28px!important;
+  vertical-align:middle!important;
+}
+body.k #recurringTasksBox .recurring-task-row .todo-text,
+body.k #recurringTasksBox .recurring-subtask-row .todo-text {
+  display:table-cell!important;
+  width:100%!important;
+  min-width:0!important;
+  vertical-align:middle!important;
+  overflow-wrap:anywhere!important;
+}
+body.k #recurringTasksBox .recurring-subtask-owners {
+  display:inline!important;
+  white-space:normal!important;
+  margin-left:5px!important;
+}
+/* Header ricorrenti: titolo, impostazioni e sync sulla stessa riga. */
+body.k #recurringTasksBox .section-heading {
+  display:table!important;
+  table-layout:auto!important;
+  width:100%!important;
+}
+body.k #recurringTasksBox .section-heading h2 {
+  display:table-cell!important;
+  width:1%!important;
+  white-space:nowrap!important;
+  vertical-align:middle!important;
+}
+body.k #recurringTasksBox .recurring-config-button {
+  display:table-cell!important;
+  position:static!important;
+  float:none!important;
+  width:24px!important;
+  min-width:24px!important;
+  height:24px!important;
+  vertical-align:middle!important;
+}
+body.k #recurringTasksBox .sync-label {
+  display:table-cell!important;
+  width:99%!important;
+  text-align:right!important;
+  vertical-align:middle!important;
+  white-space:nowrap!important;
+}
 </style>
 
 </head>
