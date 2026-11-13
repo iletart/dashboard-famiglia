@@ -3429,58 +3429,156 @@ body.k #loggedUser {
 
 
 
-/* Correzioni definitive: una sola icona cestino e assegnatari inline. */
+/* Correzioni layout e icone: regole incluse nello stylesheet. */
+
+/* Icona cestino nuova, identica su PC, smartphone e Kindle. */
 .todo-actions .todo-delete::before,
 .todo-actions .todo-delete::after,
-.family-shopping-item .family-shopping-delete::before,
-.family-shopping-item .family-shopping-delete::after,
-body.k .todo-delete::before,
-body.k .todo-delete::after,
-body.k .family-shopping-delete::before,
-body.k .family-shopping-delete::after,
-body:not(.k) .todo-delete::before,
-body:not(.k) .todo-delete::after,
-body:not(.k) .family-shopping-delete::before,
-body:not(.k) .family-shopping-delete::after {
+.family-shopping-delete::before,
+.family-shopping-delete::after {
   content:none!important;
   display:none!important;
 }
 .todo-actions .todo-delete,
-.family-shopping-item .family-shopping-delete {
-  background:none!important;
-  background-image:none!important;
-}
-#recurringTasksBox .recurring-subtask-row,
-body.k #recurringTasksBox .recurring-subtask-row {
-  display:flex!important;
-  flex-flow:row nowrap!important;
+.family-shopping-delete {
+  position:relative!important;
+  display:inline-flex!important;
   align-items:center!important;
-  gap:0!important;
-  min-width:0!important;
+  justify-content:center!important;
+  color:#5E5B55!important;
+  background:transparent!important;
+  background-image:none!important;
+  font-size:0!important;
+  line-height:1!important;
 }
-#recurringTasksBox .recurring-subtask-row .todo-text {
+.todo-delete .trash-icon,
+.family-shopping-delete .trash-icon {
+  position:relative!important;
   display:block!important;
-  flex:1 1 auto!important;
-  min-width:0!important;
-  width:auto!important;
+  width:11px!important;
+  height:11px!important;
+  margin:4px 0 0!important;
+  border:1.5px solid currentColor!important;
+  border-top:0!important;
+  box-sizing:border-box!important;
 }
-#recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
-  display:inline!important;
-  flex:none!important;
-  max-width:none!important;
-  min-width:0!important;
-  margin:0 0 0 6px!important;
-  white-space:normal!important;
-  overflow-wrap:anywhere!important;
+.todo-delete .trash-icon::before,
+.family-shopping-delete .trash-icon::before {
+  content:""!important;
+  position:absolute!important;
+  left:-2px!important;
+  top:-4px!important;
+  width:12px!important;
+  height:1.5px!important;
+  background:currentColor!important;
 }
+.todo-delete .trash-icon::after,
+.family-shopping-delete .trash-icon::after {
+  content:""!important;
+  position:absolute!important;
+  left:2px!important;
+  top:-6px!important;
+  width:5px!important;
+  height:2px!important;
+  border:1px solid currentColor!important;
+  border-bottom:0!important;
+}
+
+/* La spunta non deve attraversare anche il nome dell'assegnatario. */
 .task-assignees {
-  display:inline!important;
-  margin:0 0 0 4px!important;
+  display:table-cell!important;
+  position:relative!important;
+  top:-2px!important;
+  padding-left:5px!important;
   font-size:.78em!important;
   font-weight:normal!important;
   color:#666!important;
   white-space:normal!important;
-  vertical-align:baseline!important;
+  vertical-align:middle!important;
+  text-decoration:none!important;
+}
+
+/* Kindle: checkbox, testo e assegnatari restano sulla stessa riga. */
+body.k #recurringTasksBox .recurring-task-row,
+body.k #recurringTasksBox .recurring-subtask-row {
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:4px 0!important;
+  gap:0!important;
+}
+body.k #recurringTasksBox .todo-check-cell {
+  display:block!important;
+  flex:0 0 25px!important;
+  width:25px!important;
+}
+body.k #recurringTasksBox .recurring-task-row .todo-text,
+body.k #recurringTasksBox .recurring-subtask-row .todo-text {
+  display:block!important;
+  flex:1 1 auto!important;
+  width:auto!important;
+  min-width:0!important;
+}
+body.k #recurringTasksBox .recurring-subtask-owners {
+  display:inline!important;
+  margin-left:5px!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Titolo, impostazioni e sincronizzazione non devono andare a capo su Kindle. */
+body.k #recurringTasksBox .section-heading {
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  align-items:center!important;
+  gap:5px!important;
+}
+body.k #recurringTasksBox .section-heading h2 {
+  flex:0 1 auto!important;
+  min-width:0!important;
+  margin:0!important;
+}
+body.k #recurringTasksBox .recurring-config-button {
+  float:none!important;
+  position:static!important;
+  flex:0 0 20px!important;
+  width:20px!important;
+  min-width:20px!important;
+  height:20px!important;
+  margin:0!important;
+}
+body.k #recurringTasksBox .sync-label {
+  flex:0 1 auto!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  white-space:nowrap!important;
+}
+
+/* Lista della spesa Kindle: il cestino segue l'articolo ed è all'estrema destra. */
+body.k .family-shopping-item {
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  gap:6px!important;
+}
+body.k .family-shopping-item-name {
+  display:block!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+body.k .family-shopping-item .family-shopping-delete {
+  display:flex!important;
+  flex:0 0 28px!important;
+  width:28px!important;
+  min-width:28px!important;
+  margin:0 0 0 auto!important;
+  padding:0!important;
+  align-items:center!important;
+  justify-content:center!important;
 }
 </style>
 
@@ -4766,9 +4864,9 @@ function itemRow(item, busy, onToggle, onDelete, extraBtn){
   cell.appendChild(cb);
   row.appendChild(cell);
   var textCell = mk("span", item.done ? "todo-text done" : "todo-text", item.text);
-  var assignedNames = assigneeLabel(item.assignees);
-  if(assignedNames) textCell.appendChild(mk("span", "task-assignees", " · " + assignedNames));
   row.appendChild(textCell);
+  var assignedNames = assigneeLabel(item.assignees);
+  if(assignedNames) row.appendChild(mk("span", "task-assignees", " · " + assignedNames));
 
   var actions = mk("span", "todo-actions");
   if(extraBtn){ actions.appendChild(extraBtn); }
