@@ -3427,6 +3427,61 @@ body.k #loggedUser {
   text-align:right!important;
 }
 
+
+
+/* Correzioni definitive: una sola icona cestino e assegnatari inline. */
+.todo-actions .todo-delete::before,
+.todo-actions .todo-delete::after,
+.family-shopping-item .family-shopping-delete::before,
+.family-shopping-item .family-shopping-delete::after,
+body.k .todo-delete::before,
+body.k .todo-delete::after,
+body.k .family-shopping-delete::before,
+body.k .family-shopping-delete::after,
+body:not(.k) .todo-delete::before,
+body:not(.k) .todo-delete::after,
+body:not(.k) .family-shopping-delete::before,
+body:not(.k) .family-shopping-delete::after {
+  content:none!important;
+  display:none!important;
+}
+.todo-actions .todo-delete,
+.family-shopping-item .family-shopping-delete {
+  background:none!important;
+  background-image:none!important;
+}
+#recurringTasksBox .recurring-subtask-row,
+body.k #recurringTasksBox .recurring-subtask-row {
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  align-items:center!important;
+  gap:0!important;
+  min-width:0!important;
+}
+#recurringTasksBox .recurring-subtask-row .todo-text {
+  display:block!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  width:auto!important;
+}
+#recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
+  display:inline!important;
+  flex:none!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0 0 0 6px!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.task-assignees {
+  display:inline!important;
+  margin:0 0 0 4px!important;
+  font-size:.78em!important;
+  font-weight:normal!important;
+  color:#666!important;
+  white-space:normal!important;
+  vertical-align:baseline!important;
+}
 </style>
 
 </head>
@@ -10487,58 +10542,3 @@ restoreAuthSession();
 </script>
 </body>
 </html>
-
-
-/* Correzioni definitive: una sola icona cestino e assegnatari inline. */
-.todo-actions .todo-delete::before,
-.todo-actions .todo-delete::after,
-.family-shopping-item .family-shopping-delete::before,
-.family-shopping-item .family-shopping-delete::after,
-body.k .todo-delete::before,
-body.k .todo-delete::after,
-body.k .family-shopping-delete::before,
-body.k .family-shopping-delete::after,
-body:not(.k) .todo-delete::before,
-body:not(.k) .todo-delete::after,
-body:not(.k) .family-shopping-delete::before,
-body:not(.k) .family-shopping-delete::after {
-  content:none!important;
-  display:none!important;
-}
-.todo-actions .todo-delete,
-.family-shopping-item .family-shopping-delete {
-  background:none!important;
-  background-image:none!important;
-}
-#recurringTasksBox .recurring-subtask-row,
-body.k #recurringTasksBox .recurring-subtask-row {
-  display:flex!important;
-  flex-flow:row nowrap!important;
-  align-items:center!important;
-  gap:0!important;
-  min-width:0!important;
-}
-#recurringTasksBox .recurring-subtask-row .todo-text {
-  display:block!important;
-  flex:1 1 auto!important;
-  min-width:0!important;
-  width:auto!important;
-}
-#recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
-  display:inline!important;
-  flex:none!important;
-  max-width:none!important;
-  min-width:0!important;
-  margin:0 0 0 6px!important;
-  white-space:normal!important;
-  overflow-wrap:anywhere!important;
-}
-.task-assignees {
-  display:inline!important;
-  margin:0 0 0 4px!important;
-  font-size:.78em!important;
-  font-weight:normal!important;
-  color:#666!important;
-  white-space:normal!important;
-  vertical-align:baseline!important;
-}
