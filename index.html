@@ -3575,6 +3575,60 @@ body.k #recurringTasksBox .sync-label {
   min-width:0!important;
   overflow-wrap:break-word!important;
 }
+
+
+/* ==================================================
+   OTTIMIZZAZIONI KINDLE - isolate: nessun effetto su PC/smartphone
+   ================================================== */
+
+/* Testo attività: il task può andare a capo, l'assegnatario resta unito. */
+body.k .todo .todo-text,
+body.k #recurringTasksBox .recurring-subtask-row .todo-text {
+  min-width:0!important;
+  overflow-wrap:break-word!important;
+  word-wrap:break-word!important;
+  word-break:normal!important;
+}
+body.k .todo .task-assignees,
+body.k #recurringTasksBox .recurring-subtask-row .task-assignees {
+  display:inline-block!important;
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
+  word-wrap:normal!important;
+  max-width:none!important;
+  vertical-align:baseline!important;
+}
+
+/* Righe ricorrenti: tabella semplice, più affidabile sul browser Kindle. */
+body.k #recurringTasksBox .recurring-task-row,
+body.k #recurringTasksBox .recurring-subtask-row {
+  display:table!important;
+  table-layout:fixed!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+body.k #recurringTasksBox .recurring-task-row .todo-check-cell,
+body.k #recurringTasksBox .recurring-subtask-row .todo-check-cell {
+  display:table-cell!important;
+  width:28px!important;
+  min-width:28px!important;
+  vertical-align:middle!important;
+}
+body.k #recurringTasksBox .recurring-task-row .todo-text,
+body.k #recurringTasksBox .recurring-subtask-row .todo-text {
+  display:table-cell!important;
+  width:100%!important;
+  min-width:0!important;
+  vertical-align:middle!important;
+}
+
+/* Controlli più facili da premere sul touchscreen Kindle. */
+body.k .todo-actions button,
+body.k .family-shopping-delete,
+body.k .recurring-config-button {
+  min-height:30px!important;
+}
 </style>
 
 </head>
