@@ -3084,6 +3084,173 @@ body.k .shopping-delete-label > span:after {
 
 }
 
+
+/* FIX LAYOUT KINDLE E ALLINEAMENTO BOX */
+@media screen and (max-width:800px) {
+  /* Nelle viste personali ogni box occupa tutta la larghezza disponibile. */
+  body.k #personalLayoutRow,
+  body.k #personalLayoutRow .layout-row {
+    display:block;
+    width:100%;
+    max-width:100%;
+  }
+  body.k #personalLayoutRow .col,
+  body.k #personalLayoutRow .col.full {
+    display:block;
+    float:none!important;
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box;
+  }
+  body.k #personalLayoutRow .box {
+    width:100%;
+    max-width:100%;
+    box-sizing:border-box;
+  }
+}
+
+/* Sottotask: gli assegnatari restano nel box e vanno a capo se manca spazio. */
+#recurringTasksBox #recurringTaskList {
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  overflow:hidden;
+  box-sizing:border-box;
+}
+#recurringTasksBox .recurring-subtask-row,
+body.k #recurringTasksBox .recurring-subtask-row {
+  display:flex!important;
+  flex-wrap:wrap;
+  align-items:center;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  margin:3px 0;
+  padding-left:25px;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+#recurringTasksBox .recurring-subtask-row .todo-check-cell,
+body.k #recurringTasksBox .recurring-subtask-row .todo-check-cell {
+  display:block;
+  flex:0 0 25px;
+  width:25px;
+  box-sizing:border-box;
+}
+#recurringTasksBox .recurring-subtask-row .todo-text,
+body.k #recurringTasksBox .recurring-subtask-row .todo-text {
+  display:block!important;
+  flex:1 1 120px;
+  width:auto;
+  min-width:0;
+  box-sizing:border-box;
+  overflow-wrap:anywhere;
+  word-wrap:break-word;
+  white-space:normal;
+}
+#recurringTasksBox .recurring-subtask-row .recurring-subtask-owners,
+body.k #recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
+  display:block;
+  flex:0 1 auto;
+  max-width:45%;
+  min-width:0;
+  margin:0 0 0 6px;
+  text-align:left;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-wrap:break-word;
+}
+
+/* L'editor delle assegnazioni Kindle resta dentro il pannello. */
+body.k .recurring-subtask-edit-row {
+  display:flex;
+  flex-wrap:wrap;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  box-sizing:border-box;
+}
+body.k .recurring-subtask-edit-row input[type="text"] {
+  flex:1 1 100%;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  box-sizing:border-box;
+}
+body.k .recurring-subtask-assign {
+  flex:1 1 100%;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  white-space:normal;
+}
+body.k .recurring-subtask-assign label {
+  white-space:normal;
+}
+
+/* Kindle: pulsante configurazione subito a destra del titolo. */
+body.k #recurringTasksBox .section-heading {
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-height:20px;
+  padding-right:18px;
+}
+body.k #recurringTasksBox .section-heading h2 {
+  float:none;
+  flex:0 1 auto;
+  width:auto;
+  min-width:0;
+  white-space:normal;
+}
+body.k #recurringTasksBox .recurring-config-button {
+  float:none;
+  position:static;
+  flex:0 0 16px;
+  margin:0;
+}
+body.k #recurringTasksBox .sync-label {
+  float:none;
+  flex:0 1 auto;
+  width:auto;
+  min-width:0;
+  margin:0 0 0 auto;
+  position:static;
+  white-space:nowrap;
+}
+
+/* Lista spesa: cestino ancorato al margine destro di ogni riga. */
+.family-shopping-item {
+  display:flex;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+.family-shopping-item-name {
+  flex:1 1 0;
+  width:0;
+  min-width:0;
+}
+.family-shopping-delete {
+  display:flex;
+  flex:0 0 28px;
+  width:28px;
+  min-width:28px;
+  height:28px;
+  align-items:center;
+  justify-content:center;
+  margin:0 0 0 auto;
+  padding:0;
+  box-sizing:border-box;
+}
+body.k .family-shopping-delete .trash-icon {
+  position:relative;
+  left:0;
+  top:0;
+  margin:0;
+}
+
 </style>
 
 </head>
