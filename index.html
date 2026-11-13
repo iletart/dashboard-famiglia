@@ -2058,6 +2058,1033 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
 
 
 
+
+/* ==================================================
+   TEMA NESTPLAN - solo grafica, nessuna funzione toccata.
+   PC e smartphone: regole "body:not(.k)".
+   Kindle: layout invariato, solo icone ridisegnate in CSS.
+   ================================================== */
+
+/* ---------- 1. BASE (PC e smartphone) ---------- */
+
+body:not(.k) {
+  background:#F4F1EA;
+  color:#1B1B1A;
+  font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+
+body:not(.k) :focus-visible {
+  outline:3px solid #2F6F62;
+  outline-offset:2px;
+}
+
+body:not(.k) .box {
+  background:#fff;
+  border:1px solid #E3DED3;
+  border-radius:18px;
+  padding:16px 18px;
+  margin:6px;
+}
+
+body:not(.k) h2 {
+  font-size:12px;
+  letter-spacing:.14em;
+  font-weight:700;
+  padding:0;
+}
+
+body:not(.k) h3 {
+  font-size:13px;
+  color:#5E5B55;
+  margin:12px 0 4px;
+}
+
+body:not(.k) .small,
+body:not(.k) .agenda-period {
+  color:#5E5B55;
+}
+
+body:not(.k) .agenda-period {
+  font-size:13px;
+  margin:10px 0 4px;
+}
+
+body:not(.k) .section-heading {
+  align-items:center;
+  margin-bottom:12px;
+  border-bottom:0;
+}
+
+body:not(.k) .sync-label {
+  top:0;
+  color:#5E5B55;
+  font-size:10px;
+  font-weight:500;
+}
+
+
+/* ---------- 2. HEADER ---------- */
+
+body:not(.k) #head {
+  border-radius:18px;
+}
+
+body:not(.k) #clock {
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+
+body:not(.k) #wday {
+  font-weight:700;
+}
+
+body:not(.k) #fulldate {
+  color:#5E5B55;
+}
+
+body:not(.k) #loggedUser {
+  display:inline-block;
+  top:0;
+  padding:3px 10px;
+  border-radius:999px;
+  background:#E6EFEA;
+  color:#1F5C4D;
+  font-weight:600;
+}
+
+body:not(.k) #loggedUser:empty {
+  display:none;
+}
+
+body:not(.k) #viewMenuToggle {
+  width:34px;
+  height:34px;
+  min-width:34px;
+  padding:8px;
+  border:1px solid #D9D3C6;
+  border-radius:12px;
+  box-shadow:none;
+}
+
+body:not(.k) #viewMenuPanel {
+  border:1px solid #E3DED3;
+  border-radius:14px;
+  box-shadow:0 14px 32px rgba(0,0,0,.16);
+}
+
+body:not(.k) #viewMenuPanel button {
+  border:1px solid #E3DED3;
+  border-radius:10px;
+}
+
+
+/* ---------- 3. PULSANTI, CAMPI, GRUPPI ---------- */
+
+body:not(.k) button {
+  border-color:#CFC8B8;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+body:not(.k) button:disabled {
+  opacity:.5;
+  cursor:default;
+}
+
+body:not(.k) .box input[type=text],
+body:not(.k) .box input[type=password],
+body:not(.k) .box input[type=time],
+body:not(.k) .box input[type=number],
+body:not(.k) .box select {
+  min-height:42px;
+  padding:0 14px;
+  border:1px solid #D9D3C6;
+  border-radius:12px;
+  background:#FBFAF6;
+  color:#1B1B1A;
+}
+
+/* Gruppi di pulsanti: Ieri / Oggi / Domani, Da comprare / Comprato... */
+body:not(.k) .seg {
+  gap:4px;
+  padding:4px;
+  background:#EFEBE2;
+  border-radius:13px;
+}
+
+body:not(.k) .seg > button {
+  min-height:42px;
+  margin:0;
+  padding:8px 6px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#3B3935;
+  font-size:13px;
+}
+
+body:not(.k) .seg > button.sel,
+body:not(.k) .seg > button.active {
+  background:#1B1B1A !important;
+  color:#fff !important;
+}
+
+/* Pulsante "Aggiungi" */
+body:not(.k) .add-ctl button {
+  min-height:42px;
+  padding:0 18px;
+  border-color:#1B1B1A;
+  background:#1B1B1A;
+  color:#fff;
+}
+
+
+/* ---------- 4. ELENCHI ---------- */
+
+/* Agenda */
+body:not(.k) .ev {
+  min-height:28px;
+  margin:8px 0;
+}
+
+body:not(.k) .ev .t {
+  padding:3px 9px;
+  border-radius:9px;
+  background:#1B1B1A;
+  color:#fff;
+  font-size:13px;
+}
+
+body:not(.k) .ev .tt {
+  font-weight:600;
+}
+
+body:not(.k) .event-tasks {
+  border-left:3px solid #D9D3C6;
+  border-radius:2px;
+}
+
+/* Righe con checkbox */
+body:not(.k) .todo > * {
+  padding-top:8px;
+  padding-bottom:8px;
+  border-bottom:1px solid #EEE9DF;
+}
+
+body:not(.k) .shopping-item,
+body:not(.k) .family-shopping-item {
+  margin:0;
+  padding:8px 0;
+  border-bottom:1px solid #EEE9DF;
+}
+
+body:not(.k) #menuList li {
+  margin:0;
+  padding:9px 0;
+  border-bottom:1px solid #EEE9DF;
+}
+
+body:not(.k) #menuList li:last-child {
+  border-bottom:0;
+}
+
+/* Checkbox personalizzate */
+body:not(.k) input[type=checkbox] {
+  -webkit-appearance:none;
+  appearance:none;
+  width:20px;
+  height:20px;
+  border:2px solid #1B1B1A;
+  border-radius:6px;
+  background:#fff;
+}
+
+body:not(.k) input[type=checkbox]:checked {
+  background:#1B1B1A;
+  box-shadow:inset 0 0 0 3px #fff;
+}
+
+body:not(.k) .todo-assign-option input,
+body:not(.k) .recurring-owner-options input,
+body:not(.k) .recurring-subtask-assign input {
+  width:16px;
+  height:16px;
+  border-radius:5px;
+}
+
+/* Etichette (chip) delle attività ricorrenti */
+body:not(.k) .recurring-task-time {
+  min-width:0;
+  padding:2px 7px;
+  border-radius:8px;
+  background:#1B1B1A;
+  color:#fff;
+  font-size:12px;
+}
+
+body:not(.k) .recurring-task-owners {
+  padding:2px 8px;
+  border-radius:999px;
+  background:#E6EFEA;
+  color:#1F5C4D;
+  font-size:11px;
+  font-weight:600;
+}
+
+/* Finestre */
+body:not(.k) .overlay {
+  background:#F4F1EA;
+}
+
+body:not(.k) .overlay .panel {
+  border:1px solid #E3DED3;
+  border-radius:18px;
+}
+
+
+/* ==================================================
+   5. ICONE DISEGNATE IN CSS
+   Niente emoji né glifi: solo bordi, tondi e box assoluti,
+   compatibili con il browser sperimentale dei Kindle datati.
+   ================================================== */
+
+/* Aggiorna (sostituisce ↻): anello con freccia */
+.box-refresh {
+  font-size:0 !important;
+  line-height:0 !important;
+  width:30px !important;
+  height:30px !important;
+  padding:0 !important;
+  top:-4px !important;
+  right:-6px !important;
+  color:#1B1B1A !important;
+}
+
+.box-refresh:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:10px;
+  height:10px;
+  margin:-7px 0 0 -7px;
+  border:2px solid currentColor;
+  border-top-color:transparent;
+  border-radius:50%;
+}
+
+.box-refresh:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:0;
+  height:0;
+  margin:-11px 0 0 0;
+  border-style:solid;
+  border-width:4px 0 4px 6px;
+  border-color:transparent transparent transparent currentColor;
+}
+
+/* Assegna (sostituisce 👥 e ↗): figura con testa e spalle */
+.todo-assign {
+  position:relative;
+  font-size:0 !important;
+  line-height:0 !important;
+  color:#5E5B55;
+}
+
+body.k .todo-assign {
+  font-size:0 !important;
+  line-height:0 !important;
+  color:#000;
+}
+
+.todo-assign:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:6px;
+  width:6px;
+  height:6px;
+  margin-left:-5px;
+  border:2px solid currentColor;
+  border-radius:50%;
+}
+
+.todo-assign:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:17px;
+  width:12px;
+  height:4px;
+  margin-left:-8px;
+  border:2px solid currentColor;
+  border-bottom:0;
+  border-radius:8px 8px 0 0;
+}
+
+/* Impostazioni attività ricorrenti (sostituisce ⚙) */
+#recurringTasksBox .recurring-config-button span {
+  font-size:0 !important;
+}
+
+#recurringTasksBox .recurring-config-button:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:4px;
+  height:4px;
+  margin:-4px 0 0 -4px;
+  border:2px solid #fff;
+  border-radius:50%;
+}
+
+#recurringTasksBox .recurring-config-button:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:2px;
+  height:2px;
+  margin:-7px 0 0 -1px;
+  background:#fff;
+  box-shadow:0 12px 0 #fff, 6px 6px 0 #fff, -6px 6px 0 #fff;
+}
+
+/* Impostazioni nel menu Kindle (sostituisce ☼) */
+body.k .settings-gear {
+  position:relative;
+  width:16px;
+  height:16px;
+  font-size:0;
+  line-height:0;
+}
+
+body.k .settings-gear:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:4px;
+  height:4px;
+  margin:-4px 0 0 -4px;
+  border:2px solid #000;
+  border-radius:50%;
+}
+
+body.k .settings-gear:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:2px;
+  height:2px;
+  margin:-7px 0 0 -1px;
+  background:#000;
+  box-shadow:0 12px 0 #000, 6px 6px 0 #000, -6px 6px 0 #000;
+}
+
+/* Cestino su PC e smartphone (sostituisce 🗑; su Kindle resta quello esistente) */
+body:not(.k) .todo-delete,
+body:not(.k) .family-shopping-delete {
+  position:relative;
+  width:32px;
+  height:32px;
+  min-width:32px;
+  padding:0;
+  border:0;
+  font-size:0;
+  line-height:0;
+  color:#5E5B55;
+  background:linear-gradient(currentColor,currentColor) 50% 5px / 6px 2px no-repeat;
+}
+
+body:not(.k) .todo-delete:hover,
+body:not(.k) .family-shopping-delete:hover {
+  color:#B3261E;
+}
+
+body:not(.k) .todo-delete:before,
+body:not(.k) .family-shopping-delete:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:13px;
+  width:8px;
+  height:8px;
+  margin-left:-6px;
+  border:2px solid currentColor;
+  border-top:0;
+  border-radius:0 0 3px 3px;
+}
+
+body:not(.k) .todo-delete:after,
+body:not(.k) .family-shopping-delete:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:8px;
+  width:16px;
+  height:2px;
+  margin-left:-8px;
+  background:currentColor;
+}
+
+/* Cestino accanto alle checkbox "da eliminare" della lista Amazon (PC) */
+body:not(.k) .shopping-delete-label > span {
+  display:inline-block;
+  position:relative;
+  width:16px;
+  height:18px;
+  margin-left:2px;
+  font-size:0;
+  vertical-align:middle;
+  color:#5E5B55;
+}
+
+body:not(.k) .shopping-delete-label > span:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:7px;
+  width:7px;
+  height:7px;
+  margin-left:-5px;
+  border:2px solid currentColor;
+  border-top:0;
+  border-radius:0 0 3px 3px;
+}
+
+body:not(.k) .shopping-delete-label > span:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:3px;
+  width:14px;
+  height:2px;
+  margin-left:-7px;
+  background:currentColor;
+}
+
+
+
+/* Tema aggiornato anche in modalità Kindle su smartphone */
+@media screen and (max-width:800px) {
+/* ==================================================
+   TEMA NESTPLAN - solo grafica, nessuna funzione toccata.
+   PC e smartphone: regole "body.k".
+   Kindle: layout invariato, solo icone ridisegnate in CSS.
+   ================================================== */
+
+/* ---------- 1. BASE (PC e smartphone) ---------- */
+
+body.k {
+  background:#F4F1EA;
+  color:#1B1B1A;
+  font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+
+body.k :focus-visible {
+  outline:3px solid #2F6F62;
+  outline-offset:2px;
+}
+
+body.k .box {
+  background:#fff;
+  border:1px solid #E3DED3;
+  border-radius:18px;
+  padding:16px 18px;
+  margin:6px;
+}
+
+body.k h2 {
+  font-size:12px;
+  letter-spacing:.14em;
+  font-weight:700;
+  padding:0;
+}
+
+body.k h3 {
+  font-size:13px;
+  color:#5E5B55;
+  margin:12px 0 4px;
+}
+
+body.k .small,
+body.k .agenda-period {
+  color:#5E5B55;
+}
+
+body.k .agenda-period {
+  font-size:13px;
+  margin:10px 0 4px;
+}
+
+body.k .section-heading {
+  align-items:center;
+  margin-bottom:12px;
+  border-bottom:0;
+}
+
+body.k .sync-label {
+  top:0;
+  color:#5E5B55;
+  font-size:10px;
+  font-weight:500;
+}
+
+
+/* ---------- 2. HEADER ---------- */
+
+body.k #head {
+  border-radius:18px;
+}
+
+body.k #clock {
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+
+body.k #wday {
+  font-weight:700;
+}
+
+body.k #fulldate {
+  color:#5E5B55;
+}
+
+body.k #loggedUser {
+  display:inline-block;
+  top:0;
+  padding:3px 10px;
+  border-radius:999px;
+  background:#E6EFEA;
+  color:#1F5C4D;
+  font-weight:600;
+}
+
+body.k #loggedUser:empty {
+  display:none;
+}
+
+body.k #viewMenuToggle {
+  width:34px;
+  height:34px;
+  min-width:34px;
+  padding:8px;
+  border:1px solid #D9D3C6;
+  border-radius:12px;
+  box-shadow:none;
+}
+
+body.k #viewMenuPanel {
+  border:1px solid #E3DED3;
+  border-radius:14px;
+  box-shadow:0 14px 32px rgba(0,0,0,.16);
+}
+
+body.k #viewMenuPanel button {
+  border:1px solid #E3DED3;
+  border-radius:10px;
+}
+
+
+/* ---------- 3. PULSANTI, CAMPI, GRUPPI ---------- */
+
+body.k button {
+  border-color:#CFC8B8;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+body.k button:disabled {
+  opacity:.5;
+  cursor:default;
+}
+
+body.k .box input[type=text],
+body.k .box input[type=password],
+body.k .box input[type=time],
+body.k .box input[type=number],
+body.k .box select {
+  min-height:42px;
+  padding:0 14px;
+  border:1px solid #D9D3C6;
+  border-radius:12px;
+  background:#FBFAF6;
+  color:#1B1B1A;
+}
+
+/* Gruppi di pulsanti: Ieri / Oggi / Domani, Da comprare / Comprato... */
+body.k .seg {
+  gap:4px;
+  padding:4px;
+  background:#EFEBE2;
+  border-radius:13px;
+}
+
+body.k .seg > button {
+  min-height:42px;
+  margin:0;
+  padding:8px 6px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#3B3935;
+  font-size:13px;
+}
+
+body.k .seg > button.sel,
+body.k .seg > button.active {
+  background:#1B1B1A !important;
+  color:#fff !important;
+}
+
+/* Pulsante "Aggiungi" */
+body.k .add-ctl button {
+  min-height:42px;
+  padding:0 18px;
+  border-color:#1B1B1A;
+  background:#1B1B1A;
+  color:#fff;
+}
+
+
+/* ---------- 4. ELENCHI ---------- */
+
+/* Agenda */
+body.k .ev {
+  min-height:28px;
+  margin:8px 0;
+}
+
+body.k .ev .t {
+  padding:3px 9px;
+  border-radius:9px;
+  background:#1B1B1A;
+  color:#fff;
+  font-size:13px;
+}
+
+body.k .ev .tt {
+  font-weight:600;
+}
+
+body.k .event-tasks {
+  border-left:3px solid #D9D3C6;
+  border-radius:2px;
+}
+
+/* Righe con checkbox */
+body.k .todo > * {
+  padding-top:8px;
+  padding-bottom:8px;
+  border-bottom:1px solid #EEE9DF;
+}
+
+body.k .shopping-item,
+body.k .family-shopping-item {
+  margin:0;
+  padding:8px 0;
+  border-bottom:1px solid #EEE9DF;
+}
+
+body.k #menuList li {
+  margin:0;
+  padding:9px 0;
+  border-bottom:1px solid #EEE9DF;
+}
+
+body.k #menuList li:last-child {
+  border-bottom:0;
+}
+
+/* Checkbox personalizzate */
+body.k input[type=checkbox] {
+  -webkit-appearance:none;
+  appearance:none;
+  width:20px;
+  height:20px;
+  border:2px solid #1B1B1A;
+  border-radius:6px;
+  background:#fff;
+}
+
+body.k input[type=checkbox]:checked {
+  background:#1B1B1A;
+  box-shadow:inset 0 0 0 3px #fff;
+}
+
+body.k .todo-assign-option input,
+body.k .recurring-owner-options input,
+body.k .recurring-subtask-assign input {
+  width:16px;
+  height:16px;
+  border-radius:5px;
+}
+
+/* Etichette (chip) delle attività ricorrenti */
+body.k .recurring-task-time {
+  min-width:0;
+  padding:2px 7px;
+  border-radius:8px;
+  background:#1B1B1A;
+  color:#fff;
+  font-size:12px;
+}
+
+body.k .recurring-task-owners {
+  padding:2px 8px;
+  border-radius:999px;
+  background:#E6EFEA;
+  color:#1F5C4D;
+  font-size:11px;
+  font-weight:600;
+}
+
+/* Finestre */
+body.k .overlay {
+  background:#F4F1EA;
+}
+
+body.k .overlay .panel {
+  border:1px solid #E3DED3;
+  border-radius:18px;
+}
+
+
+/* ==================================================
+   5. ICONE DISEGNATE IN CSS
+   Niente emoji né glifi: solo bordi, tondi e box assoluti,
+   compatibili con il browser sperimentale dei Kindle datati.
+   ================================================== */
+
+/* Aggiorna (sostituisce ↻): anello con freccia */
+.box-refresh {
+  font-size:0 !important;
+  line-height:0 !important;
+  width:30px !important;
+  height:30px !important;
+  padding:0 !important;
+  top:-4px !important;
+  right:-6px !important;
+  color:#1B1B1A !important;
+}
+
+.box-refresh:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:10px;
+  height:10px;
+  margin:-7px 0 0 -7px;
+  border:2px solid currentColor;
+  border-top-color:transparent;
+  border-radius:50%;
+}
+
+.box-refresh:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:0;
+  height:0;
+  margin:-11px 0 0 0;
+  border-style:solid;
+  border-width:4px 0 4px 6px;
+  border-color:transparent transparent transparent currentColor;
+}
+
+/* Assegna (sostituisce 👥 e ↗): figura con testa e spalle */
+.todo-assign {
+  position:relative;
+  font-size:0 !important;
+  line-height:0 !important;
+  color:#5E5B55;
+}
+
+  font-size:0 !important;
+  line-height:0 !important;
+  color:#000;
+}
+
+.todo-assign:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:6px;
+  width:6px;
+  height:6px;
+  margin-left:-5px;
+  border:2px solid currentColor;
+  border-radius:50%;
+}
+
+.todo-assign:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:17px;
+  width:12px;
+  height:4px;
+  margin-left:-8px;
+  border:2px solid currentColor;
+  border-bottom:0;
+  border-radius:8px 8px 0 0;
+}
+
+/* Impostazioni attività ricorrenti (sostituisce ⚙) */
+#recurringTasksBox .recurring-config-button span {
+  font-size:0 !important;
+}
+
+#recurringTasksBox .recurring-config-button:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:4px;
+  height:4px;
+  margin:-4px 0 0 -4px;
+  border:2px solid #fff;
+  border-radius:50%;
+}
+
+#recurringTasksBox .recurring-config-button:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:2px;
+  height:2px;
+  margin:-7px 0 0 -1px;
+  background:#fff;
+  box-shadow:0 12px 0 #fff, 6px 6px 0 #fff, -6px 6px 0 #fff;
+}
+
+/* Impostazioni nel menu Kindle (sostituisce ☼) */
+  position:relative;
+  width:16px;
+  height:16px;
+  font-size:0;
+  line-height:0;
+}
+
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:4px;
+  height:4px;
+  margin:-4px 0 0 -4px;
+  border:2px solid #000;
+  border-radius:50%;
+}
+
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:2px;
+  height:2px;
+  margin:-7px 0 0 -1px;
+  background:#000;
+  box-shadow:0 12px 0 #000, 6px 6px 0 #000, -6px 6px 0 #000;
+}
+
+/* Cestino su PC e smartphone (sostituisce 🗑; su Kindle resta quello esistente) */
+body.k .todo-delete,
+body.k .family-shopping-delete {
+  position:relative;
+  width:32px;
+  height:32px;
+  min-width:32px;
+  padding:0;
+  border:0;
+  font-size:0;
+  line-height:0;
+  color:#5E5B55;
+  background:linear-gradient(currentColor,currentColor) 50% 5px / 6px 2px no-repeat;
+}
+
+body.k .todo-delete:hover,
+body.k .family-shopping-delete:hover {
+  color:#B3261E;
+}
+
+body.k .todo-delete:before,
+body.k .family-shopping-delete:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:13px;
+  width:8px;
+  height:8px;
+  margin-left:-6px;
+  border:2px solid currentColor;
+  border-top:0;
+  border-radius:0 0 3px 3px;
+}
+
+body.k .todo-delete:after,
+body.k .family-shopping-delete:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:8px;
+  width:16px;
+  height:2px;
+  margin-left:-8px;
+  background:currentColor;
+}
+
+/* Cestino accanto alle checkbox "da eliminare" della lista Amazon (PC) */
+body.k .shopping-delete-label > span {
+  display:inline-block;
+  position:relative;
+  width:16px;
+  height:18px;
+  margin-left:2px;
+  font-size:0;
+  vertical-align:middle;
+  color:#5E5B55;
+}
+
+body.k .shopping-delete-label > span:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:7px;
+  width:7px;
+  height:7px;
+  margin-left:-5px;
+  border:2px solid currentColor;
+  border-top:0;
+  border-radius:0 0 3px 3px;
+}
+
+body.k .shopping-delete-label > span:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:3px;
+  width:14px;
+  height:2px;
+  margin-left:-7px;
+  background:currentColor;
+}
+
+
+}
+
+
 /* FIX LAYOUT KINDLE E ALLINEAMENTO BOX */
 @media screen and (max-width:800px) {
   /* Nelle viste personali ogni box occupa tutta la larghezza disponibile. */
