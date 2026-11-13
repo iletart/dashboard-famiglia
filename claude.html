@@ -624,8 +624,9 @@ body.k #recurringTasksBox .recurring-config-button {
 .recurring-subtask-row .todo-check-cell { width:25px; }
 .recurring-subtask-row .todo-text { font-size:.95em; }
 .recurring-subtask-editor { display:flex; flex-direction:column; gap:5px; }
-.recurring-subtask-edit-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.recurring-subtask-assign { flex:1 0 100%; display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; padding:0 0 5px 2px; }
+.recurring-subtask-edit-row { display:flex; align-items:center; gap:6px; flex-wrap:nowrap; }
+.recurring-subtask-assign { flex:0 0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:4px 6px; padding:0; }
+.recurring-subtask-assign > .small { display:none; }
 .recurring-subtask-assign label { display:inline-flex; align-items:center; gap:3px; white-space:nowrap; font-size:.8em; }
 .recurring-subtask-owners { margin:0 0 4px 54px; font-size:.72em; color:#555; }
 .recurring-subtask-edit-row input[type="text"] { flex:1 1 auto; min-width:0; width:auto; box-sizing:border-box; }
@@ -3854,6 +3855,10 @@ function itemRow(item, busy, onToggle, onDelete, extraBtn){
   return row;
 }
 
+function syncTimeLabel(date){
+  return "sync time: " + hhmmRome(date.getTime());
+}
+
 function connLabel(synced, err){
   if(!todoConnected){ return "non connesso"; }
   if(err){ return "sync error"; }
@@ -4119,7 +4124,7 @@ function personalTodoChange(index) {
       }
 
       personalTodoItems = data.items;
-      setText($("personalTodoSyncLabel"), "sincronizzato");
+      setText($("personalTodoSyncLabel"), syncTimeLabel(new Date()));
       setText($("personalTodoStatus"), "");
       renderPersonalTodo();
     }
@@ -4136,7 +4141,7 @@ function personalTodoPoll() {
   api("GET", "?list=personal-todo&view=" + encodeURIComponent(currentView), null, function(err, data) {
     if (!err && data && Array.isArray(data.items)) {
       personalTodoItems = data.items;
-      setText($("personalTodoSyncLabel"), "sincronizzato");
+      setText($("personalTodoSyncLabel"), syncTimeLabel(new Date()));
       setText($("personalTodoStatus"), "");
       renderPersonalTodo();
     } else {
@@ -4248,7 +4253,7 @@ function loadRecurringTasks(silent) {
     recurringTasksDays = data.days;
     recurringDefinitions = data.definitions;
     recurringReady = true;
-    setText($("recurringTasksTimes"), "sincronizzato");
+    setText($("recurringTasksTimes"), syncTimeLabel(new Date()));
     setText($("recurringTaskStatus"), "");
     renderRecurringTasks();
     if ($("recurringConfigOverlay") && !$("recurringConfigOverlay").hasAttribute("hidden")) {
@@ -4277,6 +4282,7 @@ function recurringPost(data, statusMessage) {
     recurringTasksDays = result.days;
     recurringDefinitions = result.definitions;
     recurringReady = true;
+    setText($("recurringTasksTimes"), syncTimeLabel(new Date()));
     setText($("recurringTaskStatus"), "");
     renderRecurringTasks();
     renderRecurringDefinitions();
