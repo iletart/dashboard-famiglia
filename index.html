@@ -3568,6 +3568,59 @@ body.k #recurringTasksBox .sync-label {
   vertical-align:middle!important;
   white-space:nowrap!important;
 }
+
+
+/* ICONA CESTINO UNIFICATA - riferimento grafico Claude */
+.todo-actions .todo-delete,
+.family-shopping-item .family-shopping-delete {
+  position:relative!important;
+  display:inline-block!important;
+  box-sizing:border-box!important;
+  width:34px!important;
+  min-width:34px!important;
+  max-width:34px!important;
+  height:38px!important;
+  margin:0 0 0 auto!important;
+  padding:0!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:0!important;
+  color:#66645f!important;
+  background:
+    linear-gradient(currentColor,currentColor) center 9px / 26px 3px no-repeat,
+    linear-gradient(currentColor,currentColor) center 1px / 10px 3px no-repeat,
+    linear-gradient(currentColor,currentColor) calc(50% - 5px) 2px / 3px 8px no-repeat,
+    linear-gradient(currentColor,currentColor) calc(50% + 5px) 2px / 3px 8px no-repeat!important;
+  box-shadow:none!important;
+  font-size:0!important;
+  line-height:0!important;
+}
+.todo-actions .todo-delete::before,
+.family-shopping-item .family-shopping-delete::before {
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  top:12px!important;
+  width:17px!important;
+  height:22px!important;
+  margin:0 0 0 -10px!important;
+  box-sizing:border-box!important;
+  border:3px solid currentColor!important;
+  border-top:0!important;
+  border-radius:0 0 5px 5px!important;
+  background:none!important;
+}
+.todo-actions .todo-delete::after,
+.family-shopping-item .family-shopping-delete::after {
+  content:none!important;
+  display:none!important;
+  background:none!important;
+}
+.todo-actions .todo-delete .trash-icon,
+.family-shopping-item .family-shopping-delete .trash-icon {
+  display:none!important;
+  visibility:hidden!important;
+}
 </style>
 
 </head>
