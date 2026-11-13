@@ -1,2287 +1,514 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard famiglia</title>
-<link rel="icon" type="image/png" href="favicon.png">
-
-<style>
 /* ==================================================
-   1. BASE
-   ================================================== */
-.box,.col,.seg,.seg button,.todo,.todo-check-cell,.todo-actions button,.todo-assign-menu,.section-heading,#info,#viewMenuToggle,#viewMenuPanel,#viewMenuPanel button,.add-ctl input,.add-ctl button,.overlay{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:#fff;color:#111;font:16px/1.3 "Trebuchet MS",Arial,sans-serif}
-[hidden]{display:none!important}
-
-.wrap{padding:4px}
-.box{border:2px solid #000;border-radius:5px;padding:8px;margin:3px}
-
-.row{display:block}
-.row:after{content:"";display:table;clear:both}
-.col{float:left;width:50%;min-width:0}
-.col.full{float:none;width:100%}
-
-h2{font-size:1.05em;line-height:1.3;margin:0;padding:0 0 2px;text-transform:uppercase}
-h3{font-size:1em;margin:8px 0 2px;text-transform:capitalize}
-
-.small{font-size:.8em;color:#333;margin-top:6px}
-#err{font-size:.8em;margin:4px 3px}
-.done{text-decoration:line-through}
-
-/* Intestazione dei box: titolo a sinistra, orari di sincronizzazione a destra */
-.section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px;border-bottom:1px solid #000}
-.sync-label{position:relative;top:-4px;font-size:.65em;line-height:1.2;color:#888;text-align:right;text-transform:none}
-
-/* ==================================================
-   2. PULSANTI, CAMPI, GRUPPI DI PULSANTI
-   ================================================== */
-button{font-family:inherit;font-size:1em;border:1px solid #000;background:#fff;color:#000;padding:4px 10px;margin:2px 4px 2px 0}
-button.sel{background:#000;color:#fff}
-
-input[type=text],input[type=password]{font-family:inherit;font-size:1em;border:1px solid #000;padding:4px;width:60%}
-input[type=checkbox]{margin:0}
-
-/* Gruppo di pulsanti equidistribuiti (Ieri/Oggi/Domani, Oggi/Settimana/...) */
-.seg{display:flex;gap:5px}
-.seg button{flex:1 1 0;min-width:0;margin:2px 0;padding:8px 3px;text-align:center;border-radius:4px}
-
-/* Campo "nuova attività" */
-.add-ctl{display:flex;align-items:center;gap:8px;margin:4px 0}
-.add-ctl input{flex:1 1 auto;width:auto;min-width:0}
-.add-ctl button{flex:0 0 auto;margin:0;white-space:nowrap}
-
-/* ==================================================
-   3. HEADER: MENU, OROLOGIO, DATA, METEO
-   ================================================== */
-#head{position:relative;z-index:1001}
-#viewMenu{position:absolute;left:7px;top:7px;z-index:1000}
-#viewMenuToggle{display:flex;flex-direction:column;justify-content:space-around;width:28px;height:28px;min-width:28px;margin:0;padding:5px;border-radius:4px}
-#viewMenuToggle span{display:block;width:100%;height:2px;background:#000}
-#viewMenuPanel{width:142px;margin-top:5px;padding:6px;background:#fff;border:2px solid #000;border-radius:5px}
-#viewMenuPanel button{display:block;width:100%;margin:3px 0;padding:8px;text-align:left;font-weight:bold;border-radius:4px}
-
-#clock{position:relative;font-weight:bold;line-height:1}
-#wday{font-weight:bold;text-transform:capitalize}
-#weatherIcon,#weather{position:relative}
-#weatherIcon{display:flex;align-items:center}
-
-/* ==================================================
-   4. ELENCHI: EVENTI, RIGHE CHECKBOX, ASSEGNAZIONI
-   ================================================== */
-.agenda-period{font-weight:bold}
-.ev{position:relative;margin:2px 0;padding-left:5.2em}
-.ev.clickable{cursor:pointer}
-.ev .t{position:absolute;left:0;top:0;font-weight:bold}
-.event-tasks{margin:2px 0 12px 25px;padding:4px 8px;border-left:2px solid #999}
-.link-detail{display:block;margin-top:8px;font-size:14px;font-style:italic;text-decoration:underline;color:#555;cursor:pointer}
-
-.rt{margin:0 0 10px}
-
-/* Riga con checkbox: usata ovunque (task, to-do, compiti agenda, finestra) */
-.todo{display:flex;align-items:flex-start;gap:8px;padding:3px 0;line-height:1.35}
-.todo-check-cell{flex:0 0 20px}
-.todo-check{display:block;width:20px;height:20px;margin:1px 0 0;padding:0}
-.todo-text{flex:1 1 auto;min-width:0;text-align:left;overflow-wrap:break-word;word-wrap:break-word}
-.todo-actions{display:flex;flex:0 0 auto;gap:8px;margin-left:auto}
-.todo-actions button{box-sizing:border-box;width:28px;min-width:28px;height:28px;margin:0;padding:2px}
-.todo-assign{font:bold 16px/20px Arial,sans-serif;text-align:center}
-
-.todo-assign-menu{display:none;position:relative;z-index:5;margin:4px 0 8px;padding:8px;border:1px solid #555;border-radius:4px;background:#fff}
-.todo-assign-menu.open{display:block}
-.todo-assign-title{margin:0 0 5px;font-weight:bold}
-.todo-assign-options{font-size:0}
-.todo-assign-option{display:inline-block;vertical-align:top;width:33.333%;margin:1px 0;font-size:14px;line-height:20px;white-space:nowrap}
-.todo-assign-option input{display:inline-block;vertical-align:middle;width:13px;height:13px;margin:0 4px 0 0}
-.todo-assign-buttons{display:flex;gap:6px;margin-top:8px}
-.todo-assign-buttons button{min-width:58px;margin:0;padding:4px 8px}
-
-/* Menu scuola */
-#menuList ul{list-style:none;margin:4px 0;padding:0}
-#menuList li{margin:3px 0}
-.menu-head{display:flex;justify-content:space-between;align-items:center}
-#menuDate{margin:10px 0}
-
-/* Finestra dettagli evento */
-.overlay{position:fixed;left:0;top:0;width:100%;height:100%;z-index:9999;overflow-y:auto;padding:20px;background:#fff}
-.overlay .panel{padding:15px;border:2px solid #000;border-radius:5px;background:#fff}
-.overlay-head{overflow:hidden;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #000}
-.overlay-head h2{float:left;padding:0}
-.overlay-head button{float:right;margin:0}
-.overlay .todo{padding:10px 0;font-size:18px;border-bottom:1px solid #ccc}
-.overlay-details-title{margin:20px 0 8px;font-size:17px;font-weight:bold}
-.overlay-details{white-space:pre-line;line-height:1.5}
-
-/* ==================================================
-   5. PC (> 800px)
-   ================================================== */
-@media screen and (min-width:801px){
-  body:not(.k) #head{padding:2px 5px}
-  body:not(.k) #clock{float:left;width:80px;margin-left:36px;left:2px;top:5px;font-size:2.5em}
-  body:not(.k) #info{display:grid;grid-template-columns:max-content minmax(0,1fr) 48px max-content;grid-template-rows:auto auto;column-gap:5px;align-items:center;min-width:0;margin-left:146px;padding-left:8px}
-  body:not(.k) #wday{grid-column:1;grid-row:1;font-size:1.25em}
-  body:not(.k) #fulldate{grid-column:1;grid-row:2}
-  body:not(.k) #weatherIcon{grid-column:3;grid-row:1/span 2;justify-content:flex-end;width:48px;height:48px;left:-3px;top:6px}
-  body:not(.k) #weatherIcon svg{width:48px;height:48px}
-  body:not(.k) #weather{grid-column:4;grid-row:1/span 2;justify-self:start;left:-2px}
-}
-
-/* ==================================================
-   6. TABLET E SMARTPHONE (<= 800px)
-   ================================================== */
-@media screen and (max-width:800px){
-  body:not(.k) #head{display:grid;grid-template-columns:145px minmax(0,1fr);column-gap:5px;align-items:center;padding:4px}
-  body:not(.k) #clock{float:none;grid-column:1;grid-row:1;width:85px;margin-left:38px;left:5px;top:1px;font-size:2em}
-  body:not(.k) #info{display:grid;grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr);grid-template-rows:auto auto;column-gap:3px;align-items:center;grid-column:2;grid-row:1;width:100%;min-width:0;margin:0;padding:0}
-  body:not(.k) #wday{grid-column:1;grid-row:1;min-width:0;font-size:.95em}
-  body:not(.k) #fulldate{grid-column:1;grid-row:2;min-width:0;font-size:.85em}
-  body:not(.k) #weatherIcon{grid-column:2;grid-row:1/span 2;justify-content:center;width:32px;height:36px;left:0;top:0}
-  body:not(.k) #weatherIcon svg{width:32px;height:32px}
-  body:not(.k) #weather{grid-column:3;grid-row:1/span 2;position:static;width:auto;max-width:100%;min-width:0;overflow-wrap:anywhere;font-size:.72em;line-height:1.15}
-}
-/* Colonne impilate solo su telefoni stretti (mai su Kindle) */
-@media screen and (max-width:600px){
-  body:not(.k) .col{float:none;width:100%;max-width:100%}
-}
-@media screen and (max-width:380px){
-  body:not(.k) #wday{font-size:.8em}
-  body:not(.k) #fulldate{font-size:.75em}
-}
-
-/* ==================================================
-   7. KINDLE
-   ================================================== */
-body.k .wrap{padding-right:14px}
-
-/* Colonne sempre affiancate, come su PC (layout da dashboard-config.json) */
-body.k .col{float:left;width:50%}
-body.k .col.full{float:none;width:100%}
-
-/* Intestazione dei box */
-body.k .section-heading{display:block;overflow:hidden}
-body.k .section-heading h2{float:left;width:62%;font-size:.95em;white-space:nowrap}
-body.k .sync-label{float:right;width:36%;font-size:.55em;white-space:nowrap}
-
-/* Hamburger */
-body.k #viewMenuToggle{position:relative;display:block;padding:0}
-body.k #viewMenuToggle span{position:absolute;left:4px;width:18px}
-body.k #viewMenuToggle span:nth-child(1){top:5px}
-body.k #viewMenuToggle span:nth-child(2){top:12px}
-body.k #viewMenuToggle span:nth-child(3){top:19px}
-
-/* Header */
-body.k #head{display:block;height:auto;padding:0 2px 2px 0;overflow:visible}
-body.k #clock{float:left;width:110px;margin:0 0 0 42px;left:3px;top:4px;font-size:2em}
-body.k #info{display:block;position:relative;top:3px;min-height:42px;margin:0 -6px 0 158px;padding:0}
-body.k #wday,body.k #fulldate{display:block;width:135px;margin:0 0 0 -30px;line-height:1.1}
-body.k #wday{font-size:1.2em}
-body.k #fulldate{position:relative;top:2px;font-size:.8em}
-body.k #weatherIcon{position:absolute;right:100px;top:4px;width:48px;height:42px;justify-content:flex-end;margin:0}
-body.k #weatherIcon svg{width:40px;height:40px}
-body.k #weather{position:absolute;right:-21px;top:2px;width:130px;margin:0;font-size:.9em;line-height:1.2;white-space:normal}
-
-/* Gruppi di pulsanti */
-body.k .seg{display:block;font-size:0;white-space:nowrap}
-body.k .seg button{display:inline-block;vertical-align:top;width:32%;min-width:0;margin:2px 1px;padding:7px 1px;font-size:14px;line-height:1.3;white-space:nowrap}
-body.k .seg.two button{width:49%}
-
-/* Campo nuova attività */
-body.k .add-ctl{display:block;position:relative;height:32px}
-body.k .add-ctl input{position:absolute;left:0;right:90px;width:auto;height:32px;margin:0}
-body.k .add-ctl button{position:absolute;right:0;top:0;width:85px;height:32px;margin:0;padding:5px 2px}
-
-/* Righe checkbox: layout a tabella */
-body.k .todo{display:table;table-layout:fixed;border-spacing:0;width:100%}
-body.k .todo-check-cell,body.k .todo-text,body.k .todo-actions{display:table-cell;vertical-align:top}
-body.k .todo-check-cell{width:28px;padding-right:8px}
-body.k .todo-check{display:inline-block}
-body.k .todo-text{padding-top:2px}
-body.k .todo-actions{width:72px;text-align:right;white-space:nowrap}
-body.k .todo-actions button{margin-left:4px}
-body.k .todo-assign-option{margin:3px 0}
-body.k .todo-assign-option input{margin-right:1px}
-
-/* Cestino disegnato in CSS */
-body.k .todo-delete{border:0;background:transparent;box-shadow:none}
-body.k .trash-icon{position:relative;left:2px;top:7px;display:block;width:11px;height:12px;margin-top:4px;border:1px solid #000;border-top:0}
-body.k .trash-icon:before{content:"";position:absolute;left:-2px;top:-3px;width:13px;height:1px;background:#000}
-body.k .trash-icon:after{content:"";position:absolute;left:2px;top:-5px;width:5px;height:2px;border:1px solid #000;border-bottom:0}
-</style>
-</head>
-<body>
-<div class="wrap">
-
-<!-- ===== HEADER ===== -->
-<div class="box" id="head">
-  <div id="viewMenu">
-    <button type="button" id="viewMenuToggle" aria-label="Apri menu" aria-expanded="false"><span></span><span></span><span></span></button>
-    <div id="viewMenuPanel" hidden></div>
-  </div>
-  <div id="clock">--:--</div>
-  <div id="info">
-    <div id="wday"></div>
-    <div id="fulldate"></div>
-    <div id="weatherIcon"></div>
-    <div id="weather">Meteo: caricamento...</div>
-  </div>
-</div>
-
-<!-- ===== VISTE PERSONALI ===== -->
-<div id="personalView" hidden>
-
-  <div class="box" id="personalGlobalTaskBox">
-    <div class="section-heading">
-      <h2 id="personalGlobalTaskTitle">Task giornalieri</h2>
-      <div class="sync-label" id="personalGlobalTaskTimes"></div>
-    </div>
-    <div class="seg" id="personalGlobalTaskDays">
-      <button type="button" data-day="ieri">Ieri</button>
-      <button type="button" data-day="oggi">Oggi</button>
-      <button type="button" data-day="domani">Domani</button>
-    </div>
-    <div id="personalGlobalTaskList">Caricamento...</div>
-    <div class="small" id="personalGlobalTaskStatus"></div>
-  </div>
-
-  <div class="box" id="personalTasksBox">
-    <div class="section-heading">
-      <h2 id="personalTasksTitle">Agenda</h2>
-      <div class="sync-label" id="personalTasksTimes"></div>
-    </div>
-    <div class="seg two" id="personalPeriod">
-      <button type="button" data-day="oggi">Oggi</button>
-      <button type="button" data-day="domani">Domani</button>
-    </div>
-    <div id="personalTasks">Caricamento...</div>
-  </div>
-
-  <div class="box" id="personalRoutesBox" hidden>
-    <div class="section-heading">
-      <h2>Spostamenti</h2>
-      <div class="sync-label" id="personalRoutesTimes"></div>
-    </div>
-    <div id="personalRoutes"></div>
-    <div class="small" id="personalRoutesStatus"></div>
-  </div>
-
-  <div class="box" id="userAgendaBox" hidden>
-    <div class="section-heading">
-      <h2>Agenda Personale</h2>
-      <div class="sync-label" id="userAgendaTimes"></div>
-    </div>
-    <div id="userAgenda">Caricamento...</div>
-  </div>
-</div>
-
-<!-- ===== VISTA FAMIGLIA ===== -->
-<div class="row" id="dashboardContent" hidden>
-  <div class="col">
-
-    <div class="box" id="agendaBox">
-      <div class="section-heading">
-        <h2>Agenda famiglia</h2>
-        <div class="sync-label" id="agendaTimes"></div>
-      </div>
-      <div id="agenda">Caricamento...</div>
-    </div>
-
-    <div class="box" id="shoppingBox">
-      <div class="section-heading">
-        <h2>Lista della spesa</h2>
-        <div class="sync-label" id="shoppingTimes"></div>
-      </div>
-      <div id="shoppingList">Caricamento...</div>
-    </div>
-  </div>
-
-  <div class="col">
-
-    <div class="box" id="sharedTasksBox">
-      <div class="section-heading">
-        <h2>Task giornalieri</h2>
-        <div class="sync-label" id="taskTimes"></div>
-      </div>
-      <div class="seg" id="taskDays">
-        <button type="button" data-day="ieri">Ieri</button>
-        <button type="button" data-day="oggi">Oggi</button>
-        <button type="button" data-day="domani">Domani</button>
-      </div>
-      <div class="add-ctl" id="taskCtl" hidden>
-        <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
-        <button type="button" id="taskAddButton">Aggiungi</button>
-      </div>
-      <div id="taskList"></div>
-      <div class="small" id="taskStatus"></div>
-    </div>
-
-    <div class="box" id="todoBox">
-      <div class="section-heading">
-        <h2>Task condivisi</h2>
-        <div class="sync-label" id="todoSyncLabel">non connesso</div>
-      </div>
-      <div class="add-ctl" id="todoCtl" hidden>
-        <input type="text" id="todoInput" maxlength="200" placeholder="Nuova attività">
-        <button type="button" id="todoAddButton">Aggiungi</button>
-      </div>
-      <div id="todoList"></div>
-      <div class="small" id="todoStatus"></div>
-    </div>
-
-    <div class="box" id="schoolMenuBox">
-      <div class="section-heading">
-        <h2>Menu scuola</h2>
-        <div class="sync-label" id="menuTimes"></div>
-      </div>
-      <div class="seg" id="menuDays">
-        <button type="button" data-day="ieri">Ieri</button>
-        <button type="button" data-day="oggi">Oggi</button>
-        <button type="button" data-day="domani">Domani</button>
-      </div>
-      <div class="menu-head">
-        <h3 id="menuDate"></h3>
-        <div class="small" id="menuStatus"></div>
-      </div>
-      <div id="menuList"></div>
-    </div>
-  </div>
-</div>
-
-<div id="err"></div>
-<div id="stash" hidden></div>
-
-</div>
-
-<script>
-/* ==================================================
-   1. CONFIGURAZIONE E STATO
-   ================================================== */
-var q = window.location.search;
-
-var AUTH_URL = "https://auth-api.iletarta-633.workers.dev";
-var DASHBOARD_API_URL = "https://dashboard-api.iletarta-633.workers.dev";
-
-var authToken = "";
-var authProfile = "";
-var authSessionId = "";
-
-var IS_KINDLE = (function(){
-  if(q.indexOf("kindle=1") >= 0){ return true; }
-  if(q.indexOf("kindle=0") >= 0 || q.indexOf("echo=1") >= 0){ return false; }
-  return /Kindle|Silk|KF[A-Z]{2,5}/i.test(navigator.userAgent);
-})();
-if(IS_KINDLE){ document.body.className += " k"; }
-
-var CONFIG = {
-  base: "https://raw.githubusercontent.com/iletart/dashboard-famiglia/main/",
-  lat: 45.484, lon: 9.233,
-  weatherMin: 5,
-  todoWorkerUrl: "https://todo-sync.iletarta-633.workers.dev"
-};
-CONFIG.routesUrl = function(userId){
-  return CONFIG.base + "routes_" + String(userId).toLowerCase() + ".json";
-};
-
-var MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
-var GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
-var GIORNI_JSON = ["domenica","lunedi","martedi","mercoledi","giovedi","venerdi","sabato"];
-var TASK_OFF = {ieri: -1, oggi: 0, domani: 1};
-
-var USERS = [];
-var DASHBOARD_CONFIG = null;
-var currentView = "shared";
-var viewManualUntil = 0;
-
-var agendaData = null, agendaErr = false, agendaSyncedAt = null;
-var agendaSt = {today: true, week: 0};
-var userData = null, userErr = false, userSyncedAt = null;
-var userSt = {today: true, week: 0};
-var routesData = null, routesErr = false, routesSyncedAt = null;
-var shoppingSyncedAt = null;
-var menuSel = "oggi", menuSyncedAt = null, menuUpdatedAt = null;
-var personalPeriod = "oggi";
-
-var todoItems = [], todoConnected = false, todoBusy = false;
-var menuInitialized = false, usersLoaded = false, scheduleViewTimer = null;
-var todoSyncError = false, todoSyncedAt = null;
-var taskSel = "oggi", personalGlobalTaskSel = "oggi";
-var taskDays = {}, taskReady = false, taskBusy = false;
-var taskSyncError = false, taskSyncedAt = null;
-var pollTimer = null;
-
-/* ==================================================
-   2. UTILITÀ
-   ================================================== */
-function $(id){ return document.getElementById(id); }
-
-function clear(el){
-  if(!el){ return; }
-  while(el.firstChild){ el.removeChild(el.firstChild); }
-}
-
-function setHidden(el, h){
-  if(h){ el.setAttribute("hidden", "hidden"); } else { el.removeAttribute("hidden"); }
-}
-
-function setText(el, t){
-  if(!el){ return; }
-  clear(el);
-  el.appendChild(document.createTextNode(t));
-}
-
-function mk(tag, cls, txt){
-  var e = document.createElement(tag);
-  if(cls){ e.className = cls; }
-  if(txt !== undefined && txt !== null){ e.appendChild(document.createTextNode(txt)); }
-  return e;
-}
-
-function p2(n){ return (n < 10 ? "0" : "") + n; }
-
-function showErr(m){
-  var e = $("err");
-  if(e){ e.appendChild(mk("div", "", "Errore: " + m)); }
-}
-
-function safe(f){
-  try { f(); } catch(e){ showErr(e && e.message ? e.message : String(e)); }
-}
-
-window.onerror = function(m, u, l){
-  showErr(m + " (riga " + l + ")");
-  return true;
-};
-
-function toMin(s){
-  var p = String(s).split(":");
-  return parseInt(p[0], 10) * 60 + parseInt(p[1], 10);
-}
-
-/* GET JSON: prova gli URL in ordine; nocb = niente parametro anti-cache */
-function getJson(urls, cb, nocb){
-  var i = 0;
-  (function next(){
-    if(i >= urls.length){ cb("non raggiungibile", null); return; }
-    var u = urls[i++], x, done = false, timer;
-    if(!nocb){ u += (u.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now(); }
-    function fin(ok, d){
-      if(done){ return; }
-      done = true;
-      clearTimeout(timer);
-      if(ok){ cb(null, d); } else { next(); }
-    }
-    try { x = new XMLHttpRequest(); x.open("GET", u, true); } catch(e){ next(); return; }
-    timer = setTimeout(function(){ try{ x.abort(); }catch(e){} fin(false); }, 20000);
-    x.onreadystatechange = function(){
-      if(x.readyState !== 4 || done){ return; }
-      if(x.status !== 200){ fin(false); return; }
-      var d;
-      try { d = JSON.parse(x.responseText); } catch(e){ fin(false); return; }
-      fin(true, d);
-    };
-    try { x.send(null); } catch(e){ fin(false); }
-  })();
-}
-
-/* Richieste al Worker (to-do, task, compiti degli eventi). query: "", "?list=tasks", ... */
-function api(method, query, data, cb){
-  var x = new XMLHttpRequest(), finished = false;
-  function fin(err, res){
-    if(finished){ return; }
-    finished = true;
-    cb(err, res);
-  }
-  x.open(method, CONFIG.todoWorkerUrl + (query || ""), true);
-  if(authToken){ x.setRequestHeader("Authorization", "Bearer " + authToken); }
-  if(method === "POST"){ x.setRequestHeader("Content-Type", "application/json"); }
-  x.timeout = 20000;
-  x.onreadystatechange = function(){
-    if(x.readyState !== 4){ return; }
-    if(x.status === 0){
-      setTimeout(function(){ fin("Errore di connessione", null); }, 0);
-      return;
-    }
-    var res = null;
-    try { res = JSON.parse(x.responseText); } catch(e){}
-    if(x.status >= 200 && x.status < 300){ fin(null, res); }
-    else { fin(res && res.error ? res.error : "Errore HTTP " + x.status, res); }
-  };
-  x.onerror = function(){ fin("Errore di connessione", null); };
-  x.ontimeout = function(){ fin("Timeout di connessione", null); };
-  try { x.send(method === "POST" ? JSON.stringify(data) : null); }
-  catch(e){ fin("Errore di invio richiesta", null); }
-}
-
-/* Etichetta "upd / sync / errore / dati vecchi" uguale per tutti i box */
-function setTimes(el, gen, synced, err, staleMs, needGen){
-  if(!el){ return; }
-  var l = [];
-  if(gen !== null){ l.push("upd time: " + hhmmRome(gen)); }
-  else if(needGen){ l.push("upd time: n/d"); }
-  if(synced){ l.push("sync time: " + hhmmRome(synced.getTime())); }
-  if(err){ l.push("rete non disponibile"); }
-  if(gen !== null && staleMs && Date.now() - gen > staleMs){ l.push("dati vecchi"); }
-  el.innerHTML = l.join("<br>");
-}
-
-/* Gruppi di pulsanti (.seg) con data-day */
-function bindSeg(id, fn){
-  var b = $(id).getElementsByTagName("button");
-  for(var i = 0; i < b.length; i++){
-    b[i].onclick = (function(btn){
-      return function(){ fn(btn.getAttribute("data-day")); };
-    })(b[i]);
-  }
-}
-
-function markSeg(id, sel){
-  var b = $(id).getElementsByTagName("button");
-  for(var i = 0; i < b.length; i++){
-    b[i].className = b[i].getAttribute("data-day") === sel ? "sel" : "";
-  }
-}
-
-function onEnter(el, fn){
-  el.onkeydown = function(ev){
-    ev = ev || window.event;
-    if(ev.keyCode === 13){ fn(); }
-  };
-}
-
-function userById(id){
-  for(var i = 0; i < USERS.length; i++){
-    if(USERS[i].id === id){ return USERS[i]; }
-  }
-  return null;
-}
-
-function userName(id){
-  var u = userById(id);
-  return u ? u.name : String(id).toUpperCase();
-}
-
-function viewHasBox(view, boxName){
-  var config = DASHBOARD_CONFIG;
-  if(!config || !config.views || !config.views[view]){
-    return false;
-  }
-
-  var viewConfig = config.views[view];
-  var layouts = [
-    viewConfig.columns || [],
-    viewConfig.rows || []
-  ];
-
-  for(var i = 0; i < layouts.length; i++){
-    for(var j = 0; j < layouts[i].length; j++){
-      if(layouts[i][j].indexOf(boxName) !== -1){
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-/* ==================================================
-   3. DATE (UTC -> Europe/Rome senza Intl)
-   ================================================== */
-function lastSunday1UTC(year, month0){
-  var last = new Date(Date.UTC(year, month0 + 1, 0));
-  return Date.UTC(year, month0, last.getUTCDate() - last.getUTCDay(), 1, 0, 0);
-}
-
-function romeOffsetHours(ms){
-  var y = new Date(ms).getUTCFullYear();
-  return (ms >= lastSunday1UTC(y, 2) && ms < lastSunday1UTC(y, 9)) ? 2 : 1;
-}
-
-/* Date i cui campi getUTC* sono l'ora locale di Roma */
-function toRome(ms){ return new Date(ms + romeOffsetHours(ms) * 3600000); }
-function dayNum(y, m0, d){ return Math.round(Date.UTC(y, m0, d) / 86400000); }
-function dayNumOfRome(r){ return dayNum(r.getUTCFullYear(), r.getUTCMonth(), r.getUTCDate()); }
-function dateOfDayNum(n){ return new Date(n * 86400000); }
-function todayNum(){ return dayNumOfRome(toRome(Date.now())); }
-
-function fmtDay(n){
-  var d = dateOfDayNum(n);
-  return d.getUTCFullYear() + "-" + p2(d.getUTCMonth() + 1) + "-" + p2(d.getUTCDate());
-}
-
-function fullDateText(n){
-  var d = dateOfDayNum(n);
-  return GIORNI[d.getUTCDay()] + " " + d.getUTCDate() + " " + MESI[d.getUTCMonth()];
-}
-
-function shortDayText(n){
-  var d = dateOfDayNum(n), g = GIORNI[d.getUTCDay()];
-  return g.charAt(0).toUpperCase() + g.substring(1) + " " + p2(d.getUTCDate()) + "/" + p2(d.getUTCMonth() + 1);
-}
-
-function dayLabel(n, today){
-  var base = fullDateText(n);
-  if(n === today){ return "Oggi - " + base; }
-  if(n === today + 1){ return "Domani - " + base; }
-  return base;
-}
-
-function hhmmRome(ms){
-  var r = toRome(ms);
-  return p2(r.getUTCHours()) + ":" + p2(r.getUTCMinutes());
-}
-
-/* ISO 8601 manuale (Z, +hh:mm, frazioni). Ritorna ms UTC o null */
-function parseIso(s){
-  if(typeof s !== "string"){ return null; }
-  var m = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?\s*(Z|[+-]\d{2}:?\d{2})?$/.exec(s);
-  if(!m){ return null; }
-  var ms = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], m[6] ? +m[6] : 0);
-  var z = m[7];
-  if(z && z !== "Z"){
-    var sign = z.charAt(0) === "-" ? -1 : 1;
-    var digits = z.replace(/[^0-9]/g, "");
-    ms -= sign * (parseInt(digits.substr(0, 2), 10) * 60 + parseInt(digits.substr(2, 2), 10)) * 60000;
-  }
-  return ms;
-}
-
-function dateOnlyNum(s){
-  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));
-  return m ? dayNum(+m[1], +m[2] - 1, +m[3]) : null;
-}
-
-/* Frase "stabile" per il giorno corrente */
-function pickPhrase(list){ return list[todayNum() % list.length]; }
-
-/* ==================================================
-   4. OROLOGIO E CAMBIO GIORNO
-   ================================================== */
-var lastDay = null;
-
-function onNewDay(){
-  menuSel = "oggi";
-  loadMenu();
-  setTimeout(function(){ safe(loadMenu); }, 5 * 60000);   /* il menu del nuovo giorno può arrivare con ritardo */
-  renderAgenda();
-  renderTasks();
-  if(currentView !== "shared"){ renderPersonalTasks(); }
-}
-
-function updateClock(){
-  var now = Date.now(), r = toRome(now), dn = dayNumOfRome(r);
-  setText($("clock"), hhmmRome(now));
-  setText($("wday"), GIORNI[r.getUTCDay()]);
-  setText($("fulldate"), r.getUTCDate() + " " + MESI[r.getUTCMonth()] + " " + r.getUTCFullYear());
-  if(lastDay !== null && dn !== lastDay){ lastDay = dn; safe(onNewDay); }
-  lastDay = dn;
-}
-
-function startClock(){
-  safe(updateClock);
-  setInterval(function(){ safe(updateClock); }, 10000);
-}
-
-window.addEventListener("focus", function(){ safe(updateClock); });
-window.addEventListener("pageshow", function(){ safe(updateClock); });
-document.addEventListener("visibilitychange", function(){ if(!document.hidden){ safe(updateClock); } });
-
-/* ==================================================
-   5. AGENDA (famiglia e vista utente)
+   TEMA NESTPLAN
+   Da incollare in coda al <style>, dopo l'ultima regola
+   (quella che finisce con ".box button:not(...)").
+   Solo grafica: nessuna funzione JavaScript viene toccata.
+   Le regole "body:not(.k)" valgono per PC e smartphone;
+   il Kindle conserva il suo layout e riceve solo le icone
+   ridisegnate in CSS (bordi, cerchi, box assoluti).
    ================================================== */
 
-/* Intervallo di giorni e orario di un evento; null se non valido */
-function eventSpan(e){
-  if(e.all_day){
-    var a = dateOnlyNum(e.start && (e.start.date || e.start.dateTime));
-    var b = dateOnlyNum(e.end && (e.end.date || e.end.dateTime));
-    if(a === null){ return null; }
-    return {first: a, last: (b !== null && b > a) ? b - 1 : a, key: -1, allDay: true};
-  }
-  var ms = parseIso(e.start && (e.start.dateTime || e.start.date));
-  if(ms === null){ return null; }
-  var d = dayNumOfRome(toRome(ms));
-  return {first: d, last: d, key: ms, allDay: false};
+/* ---------- 1. BASE (PC e smartphone) ---------- */
+
+body:not(.k) {
+  background:#F4F1EA;
+  color:#1B1B1A;
+  font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 
-function agendaNav(st, redraw){
-  var nav = mk("div", "seg");
-  var defs = [["Oggi", true, 0], ["Settimana", false, 0], ["Prossima", false, 1]];
-  for(var i = 0; i < defs.length; i++){
-    (function(d){
-      var b = mk("button", "", d[0]);
-      b.type = "button";
-      b.className = (st.today ? d[1] : (!d[1] && st.week === d[2])) ? "sel" : "";
-      b.onclick = function(){ st.today = d[1]; st.week = d[2]; redraw(); };
-      nav.appendChild(b);
-    })(defs[i]);
-  }
-  return nav;
+body:not(.k) :focus-visible {
+  outline:3px solid #2F6F62;
+  outline-offset:2px;
 }
 
-/* Disegna navigazione, periodo ed eventi. opts.tasks: compiti inline; opts.click: dettagli al clic */
-function buildAgenda(box, events, st, redraw, opts){
-  var today = todayNum();
-  var monday = today - ((dateOfDayNum(today).getUTCDay() + 6) % 7) + st.week * 7;
-  var start = st.today ? today : monday;
-  var days = st.today ? 1 : 7;
-  var buckets = [], i, j, n;
-
-  box.appendChild(agendaNav(st, redraw));
-  box.appendChild(mk("div", "agenda-period",
-    st.today ? shortDayText(today) : shortDayText(monday) + " – " + shortDayText(start + days - 1)));
-
-  for(i = 0; i < days; i++){ buckets.push([]); }
-
-  for(i = 0; i < events.length; i++){
-    var e = events[i], span = eventSpan(e);
-    if(!span){ continue; }
-    var item = {
-      key: span.key,
-      eventId: e.id || "",
-      time: span.allDay ? "Giornata" : hhmmRome(span.key),
-      title: e.title || "(senza titolo)",
-      description: e.description || ""
-    };
-    for(n = Math.max(span.first, start); n <= Math.min(span.last, start + days - 1); n++){
-      buckets[n - start].push(item);
-    }
-  }
-
-  var any = false;
-  for(i = 0; i < days; i++){
-    if(!buckets[i].length){ continue; }
-    any = true;
-    buckets[i].sort(function(a, b){ return a.key - b.key; });
-    box.appendChild(mk("h3", "", dayLabel(start + i, today)));
-
-    for(j = 0; j < buckets[i].length; j++){
-      var it = buckets[i][j];
-      var row = mk("div", "ev");
-      row.appendChild(mk("span", "t", it.time));
-      row.appendChild(mk("span", "tt", it.title));
-      box.appendChild(row);
-
-      if(st.today){
-        if(opts.tasks){ inlineTasks(it, box); }
-      } else if(opts.click){
-        row.className = "ev clickable";
-        row.onclick = (function(x){ return function(){ openEventTasks(x); }; })(it);
-      }
-    }
-  }
-
-  if(!any){
-    box.appendChild(mk("div", "", st.today ? "Nessun impegno nel giorno." : "Nessun impegno nella settimana."));
-  }
-  scheduleAlign();
+body:not(.k) .box {
+  background:#fff;
+  border:1px solid #E3DED3;
+  border-radius:18px;
+  padding:16px 18px;
+  margin:6px;
 }
 
-function renderAgenda(){
-  var box = $("agenda");
-  clear(box);
-  if(!agendaData){
-    setText(box, agendaErr ? "Agenda non disponibile (file non raggiungibile)." : "Caricamento...");
-    return;
-  }
-  setTimes($("agendaTimes"), parseIso(agendaData.generated_at || agendaData.updated_at),
-           agendaSyncedAt, agendaErr, 3 * 3600000);
-  buildAgenda(box, agendaData.events || [], agendaSt, function(){ safe(renderAgenda); },
-              {tasks: currentView === "shared", click: true});
+body:not(.k) h2 {
+  font-size:12px;
+  letter-spacing:.14em;
+  font-weight:700;
+  padding:0;
 }
 
-function renderUserAgenda(){
-  var box = $("userAgenda");
-  if(!box){ return; }
-
-  clear(box);
-
-  if(!userData){
-    setText(box, userErr ? "Agenda non disponibile." : "Caricamento...");
-    return;
-  }
-
-  setTimes(
-    $("userAgendaTimes"),
-    parseIso(userData.generated_at || userData.updated_at),
-    userSyncedAt,
-    userErr,
-    3 * 3600000
-  );
-
-  buildAgenda(
-    box,
-    userData.events,
-    userSt,
-    function(){ safe(renderUserAgenda); },
-    {}
-  );
+body:not(.k) h3 {
+  font-size:13px;
+  color:#5E5B55;
+  margin:12px 0 4px;
 }
 
-function loadUserAgenda(userId){
-  var file = "agenda_" + String(userId).toLowerCase() + ".json";
-  var start = Date.now();
-
-  getJson([CONFIG.base + file, file], function(err, d){
-
-    if(!err && d && d.events){
-      userData = d;
-      userErr = false;
-      userSyncedAt = new Date();
-    } else {
-      userErr = true;
-    }
-
-    safe(renderUserAgenda);
-  });
+body:not(.k) .small,
+body:not(.k) .agenda-period {
+  color:#5E5B55;
 }
 
-/* Aggiorna l'agenda ogni minuto, al secondo :05 */
-function scheduleAgendaRefresh(){
-  var s = new Date().getSeconds();
-  setTimeout(function(){ safe(loadAgenda); }, ((65 - s) % 60 || 60) * 1000);
+body:not(.k) .agenda-period {
+  font-size:13px;
+  margin:10px 0 4px;
 }
 
-function loadAgenda(){
-  scheduleAgendaRefresh();
-
-  getJson([CONFIG.base + "agenda.json", "agenda.json"], function(err, d){
-  
-    var hadAgenda = !!agendaData, changed = true;
-
-    if(!err && d && d.events){
-      if(hadAgenda){ changed = JSON.stringify(agendaData.events) !== JSON.stringify(d.events); }
-      agendaData = d; agendaErr = false; agendaSyncedAt = new Date();
-    } else {
-      agendaErr = true;
-    }
-
-    if(changed || err){ safe(renderAgenda); }
-    if(currentView !== "shared"){ safe(renderPersonalTasks); }
-
-  });
+body:not(.k) .section-heading {
+  align-items:center;
+  margin-bottom:12px;
+  border-bottom:0;
 }
 
-/* ==================================================
-   6. COMPITI DEGLI EVENTI (righe "- compito" sotto "TODO:")
-   ================================================== */
-function parseTasks(desc){
-  var lines = String(desc || "").split(/\r?\n/);
-  var tasks = [], owners = [], details = [];
-  var hasMarker = false, started = false, i, line, m;
-
-  for(i = 0; i < lines.length; i++){
-    if(/^\s*TODO:\s*$/i.test(lines[i])){ hasMarker = true; break; }
-  }
-
-  for(i = 0; i < lines.length; i++){
-    line = lines[i].replace(/^\s+|\s+$/g, "");
-    if(/^TODO:$/i.test(line)){ started = true; continue; }
-    if((hasMarker && !started) || !line){ continue; }
-
-    if(/^[-*]\s+/.test(line)){
-      line = line.replace(/^[-*]\s+/, "");
-      if(line){
-        m = line.match(/^([A-Za-z])\s*:\s*(.*)$/);
-        tasks.push(line);
-        owners.push(m ? m[1].toUpperCase() : "");
-      }
-    } else {
-      details.push(line);
-    }
-  }
-  return {tasks: tasks, owners: owners, details: details.join("\n")};
+body:not(.k) .sync-label {
+  top:0;
+  color:#5E5B55;
+  font-size:10px;
+  font-weight:500;
 }
 
-function eventTasksQuery(id){ return "?list=event-tasks&eventId=" + encodeURIComponent(id); }
 
-/* Riga con checkbox per un compito di evento */
-function eventTaskRow(label, key, done, eventId){
-  var row = mk("label", "todo");
-  var cell = mk("span", "todo-check-cell");
-  var cb = mk("input", "todo-check");
-  cb.type = "checkbox";
-  cb.checked = done;
-  cell.appendChild(cb);
-  var txt = mk("span", done ? "todo-text done" : "todo-text", label);
-  row.appendChild(cell);
-  row.appendChild(txt);
+/* ---------- 2. HEADER ---------- */
 
-  cb.onchange = function(){
-    var v = cb.checked;
-    cb.disabled = true;
-    api("POST", eventTasksQuery(eventId), {action: "set", taskKey: key, done: v}, function(err){
-      cb.disabled = false;
-      if(err){
-        cb.checked = !v;
-        alert("Errore nel salvataggio: " + err);
-      } else {
-        txt.className = v ? "todo-text done" : "todo-text";
-      }
-    });
-  };
-  return row;
+body:not(.k) #head {
+  border-radius:18px;
 }
 
-/* Scarica lo stato e disegna i compiti di un evento (tutti, o solo quelli di owner) */
-function renderEventTasks(ev, box, owner, onDone){
-  var data = parseTasks(ev.description), idx = [], i;
-  for(i = 0; i < data.tasks.length; i++){
-    if(!owner || data.owners[i] === owner){ idx.push(i); }
-  }
-  if(!idx.length){ if(onDone){ onDone(); } return; }
-
-  box.appendChild(mk("div", "", "Caricamento compiti..."));
-
-  api("GET", eventTasksQuery(ev.eventId), null, function(err, res){
-    clear(box);
-    if(err){
-      box.appendChild(mk("div", "", "Errore caricamento: " + err));
-    } else {
-      var completed = (res && res.completed) || {};
-      for(var k = 0; k < idx.length; k++){
-        var t = data.tasks[idx[k]];
-        var key = idx[k] + ":" + t;
-        var label = owner ? t.replace(/^[A-Za-z]\s*:\s*/, "") : t;
-        box.appendChild(eventTaskRow(label, key, completed[key] === true, ev.eventId));
-      }
-    }
-    if(onDone){ onDone(); }
-    scheduleAlign();
-  });
+body:not(.k) #clock {
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
 }
 
-function addDetailsLink(ev, parent){
-  var link = mk("div", "link-detail", "Dettagli evento");
-  link.onclick = function(){ openEventTasks(ev); };
-  parent.appendChild(link);
+body:not(.k) #wday {
+  font-weight:700;
 }
 
-/* Compiti sotto un evento (vista famiglia, "Oggi") */
-function inlineTasks(ev, parent){
-  var data = parseTasks(ev.description);
-  if(!data.tasks.length && !data.details){ return; }
-
-  var box = mk("div", "event-tasks");
-  parent.appendChild(box);
-
-  if(!data.tasks.length){ addDetailsLink(ev, box); return; }
-  renderEventTasks(ev, box, null, function(){
-    if(data.details){ addDetailsLink(ev, box); }
-  });
+body:not(.k) #fulldate {
+  color:#5E5B55;
 }
 
-function closeOverlay(){
-  var o = $("eventTasksOverlay");
-  if(o && o.parentNode){ o.parentNode.removeChild(o); }
+body:not(.k) #loggedUser {
+  display:inline-block;
+  top:0;
+  padding:3px 10px;
+  border-radius:999px;
+  background:#E6EFEA;
+  color:#1F5C4D;
+  font-weight:600;
 }
 
-/* Finestra con compiti e dettagli dell'evento */
-function openEventTasks(ev){
-  closeOverlay();
-  if(!ev.eventId){ alert("ID evento non disponibile."); return; }
-
-  var data = parseTasks(ev.description);
-  var overlay = mk("div", "overlay");
-  overlay.id = "eventTasksOverlay";
-
-  var panel = mk("div", "panel");
-  var head = mk("div", "overlay-head");
-  var close = mk("button", "", "Chiudi");
-  close.type = "button";
-  close.onclick = closeOverlay;
-  head.appendChild(mk("h2", "", ev.title));
-  head.appendChild(close);
-
-  var body = mk("div");
-  panel.appendChild(head);
-  panel.appendChild(body);
-  overlay.appendChild(panel);
-  document.body.appendChild(overlay);
-
-  function addDetails(){
-    if(!data.details){ return; }
-    body.appendChild(mk("div", "overlay-details-title", "Altri dettagli"));
-    body.appendChild(mk("div", "overlay-details", data.details));
-  }
-
-  if(!data.tasks.length && !data.details){
-    body.appendChild(mk("div", "", "Nessun compito o dettaglio indicato."));
-  } else if(!data.tasks.length){
-    body.appendChild(mk("div", "", "Nessun compito indicato."));
-    addDetails();
-  } else {
-    renderEventTasks(ev, body, null, addDetails);
-  }
+body:not(.k) #loggedUser:empty {
+  display:none;
 }
+
+body:not(.k) #viewMenuToggle {
+  width:34px;
+  height:34px;
+  min-width:34px;
+  padding:8px;
+  border:1px solid #D9D3C6;
+  border-radius:12px;
+  box-shadow:none;
+}
+
+body:not(.k) #viewMenuPanel {
+  border:1px solid #E3DED3;
+  border-radius:14px;
+  box-shadow:0 14px 32px rgba(0,0,0,.16);
+}
+
+body:not(.k) #viewMenuPanel button {
+  border:1px solid #E3DED3;
+  border-radius:10px;
+}
+
+
+/* ---------- 3. PULSANTI, CAMPI, GRUPPI ---------- */
+
+body:not(.k) button {
+  border-color:#CFC8B8;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+body:not(.k) button:disabled {
+  opacity:.5;
+  cursor:default;
+}
+
+body:not(.k) .box input[type=text],
+body:not(.k) .box input[type=password],
+body:not(.k) .box input[type=time],
+body:not(.k) .box input[type=number],
+body:not(.k) .box select {
+  min-height:42px;
+  padding:0 14px;
+  border:1px solid #D9D3C6;
+  border-radius:12px;
+  background:#FBFAF6;
+  color:#1B1B1A;
+}
+
+/* Gruppi di pulsanti: Ieri / Oggi / Domani, Da comprare / Comprato... */
+body:not(.k) .seg {
+  gap:4px;
+  padding:4px;
+  background:#EFEBE2;
+  border-radius:13px;
+}
+
+body:not(.k) .seg > button {
+  min-height:42px;
+  margin:0;
+  padding:8px 6px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#3B3935;
+  font-size:13px;
+}
+
+body:not(.k) .seg > button.sel,
+body:not(.k) .seg > button.active {
+  background:#1B1B1A !important;
+  color:#fff !important;
+}
+
+/* Pulsante "Aggiungi" */
+body:not(.k) .add-ctl button {
+  min-height:42px;
+  padding:0 18px;
+  border-color:#1B1B1A;
+  background:#1B1B1A;
+  color:#fff;
+}
+
+
+/* ---------- 4. ELENCHI ---------- */
+
+/* Agenda */
+body:not(.k) .ev {
+  min-height:28px;
+  margin:8px 0;
+}
+
+body:not(.k) .ev .t {
+  padding:3px 9px;
+  border-radius:9px;
+  background:#1B1B1A;
+  color:#fff;
+  font-size:13px;
+}
+
+body:not(.k) .ev .tt {
+  font-weight:600;
+}
+
+body:not(.k) .event-tasks {
+  border-left:3px solid #D9D3C6;
+  border-radius:2px;
+}
+
+/* Righe con checkbox */
+body:not(.k) .todo > * {
+  padding-top:8px;
+  padding-bottom:8px;
+  border-bottom:1px solid #EEE9DF;
+}
+
+body:not(.k) .shopping-item,
+body:not(.k) .family-shopping-item {
+  margin:0;
+  padding:8px 0;
+  border-bottom:1px solid #EEE9DF;
+}
+
+body:not(.k) #menuList li {
+  margin:0;
+  padding:9px 0;
+  border-bottom:1px solid #EEE9DF;
+}
+
+body:not(.k) #menuList li:last-child {
+  border-bottom:0;
+}
+
+/* Checkbox personalizzate */
+body:not(.k) input[type=checkbox] {
+  -webkit-appearance:none;
+  appearance:none;
+  width:20px;
+  height:20px;
+  border:2px solid #1B1B1A;
+  border-radius:6px;
+  background:#fff;
+}
+
+body:not(.k) input[type=checkbox]:checked {
+  background:#1B1B1A;
+  box-shadow:inset 0 0 0 3px #fff;
+}
+
+body:not(.k) .todo-assign-option input,
+body:not(.k) .recurring-owner-options input,
+body:not(.k) .recurring-subtask-assign input {
+  width:16px;
+  height:16px;
+  border-radius:5px;
+}
+
+/* Etichette (chip) delle attività ricorrenti */
+body:not(.k) .recurring-task-time {
+  min-width:0;
+  padding:2px 7px;
+  border-radius:8px;
+  background:#1B1B1A;
+  color:#fff;
+  font-size:12px;
+}
+
+body:not(.k) .recurring-task-owners {
+  padding:2px 8px;
+  border-radius:999px;
+  background:#E6EFEA;
+  color:#1F5C4D;
+  font-size:11px;
+  font-weight:600;
+}
+
+/* Finestre */
+body:not(.k) .overlay {
+  background:#F4F1EA;
+}
+
+body:not(.k) .overlay .panel {
+  border:1px solid #E3DED3;
+  border-radius:18px;
+}
+
 
 /* ==================================================
-   7. VISTE PERSONALI
+   5. ICONE DISEGNATE IN CSS
+   Niente emoji né glifi: solo bordi, tondi e box assoluti,
+   compatibili con il browser sperimentale dei Kindle datati.
    ================================================== */
-function renderPersonalTasks(){
-  renderPersonalGlobalTasks();
 
-  var box = $("personalTasks");
-  clear(box);
-
-  var name = userName(currentView);
-  var owner = currentView.charAt(0).toUpperCase();
-  var target = todayNum() + TASK_OFF[personalPeriod];
-
-  setText($("personalTasksTitle"), "Agenda di " + name);
-  markSeg("personalPeriod", personalPeriod);
-  setTimes($("personalTasksTimes"),
-           agendaData ? parseIso(agendaData.generated_at || agendaData.updated_at) : null,
-           agendaSyncedAt, agendaErr, 3 * 3600000);
-
-  if(!agendaData || !agendaData.events){
-    setText(box, agendaErr ? "Agenda non disponibile." : "Caricamento compiti...");
-    return;
-  }
-
-  var found = false;
-  for(var i = 0; i < agendaData.events.length; i++){
-    var e = agendaData.events[i], span = eventSpan(e);
-    if(!span || target < span.first || target > span.last){ continue; }
-    if(parseTasks(e.description).owners.indexOf(owner) === -1){ continue; }
-
-    found = true;
-    var tc = mk("div");
-    box.appendChild(tc);
-    renderEventTasks({eventId: e.id || "", description: e.description || ""}, tc, owner);
-  }
-
-  if(!found){
-    box.appendChild(mk("div", "",
-      "Nessun compito assegnato a " + name + " per " + (personalPeriod === "oggi" ? "oggi" : "domani") + "."));
-  }
-  scheduleAlign();
+/* Aggiorna (sostituisce ↻): anello con freccia */
+.box-refresh {
+  font-size:0 !important;
+  line-height:0 !important;
+  width:30px !important;
+  height:30px !important;
+  padding:0 !important;
+  top:-4px !important;
+  right:-6px !important;
+  color:#1B1B1A !important;
 }
 
-function renderPersonalGlobalTasks(){
-  if(currentView === "shared"){ return; }
-
-  var box = $("personalGlobalTaskList");
-  clear(box);
-  setText($("personalGlobalTaskTitle"), "Task giornalieri di " + userName(currentView));
-  markSeg("personalGlobalTaskDays", personalGlobalTaskSel);
-  updateSyncLabels();
-
-  if(!taskReady){
-    setText(box, taskSyncError ? "Task non disponibili." : "Caricamento...");
-    return;
-  }
-
-  var items = taskDays[taskKey(personalGlobalTaskSel)] || [], count = 0;
-  for(var i = 0; i < items.length; i++){
-    if(Array.isArray(items[i].assignees) && items[i].assignees.indexOf(currentView) !== -1){
-      box.appendChild(taskRowEl(i, items[i], true));
-      count++;
-    }
-  }
-  if(!count){ box.appendChild(mk("div", "", "Nessuna attività assegnata.")); }
-  setText($("personalGlobalTaskStatus"), "");
-  scheduleAlign();
+.box-refresh:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:10px;
+  height:10px;
+  margin:-7px 0 0 -7px;
+  border:2px solid currentColor;
+  border-top-color:transparent;
+  border-radius:50%;
 }
 
-/* ==================================================
-   8. RIGHE CHECKBOX GENERICHE (to-do e task)
-   ================================================== */
-function itemRow(item, busy, onToggle, onDelete, extraBtn){
-  var row = mk("div", "todo");
-  var cell = mk("span", "todo-check-cell");
-  var cb = mk("input", "todo-check");
-  cb.type = "checkbox";
-  cb.checked = !!item.done;
-  cb.disabled = busy;
-  cb.setAttribute("aria-label", item.done ? "Segna come da fare" : "Segna come completata");
-  cb.onchange = onToggle;
-  cell.appendChild(cb);
-  row.appendChild(cell);
-  row.appendChild(mk("span", item.done ? "todo-text done" : "todo-text", item.text));
-
-  var actions = mk("span", "todo-actions");
-  if(extraBtn){ actions.appendChild(extraBtn); }
-
-  var del = mk("button", "todo-delete", "");
-  del.type = "button";
-  del.disabled = busy;
-  del.title = "Elimina attività";
-  if(IS_KINDLE){ del.appendChild(mk("span", "trash-icon")); } else { del.textContent = "🗑"; }
-  del.onclick = onDelete;
-  actions.appendChild(del);
-
-  row.appendChild(actions);
-  return row;
+.box-refresh:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:0;
+  height:0;
+  margin:-11px 0 0 0;
+  border-style:solid;
+  border-width:4px 0 4px 6px;
+  border-color:transparent transparent transparent currentColor;
 }
 
-function connLabel(synced, err){
-  if(!todoConnected){ return "non connesso"; }
-  if(err){ return "sync error"; }
-  return synced ? "sync time: " + hhmmRome(synced.getTime()) : "sync in attesa";
+/* Assegna (sostituisce 👥 e ↗): figura con testa e spalle */
+.todo-assign {
+  position:relative;
+  font-size:0 !important;
+  line-height:0 !important;
+  color:#5E5B55;
 }
 
-function updateSyncLabels(){
-  setText($("todoSyncLabel"), connLabel(todoSyncedAt, todoSyncError));
-  var t = connLabel(taskSyncedAt, taskSyncError);
-  setText($("taskTimes"), t);
-  setText($("personalGlobalTaskTimes"), t);
+body.k .todo-assign {
+  font-size:0 !important;
+  line-height:0 !important;
+  color:#000;
 }
 
-/* Aggiunta da campo di testo; fn ritorna true se l'operazione è partita */
-function addFrom(inp, statusEl, fn){
-  var v = inp.value.replace(/^\s+|\s+$/g, "");
-  if(!v){ return; }
-  if(v.length > 200){ setText(statusEl, "Massimo 200 caratteri."); return; }
-  if(fn(v)){ inp.value = ""; }
+.todo-assign:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:6px;
+  width:6px;
+  height:6px;
+  margin-left:-5px;
+  border:2px solid currentColor;
+  border-radius:50%;
 }
 
-/* ==================================================
-   9. TASK CONDIVISI (to-do)
-   ================================================== */
-function todoConnect(){
-  if(!authToken){ return; }
-
-  todoBusy = true;
-  setText($("todoStatus"), "Connessione in corso...");
-
-  api("GET", "", null, function(err, d){
-    todoBusy = false;
-
-    if(err || !d || !d.items){
-      todoConnected = false;
-      todoSyncError = true;
-      var detail = d && d.detail ? " - " + d.detail : "";
-      setText($("todoStatus"), "Sincronizzazione non disponibile: " +
-        (err || "risposta non valida") + detail);
-      updateSyncLabels();
-      return;
-    }
-
-    todoItems = d.items;
-    todoConnected = true;
-    todoSyncedAt = new Date();
-    todoSyncError = false;
-
-    setHidden($("todoCtl"), false);
-    setHidden($("taskCtl"), false);
-
-    renderTodo();
-    updateSyncLabels();
-    setText($("todoStatus"), "");
-    if(!pollTimer){ schedulePoll(); }
-    loadTasks();
-  });
+.todo-assign:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:17px;
+  width:12px;
+  height:4px;
+  margin-left:-8px;
+  border:2px solid currentColor;
+  border-bottom:0;
+  border-radius:8px 8px 0 0;
 }
 
-function loadTodo(){
-  todoConnect();
+/* Impostazioni attività ricorrenti (sostituisce ⚙) */
+#recurringTasksBox .recurring-config-button span {
+  font-size:0 !important;
 }
 
-function todoChange(action, index, text){
-  if(!todoConnected || todoBusy){ return false; }
-
-  var data = {action: action};
-  if(action === "add"){ data.text = text; } else { data.index = index; }
-
-  todoBusy = true;
-  renderTodo();
-  setText($("todoStatus"), "Salvataggio...");
-
-  api("POST", "", data, function(err, res){
-    todoBusy = false;
-
-    if(err || !res || !res.items){
-      todoSyncError = true;
-      updateSyncLabels();
-      setText($("todoStatus"), "Salvataggio non riuscito: " + (err || "errore"));
-      renderTodo();
-      return;
-    }
-
-    todoItems = res.items;
-    todoSyncedAt = new Date();
-    todoSyncError = false;
-    updateSyncLabels();
-    renderTodo();
-    setText($("todoStatus"), "");
-  });
-  return true;
+#recurringTasksBox .recurring-config-button:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:4px;
+  height:4px;
+  margin:-4px 0 0 -4px;
+  border:2px solid #fff;
+  border-radius:50%;
 }
 
-function renderTodo(){
-  var box = $("todoList");
-  clear(box);
-
-  for(var i = 0; i < todoItems.length; i++){
-    (function(n){
-      box.appendChild(itemRow(todoItems[n], todoBusy,
-        function(){ todoChange("toggle", n); },
-        function(){ todoChange("delete", n); }));
-    })(i);
-  }
-  if(!todoItems.length){ box.appendChild(mk("div", "", "Nessuna attività.")); }
-  scheduleAlign();
+#recurringTasksBox .recurring-config-button:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:2px;
+  height:2px;
+  margin:-7px 0 0 -1px;
+  background:#fff;
+  box-shadow:0 12px 0 #fff, 6px 6px 0 #fff, -6px 6px 0 #fff;
 }
 
-function pollTodo(){
-  api("GET", "", null, function(err, d){
-    if(!err && d && d.items){
-      todoItems = d.items;
-      todoSyncedAt = new Date();
-      todoSyncError = false;
-      renderTodo();
-      setText($("todoStatus"), "");
-    } else {
-      todoSyncError = true;
-      setText($("todoStatus"), "Sincronizzazione temporaneamente non disponibile.");
-    }
-    updateSyncLabels();
-  });
+/* Impostazioni nel menu Kindle (sostituisce ☼) */
+body.k .settings-gear {
+  position:relative;
+  width:16px;
+  height:16px;
+  font-size:0;
+  line-height:0;
 }
 
-/* Un solo ciclo di polling (30 s) per to-do e task */
-function schedulePoll(){
-  clearTimeout(pollTimer);
-  pollTimer = setTimeout(function(){
-    if(todoConnected && !document.querySelector(".todo-assign-menu.open")){
-      if(!todoBusy){ pollTodo(); }
-      if(!taskBusy){ loadTasks(true); }
-    }
-    schedulePoll();
-  }, 30000);
+body.k .settings-gear:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:4px;
+  height:4px;
+  margin:-4px 0 0 -4px;
+  border:2px solid #000;
+  border-radius:50%;
 }
 
-/* ==================================================
-   10. TASK GIORNALIERI (con assegnazione)
-   ================================================== */
-function taskKey(sel){ return fmtDay(todayNum() + TASK_OFF[sel]); }
-
-function loadTasks(silent){
-  if(!todoConnected){
-    taskSyncError = false;
-    updateSyncLabels();
-    return;
-  }
-  if(!silent){ setText($("taskStatus"), "Caricamento..."); }
-
-  api("GET", "?list=tasks", null, function(err, d){
-    if(err || !d || !d.days){
-      taskSyncError = true;
-      updateSyncLabels();
-      if(!silent){ setText($("taskStatus"), "Task non disponibili: " + (err || "risposta non valida")); }
-      return;
-    }
-    taskDays = d.days;
-    taskReady = true;
-    taskSyncError = false;
-    taskSyncedAt = new Date();
-    renderTasks();
-    if(!silent){ setText($("taskStatus"), ""); }
-  });
+body.k .settings-gear:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:2px;
+  height:2px;
+  margin:-7px 0 0 -1px;
+  background:#000;
+  box-shadow:0 12px 0 #000, 6px 6px 0 #000, -6px 6px 0 #000;
 }
 
-function taskPost(data, personal){
-  if(!taskReady || taskBusy){ return false; }
-
-  var st = $(personal ? "personalGlobalTaskStatus" : "taskStatus");
-  taskBusy = true;
-  renderTasks();
-  setText(st, data.action === "assign" ? "Salvataggio assegnazioni..." : "Salvataggio...");
-
-  api("POST", "?list=tasks", data, function(err, res){
-    taskBusy = false;
-
-    if(err || !res || !res.days){
-      taskSyncError = true;
-      renderTasks();
-      setText(st, "Salvataggio non riuscito: " + (err || "errore"));
-      return;
-    }
-
-    taskDays = res.days;
-    taskSyncedAt = new Date();
-    taskSyncError = false;
-    renderTasks();
-    setText(st, "");
-  });
-  return true;
+/* Cestino su PC e smartphone (sostituisce 🗑; su Kindle resta quello esistente) */
+body:not(.k) .todo-delete,
+body:not(.k) .family-shopping-delete {
+  position:relative;
+  width:32px;
+  height:32px;
+  min-width:32px;
+  padding:0;
+  border:0;
+  font-size:0;
+  line-height:0;
+  color:#5E5B55;
+  background:linear-gradient(currentColor,currentColor) 50% 5px / 6px 2px no-repeat;
 }
 
-function taskAct(action, index, personal){
-  taskPost({action: action, date: taskKey(personal ? personalGlobalTaskSel : taskSel), index: index}, personal);
+body:not(.k) .todo-delete:hover,
+body:not(.k) .family-shopping-delete:hover {
+  color:#B3261E;
 }
 
-function renderTasks(){
-  updateSyncLabels();
-  markSeg("taskDays", taskSel);
-
-  var list = $("taskList");
-  clear(list);
-
-  if(taskReady){
-    var items = taskDays[taskKey(taskSel)] || [];
-    for(var i = 0; i < items.length; i++){ list.appendChild(taskRowEl(i, items[i], false)); }
-    if(!items.length){ list.appendChild(mk("div", "", "Nessuna attività.")); }
-  }
-
-  renderPersonalGlobalTasks();
-  scheduleAlign();
+body:not(.k) .todo-delete:before,
+body:not(.k) .family-shopping-delete:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:13px;
+  width:8px;
+  height:8px;
+  margin-left:-6px;
+  border:2px solid currentColor;
+  border-top:0;
+  border-radius:0 0 3px 3px;
 }
 
-function closeAssignMenus(){
-  var m = document.querySelectorAll(".todo-assign-menu.open");
-  for(var i = 0; i < m.length; i++){ m[i].classList.remove("open"); }
+body:not(.k) .todo-delete:after,
+body:not(.k) .family-shopping-delete:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:8px;
+  width:16px;
+  height:2px;
+  margin-left:-8px;
+  background:currentColor;
 }
 
-/* Pulsante "assegna" e relativo menu a tendina */
-function assignControl(index, item){
-  var btn = mk("button", "todo-assign", IS_KINDLE ? "A" : "👥");
-  btn.type = "button";
-  btn.disabled = taskBusy;
-  btn.title = "Assegna attività";
-  btn.setAttribute("aria-label", "Assegna attività");
-
-  var menu = mk("div", "todo-assign-menu");
-  menu.appendChild(mk("div", "todo-assign-title", "Assegna a:"));
-
-  var selected = Array.isArray(item.assignees) ? item.assignees : [];
-  var checks = [];
-
-  if(!USERS.length){
-    menu.appendChild(mk("div", "", "Elenco utenti non disponibile."));
-  } else {
-    var options = mk("div", "todo-assign-options");
-    for(var u = 0; u < USERS.length; u++){
-      var label = mk("label", "todo-assign-option");
-      var c = mk("input");
-      c.type = "checkbox";
-      c.value = USERS[u].id;
-      c.checked = selected.indexOf(USERS[u].id) !== -1;
-      label.appendChild(c);
-      label.appendChild(document.createTextNode(USERS[u].name));
-      options.appendChild(label);
-      checks.push(c);
-    }
-    menu.appendChild(options);
-  }
-
-  var buttons = mk("div", "todo-assign-buttons");
-  var save = mk("button", "", "Salva");
-  var cancel = mk("button", "", "Annulla");
-  save.type = "button";
-  cancel.type = "button";
-  save.disabled = taskBusy || !USERS.length;
-  buttons.appendChild(save);
-  buttons.appendChild(cancel);
-  menu.appendChild(buttons);
-
-  btn.onclick = function(){
-    var wasOpen = menu.classList.contains("open");
-    closeAssignMenus();
-    if(!wasOpen){ menu.classList.add("open"); }
-  };
-  cancel.onclick = function(){ menu.classList.remove("open"); };
-  save.onclick = function(){
-    var a = [];
-    for(var i = 0; i < checks.length; i++){ if(checks[i].checked){ a.push(checks[i].value); } }
-    menu.classList.remove("open");
-    taskPost({action: "assign", date: taskKey(taskSel), index: index, assignees: a}, false);
-  };
-
-  return {btn: btn, menu: menu};
+/* Cestino accanto alle checkbox "da eliminare" della lista Amazon (PC) */
+body:not(.k) .shopping-delete-label > span {
+  display:inline-block;
+  position:relative;
+  width:16px;
+  height:18px;
+  margin-left:2px;
+  font-size:0;
+  vertical-align:middle;
+  color:#5E5B55;
 }
 
-function taskRowEl(index, item, personal){
-  var wrap = mk("div", "todo-wrap");
-  var ctl = personal ? null : assignControl(index, item);
-
-  wrap.appendChild(itemRow(item, taskBusy,
-    function(){ taskAct("toggle", index, personal); },
-    function(){ taskAct("delete", index, personal); },
-    ctl ? ctl.btn : null));
-  if(ctl){ wrap.appendChild(ctl.menu); }
-  return wrap;
+body:not(.k) .shopping-delete-label > span:before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:7px;
+  width:7px;
+  height:7px;
+  margin-left:-5px;
+  border:2px solid currentColor;
+  border-top:0;
+  border-radius:0 0 3px 3px;
 }
 
-/* ==================================================
-   11. METEO (Open-Meteo) E ORE DI LUCE
-   ================================================== */
-var wData = null, wErr = false, sunData = null, sunDate = "";
-
-function loadWeather(){
-  var u = "https://api.open-meteo.com/v1/forecast?latitude=" + CONFIG.lat + "&longitude=" + CONFIG.lon +
-          "&current=temperature_2m,apparent_temperature,weather_code&timezone=Europe%2FRome";
-  getJson([u], function(err, d){
-    if(!err && d && d.current && typeof d.current.temperature_2m === "number"){
-      wData = d.current; wErr = false;
-    } else {
-      wErr = true;
-    }
-    safe(renderWeather);
-    setTimeout(function(){ safe(loadWeather); }, CONFIG.weatherMin * 60000);
-  }, true);
+body:not(.k) .shopping-delete-label > span:after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:3px;
+  width:14px;
+  height:2px;
+  margin-left:-7px;
+  background:currentColor;
 }
-
-function loadSunTimes(){
-  var r = toRome(Date.now());
-  var y = r.getUTCFullYear(), m = r.getUTCMonth() + 1, d = r.getUTCDate();
-
-  getJson(["https://sunrise.am/api/sun-month-data/milan/" + y + "/" + m], function(err, data){
-    if(err || !data || !data.days){ return; }
-    sunData = null;
-    for(var i = 0; i < data.days.length; i++){
-      if(data.days[i].day === d){
-        sunData = data.days[i];
-        sunDate = fmtDay(dayNum(y, m - 1, d));
-        break;
-      }
-    }
-    safe(renderWeather);
-  }, true);
-}
-
-function renderWeather(){
-  var el = $("weather"), iconEl = $("weatherIcon");
-
-  if(!wData || wData.weather_code === undefined){
-    el.innerHTML = wErr ? "Meteo non disponibile" : "Meteo in caricamento...";
-    iconEl.innerHTML = "";
-    return;
-  }
-
-  var code = wData.weather_code;
-  var r = toRome(Date.now());
-  var hour = r.getUTCHours(), mins = hour * 60 + r.getUTCMinutes();
-  var night = (hour >= 17 || hour < 6);
-
-  if(sunData && sunDate === fmtDay(dayNumOfRome(r)) &&
-     sunData.civil_twilight_start && sunData.civil_twilight_end){
-    night = mins < toMin(sunData.civil_twilight_start) || mins >= toMin(sunData.civil_twilight_end);
-  }
-
-  var sun = "<circle cx='30' cy='27' r='11' fill='#FDB813'/>";
-  var moon = "<path d='M37 12 A15 15 0 1 0 49 34 A12 12 0 0 1 37 12' fill='#F5D76E'/>";
-  var cloud = "<path d='M18 48 H53 A12 12 0 0 0 53 24 A17 17 0 0 0 21 28 A10 10 0 0 0 18 48' fill='#A9C7DD' stroke='#7197B1' stroke-width='2'/>";
-  var rain = "<path d='M23 53 L19 62 M37 53 L33 62 M51 53 L47 62' stroke='#39A9DB' stroke-width='4' stroke-linecap='round'/>";
-  var snow = "<g stroke='#54BDE8' stroke-width='2.5' stroke-linecap='round'><path d='M23 54v12 M18 57l10 6 M28 57l-10 6 M42 54v12 M37 57l10 6 M47 57l-10 6'/></g>";
-  var lightning = "<path d='M37 48 L28 62 H37 L32 73 L49 55 H40 L45 48 Z' fill='#FFD43B' stroke='#E5A900' stroke-width='1.5'/>";
-  var fog = "<g stroke='#9AAAB5' stroke-width='3' stroke-linecap='round'><path d='M12 55 H55 M18 63 H49 M25 71 H58'/></g>";
-  var body = night ? moon : sun, svg;
-
-  if(code === 0){ svg = body; }
-  else if(code <= 2){ svg = body + cloud; }
-  else if(code === 3){ svg = cloud; }
-  else if(code === 45 || code === 48){ svg = cloud + fog; }
-  else if((code >= 51 && code <= 67) || (code >= 80 && code <= 82)){ svg = cloud + rain; }
-  else if((code >= 71 && code <= 77) || code === 85 || code === 86){ svg = cloud + snow; }
-  else if(code >= 95){ svg = cloud + lightning + rain; }
-  else { svg = cloud; }
-
-  iconEl.innerHTML = "<svg viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'>" + svg + "</svg>";
-  el.innerHTML = "Milano " + Math.round(wData.temperature_2m) + "°C" +
-                 "<br>Percepita " + Math.round(wData.apparent_temperature) + "°C";
-}
-
-/* ==================================================
-   12. SPOSTAMENTI
-   ================================================== */
-var WEEKEND_ROUTES = [
-  "Weekend! Oggi niente lavoro, goditi la giornata!",
-  "Traffico? Oggi non è un nostro problema!",
-  "Nessuna sveglia, nessuna partenza. Buon relax!",
-  "Oggi si viaggia solo per piacere!",
-  "Modalità relax attivata. Buon weekend!",
-  "Oggi l'unico appuntamento è con il tempo libero!"
-];
-
-function loadRoutes(userId){
-  userId = userId || currentView;
-
-  if(!userId || userId === "shared"){
-    return;
-  }
-
-  var url = CONFIG.routesUrl(userId);
-  var file = "routes_" + String(userId).toLowerCase() + ".json";
-
-  getJson([url, CONFIG.base + file, file], function(err, d){
-    if(!err && d && d.routes){
-      routesData = d;
-      routesErr = false;
-      routesSyncedAt = new Date();
-    } else {
-      routesErr = true;
-    }
-
-    safe(renderRoutes);
-  });
-}
-
-function renderRoutes(){
-  var box = $("personalRoutes");
-  if(!box){ return; }
-  clear(box);
-
-  setTimes($("personalRoutesTimes"),
-           routesData ? parseIso(routesData.generated_at || routesData.updated_at) : null,
-           routesSyncedAt, routesErr, 0);
-  setText($("personalRoutesStatus"), routesErr ? "Tempi non raggiungibili." : "");
-
-  var day = toRome(Date.now()).getUTCDay();
-
-  if(day === 0 || day === 6){
-    box.appendChild(mk("div", "weekend-message", pickPhrase(WEEKEND_ROUTES)));
-    scheduleAlign();
-    return;
-  }
-
-  if(!routesData || routesData.day !== GIORNI_JSON[day] || !routesData.routes){
-    box.appendChild(mk("div", "rt", "Percorsi non ancora calcolati per oggi."));
-    scheduleAlign();
-    return;
-  }
-
-  var today = fmtDay(todayNum()), found = false;
-
-  for(var id in routesData.routes){
-    if(!Object.prototype.hasOwnProperty.call(routesData.routes, id)){ continue; }
-
-    var d = routesData.routes[id];
-    if(!d || !d.departure || !d.arrival){ continue; }
-
-    var calc = parseIso(d.calculated_at);
-    if(calc === null || fmtDay(dayNumOfRome(toRome(calc))) !== today){ continue; }
-
-    var dep = parseIso(d.departure), arr = parseIso(d.arrival);
-    if(dep === null || arr === null){ continue; }
-
-    found = true;
-    var line = mk("div", "rt");
-    var title = mk("strong", "", d.from + " \u2192 " + d.to);
-    title.style.display = "block";
-    line.appendChild(title);
-    line.appendChild(mk("div", "",
-      "partenza " + hhmmRome(dep) + " arrivo " + hhmmRome(arr) + " · " + d.duration_minutes + " min"));
-    box.appendChild(line);
-  }
-
-  if(!found){ box.appendChild(mk("div", "rt", "Nessun percorso disponibile per oggi.")); }
-  scheduleAlign();
-}
-
-/* ==================================================
-   13. LISTA DELLA SPESA
-   ================================================== */
-function loadShoppingList(){
-  var box = $("shoppingList");
-
-  getJson([CONFIG.base + "shopping.json", "shopping.json"], function(err, d){
-    var ok = !err && d && d.items;
-    var gen = (!err && d) ? parseIso(d.generated_at || d.updated_at) : null;
-
-    if(ok){
-      shoppingSyncedAt = new Date();
-      clear(box);
-
-      var pending = [], completed = [], i;
-      for(i = 0; i < d.items.length; i++){
-        (d.items[i].completed ? completed : pending).push(d.items[i]);
-      }
-      var all = pending.concat(completed);
-      for(i = 0; i < all.length; i++){
-        box.appendChild(mk("div", all[i].completed ? "shopping-item completed" : "shopping-item",
-          (all[i].completed ? "✓ " : "□ ") + all[i].name));
-      }
-      if(!all.length){ box.appendChild(mk("div", "", "Lista vuota.")); }
-    } else if(!box.getElementsByTagName("div").length){
-      setText(box, "Lista non disponibile.");
-    }
-
-    setTimes($("shoppingTimes"), gen, ok ? shoppingSyncedAt : null, !ok, 30 * 60000);
-    scheduleAlign();
-  });
-}
-
-/* ==================================================
-   14. MENU SCUOLA
-   ================================================== */
-var MENUF = {ieri: "menu-ieri.json", oggi: "menu.json", domani: "menu-domani.json"};
-
-var WEEKEND_MENU = [
-  "Evviva! Oggi niente scuola: si gioca!",
-  "Sabato: missione divertimento attivata!",
-  "Domenica: vietato svegliarsi di fretta!",
-  "Oggi il menu prevede giochi, risate e coccole!",
-  "La scuola riposa, i bambini no!",
-  "Weekend! Due giorni da piccoli campioni!",
-  "Oggi la maestra è in vacanza… e anche noi!",
-  "Niente mensa: oggi comanda la fantasia!",
-  "Attenzione: piccolo esploratore in libertà!",
-  "Oggi si mangia, si gioca e si fa festa!",
-  "Weekend: abbracci extra e compiti zero!",
-  "La scuola può aspettare: oggi si fa baldoria!"
-];
-
-function collectMenu(d){
-  var out = [];
-  if(!d || !d.plates){ return out; }
-  for(var i = 0; i < d.plates.length; i++){
-    var p = d.plates[i];
-    var name = typeof p === "string" ? p : (p && (p.name || p.description));
-    if(name){ out.push(name); }
-  }
-  return out;
-}
-
-function dishIcon(s){
-  s = s.toLowerCase();
-  if(/pizza/.test(s)){ return "🍕"; }
-  if(/pasta|riso|risotto|gnocchi|lasagne|tortellini|cous cous/.test(s)){ return "🍝"; }
-  if(/frutta|mela|pera|banana|arancia|mandarino/.test(s)){ return "🍎"; }
-  if(/gelato|dolce|torta|budino|dessert/.test(s)){ return "🍨"; }
-  if(/pane/.test(s)){ return "🥖"; }
-  if(/insalata|verdura|pomodori|carote|finocchi|zucchine|contorno/.test(s)){ return "🥗"; }
-  return "🍽️";
-}
-
-function loadMenu(){
-  var k = menuSel;
-  markSeg("menuDays", k);
-
-  var day = dateOfDayNum(todayNum() + TASK_OFF[k]).getUTCDay();
-  if(day === 0 || day === 6){ renderMenuWeekend(); return; }
-
-  setText($("menuStatus"), "Caricamento...");
-
-  getJson([CONFIG.base + MENUF[k], MENUF[k]], function(err, d){
-    if(k !== menuSel){ return; }
-    if(!err && d){
-      menuSyncedAt = new Date();
-      menuUpdatedAt = parseIso(d.generated_at || d.updated_at);
-    }
-    safe(function(){ renderMenu(k, err, d); });
-  });
-}
-
-function renderMenuWeekend(){
-  clear($("menuList"));
-  setText($("menuDate"), "");
-  setText($("menuStatus"), "");
-  $("menuList").appendChild(mk("div", "weekend-message", pickPhrase(WEEKEND_MENU)));
-  scheduleAlign();
-}
-
-function renderMenu(k, err, d){
-  var list = $("menuList");
-  clear(list);
-
-  setTimes($("menuTimes"), menuUpdatedAt, menuSyncedAt, false, 0, true);
-  setText($("menuDate"), fullDateText(todayNum() + TASK_OFF[k]));
-
-  if(err){
-    setText(list, "Menu non disponibile.");
-    setText($("menuStatus"), "File non raggiungibile.");
-    scheduleAlign();
-    return;
-  }
-
-  setText($("menuStatus"), "");
-  var dishes = collectMenu(d);
-
-  if(!dishes.length){
-    setText(list, "Menu non disponibile per questo giorno.");
-    scheduleAlign();
-    return;
-  }
-
-  var ul = mk("ul");
-  for(var i = 0; i < dishes.length; i++){
-    var li = mk("li");
-    if(IS_KINDLE){
-      li.appendChild(document.createTextNode("\u2022\u00A0"));
-    } else {
-      li.appendChild(mk("span", "", dishIcon(dishes[i])));
-      li.appendChild(document.createTextNode(" "));
-    }
-    li.appendChild(document.createTextNode(dishes[i]));
-    ul.appendChild(li);
-  }
-  list.appendChild(ul);
-  scheduleAlign();
-}
-
-/* ==================================================
-   15. VISTE: MENU, ORARI, LAYOUT DA dashboard-config.json
-   ================================================== */
-function getScheduledView(){
-  var r = toRome(Date.now());
-  var m = r.getUTCHours() * 60 + r.getUTCMinutes();
-
-  for(var i = 0; i < USERS.length; i++){
-    var s = USERS[i].schedule;
-    if(!s || !s.start || !s.end){ continue; }
-    var a = toMin(s.start), b = toMin(s.end);
-    if(a < b ? (m >= a && m < b) : (m >= a || m < b)){ return USERS[i].id; }
-  }
-  return "shared";
-}
-
-function checkScheduledView(){
-  if(Date.now() < viewManualUntil){ return; }
-  var v = getScheduledView();
-  if(currentView !== v){ setView(v, false); }
-}
-
-function closeViewMenu(){
-  setHidden($("viewMenuPanel"), true);
-  $("viewMenuToggle").setAttribute("aria-expanded", "false");
-}
-
-function personalRow(){
-  var r = $("personalLayoutRow");
-  if(!r){
-    r = mk("div", "row");
-    r.id = "personalLayoutRow";
-    $("personalView").appendChild(r);
-  }
-  return r;
-}
-
-/* Costruisce colonne (views[v].columns) o righe da due box (views[v].rows) */
-function buildLayout(view){
-  var cfg = DASHBOARD_CONFIG;
-  var vc = cfg && cfg.views && cfg.views[view];
-  if(!vc || !vc.enabled){ return; }
-
-  var layout = vc.rows || vc.columns;
-  if(!layout){ return; }
-
-  var isRows = !!vc.rows;
-  var host = view === "shared" ? $("dashboardContent") : personalRow();
-  var stash = $("stash"), boxes = {}, key, el, i, j;
-
-  /* parcheggia tutti i box, poi ricostruisce l'host */
-  for(key in cfg.boxes){
-    if(!cfg.boxes.hasOwnProperty(key)){ continue; }
-    el = $(cfg.boxes[key]);
-    if(el){ boxes[key] = el; stash.appendChild(el); }
-  }
-  clear(host);
-
-  for(i = 0; i < layout.length; i++){
-    var keys = layout[i];
-    var container = mk("div", isRows ? "row layout-row" : "col");
-    host.appendChild(container);
-
-    var n = isRows ? Math.min(keys.length, 2) : keys.length;
-
-    for(j = 0; j < n; j++){
-      var b = boxes[keys[j]];
-      if(!b){ continue; }
-      setHidden(b, false);
-
-      if(isRows){
-        var col = mk("div", n === 1 ? "col full" : "col");
-        col.appendChild(b);
-        container.appendChild(col);
-      } else {
-        container.appendChild(b);
-      }
-    }
-  }
-}
-
-function setView(view, manual){
-  if(manual){ viewManualUntil = Date.now() + 10 * 60 * 1000; }
-  currentView = view; 
-
-  var btns = $("viewMenuPanel").getElementsByTagName("button");
-  for(var i = 0; i < btns.length; i++){
-    btns[i].className = btns[i].getAttribute("data-view") === view ? "sel" : "";
-  }
-
-  var personal = view !== "shared";
-  setHidden($("dashboardContent"), personal);
-  setHidden($("personalView"), !personal);
-
-  buildLayout(view);
-
-  /* box riservati a una sola vista (data-only) */
-  var only = document.querySelectorAll(".box[data-only]");
-  for(i = 0; i < only.length; i++){
-    setHidden(only[i], only[i].getAttribute("data-only") !== view);
-  }
-
-  renderAgenda();
-  
-  if(personal){
-    safe(renderPersonalTasks);
-  
-    if(view !== "shared" && viewHasBox(view, "personalRoutes")){
-      loadRoutes(view);
-    }
-  
-    if(viewHasBox(view, "userAgenda")){
-      renderUserAgenda();
-      loadUserAgenda(view);
-    }
-  }
-
-  closeViewMenu();
-  scheduleAlign();
-}
-
-function renderViewMenu(){
-  var panel = $("viewMenuPanel");
-  clear(panel);
-
-  var pendingProfile = !authToken ? panel._pendingLoginProfile : null;
-
-  // SCHERMATA DI ACCESSO
-  if(pendingProfile){
-    var box = mk("div", "pin-login-panel", "");
-	box.style.padding = "12px";
-	box.style.gap = "8px";
-	box.style.alignItems = "center";
-    box.style.display = "flex";
-    box.style.flexDirection = "column";
-    box.style.width = "100%";
-    box.style.boxSizing = "border-box";
-
-    var title = mk("div", "", "ACCESSO " +
-      (pendingProfile === "shared" ? "FAMIGLIA" : userName(pendingProfile)));
-
-    title.style.textAlign = "center";
-    title.style.fontSize = "18px";
-    title.style.fontWeight = "bold";
-
-    var input = document.createElement("input");
-    input.type = "password";
-    input.inputMode = "numeric";
-    input.autocomplete = "current-password";
-    input.maxLength = 12;
-    input.placeholder = "Inserisci il PIN";
-	input.style.width = "100%";
-	input.style.maxWidth = "none";
-	input.style.minWidth = "0";
-	input.style.display = "block";
-	input.style.flex = "none";
-	input.style.height = "40px";
-	input.style.fontSize = "18px";
-	input.style.padding = "6px 10px";
-	input.style.letterSpacing = "4px";
-	input.style.textAlign = "center";
-	input.style.boxSizing = "border-box";
-
-    var error = mk("div", "", "");
-    error.style.color = "#c00";
-    error.style.textAlign = "center";
-
-    var loginButton = mk("button", "", "ACCEDI");
-    loginButton.type = "button";
-    loginButton.style.width = "100%";
-    loginButton.style.padding = "14px";
-    loginButton.style.fontSize = "16px";
-
-    var cancelButton = mk("button", "", "ANNULLA");
-    cancelButton.type = "button";
-    cancelButton.style.width = "100%";
-    cancelButton.style.padding = "12px";
-    cancelButton.onclick = function(){
-      panel._pendingLoginProfile = null;
-      renderViewMenu();
-    };
-
-    function submitPin(){
-      var pin = input.value.trim();
-
-      if(!/^\d{6,12}$/.test(pin)){
-        error.textContent = "Inserisci da 6 a 12 cifre.";
-        input.focus();
-        return;
-      }
-
-      error.textContent = "";
-      loginButton.disabled = true;
-      authLogin(pendingProfile, pin);
-    }
-
-    loginButton.onclick = submitPin;
-
-    input.onkeydown = function(ev){
-      if(ev.key === "Enter"){
-        ev.preventDefault();
-        submitPin();
-      }
-    };
-
-    box.appendChild(title);
-    box.appendChild(input);
-    box.appendChild(error);
-    box.appendChild(loginButton);
-    box.appendChild(cancelButton);
-
-    panel.appendChild(box);
-    input.focus();
-    return;
-  }
-
-  // ELENCO PROFILI
-  function addButton(id, label){
-    var b = mk("button", "", label);
-    b.type = "button";
-    b.setAttribute("data-view", id);
-
-	b.onclick = function(ev){
-	  if(ev){
-		ev.preventDefault();
-		ev.stopPropagation();
-	  }
-
-	  if(!authToken){
-		panel._pendingLoginProfile = id;
-		renderViewMenu();
-	  } else {
-        personalPeriod = "oggi";
-        setView(id, true);
-      }
-    };
-
-    panel.appendChild(b);
-  }
-
-  addButton("shared", "FAMIGLIA");
-
-  for(var i = 0; i < USERS.length; i++){
-    addButton(USERS[i].id, USERS[i].name);
-  }
-
-  if(authToken){
-    var logoutButton = mk("button", "", "↪ ESCI");
-    logoutButton.type = "button";
-    logoutButton.onclick = authLogout;
-    panel.appendChild(logoutButton);
-  }
-}
-
-function initViewMenu(){
-  var toggle = $("viewMenuToggle"), panel = $("viewMenuPanel");
-
-  if(!menuInitialized){
-    toggle.onclick = function(){
-      var open = panel.hasAttribute("hidden");
-      setHidden(panel, !open);
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
-    };
-
-	document.addEventListener("click", function(ev){
-	  var menu = $("viewMenu");
-	  if(menu && !menu.contains(ev.target)){
-		closeViewMenu();
-	  }
-	});
-
-    document.addEventListener("keydown", function(ev){
-      if(ev.key === "Escape"){ closeViewMenu(); }
-    });
-
-    menuInitialized = true;
-  }
-
-  if(usersLoaded){
-    renderViewMenu();
-    return;
-  }
-
-  getJson([CONFIG.base + "users.json", "users.json"], function(err, d){
-    if(!err && d && Array.isArray(d.users)){
-      USERS = d.users.filter(function(u){
-        return u && u.id && u.name && u.enabled === true;
-      });
-    } else {
-      USERS = [];
-      console.error("Errore caricamento users.json");
-    }
-
-    usersLoaded = true;
-    renderViewMenu();
-  });
-}
-
-/* ==================================================
-   16. ALLINEAMENTO ALTEZZE DEI BOX
-   ================================================== */
-var alignTimer = null;
-
-function hasClass(el, name){ return (" " + (el.className || "") + " ").indexOf(" " + name + " ") !== -1; }
-
-function boxesOf(el){
-  var r = [], k = el.children;
-  for(var i = 0; i < k.length; i++){
-    if(hasClass(k[i], "box") && !k[i].hasAttribute("hidden")){ r.push(k[i]); }
-  }
-  return r;
-}
-
-function columnHeight(bs){
-  var h = 0;
-  for(var i = 0; i < bs.length; i++){ h += bs[i].offsetHeight + 6; }   /* 6 = margini del box */
-  return h;
-}
-
-/* Distribuisce extra px tra i box di una colonna; l'ultimo assorbe l'arrotondamento */
-function growColumn(bs, extra){
-  var each = Math.floor(extra / bs.length), used = 0;
-  for(var i = 0; i < bs.length; i++){
-    var add = (i === bs.length - 1) ? extra - used : each;
-    used += add;
-    bs[i].style.minHeight = (bs[i].offsetHeight + add) + "px";
-  }
-}
-
-function alignBoxes(){
-  var host = currentView === "shared" ? $("dashboardContent") : $("personalLayoutRow");
-  if(!host){ return; }
-
-  var all = host.querySelectorAll(".box"), i, j;
-  for(i = 0; i < all.length; i++){ all[i].style.minHeight = ""; }
-
-  /* su schermi stretti (non Kindle) le colonne sono impilate: niente allineamento */
-  if(!IS_KINDLE && document.documentElement.clientWidth <= 600){ return; }
-
-  var kids = host.children, rowsMode = false;
-  for(i = 0; i < kids.length; i++){
-    if(hasClass(kids[i], "layout-row")){ rowsMode = true; break; }
-  }
-
-  if(rowsMode){
-    for(i = 0; i < kids.length; i++){
-      if(!hasClass(kids[i], "layout-row")){ continue; }
-      var firsts = [], max = 0;
-      for(j = 0; j < kids[i].children.length; j++){
-        var bs = boxesOf(kids[i].children[j]);
-        if(bs.length){ firsts.push(bs[0]); }
-      }
-      if(firsts.length < 2){ continue; }
-      for(j = 0; j < firsts.length; j++){ max = Math.max(max, firsts[j].offsetHeight); }
-      for(j = 0; j < firsts.length; j++){
-        if(max - firsts[j].offsetHeight > 1){ firsts[j].style.minHeight = max + "px"; }
-      }
-    }
-    return;
-  }
-
-  var cols = [], maxH = 0;
-  for(i = 0; i < kids.length; i++){
-    if(!hasClass(kids[i], "col")){ continue; }
-    var cb = boxesOf(kids[i]);
-    if(cb.length){ var h = columnHeight(cb); cols.push({boxes: cb, h: h}); maxH = Math.max(maxH, h); }
-  }
-  if(cols.length < 2){ return; }
-  for(i = 0; i < cols.length; i++){
-    if(maxH - cols[i].h > 1){ growColumn(cols[i].boxes, maxH - cols[i].h); }
-  }
-}
-
-function scheduleAlign(){
-  if(alignTimer){ clearTimeout(alignTimer); }
-  alignTimer = setTimeout(function(){ alignTimer = null; safe(alignBoxes); }, 50);
-}
-
-window.onresize = scheduleAlign;
-window.addEventListener("load", scheduleAlign);
-
-function authRequest(method, path, body, callback){
-  var x = new XMLHttpRequest();
-  x.open(method, AUTH_URL + path, true);
-  x.timeout = 20000;
-
-  if(body !== null){
-    x.setRequestHeader("Content-Type", "application/json");
-  }
-
-  if(authToken){
-    x.setRequestHeader("Authorization", "Bearer " + authToken);
-  }
-
-  x.onreadystatechange = function(){
-    if(x.readyState !== 4){ return; }
-
-    var data = null;
-    try { data = JSON.parse(x.responseText); } catch(e){}
-
-    if(x.status >= 200 && x.status < 300){
-      callback(null, data);
-    } else {
-      callback(data && data.error ? data.error : "Errore HTTP " + x.status);
-    }
-  };
-
-  x.onerror = function(){ callback("Errore di connessione"); };
-  x.ontimeout = function(){ callback("Timeout"); };
-
-  x.send(body === null ? null : JSON.stringify(body));
-}
-
-function loadAuthorizedConfig(callback){
-  var x = new XMLHttpRequest();
-  x.open("GET", DASHBOARD_API_URL + "/config", true);
-  x.setRequestHeader("Authorization", "Bearer " + authToken);
-  x.timeout = 20000;
-
-  x.onreadystatechange = function(){
-    if(x.readyState !== 4){ return; }
-
-    var data = null;
-    try { data = JSON.parse(x.responseText); } catch(e){}
-
-    if(x.status !== 200 || !data || !data.ok || !data.config){
-      callback("Configurazione non disponibile");
-      return;
-    }
-
-    DASHBOARD_CONFIG = data.config;
-    callback(null);
-  };
-
-  x.onerror = function(){ callback("Errore di connessione"); };
-  x.ontimeout = function(){ callback("Timeout"); };
-  x.send(null);
-}
-
-function clearAuthStorage(){
-  try {
-    localStorage.removeItem("dashboardAuthToken");
-    localStorage.removeItem("dashboardAuthProfile");
-    localStorage.removeItem("dashboardAuthSessionId");
-  } catch(e){}
-}
-
-function showLoggedOut(message){
-  authToken = "";
-  authProfile = "";
-  authSessionId = "";
-  DASHBOARD_CONFIG = null;
-
-  clearAuthStorage();
-  setHidden($("head"), false);
-  setHidden($("dashboardContent"), true);
-  setHidden($("personalView"), true);
-  clear($("err"));
-  if(message){ setText($("err"), message); }
-  renderViewMenu();
-  closeViewMenu();
-}
-
-function startDashboard(preferredView){
-  loadAuthorizedConfig(function(err){
-    if(err){
-      showLoggedOut("Configurazione dashboard non disponibile: " + err);
-      return;
-    }
-
-    clear($("err")); // AGGIUNGI QUESTA RIGA
-
-    setHidden($("head"), false);
-    setHidden($("dashboardContent"), false);
-    renderViewMenu();
-    setView(preferredView || getScheduledView(), false);
-
-    safe(loadAgenda);
-    safe(loadShoppingList);
-    safe(loadWeather);
-    safe(loadSunTimes);
-    safe(loadMenu);
-    safe(loadTodo);
-
-    if(!scheduleViewTimer){
-      scheduleViewTimer = setInterval(checkScheduledView, 15000);
-    }
-
-    setInterval(function(){ safe(loadSunTimes); }, 3600000);
-
-    setInterval(function(){
-      safe(loadShoppingList);
-      if(viewHasBox(currentView, "personalRoutes")){
-        safe(function(){ loadRoutes(currentView); });
-      }
-    }, 5 * 60000);
-  });
-}
-
-function authLogin(profile, pin){
-  if(!profile){ return; }
-
-  pin = String(pin || "").trim();
-
-  if(!/^\d{6,12}$/.test(pin)){
-    alert("Il PIN deve contenere da 6 a 12 cifre.");
-    return;
-  }
-
-  authRequest("POST", "/login", {
-    profile: profile,
-    pin: pin
-  }, function(err, data){
-    if(err || !data || !data.ok){
-      alert(err || "Accesso non riuscito.");
-      return;
-    }
-
-    authToken = data.token;
-    authProfile = data.profile;
-    authSessionId = data.session_id || "";
-
-    try {
-      localStorage.setItem("dashboardAuthToken", authToken);
-      localStorage.setItem("dashboardAuthProfile", authProfile);
-      localStorage.setItem("dashboardAuthSessionId", authSessionId);
-    } catch(e){}
-
-    var panel = $("viewMenuPanel");
-    if(panel){ panel._pendingLoginProfile = null; }
-
-    startDashboard(profile);
-  });
-}
-
-function authLogout(){
-  if(!authToken){ return; }
-
-  authRequest("POST", "/logout", null, function(){
-    showLoggedOut("Sessione terminata. Seleziona un profilo dal menu.");
-  });
-}
-
-function restoreAuthSession(){
-  try { authToken = localStorage.getItem("dashboardAuthToken") || ""; }
-  catch(e){ authToken = ""; }
-
-  if(!authToken){
-    renderViewMenu();
-    return;
-  }
-
-  authRequest("POST", "/session/verify", null, function(err, data){
-    if(err || !data || !data.ok){
-      showLoggedOut("Sessione scaduta. Seleziona un profilo dal menu.");
-      return;
-    }
-
-    authProfile = data.profile;
-    authSessionId = data.session_id || "";
-    startDashboard();
-  });
-}
-
-/* ==================================================
-   17. AVVIO
-   ================================================== */
-safe(startClock);
-safe(updateSyncLabels);
-safe(initViewMenu);
-setTimeout(restoreAuthSession, 0);
-
-</script>
-</body>
-</html>
