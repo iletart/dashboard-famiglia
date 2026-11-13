@@ -7,13 +7,13 @@
       "to": "Lavoro",
       "mode": "arrival",
       "target_time": "08:00",
-      "departure": "2026-11-13T07:40:11+01:00",
+      "departure": "2026-11-13T07:38:57+01:00",
       "arrival": "2026-11-13T08:00:00+01:00",
-      "duration_minutes": 15,
+      "duration_minutes": 16,
       "static_duration_minutes": 14,
       "buffer_minutes": 5,
       "distance_meters": 10717,
-      "calculated_at": "2026-11-13T00:01:02.516361+01:00"
+      "calculated_at": "2026-11-13T07:00:03.348079+01:00"
     },
     "lavoro_casa": {
       "id": "lavoro_casa",
@@ -26,9 +26,9 @@
       "duration_minutes": 12,
       "static_duration_minutes": 12,
       "buffer_minutes": 0,
-      "distance_meters": 10081,
-      "calculated_at": "2026-11-13T00:03:02.452201+01:00"
+      "distance_meters": 10080,
+      "calculated_at": "2026-11-13T07:00:03.348079+01:00"
     }
   },
-  "generated_at": "2026-11-13T00:03:02.452201+01:00"
+  "generated_at": "2026-11-13T07:00:03.348079+01:00"
 }
