@@ -3357,42 +3357,6 @@ body.k #recurringTasksBox .recurring-config-button {
   text-align:right!important;
   vertical-align:middle!important;
 }
-.todo-actions .trash-icon,
-.family-shopping-item .trash-icon {
-  position:relative!important;
-  display:block!important;
-  left:0!important;
-  top:0!important;
-  flex:0 0 12px;
-  width:12px!important;
-  height:12px!important;
-  margin:0!important;
-  box-sizing:border-box;
-  border:1px solid currentColor;
-  border-top:0;
-}
-.todo-actions .trash-icon:before,
-.family-shopping-item .trash-icon:before {
-  content:"";
-  position:absolute;
-  left:-2px;
-  top:-3px;
-  width:14px;
-  height:1px;
-  background:currentColor;
-}
-.todo-actions .trash-icon:after,
-.family-shopping-item .trash-icon:after {
-  content:"";
-  position:absolute;
-  left:2px;
-  top:-5px;
-  width:6px;
-  height:2px;
-  border:1px solid currentColor;
-  border-bottom:0;
-}
-
 /* Lista spesa: area testo elastica e cestino sul bordo destro,
    centrato verticalmente nella riga. */
 .family-shopping-item {
@@ -3570,60 +3534,30 @@ body.k #recurringTasksBox .sync-label {
 }
 
 
-/* Icona cestino unica, leggermente ridotta: riferimento Claude */
+/* Icona cestino Claude: unica, ridotta e senza span grafico legacy */
 .todo-actions .todo-delete,
 .family-shopping-item .family-shopping-delete {
-  position:relative!important;
-  display:inline-block!important;
-  box-sizing:border-box!important;
-  width:30px!important;
-  min-width:30px!important;
-  max-width:30px!important;
-  height:36px!important;
-  margin:0 0 0 auto!important;
-  padding:0!important;
-  overflow:visible!important;
-  border:0!important;
-  border-radius:0!important;
-  color:#66645f!important;
-  background:none!important;
-  box-shadow:none!important;
-  font-size:0!important;
-  line-height:0!important;
+ position:relative!important;display:inline-block!important;box-sizing:border-box!important;
+ width:28px!important;min-width:28px!important;max-width:28px!important;height:32px!important;
+ margin:0 0 0 auto!important;padding:0!important;overflow:visible!important;border:0!important;
+ border-radius:0!important;color:#66645f!important;background:none!important;box-shadow:none!important;
+ font-size:0!important;line-height:0!important;
 }
 .todo-actions .todo-delete::before,
 .family-shopping-item .family-shopping-delete::before {
-  content:""!important;
-  position:absolute!important;
-  left:7px!important;
-  top:12px!important;
-  width:16px!important;
-  height:21px!important;
-  box-sizing:border-box!important;
-  border:2px solid currentColor!important;
-  border-top:0!important;
-  border-radius:0 0 4px 4px!important;
-  background:none!important;
-  margin:0!important;
+ content:""!important;position:absolute!important;left:6px!important;top:11px!important;
+ width:15px!important;height:19px!important;box-sizing:border-box!important;
+ border:2px solid currentColor!important;border-top:0!important;border-radius:0 0 4px 4px!important;
+ background:none!important;margin:0!important;
 }
 .todo-actions .todo-delete::after,
 .family-shopping-item .family-shopping-delete::after {
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  left:3px!important;
-  top:3px!important;
-  width:24px!important;
-  height:6px!important;
-  box-sizing:border-box!important;
-  background:
-    linear-gradient(currentColor,currentColor) center top / 8px 2px no-repeat,
-    linear-gradient(currentColor,currentColor) center bottom / 24px 2px no-repeat!important;
-  border:0!important;
-  border-radius:0!important;
-  margin:0!important;
+ content:""!important;display:block!important;position:absolute!important;left:2px!important;top:3px!important;
+ width:23px!important;height:6px!important;box-sizing:border-box!important;
+ background:linear-gradient(currentColor,currentColor) center top / 8px 2px no-repeat,
+ linear-gradient(currentColor,currentColor) center bottom / 23px 2px no-repeat!important;
+ border:0!important;border-radius:0!important;margin:0!important;
 }
-
 </style>
 
 </head>
