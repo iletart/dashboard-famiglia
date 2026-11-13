@@ -2489,14 +2489,21 @@ body.k #recurringTasksBox .recurring-subtask-row .todo-text {
   overflow-wrap:anywhere!important;
 }
 body.k #recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
-  display:table-cell!important;
-  width:1%!important;
-  max-width:35%!important;
-  padding-left:8px!important;
-  vertical-align:middle!important;
-  text-align:right!important;
-  white-space:nowrap!important;
+  display:inline!important;
+  margin-left:5px!important;
+  font-size:.78em!important;
+  font-weight:normal!important;
+  color:#666!important;
+  white-space:normal!important;
+  vertical-align:baseline!important;
+  text-decoration:none!important;
 }
+/* Mostra un solo cestino: usa l'icona nuova disegnata sul pulsante, non il vecchio span interno. */
+.todo-delete .trash-icon,
+.family-shopping-delete .trash-icon {
+  display:none!important;
+}
+
 /* Header ricorrenti: titolo, impostazioni e sync sulla stessa riga. */
 body.k #recurringTasksBox .section-heading {
   display:table!important;
@@ -4309,12 +4316,12 @@ function renderRecurringTasks() {
             cell.appendChild(check);
             row.appendChild(cell);
             var subtaskText = mk("span", subtask.done ? "todo-text done" : "todo-text", subtask.text);
-            row.appendChild(subtaskText);
             if (subtask.owners && subtask.owners.length) {
               var subNames = [];
               for (var su = 0; su < subtask.owners.length; su++) subNames.push(userName(subtask.owners[su]));
-              row.appendChild(mk("span", "recurring-subtask-owners", "A: " + subNames.join(", ")));
+              subtaskText.appendChild(mk("span", "recurring-subtask-owners", " · A: " + subNames.join(", ")));
             }
+            row.appendChild(subtaskText);
             list.appendChild(row);
           })(subtasks[s]);
         }
