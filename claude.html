@@ -4685,6 +4685,20 @@ function renderPersonalGlobalTasks(){
 /* ==================================================
    8. RIGHE CHECKBOX GENERICHE (to-do e task)
    ================================================== */
+function assigneeLabel(assignees){
+  if(!Array.isArray(assignees) || !assignees.length) return "";
+  var names = [];
+  for(var i = 0; i < assignees.length; i++){
+    for(var u = 0; u < USERS.length; u++){
+      if(String(USERS[u].id) === String(assignees[i])){
+        if(names.indexOf(USERS[u].name) === -1) names.push(USERS[u].name);
+        break;
+      }
+    }
+  }
+  return names.length ? "A: " + names.join(", ") : "";
+}
+
 function itemRow(item, busy, onToggle, onDelete, extraBtn){
   var row = mk("div", "todo");
   var cell = mk("span", "todo-check-cell");
@@ -4696,7 +4710,10 @@ function itemRow(item, busy, onToggle, onDelete, extraBtn){
   cb.onchange = onToggle;
   cell.appendChild(cb);
   row.appendChild(cell);
-  row.appendChild(mk("span", item.done ? "todo-text done" : "todo-text", item.text));
+  var textCell = mk("span", item.done ? "todo-text done" : "todo-text", item.text);
+  var assignedNames = assigneeLabel(item.assignees);
+  if(assignedNames) textCell.appendChild(mk("span", "task-assignees", " · " + assignedNames));
+  row.appendChild(textCell);
 
   var actions = mk("span", "todo-actions");
   if(extraBtn){ actions.appendChild(extraBtn); }
@@ -4950,6 +4967,8 @@ function renderPersonalTodo() {
       if (item.done) {
         label.classList.add("done");
       }
+      var assignedNames = assigneeLabel(item.assignees);
+      if(assignedNames) label.appendChild(mk("span", "task-assignees", " · " + assignedNames));
 
       row.appendChild(checkbox);
       row.appendChild(label);
@@ -5189,12 +5208,13 @@ function renderRecurringTasks() {
             };
             cell.appendChild(check);
             row.appendChild(cell);
-            row.appendChild(mk("span", subtask.done ? "todo-text done" : "todo-text", subtask.text));
+            var subtaskText = mk("span", subtask.done ? "todo-text done" : "todo-text", subtask.text);
             if (subtask.owners && subtask.owners.length) {
               var subNames = [];
               for (var su = 0; su < subtask.owners.length; su++) subNames.push(userName(subtask.owners[su]));
-              row.appendChild(mk("span", "recurring-subtask-owners", "A: " + subNames.join(", ")));
+              subtaskText.appendChild(mk("span", "recurring-subtask-owners", " · A: " + subNames.join(", ")));
             }
+            row.appendChild(subtaskText);
             list.appendChild(row);
           })(subtasks[s]);
         }
@@ -10467,3 +10487,58 @@ restoreAuthSession();
 </script>
 </body>
 </html>
+
+
+/* Correzioni definitive: una sola icona cestino e assegnatari inline. */
+.todo-actions .todo-delete::before,
+.todo-actions .todo-delete::after,
+.family-shopping-item .family-shopping-delete::before,
+.family-shopping-item .family-shopping-delete::after,
+body.k .todo-delete::before,
+body.k .todo-delete::after,
+body.k .family-shopping-delete::before,
+body.k .family-shopping-delete::after,
+body:not(.k) .todo-delete::before,
+body:not(.k) .todo-delete::after,
+body:not(.k) .family-shopping-delete::before,
+body:not(.k) .family-shopping-delete::after {
+  content:none!important;
+  display:none!important;
+}
+.todo-actions .todo-delete,
+.family-shopping-item .family-shopping-delete {
+  background:none!important;
+  background-image:none!important;
+}
+#recurringTasksBox .recurring-subtask-row,
+body.k #recurringTasksBox .recurring-subtask-row {
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  align-items:center!important;
+  gap:0!important;
+  min-width:0!important;
+}
+#recurringTasksBox .recurring-subtask-row .todo-text {
+  display:block!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  width:auto!important;
+}
+#recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
+  display:inline!important;
+  flex:none!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0 0 0 6px!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.task-assignees {
+  display:inline!important;
+  margin:0 0 0 4px!important;
+  font-size:.78em!important;
+  font-weight:normal!important;
+  color:#666!important;
+  white-space:normal!important;
+  vertical-align:baseline!important;
+}
