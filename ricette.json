@@ -1,86 +1,8 @@
 {
-  "generated_at": "2026-11-13T00:01:02.509511+01:00",
+  "generated_at": "2026-11-14T00:01:02.758115+01:00",
   "site": "U003128",
   "siteType": "02",
   "menus": {
-    "2026-11-12": {
-      "P01982": {
-        "dishCode": "P01982",
-        "name": "Pizza margherita",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PIZZA MARGHERITA",
-            "quantity": "133",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P101205": {
-        "dishCode": "P101205",
-        "name": "Insalata, mais e carote julienne",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "CAROTE",
-            "quantity": "11",
-            "unit": "Gr"
-          },
-          {
-            "name": "INSALATA",
-            "quantity": "11",
-            "unit": "Gr"
-          },
-          {
-            "name": "MAIS",
-            "quantity": "11",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "3,3",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P00005": {
-        "dishCode": "P00005",
-        "name": "Frutta fresca di stagione",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PERA",
-            "quantity": "145",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P01893": {
-        "dishCode": "P01893",
-        "name": "Pane di farina integrale biologica ",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "PANE INTEGRALE BIOLOGICO",
-            "quantity": "30",
-            "unit": "Gr"
-          }
-        ]
-      }
-    },
     "2026-11-13": {
       "P00769": {
         "dishCode": "P00769",
