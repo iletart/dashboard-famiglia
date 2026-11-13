@@ -1,28 +1,33 @@
 {
   "available": true,
-  "date": "2026-11-12",
+  "date": "2026-11-13",
   "site": "U003128",
-  "generated_at": "2026-11-13T00:01:02.509511+01:00",
+  "generated_at": "2026-11-14T00:01:02.758115+01:00",
   "plates": [
     {
-      "position": "1434",
-      "dishCode": "P01982",
-      "name": "Pizza margherita"
+      "position": "1532",
+      "dishCode": "P00769",
+      "name": "Risotto al pomodoro "
     },
     {
-      "position": "1436",
-      "dishCode": "P101205",
-      "name": "Insalata, mais e carote julienne"
+      "position": "1533",
+      "dishCode": "P101305",
+      "name": "Totano dei marinai"
     },
     {
-      "position": "1437",
-      "dishCode": "P00005",
+      "position": "1536",
+      "dishCode": "P101204",
+      "name": "Insalata di stagione"
+    },
+    {
+      "position": "1537",
+      "dishCode": "P02036",
       "name": "Frutta fresca di stagione"
     },
     {
-      "position": "1439",
-      "dishCode": "P01893",
-      "name": "Pane di farina integrale biologica "
+      "position": "1539",
+      "dishCode": "P01889",
+      "name": "Pane tipo 0"
     }
   ]
 }
