@@ -2224,6 +2224,182 @@ body.k .family-shopping-delete .trash-icon {
   margin:0;
 }
 
+
+/* CORREZIONI FINALI: RICORRENTI, CESTINI E HEADER */
+#authDiagnosticButton,
+body.k #authDiagnosticButton {
+  display:none!important;
+}
+
+/* Il testo del sottotask resta sulla stessa riga della checkbox. */
+#recurringTasksBox .recurring-subtask-row,
+body.k #recurringTasksBox .recurring-subtask-row {
+  display:flex!important;
+  flex-flow:row wrap!important;
+  align-items:center!important;
+  padding-left:0!important;
+  margin-left:28px!important;
+  width:calc(100% - 28px)!important;
+  overflow:visible!important;
+}
+#recurringTasksBox .recurring-subtask-row .todo-check-cell,
+body.k #recurringTasksBox .recurring-subtask-row .todo-check-cell {
+  display:flex!important;
+  flex:0 0 25px!important;
+  width:25px!important;
+  align-items:center;
+  padding:0!important;
+}
+#recurringTasksBox .recurring-subtask-row .todo-text,
+body.k #recurringTasksBox .recurring-subtask-row .todo-text {
+  display:block!important;
+  flex:1 1 0!important;
+  width:auto!important;
+  min-width:0!important;
+  padding:0!important;
+}
+#recurringTasksBox .recurring-subtask-row .recurring-subtask-owners,
+body.k #recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
+  flex:0 1 calc(100% - 25px)!important;
+  max-width:calc(100% - 25px)!important;
+  margin:0 0 0 25px!important;
+}
+
+/* L'ingranaggio rimane accanto al titolo anche con le regole Kindle
+   che normalmente allargano i pulsanti dei box. */
+#recurringTasksBox .section-heading {
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  align-items:center!important;
+  gap:5px!important;
+}
+#recurringTasksBox .section-heading h2 {
+  float:none!important;
+  flex:0 1 auto!important;
+  width:auto!important;
+  min-width:0;
+}
+#recurringTasksBox .recurring-config-button,
+body.k #recurringTasksBox .recurring-config-button {
+  display:inline-flex!important;
+  position:static!important;
+  float:none!important;
+  flex:0 0 16px!important;
+  width:16px!important;
+  min-width:16px!important;
+  max-width:16px!important;
+  height:16px!important;
+  margin:0!important;
+  padding:0!important;
+}
+#recurringTasksBox .sync-label {
+  flex:0 1 auto;
+  min-width:0;
+  margin-left:auto;
+}
+
+/* Icona cestino CSS unica su tutti i dispositivi e in entrambi i file. */
+.todo-actions .todo-delete,
+.family-shopping-item .family-shopping-delete {
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 28px!important;
+  width:28px!important;
+  min-width:28px!important;
+  max-width:28px!important;
+  height:28px!important;
+  margin:0 0 0 auto!important;
+  padding:0!important;
+  line-height:1!important;
+  vertical-align:middle;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.todo-actions {
+  text-align:right!important;
+  vertical-align:middle!important;
+}
+.todo-actions .trash-icon,
+.family-shopping-item .trash-icon {
+  position:relative!important;
+  display:block!important;
+  left:0!important;
+  top:0!important;
+  flex:0 0 12px;
+  width:12px!important;
+  height:12px!important;
+  margin:0!important;
+  box-sizing:border-box;
+  border:1px solid currentColor;
+  border-top:0;
+}
+.todo-actions .trash-icon:before,
+.family-shopping-item .trash-icon:before {
+  content:"";
+  position:absolute;
+  left:-2px;
+  top:-3px;
+  width:14px;
+  height:1px;
+  background:currentColor;
+}
+.todo-actions .trash-icon:after,
+.family-shopping-item .trash-icon:after {
+  content:"";
+  position:absolute;
+  left:2px;
+  top:-5px;
+  width:6px;
+  height:2px;
+  border:1px solid currentColor;
+  border-bottom:0;
+}
+
+/* Lista spesa: area testo elastica e cestino sul bordo destro,
+   centrato verticalmente nella riga. */
+.family-shopping-item {
+  display:flex!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0;
+  box-sizing:border-box;
+  gap:8px;
+}
+.family-shopping-item-name {
+  flex:1 1 0!important;
+  width:0;
+  min-width:0!important;
+}
+.family-shopping-item .family-shopping-delete {
+  align-self:center!important;
+  margin-left:auto!important;
+  transform:none!important;
+}
+
+/* Nome utente sempre in alto a destra, senza la dicitura "collegato". */
+#headerRight {
+  align-items:flex-end!important;
+}
+#loggedUser {
+  position:static!important;
+  top:auto!important;
+  right:auto!important;
+  width:auto;
+  max-width:100%;
+  margin:0!important;
+  text-align:right!important;
+  white-space:nowrap;
+}
+body.k #loggedUser {
+  position:static!important;
+  top:auto!important;
+  right:auto!important;
+  margin:0!important;
+  text-align:right!important;
+}
+
 </style>
 
 </head>
@@ -3502,7 +3678,7 @@ function itemRow(item, busy, onToggle, onDelete, extraBtn){
   del.type = "button";
   del.disabled = busy;
   del.title = "Elimina attività";
-  if(IS_KINDLE){ del.appendChild(mk("span", "trash-icon")); } else { del.textContent = "🗑"; }
+  del.appendChild(mk("span", "trash-icon"));
   del.onclick = onDelete;
   actions.appendChild(del);
 
@@ -4688,11 +4864,7 @@ function loadFamilyShoppingList() {
             remove.title = "Elimina articolo";
             remove.setAttribute("aria-label", "Elimina " + item.name);
             remove.disabled = familyShoppingBusy;
-            if (IS_KINDLE) {
-              remove.appendChild(mk("span", "trash-icon"));
-            } else {
-              remove.textContent = "🗑";
-            }
+            remove.appendChild(mk("span", "trash-icon"));
             remove.onclick = function() {
               if (!window.confirm("Eliminare " + item.name + "?")) return;
               familyShoppingBusy = true;
@@ -8310,12 +8482,12 @@ function updateLoggedUser() {
   }
 
   if (!name) {
-    el.textContent = "Utente collegato";
+    el.textContent = "Utente";
     return;
   }
 
   var typeLabel = type === "family" ? "Famiglia" : "Utente";
-  el.textContent = "Utente collegato: " + name + " (" + typeLabel + ")";
+  el.textContent = "Utente: " + name + " (" + typeLabel + ")";
 }
 
 function openLoginPage(){
