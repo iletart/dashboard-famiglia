@@ -3558,6 +3558,21 @@ body.k #recurringTasksBox .sync-label {
  linear-gradient(currentColor,currentColor) center bottom / 23px 2px no-repeat!important;
  border:0!important;border-radius:0!important;margin:0!important;
 }
+
+
+/* L'etichetta assegnatario dei sottotask è indivisibile anche con task lunghi */
+#recurringTasksBox .recurring-subtask-row .task-assignees {
+  display:inline-block!important;
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
+  flex:0 0 auto!important;
+  vertical-align:baseline!important;
+}
+#recurringTasksBox .recurring-subtask-row .todo-text {
+  min-width:0!important;
+  overflow-wrap:break-word!important;
+}
 </style>
 
 </head>
