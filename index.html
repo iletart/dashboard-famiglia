@@ -6727,13 +6727,9 @@ function loadShoppingList() {
 
         var row = mk(
           "div",
-          IS_KINDLE
-            ? (isCompleted
-                ? "todo shopping-item completed"
-                : "todo shopping-item")
-            : (isCompleted
-                ? "shopping-item completed"
-                : "shopping-item")
+          isCompleted
+            ? "todo shopping-item completed"
+            : "todo shopping-item"
         );
 
         var key = getDraftKey(item);
@@ -6742,9 +6738,7 @@ function loadShoppingList() {
         var checkbox = mk("input", "");
 
         checkbox.type = "checkbox";
-        checkbox.className = IS_KINDLE
-          ? "todo-check"
-          : "shopping-checkbox";
+        checkbox.className = "todo-check";
         checkbox.checked = draft
           ? draft.desiredStatus
           : isCompleted;
@@ -6828,20 +6822,22 @@ function loadShoppingList() {
 
         } else {
 
-          row.style.display = "flex";
-          row.style.alignItems = "center";
-          row.style.gap = "12px";
+          var cell = mk("span", "todo-check-cell");
+          cell.appendChild(checkbox);
+          row.appendChild(cell);
 
-          row.appendChild(checkbox);
-
-          label.style.flex = "1";
-          row.appendChild(label);
+          var content = mk("span", "todo-text");
+          content.appendChild(label);
 
           if (isCompleted) {
-
-            row.appendChild(
+            content.appendChild(
               mk("span", "", " (" + dateText + ")")
             );
+          }
+
+          row.appendChild(content);
+
+          if (isCompleted) {
 
             var deleteKey = String(list.shopping_list_id) +
               "_" + String(item.id);
@@ -6864,7 +6860,9 @@ function loadShoppingList() {
             deleteLabel.appendChild(deleteCheckbox);
             deleteLabel.appendChild(deleteIcon);
 
-            row.appendChild(deleteLabel);
+            var actions = mk("span", "todo-actions shopping-actions");
+            actions.appendChild(deleteLabel);
+            row.appendChild(actions);
 
             deleteCheckbox.addEventListener("change", function () {
 
