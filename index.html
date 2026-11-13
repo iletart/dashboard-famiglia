@@ -2308,7 +2308,7 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
     <div class="box" id="recurringTasksBox" hidden>
       <div class="section-heading">
         <h2 data-box-title="recurringTasks">Attività ricorrenti</h2>
-        <button type="button" id="recurringConfigButton" class="recurring-config-button" title="Configura attività ricorrenti" aria-label="Configura attività ricorrenti"><span aria-hidden="true">⚙</span></button>
+        <button type="button" id="recurringConfigButton" class="recurring-config-button" title="Configura attività ricorrenti" aria-label="Configura attività ricorrenti" hidden><span aria-hidden="true">⚙</span></button>
         <div class="sync-label" id="recurringTasksTimes"></div>
       </div>
       <div class="seg" id="recurringTaskDays">
@@ -2487,6 +2487,16 @@ var DASHBOARD_BOXES = [];
 var currentView = null;
 var viewManualUntil = 0;
 var AUTH_PERMISSIONS = [];
+
+function canManageRecurringTasks(){
+  return authUserType === "family" ||
+    AUTH_PERMISSIONS.indexOf("recurring_tasks.manage") !== -1;
+}
+
+function updateRecurringConfigButton(){
+  var button = $("recurringConfigButton");
+  if(button) setHidden(button, !canManageRecurringTasks());
+}
 
 var agendaData = null, agendaErr = false, agendaSyncedAt = null;
 var agendaSt = {today: true, week: 0};
@@ -4003,6 +4013,7 @@ function renderRecurringDefinitions() {
 }
 
 function openRecurringConfig() {
+  if(!canManageRecurringTasks()) return;
   buildRecurringOwners();
   resetRecurringForm();
   setText($("recurringConfigStatus"), "");
@@ -7689,6 +7700,45 @@ function openUserManagement(){
     );
     item.appendChild(owner);
 
+    if(authUserType === "family"){
+      var canManageRecurring = Array.isArray(user.permissions) &&
+        user.permissions.indexOf("recurring_tasks.manage") !== -1;
+      var recurringGrantButton = mk(
+        "button",
+        "",
+        canManageRecurring
+          ? "REVOCA GESTIONE ATTIVITÀ RICORRENTI"
+          : "ABILITA GESTIONE ATTIVITÀ RICORRENTI"
+      );
+      recurringGrantButton.type = "button";
+      recurringGrantButton.style.width = "100%";
+      recurringGrantButton.style.padding = "9px 5px";
+      recurringGrantButton.style.background = canManageRecurring ? "#ef8f00" : "#2e7d32";
+      recurringGrantButton.style.color = "#fff";
+      recurringGrantButton.style.border = "1px solid #777";
+      recurringGrantButton.onclick = function(){
+        recurringGrantButton.disabled = true;
+        message.textContent = "Aggiornamento permesso...";
+        usersRequest(
+          "PUT",
+          "/users/" + user.id,
+          { recurring_tasks_manage: !canManageRecurring },
+          function(err, data){
+            if(err || !data || !data.ok){
+              message.textContent = err || (data && data.error) || "Aggiornamento permesso non riuscito.";
+              recurringGrantButton.disabled = false;
+              return;
+            }
+            message.textContent = canManageRecurring
+              ? "Permesso revocato."
+              : "Permesso concesso.";
+            loadUsers();
+          }
+        );
+      };
+      item.appendChild(recurringGrantButton);
+    }
+
     var enabled = !!user.enabled;
     var hidden = !!user.hidden;
 
@@ -8467,6 +8517,7 @@ function loadAuthorizedConfig(callback){
     AUTH_PERMISSIONS = Array.isArray(data.permissions)
       ? data.permissions
       : [];
+    updateRecurringConfigButton();
 
     USERS = data.users.filter(function(u){
       return u && u.id && u.name;
