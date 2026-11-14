@@ -10669,7 +10669,24 @@ function loadAuthorizedConfig(callback){
       return;
     }
 
-    DASHBOARD_VIEWS = data.views;
+    // Usa esplicitamente l'ordine persistito dal database.
+    // Il sort locale evita che menu e barra dipendano dall'ordine
+    // accidentale con cui l'API serializza l'array.
+    DASHBOARD_VIEWS = data.views.slice().sort(function(a, b){
+      var orderA = Number(a.display_order);
+      var orderB = Number(b.display_order);
+
+      if(!isFinite(orderA)) orderA = 999999;
+      if(!isFinite(orderB)) orderB = 999999;
+
+      if(orderA !== orderB) return orderA - orderB;
+
+      return String(a.title || a.id).localeCompare(
+        String(b.title || b.id),
+        "it",
+        { sensitivity: "base" }
+      );
+    });
 
     DASHBOARD_BOXES = data.boxes.filter(function(box){
       return box && box.id && box.element_id && box.view_type;
