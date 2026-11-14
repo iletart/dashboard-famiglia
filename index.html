@@ -4120,6 +4120,33 @@ body.k .view-switcher-personal .view-switcher-button.sel {
   color:#fff!important;
 }
 
+
+/* KINDLE: fallback compatibile con il browser Silk.
+   Usa celle tabellari: evita che il footer venga disposto su due righe
+   quando CSS Grid non è supportato correttamente. */
+body.k .box-meta-footer {
+  display:table !important;
+  table-layout:fixed !important;
+  width:100% !important;
+  border-collapse:collapse !important;
+}
+body.k .box-meta-footer .sync-label {
+  display:table-cell !important;
+  width:auto !important;
+  text-align:right !important;
+  vertical-align:middle !important;
+  white-space:nowrap !important;
+  overflow-wrap:normal !important;
+  word-break:normal !important;
+}
+body.k .box-meta-footer .box-refresh {
+  display:table-cell !important;
+  width:30px !important;
+  min-width:30px !important;
+  max-width:30px !important;
+  vertical-align:middle !important;
+  text-align:right !important;
+}
 </style>
 
 </head>
