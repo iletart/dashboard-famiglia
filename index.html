@@ -9984,10 +9984,18 @@ function openUserManagement(){
           status.style.color = "#b3261e";
           return;
         }
+        // Aggiorna subito la barra usando l'ordine appena salvato,
+        // senza attendere una nuova lettura della configurazione.
+        DASHBOARD_VIEWS = views.slice();
+        renderViewSwitcher();
+        status.textContent = "Ordine aggiornato.";
+        status.style.color = "#287548";
+
+        // Riallinea poi la configurazione ai dati restituiti dal server.
         loadAuthorizedConfig(function(configErr){
           if(configErr){
-            status.textContent = "Ordine salvato, ma aggiornamento non riuscito.";
-            status.style.color = "#b3261e";
+            status.textContent = "Ordine aggiornato; sincronizzazione completata solo localmente.";
+            status.style.color = "#946200";
             return;
           }
           renderViewSwitcher();
