@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Test controllo nativo Kindle</title>
+<style>
+*{box-sizing:border-box}
+body{font:18px Arial,sans-serif;margin:0;padding:18px;color:#111}
+h1{font-size:23px}
+.panel{border:2px solid #333;padding:16px;margin:18px 0;background:#f3f3f3}
+input[type=range]{display:block;width:100%;height:55px;margin:18px 0}
+input[type=text]{font-size:20px;width:100%;padding:12px}
+button{font-size:18px;padding:10px;margin:8px 0}
+#status{padding:12px;background:#eee;white-space:pre-wrap}
+#counts{font-size:20px;line-height:1.7}
+</style>
+</head>
+<body>
+<h1>Test controllo HTML nativo</h1>
+<p>Questa prova non usa canvas e non usa eventi Touch per controllare il movimento. Usa un cursore HTML nativo.</p>
+<div class="panel">
+ <b>1. Trascina il cursore da sinistra a destra</b>
+ <input id="slider" type="range" min="0" max="100" value="0" step="1">
+ <div>Valore: <strong id="value">0</strong></div>
+</div>
+<div class="panel">
+ <b>2. Campo di testo nativo</b>
+ <p>Tocca il campo e scrivi una parola, se la tastiera compare.</p>
+ <input id="field" type="text" placeholder="Scrivi qui">
+</div>
+<div id="status">In attesa…</div>
+<div id="counts">
+ <div>Eventi input cursore: <span id="inputs">0</span></div>
+ <div>Eventi change cursore: <span id="changes">0</span></div>
+ <div>Eventi mouse sul cursore: <span id="mouse">0</span></div>
+ <div>Eventi scroll pagina: <span id="scrolls">0</span></div>
+</div>
+<button id="reset">Azzera contatori</button>
+<div style="height:400px">Area per verificare lo scorrimento della pagina.</div>
+<script>
+(function(){
+ var slider=document.getElementById('slider'), value=document.getElementById('value');
+ var counts={inputs:0,changes:0,mouse:0,scrolls:0};
+ function inc(k,msg){counts[k]++;document.getElementById(k).textContent=counts[k];document.getElementById('status').textContent=msg;}
+ slider.addEventListener('input',function(){value.textContent=slider.value;inc('inputs','Il cursore ha generato input: '+slider.value);});
+ slider.addEventListener('change',function(){inc('changes','Il cursore ha generato change: '+slider.value);});
+ ['mousedown','mousemove','mouseup'].forEach(function(n){slider.addEventListener(n,function(){inc('mouse', 'Evento '+n+' sul cursore');});});
+ window.addEventListener('scroll',function(){inc('scrolls','La pagina è scorsa');},{passive:true});
+ document.getElementById('field').addEventListener('input',function(){document.getElementById('status').textContent='Campo testo: '+this.value;});
+ document.getElementById('reset').addEventListener('click',function(){
+  Object.keys(counts).forEach(function(k){counts[k]=0;document.getElementById(k).textContent='0';});
+  slider.value=0;value.textContent='0';document.getElementById('status').textContent='Contatori azzerati';
+ });
+})();
+</script>
+</body>
+</html>
