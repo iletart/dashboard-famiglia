@@ -3828,6 +3828,52 @@ body.k .notes-status {
 }
 
 
+
+/* Rifiniture Kindle: header, hamburger e pulsanti del menu profili. */
+body.k #viewMenuToggle span { left:8px!important; }
+body.k #viewMenuToggle span:nth-child(1) { top:8px!important; }
+body.k #viewMenuToggle span:nth-child(2) { top:15px!important; }
+body.k #viewMenuToggle span:nth-child(3) { top:22px!important; }
+body.k #clock,
+body.k #info { position:relative!important; top:4px!important; }
+body.k #info { padding-top:0!important; }
+
+/* Icona attività ricorrenti: glifo semplice e bianco, leggibile su Kindle. */
+body.k #recurringTasksBox .recurring-config-button {
+  margin-left:11px!important;
+  background:#704052!important;
+  background-color:#704052!important;
+  color:#fff!important;
+  border-color:#704052!important;
+}
+body.k #recurringTasksBox .recurring-config-button span {
+  display:block!important;
+  width:100%!important;
+  font-family:Arial,sans-serif!important;
+  font-size:14px!important;
+  font-weight:bold!important;
+  line-height:14px!important;
+  color:#fff!important;
+}
+body.k #recurringTasksBox .recurring-config-button:before,
+body.k #recurringTasksBox .recurring-config-button:after {
+  display:none!important;
+  content:none!important;
+}
+
+/* Le viste personali mantengono lo stesso colore delle altre azioni menu. */
+body.k #viewMenuPanel button.menu-action-button {
+  background:#704052!important;
+  background-color:#704052!important;
+  color:#fff!important;
+  border:1px solid #704052!important;
+}
+body.k #viewMenuPanel button.menu-action-button:visited,
+body.k #viewMenuPanel button.menu-action-button:focus,
+body.k #viewMenuPanel button.menu-action-button:active {
+  color:#fff!important;
+}
+
 </style>
 
 </head>
@@ -4081,7 +4127,7 @@ body.k .notes-status {
     <div class="box" id="recurringTasksBox" hidden>
       <div class="section-heading">
         <h2 data-box-title="recurringTasks">Attività ricorrenti</h2>
-        <button type="button" id="recurringConfigButton" class="recurring-config-button" title="Configura attività ricorrenti" aria-label="Configura attività ricorrenti" hidden><span aria-hidden="true">⚙</span></button>
+        <button type="button" id="recurringConfigButton" class="recurring-config-button" title="Configura attività ricorrenti" aria-label="Configura attività ricorrenti" hidden><span aria-hidden="true">≡</span></button>
         <div class="sync-label" id="recurringTasksTimes"></div>
       </div>
       <div class="seg" id="recurringTaskDays">
@@ -8733,6 +8779,8 @@ function renderViewMenu(){
 
 	if(view && view.view_type === "shared"){
 	  b.classList.add("family-view-button");
+	} else if(view) {
+	  b.classList.add("menu-action-button");
 	}
 
     b.onclick = function(ev){
@@ -8823,7 +8871,7 @@ function renderViewMenu(){
 	);
 
 	if(IS_KINDLE){
-	  var gearIcon = mk("span", "settings-gear", "☼");
+	  var gearIcon = mk("span", "settings-gear", "≡");
 	  layoutButton.insertBefore(gearIcon, layoutButton.firstChild);
 	}
 
