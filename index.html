@@ -11455,6 +11455,7 @@ function restoreAuthSessionAfterProfiles(){
 var handwrittenNotes = [];
 var handwrittenNoteId = null;
 var handwrittenNoteDirty = false;
+var handwrittenNoteCanEdit = true;
 var handwrittenStrokes = [];
 var handwrittenCurrentStroke = null;
 var handwrittenTool = "pen";
@@ -11539,14 +11540,20 @@ function renderHandwrittenNotesList(){
 
 function openHandwrittenNoteEditor(note){
   handwrittenNoteId = note ? note.id : null;
+  handwrittenNoteCanEdit = !note || note.can_edit !== false;
   handwrittenStrokes = note && Array.isArray(note.strokes) ? note.strokes : [];
   $("notesTitle").value = note ? (note.title || "Nuovo appunto") : "Nuovo appunto";
   $("notesVisibility").value = note && note.visibility === "public" ? "public" : "private";
-  setText($("notesPageTitle"), note ? "MODIFICA APPUNTO" : "NUOVO APPUNTO");
+  $("notesTitle").disabled = !handwrittenNoteCanEdit;
+  $("notesVisibility").disabled = !handwrittenNoteCanEdit;
+  var controls = $("notesEditorView").querySelectorAll(".notes-toolbar button");
+  for(var i=0;i<controls.length;i++){ controls[i].disabled = !handwrittenNoteCanEdit; }
+  $("handwrittenCanvas").style.pointerEvents = handwrittenNoteCanEdit ? "" : "none";
+  setText($("notesPageTitle"), note ? (handwrittenNoteCanEdit ? "MODIFICA APPUNTO" : "APPUNTO PUBBLICO") : "NUOVO APPUNTO");
   setHidden($("handwrittenNotesOverlay"), false);
   handwrittenNoteDirty = false;
-  $("notesSaveButton").disabled = !!note;
-  setText($("notesStatus"), note ? "Nessuna modifica da salvare." : "Nuovo appunto non ancora salvato.");
+  $("notesSaveButton").disabled = !handwrittenNoteCanEdit || !!note;
+  setText($("notesStatus"), !handwrittenNoteCanEdit ? "Appunto pubblico in sola lettura." : (note ? "Nessuna modifica da salvare." : "Nuovo appunto non ancora salvato."));
   handwrittenTool = "pen";
   updateHandwrittenToolButtons();
   window.setTimeout(resizeHandwrittenCanvas, 30);
@@ -11639,6 +11646,7 @@ function moveHandwrittenStroke(ev){
 }
 
 function markHandwrittenNoteDirty(){
+  if(!handwrittenNoteCanEdit){ return; }
   handwrittenNoteDirty = true;
   $("notesSaveButton").disabled = false;
   setText($("notesStatus"), "Hai modifiche da salvare.");
