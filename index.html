@@ -10553,10 +10553,36 @@ function alignBoxes(){
     all[i].style.flexGrow = "";
   }
 
-  /* Kindle: nessuna altezza minima aggiuntiva, ogni box resta aderente
-     al proprio contenuto. Negli altri dispositivi resta l'allineamento
-     del fondo delle colonne. */
-  if(isKindle){ return; }
+  /* Kindle: i box intermedi restano all'altezza naturale. Solo l'ultimo
+     box di ogni colonna assorbe lo spazio residuo fino al fondo del viewport. */
+  if(isKindle){
+    var kindleColumns = [];
+    if(rows.length){
+      for(i = 0; i < rows.length; i++){
+        for(j = 0; j < rows[i].children.length; j++){
+          boxes = boxesOf(rows[i].children[j]);
+          if(boxes.length){ kindleColumns.push(boxes); }
+        }
+      }
+    } else {
+      for(i = 0; i < host.children.length; i++){
+        boxes = boxesOf(host.children[i]);
+        if(boxes.length){ kindleColumns.push(boxes); }
+      }
+    }
+
+    var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    for(i = 0; i < kindleColumns.length; i++){
+      boxes = kindleColumns[i];
+      var kindleLastBox = boxes[boxes.length - 1];
+      var lastRect = kindleLastBox.getBoundingClientRect();
+      var remaining = viewportHeight - lastRect.bottom;
+      if(remaining > 0){
+        kindleLastBox.style.minHeight = (kindleLastBox.offsetHeight + remaining) + "px";
+      }
+    }
+    return;
+  }
 
   /* Ogni colonna mantiene naturali i box superiori.
      Solo l'ultimo box di ciascuna colonna assorbe lo spazio necessario
