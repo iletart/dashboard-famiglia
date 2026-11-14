@@ -3697,6 +3697,9 @@ body.k .todo-actions .todo-assign::after {
   border-bottom:1px solid #999;
 }
 .notes-topbar h2 { flex:1 1 auto; min-width:0; }
+.notes-create-actions { display:flex; flex:0 0 auto; gap:5px; }
+.notes-create-actions button { margin:0; padding:7px 8px; font-size:.82em; }
+.notes-create-actions button:disabled { color:#999!important; background:#eee!important; border-color:#ccc!important; opacity:1!important; }
 .notes-topbar button,.notes-toolbar button {
   margin:0;
   padding:7px 10px;
@@ -3872,8 +3875,8 @@ body.k .notes-list-info {
 }
 body.k .notes-visibility-label {
   display:table-cell!important;
-  width:54px!important;
-  max-width:54px!important;
+  width:46px!important;
+  max-width:46px!important;
   padding:0 2px!important;
   box-sizing:border-box!important;
   vertical-align:middle!important;
@@ -3886,9 +3889,9 @@ body.k .notes-visibility-label {
 }
 body.k .notes-list-row .todo-actions {
   display:table-cell!important;
-  width:30px!important;
-  min-width:30px!important;
-  max-width:30px!important;
+  width:26px!important;
+  min-width:26px!important;
+  max-width:26px!important;
   padding:0!important;
   margin:0!important;
   box-sizing:border-box!important;
@@ -3898,9 +3901,9 @@ body.k .notes-list-row .todo-actions {
 }
 body.k .notes-list-row .todo-delete {
   display:inline-block!important;
-  width:26px!important;
-  min-width:26px!important;
-  max-width:26px!important;
+  width:24px!important;
+  min-width:24px!important;
+  max-width:24px!important;
   height:28px!important;
   margin:0!important;
   padding:0!important;
@@ -3937,7 +3940,7 @@ body.k .notes-topbar h2 {
 body.k #notesListView {
   position:absolute!important;
   top:5px!important;
-  left:5px!important;
+  left:8px!important;
   right:5px!important;
   bottom:5px!important;
   display:block!important;
@@ -4666,9 +4669,13 @@ body.k .box.notes-summary-box button:not(.seg-button):not(.todo-assign):not(.box
 
 <div id="handwrittenNotesOverlay" hidden>
   <div id="notesListView" class="notes-list-view" hidden>
-    <div class="notes-topbar">
+    <div class="notes-topbar notes-list-topbar">
       <button type="button" id="notesListCloseButton">CHIUDI</button>
       <h2>ELENCO APPUNTI</h2>
+      <div class="notes-create-actions" id="notesCreateActions">
+        <button type="button" id="notesCreateHandwrittenButton">＋ MANOSCRITTO</button>
+        <button type="button" id="notesCreateTextButton">＋ TESTO LIBERO</button>
+      </div>
     </div>
     <div id="notesList" class="notes-list">Caricamento...</div>
   </div>
@@ -11933,7 +11940,7 @@ function leaveHandwrittenNotesPage(){
   setHidden($("personalView"), !personal);
 }
 
-function openHandwrittenNoteEditor(note){
+function openHandwrittenNoteEditor(note, forceTextMode){
   enterHandwrittenNotesPage();
   setHandwrittenKindleScrollLock(true);
   setHidden($("notesListView"), true);
@@ -11950,8 +11957,8 @@ function openHandwrittenNoteEditor(note){
       break;
     }
   }
-  handwrittenTextMode = !!(hasSavedText || (IS_KINDLE && !note) ||
-    (note && handwrittenStrokes.length === 0 && IS_KINDLE));
+  handwrittenTextMode = !!(hasSavedText || forceTextMode ||
+    (IS_KINDLE && !note) || (note && handwrittenStrokes.length === 0 && IS_KINDLE));
   $("notesTextEditor").value = savedText;
   setHidden($("notesTextEditor"), !handwrittenTextMode);
   setHidden($("handwrittenCanvas"), handwrittenTextMode);
@@ -12001,8 +12008,8 @@ function openHandwrittenNotesList(){
   showHandwrittenNotesList();
 }
 
-function createHandwrittenNote(){
-  openHandwrittenNoteEditor(null);
+function createHandwrittenNote(textMode){
+  openHandwrittenNoteEditor(null, !!textMode);
 }
 
 function loadHandwrittenNote(id){
@@ -12328,6 +12335,19 @@ function initHandwrittenNotes(){
   $("notesListCloseButton").onclick = function(){
     leaveHandwrittenNotesPage();
   };
+  $("notesCreateHandwrittenButton").onclick = function(){
+    createHandwrittenNote(false);
+  };
+  $("notesCreateTextButton").onclick = function(){
+    if(IS_KINDLE) return;
+    createHandwrittenNote(true);
+  };
+  if(IS_KINDLE){
+    $("notesCreateHandwrittenButton").disabled = true;
+    $("notesCreateHandwrittenButton").hidden = true;
+    $("notesCreateTextButton").disabled = true;
+    $("notesCreateTextButton").title = "La creazione di appunti dal Kindle non è disponibile";
+  }
   $("notesFamilyVisible").onchange = function(){
     if(!this.checked){
       $("notesFamilyEditable").checked = false;
