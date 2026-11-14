@@ -4755,7 +4755,7 @@ function setTimes(el, gen, synced, err, staleMs, needGen){
   if(synced){ l.push("sync time: " + hhmmRome(synced.getTime())); }
   if(err){ l.push("rete non disponibile"); }
   if(gen !== null && staleMs && Date.now() - gen > staleMs){ l.push("dati vecchi"); }
-  el.innerHTML = l.join("<br>");
+  el.innerHTML = l.join(IS_KINDLE ? " · " : "<br>");
 }
 
 /* Gruppi di pulsanti (.seg) con data-day */
