@@ -11759,5 +11759,86 @@ safe(initHandwrittenNotes);
 restoreAuthSession();
 
 </script>
+
+<script>
+/* ==================================================
+   DIAGNOSTICA E RIAVVIO KINDLE
+   1) Riavvio ogni 3 ore, rinviato se si sta scrivendo.
+   2) Diagnostica degli errori di rete.
+   ================================================== */
+(function(){
+  if(typeof IS_KINDLE === "undefined" || !IS_KINDLE){ return; }
+
+  var startedAt = new Date().getTime();
+  var netErrors = 0;
+  var lastErr = "";
+
+  /* Diagnostica visibile in fondo alla pagina. */
+  var line = document.createElement("div");
+  line.id = "dashboard-kindle-diagnostics";
+  line.style.cssText = "font-size:10px;color:#555;margin:4px 6px;padding:3px 0;";
+  document.body.appendChild(line);
+
+  function show(){
+    var message = "Avvio " + hhmmRome(startedAt) +
+      " - errori rete: " + netErrors +
+      (lastErr ? " - ultimo: " + lastErr : "");
+    line.textContent = message;
+  }
+
+  function note(err){
+    var message = String(err || "");
+    if(!/Errore di|Timeout|non raggiungibile|Richiesta/i.test(message)){ return; }
+
+    netErrors++;
+    lastErr = hhmmRome(new Date().getTime()) + " " + message.substring(0, 45);
+    show();
+  }
+
+  /* Intercetta gli errori restituiti dalle richieste dell'app. */
+  function wrapRequest(name, callbackIndex){
+    var original = window[name];
+    if(typeof original !== "function"){ return; }
+
+    window[name] = function(){
+      var args = Array.prototype.slice.call(arguments);
+      var callback = args[callbackIndex];
+
+      if(typeof callback === "function"){
+        args[callbackIndex] = function(err){
+          if(err){ note(err); }
+          return callback.apply(this, arguments);
+        };
+      }
+
+      return original.apply(this, args);
+    };
+  }
+
+  wrapRequest("authRequest", 3);
+  wrapRequest("usersRequest", 3);
+  wrapRequest("api", 3);
+  wrapRequest("getJson", 1);
+
+  /* Riavvia la pagina dopo 3 ore per liberare memoria.
+     Se è attivo un campo di inserimento, riprova tra 10 minuti. */
+  function reloadWhenIdle(){
+    var active = document.activeElement;
+    var typing = active &&
+      /^(INPUT|SELECT|TEXTAREA)$/.test(active.tagName) &&
+      active.type !== "checkbox";
+
+    if(typing){
+      setTimeout(reloadWhenIdle, 600000);
+      return;
+    }
+
+    window.location.reload();
+  }
+
+  setTimeout(reloadWhenIdle, 3 * 3600000);
+  show();
+})();
+</script>
 </body>
 </html>
