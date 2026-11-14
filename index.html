@@ -10972,19 +10972,24 @@ function initBoxRefresh() {
       var menuTitle = heading.getElementsByTagName("h2")[0];
       var menuTimesLabel = $("menuTimes");
       if (menuTitle) {
-        menuTitle.style.flex = "0 0 100%";
-        menuTitle.style.width = "100%";
+        menuTitle.style.order = "0";
+        menuTitle.style.flex = "1 1 auto";
+        menuTitle.style.width = "auto";
+        menuTitle.style.minWidth = "0";
       }
       if (menuTimesLabel) {
         menuTimesLabel.style.position = "static";
         menuTimesLabel.style.top = "auto";
-        menuTimesLabel.style.margin = "0";
-        menuTimesLabel.style.flex = "1 1 auto";
+        menuTimesLabel.style.order = "2";
+        menuTimesLabel.style.flex = "0 0 100%";
+        menuTimesLabel.style.width = "100%";
         menuTimesLabel.style.minWidth = "0";
-        menuTimesLabel.style.textAlign = "left";
+        menuTimesLabel.style.margin = "0";
+        menuTimesLabel.style.textAlign = "right";
         menuTimesLabel.style.whiteSpace = "normal";
       }
       button.style.position = "static";
+      button.style.order = "1";
       button.style.flex = "0 0 30px";
       button.style.width = "30px";
       button.style.height = "30px";
