@@ -8442,23 +8442,29 @@ function loadMenu(){
   markSeg("menuDays", k);
 
   var day = dateOfDayNum(todayNum() + TASK_OFF[k]).getUTCDay();
-  if(day === 0 || day === 6){ renderMenuWeekend(); return; }
-
   setText($("menuStatus"), "Caricamento...");
 
+  /* Carica comunque il file anche nel weekend, così gli orari di
+     aggiornamento e sincronizzazione restano disponibili. */
   getJson([CONFIG.base + MENUF[k], MENUF[k]], function(err, d){
     if(k !== menuSel){ return; }
     if(!err && d){
       menuSyncedAt = new Date();
       menuUpdatedAt = parseIso(d.generated_at || d.updated_at);
     }
-    safe(function(){ renderMenu(k, err, d); });
+    safe(function(){
+      if(day === 0 || day === 6){
+        renderMenuWeekend(err);
+      } else {
+        renderMenu(k, err, d);
+      }
+    });
   });
 }
 
-function renderMenuWeekend(){
+function renderMenuWeekend(err){
   clear($("menuList"));
-  setTimes($("menuTimes"), menuUpdatedAt, menuSyncedAt, false, 0, true);
+  setTimes($("menuTimes"), menuUpdatedAt, menuSyncedAt, !!err, 0, true);
   setText($("menuDate"), "");
   setText($("menuStatus"), "");
   $("menuList").appendChild(mk("div", "weekend-message", pickPhrase(WEEKEND_MENU)));
@@ -11051,38 +11057,39 @@ function initBoxRefresh() {
       button.style.padding = "0";
       footer.appendChild(button);
     } else if (boxes[i].id === "schoolMenuBox") {
-      heading.style.display = "flex";
-      heading.style.flexWrap = "wrap";
-      heading.style.alignItems = "center";
-      heading.style.paddingRight = "0";
+      /* Titolo a sinistra, refresh ancorato in alto a destra e orari
+         sulla riga sottostante: nessun elemento Flex può centrare la rotella. */
+      heading.style.display = "block";
+      heading.style.position = "relative";
+      heading.style.paddingRight = "38px";
       var menuTitle = heading.getElementsByTagName("h2")[0];
       var menuTimesLabel = $("menuTimes");
-      heading.style.justifyContent = "space-between";
       if (menuTitle) {
-        menuTitle.style.order = "0";
-        menuTitle.style.flex = "0 0 auto";
+        menuTitle.style.display = "block";
         menuTitle.style.width = "auto";
         menuTitle.style.minWidth = "0";
+        menuTitle.style.margin = "0";
       }
       if (menuTimesLabel) {
+        menuTimesLabel.style.display = "block";
         menuTimesLabel.style.position = "static";
         menuTimesLabel.style.top = "auto";
-        menuTimesLabel.style.order = "2";
-        menuTimesLabel.style.flex = "0 0 100%";
         menuTimesLabel.style.width = "100%";
         menuTimesLabel.style.minWidth = "0";
         menuTimesLabel.style.margin = "0";
         menuTimesLabel.style.textAlign = "right";
         menuTimesLabel.style.whiteSpace = "normal";
       }
-      button.style.position = "static";
-      button.style.order = "1";
-      button.style.flex = "0 0 30px";
+      button.style.position = "absolute";
+      button.style.top = "-6px";
+      button.style.right = "0";
+      button.style.order = "";
+      button.style.flex = "none";
       button.style.width = "30px";
       button.style.height = "30px";
-      button.style.margin = "0 0 0 auto";
+      button.style.margin = "0";
       button.style.padding = "0";
-      button.style.alignSelf = "flex-start";
+      button.style.alignSelf = "";
       heading.appendChild(button);
     } else {
       heading.appendChild(button);
@@ -11092,7 +11099,7 @@ function initBoxRefresh() {
        il centro cade tra upd time e sync time; con una riga si allinea
        esattamente al sync time. */
     var syncLabel = box.getElementsByClassName("sync-label")[0];
-    if (syncLabel && button.parentNode) {
+    if (boxes[i].id !== "schoolMenuBox" && syncLabel && button.parentNode) {
       var labelRect = syncLabel.getBoundingClientRect();
       var parentRect = button.parentNode.getBoundingClientRect();
       var buttonHeight = button.offsetHeight || 30;
