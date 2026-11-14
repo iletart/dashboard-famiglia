@@ -3530,17 +3530,17 @@ body.k #recurringTasksBox .recurring-config-button {
 }
 .todo-actions .todo-delete::before,
 .family-shopping-item .family-shopping-delete::before {
- content:""!important;position:absolute!important;left:6px!important;top:11px!important;
- width:15px!important;height:19px!important;box-sizing:border-box!important;
+ content:""!important;position:absolute!important;left:8px!important;top:12px!important;
+ width:12px!important;height:15px!important;box-sizing:border-box!important;
  border:2px solid currentColor!important;border-top:0!important;border-radius:0 0 4px 4px!important;
  background:none!important;margin:0!important;
 }
 .todo-actions .todo-delete::after,
 .family-shopping-item .family-shopping-delete::after {
- content:""!important;display:block!important;position:absolute!important;left:2px!important;top:3px!important;
- width:23px!important;height:6px!important;box-sizing:border-box!important;
- background:linear-gradient(currentColor,currentColor) center top / 8px 2px no-repeat,
- linear-gradient(currentColor,currentColor) center bottom / 23px 2px no-repeat!important;
+ content:""!important;display:block!important;position:absolute!important;left:4px!important;top:4px!important;
+ width:20px!important;height:5px!important;box-sizing:border-box!important;
+ background:linear-gradient(currentColor,currentColor) center top / 7px 2px no-repeat,
+ linear-gradient(currentColor,currentColor) center bottom / 20px 2px no-repeat!important;
  border:0!important;border-radius:0!important;margin:0!important;
 }
 
@@ -8450,6 +8450,7 @@ function loadMenu(){
 
 function renderMenuWeekend(){
   clear($("menuList"));
+  setTimes($("menuTimes"), menuUpdatedAt, menuSyncedAt, false, 0, true);
   setText($("menuDate"), "");
   setText($("menuStatus"), "");
   $("menuList").appendChild(mk("div", "weekend-message", pickPhrase(WEEKEND_MENU)));
@@ -11048,9 +11049,10 @@ function initBoxRefresh() {
       heading.style.paddingRight = "0";
       var menuTitle = heading.getElementsByTagName("h2")[0];
       var menuTimesLabel = $("menuTimes");
+      heading.style.justifyContent = "space-between";
       if (menuTitle) {
         menuTitle.style.order = "0";
-        menuTitle.style.flex = "1 1 auto";
+        menuTitle.style.flex = "0 0 auto";
         menuTitle.style.width = "auto";
         menuTitle.style.minWidth = "0";
       }
@@ -11070,8 +11072,9 @@ function initBoxRefresh() {
       button.style.flex = "0 0 30px";
       button.style.width = "30px";
       button.style.height = "30px";
-      button.style.margin = "0";
+      button.style.margin = "0 0 0 auto";
       button.style.padding = "0";
+      button.style.alignSelf = "flex-start";
       heading.appendChild(button);
     } else {
       heading.appendChild(button);
