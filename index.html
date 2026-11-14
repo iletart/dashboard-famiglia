@@ -3746,6 +3746,8 @@ body.k .todo-actions .todo-assign::after {
   padding:9px 2px;
   border-bottom:1px solid #ddd;
 }
+.notes-list-info { flex:1 1 auto; min-width:0; }
+.notes-list-meta { font-size:10px; color:#666; line-height:1.35; padding:3px 2px 0; }
 .notes-list-open {
   flex:1 1 auto;
   min-width:0;
@@ -3773,6 +3775,7 @@ body.k .todo-actions .todo-assign::after {
   min-height:38px;
   font-size:16px!important;
 }
+.notes-metadata { font-size:10px; line-height:1.35; color:#666; }
 .notes-toolbar {
   display:flex;
   flex-wrap:wrap;
@@ -3885,9 +3888,18 @@ body.k .notes-editor-title {
   width:100%!important;
   height:36px!important;
 }
+body.k #notesMetadata {
+  position:absolute!important;
+  top:38px!important;
+  left:0!important;
+  right:0!important;
+  height:18px!important;
+  overflow:hidden!important;
+  font-size:10px!important;
+}
 body.k .notes-family-options {
   position:absolute!important;
-  top:40px!important;
+  top:60px!important;
   left:0!important;
   right:0!important;
   display:block!important;
@@ -3908,7 +3920,7 @@ body.k .notes-family-options input {
 }
 body.k .notes-toolbar {
   position:absolute!important;
-  top:99px!important;
+  top:119px!important;
   left:0!important;
   right:0!important;
   display:block!important;
@@ -3924,7 +3936,7 @@ body.k .notes-toolbar button {
 }
 body.k #handwrittenCanvas {
   position:absolute!important;
-  top:142px!important;
+  top:162px!important;
   -webkit-user-select:none!important;
   -webkit-touch-callout:none!important;
   user-select:none!important;
@@ -4517,6 +4529,7 @@ body.k .box.notes-summary-box button:not(.seg-button):not(.todo-assign):not(.box
       <h2 id="notesPageTitle">NUOVO APPUNTO</h2>
     </div>
     <input type="text" id="notesTitle" class="notes-editor-title" maxlength="200" placeholder="Titolo appunto">
+    <div id="notesMetadata" class="notes-metadata" hidden></div>
     <div class="notes-family-options">
       <label><input type="checkbox" id="notesFamilyVisible"> Visibile alla famiglia</label>
       <label><input type="checkbox" id="notesFamilyEditable"> Aggiornabile dalla famiglia</label>
@@ -11639,6 +11652,20 @@ function showHandwrittenNotesList(){
   });
 }
 
+function formatHandwrittenNoteDate(value){
+  if(!value) return "—";
+  var raw = String(value);
+  var date = new Date(raw.indexOf("T") >= 0 ? raw : raw.replace(" ", "T") + "Z");
+  if(isNaN(date.getTime())) return raw;
+  function pad(n){ return n < 10 ? "0" + n : String(n); }
+  return pad(date.getDate()) + "/" + pad(date.getMonth()+1) + "/" + date.getFullYear() + " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+}
+
+function handwrittenNoteAuditText(note){
+  return "Creato: " + formatHandwrittenNoteDate(note.created_at) + " da " + (note.creator_name || "—") +
+    " · Modificato: " + formatHandwrittenNoteDate(note.updated_at) + " da " + (note.last_editor_name || note.creator_name || "—");
+}
+
 function renderHandwrittenNotesList(){
   var host = $("notesList");
   clear(host);
@@ -11651,6 +11678,10 @@ function renderHandwrittenNotesList(){
       var row = mk("div", "notes-list-row");
       var open = mk("button", "notes-list-open", note.title || "Nuovo appunto");
       open.type = "button";
+      var info = mk("div", "notes-list-info");
+      var metadata = mk("div", "notes-list-meta", handwrittenNoteAuditText(note));
+      info.appendChild(open);
+      info.appendChild(metadata);
       var flags = [];
       if(note.visibility === "public") flags.push("FAMIGLIA");
       if(note.family_editable) flags.push("MODIFICA");
@@ -11667,7 +11698,7 @@ function renderHandwrittenNotesList(){
           showHandwrittenNotesList();
         });
       };
-      row.appendChild(open);
+      row.appendChild(info);
       row.appendChild(visibility);
       if(note.can_delete === true){ row.appendChild(del); }
       host.appendChild(row);
@@ -11682,6 +11713,8 @@ function openHandwrittenNoteEditor(note){
   handwrittenNoteCanEdit = !note || note.can_edit !== false;
   handwrittenStrokes = note && Array.isArray(note.strokes) ? note.strokes : [];
   $("notesTitle").value = note ? (note.title || "Nuovo appunto") : "Nuovo appunto";
+  var metadata = $("notesMetadata");
+  if(metadata){ metadata.textContent = note ? handwrittenNoteAuditText(note) : ""; metadata.hidden = !note; }
   $("notesFamilyVisible").checked = !!(note && note.visibility === "public");
   $("notesFamilyEditable").checked = !!(note && note.family_editable);
   $("notesFamilyDeletable").checked = !!(note && note.family_deletable);
@@ -11773,7 +11806,7 @@ function resizeHandwrittenCanvas(){
   /* Il browser Kindle legacy non calcola in modo affidabile l'altezza
      di un canvas assoluto definito solo da top e bottom. */
   if(document.body.classList.contains("k")){
-    var availableHeight = editor.clientHeight - 165;
+    var availableHeight = editor.clientHeight - 185;
     if(availableHeight < 80) availableHeight = 80;
     canvas.style.height = availableHeight + "px";
     canvas.style.bottom = "auto";
