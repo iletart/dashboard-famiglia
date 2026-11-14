@@ -4107,26 +4107,34 @@ body.k #viewMenuToggle span { left:8px!important; }
 body.k #viewMenuToggle span:nth-child(1) { top:8px!important; }
 body.k #viewMenuToggle span:nth-child(2) { top:15px!important; }
 body.k #viewMenuToggle span:nth-child(3) { top:22px!important; }
-/* Header Kindle: il contenitore si adatta all'altezza effettiva della parte destra
-   (utente/meteo). Il gruppo orologio/data viene centrato rispetto all'altezza
-   finale, anche quando i dati meteo arrivano in ritardo. */
+/* Header Kindle: griglia a due colonne. Il menu è fuori flusso e non
+   sottrae spazio: sinistra (orologio/data) e destra (utente/meteo) restano
+   affiancate. L'altezza della riga segue il contenuto destro e centra la sinistra. */
 body.k #head {
-  display:flex!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,62%) minmax(0,35%)!important;
   align-items:center!important;
   justify-content:space-between!important;
-  gap:0!important;
+  column-gap:0!important;
 }
 body.k #head:after {
   display:none!important;
 }
+body.k #viewMenu {
+  position:absolute!important;
+  left:2px!important;
+  top:2px!important;
+  z-index:20!important;
+}
 body.k #headerLeft {
   display:flex!important;
   float:none!important;
+  grid-column:1!important;
+  grid-row:1!important;
   align-items:center!important;
-  flex:0 1 62%!important;
-  width:62%!important;
+  width:auto!important;
   min-width:0!important;
-  margin-left:0!important;
+  margin:0!important;
   overflow:hidden;
 }
 body.k #clock {
@@ -4140,15 +4148,17 @@ body.k #info {
   margin:0!important;
   padding:0!important;
   position:static!important;
+  min-width:0!important;
 }
 body.k #headerRight {
   display:flex!important;
   float:none!important;
-  flex:0 0 35%!important;
+  grid-column:2!important;
+  grid-row:1!important;
   flex-direction:column!important;
   align-items:flex-end!important;
   justify-content:center!important;
-  width:35%!important;
+  width:auto!important;
   min-width:0!important;
 }
 
