@@ -10025,6 +10025,16 @@ function openUserManagement(){
             setMessage(statusMessage, "Stato aggiornato, ma configurazione non aggiornata.", true);
             return;
           }
+
+          // Aggiorna subito lo switch utenti dopo una modifica di visibilità/accesso.
+          renderViewSwitcher();
+
+          // Se la vista corrente non è più disponibile, seleziona una vista valida.
+          if(!findItem(DASHBOARD_VIEWS, function(v){ return v.id === currentView; }) &&
+             DASHBOARD_VIEWS.length){
+            setView(DASHBOARD_VIEWS[0].id, false);
+          }
+
           loadUsers();
         });
       });
