@@ -12082,16 +12082,29 @@ function initHandwrittenNotes(){
 
   /* Diagnostica visibile: sul Kindle non è disponibile una console utile.
      I contatori permettono di distinguere touchstart da touchmove/cancel. */
-  var touchDiag = {start:0, move:0, end:0, cancel:0, pointer:0, mouse:0, last:"nessun evento"};
+  var touchDiag = {start:0, move:0, end:0, cancel:0, pointer:0, mouse:0, windowMouse:0, windowTouch:0, last:"nessun evento"};
   function renderTouchDiag(){
     var status = $("notesStatus");
     if(!status) return;
     status.textContent = "Touch S:" + touchDiag.start + " M:" + touchDiag.move +
       " E:" + touchDiag.end + " C:" + touchDiag.cancel +
       " · P:" + touchDiag.pointer + " Mouse:" + touchDiag.mouse +
+      " · WinM:" + touchDiag.windowMouse + " WinT:" + touchDiag.windowTouch +
       " · " + touchDiag.last;
   }
   handwrittenTouchDiagRender = renderTouchDiag;
+  /* Diagnostica grezza su window: conta i movimenti anche fuori dal canvas,
+     senza bloccare gesti, scrolling o comportamento del browser. */
+  window.addEventListener("mousemove",function(){
+    touchDiag.windowMouse++;
+    touchDiag.last = "window mousemove";
+    renderTouchDiag();
+  },true);
+  window.addEventListener("touchmove",function(){
+    touchDiag.windowTouch++;
+    touchDiag.last = "window touchmove";
+    renderTouchDiag();
+  },true);
   function getHandwrittenTouch(ev){
     if(ev.touches && ev.touches.length) return ev.touches[0];
     if(ev.changedTouches && ev.changedTouches.length) return ev.changedTouches[0];
