@@ -3742,6 +3742,7 @@ body.k .todo-actions .todo-assign::after {
 }
 .notes-list-info { flex:1 1 auto; min-width:0; }
 .notes-list-meta { font-size:10px; color:#666; line-height:1.35; padding:3px 2px 0; }
+.notes-kind-label { display:inline-block; margin:2px 0 0 5px; padding:2px 5px; border:1px solid #aaa; border-radius:3px; font-size:9px; line-height:1.2; color:#555; vertical-align:middle; }
 .notes-list-open {
   flex:1 1 auto;
   min-width:0;
@@ -3941,6 +3942,9 @@ body.k .notes-create-actions {
   display:inline-block!important;
   vertical-align:middle!important;
 }
+body.k #notesCreateHandwrittenButton[hidden] {
+  display:none!important;
+}
 body.k .notes-create-actions button:disabled {
   color:#999!important;
   background:#eee!important;
@@ -3951,7 +3955,7 @@ body.k #notesListView {
   position:absolute!important;
   top:5px!important;
   left:8px!important;
-  right:5px!important;
+  right:12px!important;
   bottom:5px!important;
   display:block!important;
   overflow:hidden!important;
@@ -3964,7 +3968,7 @@ body.k #notesList {
   right:0!important;
   bottom:0!important;
   overflow-y:auto!important;
-  padding:8px 0!important;
+  padding:8px 14px 8px 0!important;
   box-sizing:border-box!important;
 }
 body.k #notesEditorView {
@@ -11873,8 +11877,19 @@ function renderHandwrittenNotesList(){
       var open = mk("button", "notes-list-open", note.title || "Nuovo appunto");
       open.type = "button";
       var info = mk("div", "notes-list-info");
+      var kind = "MANOSCRITTO";
+      if(Array.isArray(note.strokes)){
+        for(var kindIndex=0;kindIndex<note.strokes.length;kindIndex++){
+          if(note.strokes[kindIndex] && note.strokes[kindIndex].type === "text"){
+            kind = "TESTO LIBERO";
+            break;
+          }
+        }
+      }
+      var kindLabel = mk("span", "notes-kind-label", kind);
       var metadata = mk("div", "notes-list-meta", handwrittenNoteAuditText(note));
       info.appendChild(open);
+      info.appendChild(kindLabel);
       info.appendChild(metadata);
       var flags = [];
       if(note.visibility === "public") flags.push("FAMIGLIA");
