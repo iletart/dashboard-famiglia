@@ -7187,7 +7187,7 @@ function waitForDeleteCommand(commandId, deleteButton) {
         if (data.status === "succeeded") {
           setTimeout(function () {
             loadShoppingList();
-          }, 500);
+          }, 1000);
 
           return;
         }
@@ -11840,6 +11840,7 @@ var handwrittenNotesUnread = false;
 var handwrittenNotesLastSeenKey = "dashboardHandwrittenNotesLastSeenAt";
 var handwrittenNotesInitializedKey = "dashboardHandwrittenNotesInitialized";
 var handwrittenNotesSignatureKey = "dashboardHandwrittenNotesSignature";
+var handwrittenNotesUnreadIdsKey = "dashboardHandwrittenNotesUnreadIds";
 var handwrittenNotesBlinkTimer = null;
 var handwrittenNotesBlinkVisible = true;
 var handwrittenNotesPollStarted = false;
@@ -11901,27 +11902,62 @@ function updateHandwrittenNotesUnreadButton(){
   }
 }
 
-function handwrittenNotesSignature(notes){
-  var parts = [];
+function handwrittenNoteSignature(note){
+  note = note || {};
+  return [
+    note.id || "",
+    note.created_at || "",
+    note.updated_at || "",
+    note.title || ""
+  ].join("|");
+}
+
+function handwrittenNotesSignatureMap(notes){
+  var map = {};
   for(var i=0;i<(notes || []).length;i++){
     var note = notes[i] || {};
-    parts.push([
-      note.id || "",
-      note.created_at || "",
-      note.updated_at || "",
-      note.title || ""
-    ].join("|"));
+    if(note.id !== null && typeof note.id !== "undefined"){
+      map[String(note.id)] = handwrittenNoteSignature(note);
+    }
   }
-  parts.sort();
-  return parts.join("\n");
+  return map;
 }
 
-function setHandwrittenNotesSignature(value){
-  try { localStorage.setItem(handwrittenNotesSignatureKey, value); } catch(e){}
+function setHandwrittenNotesSignatureMap(map){
+  try { localStorage.setItem(handwrittenNotesSignatureKey, JSON.stringify(map || {})); } catch(e){}
 }
 
-function getHandwrittenNotesSignature(){
-  try { return localStorage.getItem(handwrittenNotesSignatureKey); } catch(e){ return null; }
+function getHandwrittenNotesSignatureMap(){
+  try {
+    var value = localStorage.getItem(handwrittenNotesSignatureKey);
+    return value ? JSON.parse(value) : null;
+  } catch(e){ return null; }
+}
+
+function getHandwrittenNotesUnreadIds(){
+  try {
+    var ids = JSON.parse(localStorage.getItem(handwrittenNotesUnreadIdsKey) || "[]");
+    return Array.isArray(ids) ? ids : [];
+  } catch(e){ return []; }
+}
+
+function setHandwrittenNotesUnreadIds(ids){
+  try { localStorage.setItem(handwrittenNotesUnreadIdsKey, JSON.stringify(ids || [])); } catch(e){}
+}
+
+function isHandwrittenNoteUnread(id){
+  return getHandwrittenNotesUnreadIds().indexOf(String(id)) !== -1;
+}
+
+function markHandwrittenNoteRead(id){
+  var ids = getHandwrittenNotesUnreadIds();
+  var next = [];
+  for(var i=0;i<ids.length;i++){
+    if(String(ids[i]) !== String(id)) next.push(String(ids[i]));
+  }
+  setHandwrittenNotesUnreadIds(next);
+  handwrittenNotesUnread = next.length > 0;
+  updateHandwrittenNotesUnreadButton();
 }
 
 function checkHandwrittenNotesUnread(markAsRead, callback){
@@ -11930,18 +11966,37 @@ function checkHandwrittenNotesUnread(markAsRead, callback){
       if(callback) callback(err || "Elenco appunti non disponibile");
       return;
     }
-    var signature = handwrittenNotesSignature(data.notes);
-    var previousSignature = getHandwrittenNotesSignature();
+    var currentMap = handwrittenNotesSignatureMap(data.notes);
+    var previousMap = getHandwrittenNotesSignatureMap();
     var initialized = false;
     try { initialized = localStorage.getItem(handwrittenNotesInitializedKey) === "1"; } catch(e){}
-    if(markAsRead || !initialized || previousSignature === null){
-      setHandwrittenNotesSignature(signature);
+    if(markAsRead || !initialized || previousMap === null){
+      setHandwrittenNotesSignatureMap(currentMap);
+      setHandwrittenNotesUnreadIds([]);
       setHandwrittenNotesLastSeen(latestHandwrittenNoteTimestamp(data.notes));
       try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
-      handwrittenNotesUnread = false;
-    } else if(previousSignature !== null && signature !== previousSignature){
-      handwrittenNotesUnread = true;
+    } else {
+      var unreadIds = getHandwrittenNotesUnreadIds();
+      for(var id in currentMap){
+        if(Object.prototype.hasOwnProperty.call(currentMap,id) &&
+           Object.prototype.hasOwnProperty.call(previousMap,id) &&
+           currentMap[id] !== previousMap[id] &&
+           unreadIds.indexOf(String(id)) === -1){
+          unreadIds.push(String(id));
+        }
+      }
+      /* Nuovi appunti: ID assente dalla firma precedente. */
+      for(var newId in currentMap){
+        if(Object.prototype.hasOwnProperty.call(currentMap,newId) &&
+           !Object.prototype.hasOwnProperty.call(previousMap,newId) &&
+           unreadIds.indexOf(String(newId)) === -1){
+          unreadIds.push(String(newId));
+        }
+      }
+      setHandwrittenNotesUnreadIds(unreadIds);
+      setHandwrittenNotesSignatureMap(currentMap);
     }
+    handwrittenNotesUnread = getHandwrittenNotesUnreadIds().length > 0;
     updateHandwrittenNotesUnreadButton();
     if(callback) callback(null, data.notes);
   });
@@ -12003,9 +12058,11 @@ function showHandwrittenNotesList(){
     handwrittenNotes = Array.isArray(data.notes) ? data.notes : [];
     var latestSeen = latestHandwrittenNoteTimestamp(handwrittenNotes);
     setHandwrittenNotesLastSeen(Math.max(getHandwrittenNotesLastSeen(), latestSeen));
-    setHandwrittenNotesSignature(handwrittenNotesSignature(handwrittenNotes));
-    try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
-    handwrittenNotesUnread = false;
+    if(!getHandwrittenNotesSignatureMap()){
+      setHandwrittenNotesSignatureMap(handwrittenNotesSignatureMap(handwrittenNotes));
+      try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
+    }
+    handwrittenNotesUnread = getHandwrittenNotesUnreadIds().length > 0;
     updateHandwrittenNotesUnreadButton();
     renderHandwrittenNotesList();
     setText($("notesBoxStatus"), handwrittenNotes.length + (handwrittenNotes.length === 1 ? " appunto" : " appunti"));
@@ -12045,6 +12102,7 @@ function renderHandwrittenNotesList(){
   for(var i=0;i<handwrittenNotes.length;i++){
     (function(note){
       var row = mk("div", "notes-list-row");
+      if(isHandwrittenNoteUnread(note.id)) row.className += " notes-list-row-unread";
       var open = mk("button", "notes-list-open", note.title || "Nuovo appunto");
       open.type = "button";
       var info = mk("div", "notes-list-info");
@@ -12080,7 +12138,7 @@ function renderHandwrittenNotesList(){
       if(note.family_editable) flags.push("MODIFICA");
       if(note.family_deletable) flags.push("ELIMINA");
       var visibility = mk("span", "notes-visibility-label", flags.length ? flags.join(" · ") : "PRIVATO");
-      open.onclick = function(){ loadHandwrittenNote(note.id); };
+      open.onclick = function(){ markHandwrittenNoteRead(note.id); loadHandwrittenNote(note.id); };
       var actions = mk("span", "todo-actions");
       var del = mk("button", "todo-delete", "");
       del.type = "button";
