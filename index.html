@@ -3704,27 +3704,20 @@ body.k .todo-actions .todo-assign::after {
   padding:7px 10px;
   white-space:nowrap;
 }
-.notes-summary-box {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:5px 9px;
-  margin:3px;
-  border-width:1px;
-  border-radius:5px;
-}
+.notes-summary-box { display:block; }
+.notes-summary-box .section-heading { align-items:center; }
 .notes-summary-count {
-  flex:1 1 auto;
-  min-width:0;
-  margin:0;
+  margin:0 0 5px;
   font-size:.78em;
   color:#666;
 }
-.notes-summary-box button {
-  flex:0 0 auto;
+.notes-summary-actions { display:flex; gap:6px; }
+.notes-summary-actions button {
+  flex:1 1 0;
+  min-width:0;
   margin:0;
-  padding:4px 8px;
-  font-size:.78em;
+  padding:6px 8px;
+  font-size:.85em;
 }
 .notes-list-view {
   display:flex;
@@ -3863,10 +3856,19 @@ body.k #notesListView {
   left:5px!important;
   right:5px!important;
   bottom:5px!important;
-  display:flex!important;
-  flex-direction:column!important;
+  display:block!important;
   overflow:hidden!important;
   padding:0!important;
+}
+body.k #notesList {
+  position:absolute!important;
+  top:50px!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  overflow-y:auto!important;
+  padding:8px 0!important;
+  box-sizing:border-box!important;
 }
 body.k #notesEditorView {
   position:absolute!important;
@@ -4357,11 +4359,7 @@ body.k .box.notes-summary-box button:not(.seg-button):not(.todo-assign):not(.box
   <div id="viewSwitcherButtons" class="view-switcher-buttons"></div>
 </div>
 
-<div class="box notes-summary-box" id="handwrittenNotesBox" hidden>
-  <div class="notes-summary-count" id="notesBoxStatus">0 appunti</div>
-  <button type="button" id="notesViewButton">VISUALIZZA</button>
-  <button type="button" id="notesNewButton">+ AGGIUNGI</button>
-</div>
+
 
 <!-- ===== VISTE PERSONALI ===== -->
 <div id="personalView" hidden>
@@ -4620,7 +4618,18 @@ body.k .box.notes-summary-box button:not(.seg-button):not(.todo-assign):not(.box
 </div>
 
 <div id="err"></div>
-<div id="stash" hidden></div>
+<div id="stash" hidden>
+  <div class="box notes-summary-box" id="handwrittenNotesBox" hidden>
+    <div class="section-heading">
+      <h2 data-box-title="handwrittenNotes">Appunti</h2>
+    </div>
+    <div class="notes-summary-count" id="notesBoxStatus">0 appunti</div>
+    <div class="notes-summary-actions">
+      <button type="button" id="notesViewButton">VISUALIZZA</button>
+      <button type="button" id="notesNewButton">+ AGGIUNGI</button>
+    </div>
+  </div>
+</div>
 
 </div>
 
@@ -11253,7 +11262,6 @@ function initBoxRefresh() {
 }
 
 function startDashboard(preferredView){
-  setHidden($("handwrittenNotesBox"), false);
   showHandwrittenNotesList();
   loadAuthorizedConfig(function(err){
     if(err){
@@ -11606,6 +11614,7 @@ var handwrittenCurrentStroke = null;
 var handwrittenTool = "pen";
 var handwrittenCanvasReady = false;
 var handwrittenPreviousView = null;
+var handwrittenNotesPageOpen = false;
 
 function handwrittenNotesRequest(method, path, body, callback){
   var xhr = new XMLHttpRequest();
@@ -11706,7 +11715,33 @@ function renderHandwrittenNotesList(){
   }
 }
 
+function enterHandwrittenNotesPage(){
+  if(handwrittenNotesPageOpen) return;
+  handwrittenNotesPageOpen = true;
+  setHidden($("head"), true);
+  setHidden($("viewSwitcher"), true);
+  setHidden($("dashboardContent"), true);
+  setHidden($("personalView"), true);
+  setHidden($("err"), true);
+  setHidden($("handwrittenNotesOverlay"), false);
+}
+
+function leaveHandwrittenNotesPage(){
+  handwrittenNotesPageOpen = false;
+  setHidden($("handwrittenNotesOverlay"), true);
+  setHidden($("head"), false);
+  setHidden($("err"), false);
+  renderViewSwitcher();
+  var viewConfig = findItem(DASHBOARD_VIEWS, function(v){
+    return String(v.id) === String(currentView);
+  });
+  var personal = !!(viewConfig && viewConfig.view_type === "personal");
+  setHidden($("dashboardContent"), personal);
+  setHidden($("personalView"), !personal);
+}
+
 function openHandwrittenNoteEditor(note){
+  enterHandwrittenNotesPage();
   setHidden($("notesListView"), true);
   setHidden($("notesEditorView"), false);
   handwrittenNoteId = note ? note.id : null;
@@ -11743,6 +11778,7 @@ function closeHandwrittenNoteEditor(){
 }
 
 function openHandwrittenNotesList(){
+  enterHandwrittenNotesPage();
   setHidden($("handwrittenNotesOverlay"), false);
   setHidden($("notesEditorView"), true);
   setHidden($("notesListView"), false);
@@ -11933,7 +11969,7 @@ function initHandwrittenNotes(){
   $("notesNewButton").onclick = createHandwrittenNote;
   $("notesViewButton").onclick = openHandwrittenNotesList;
   $("notesListCloseButton").onclick = function(){
-    setHidden($("handwrittenNotesOverlay"), true);
+    leaveHandwrittenNotesPage();
   };
   $("notesFamilyVisible").onchange = function(){
     if(!this.checked){
