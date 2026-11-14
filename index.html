@@ -10999,7 +10999,32 @@ function initBoxRefresh() {
 
     })(boxes[i].load, button);
 
-    if (boxes[i].id === "schoolMenuBox" && !IS_KINDLE) {
+    if (IS_KINDLE) {
+      /* Su Kindle il refresh non deve transitare dall'header: viene inserito
+         direttamente nel footer, accanto agli orari e in fondo al box. */
+      var footer = box.getElementsByClassName("box-meta-footer")[0];
+      if (!footer) {
+        footer = mk("div", "box-meta-footer");
+        box.appendChild(footer);
+      }
+
+      var timeLabels = heading.getElementsByClassName("sync-label");
+      while (timeLabels.length) {
+        footer.appendChild(timeLabels[0]);
+      }
+
+      button.style.position = "static";
+      button.style.top = "auto";
+      button.style.right = "auto";
+      button.style.order = "0";
+      button.style.flex = "0 0 30px";
+      button.style.width = "30px";
+      button.style.minWidth = "30px";
+      button.style.height = "30px";
+      button.style.margin = "0";
+      button.style.padding = "0";
+      footer.appendChild(button);
+    } else if (boxes[i].id === "schoolMenuBox") {
       heading.style.display = "flex";
       heading.style.flexWrap = "wrap";
       heading.style.alignItems = "center";
@@ -11033,20 +11058,6 @@ function initBoxRefresh() {
       heading.appendChild(button);
     } else {
       heading.appendChild(button);
-    }
-
-    if (IS_KINDLE) {
-      var footer = box.getElementsByClassName("box-meta-footer")[0];
-      if (!footer) {
-        footer = mk("div", "box-meta-footer");
-        box.appendChild(footer);
-      }
-
-      var timeLabels = heading.getElementsByClassName("sync-label");
-      for (var ti = 0; ti < timeLabels.length; ti++) {
-        footer.appendChild(timeLabels[ti]);
-      }
-      footer.appendChild(button);
     }
   }
 }
