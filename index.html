@@ -10964,7 +10964,36 @@ function initBoxRefresh() {
 
     })(boxes[i].load, button);
 
-    heading.appendChild(button);
+    if (boxes[i].id === "schoolMenuBox" && !IS_KINDLE) {
+      heading.style.display = "flex";
+      heading.style.flexWrap = "wrap";
+      heading.style.alignItems = "center";
+      heading.style.paddingRight = "0";
+      var menuTitle = heading.getElementsByTagName("h2")[0];
+      var menuTimesLabel = $("menuTimes");
+      if (menuTitle) {
+        menuTitle.style.flex = "0 0 100%";
+        menuTitle.style.width = "100%";
+      }
+      if (menuTimesLabel) {
+        menuTimesLabel.style.position = "static";
+        menuTimesLabel.style.top = "auto";
+        menuTimesLabel.style.margin = "0";
+        menuTimesLabel.style.flex = "1 1 auto";
+        menuTimesLabel.style.minWidth = "0";
+        menuTimesLabel.style.textAlign = "left";
+        menuTimesLabel.style.whiteSpace = "normal";
+      }
+      button.style.position = "static";
+      button.style.flex = "0 0 30px";
+      button.style.width = "30px";
+      button.style.height = "30px";
+      button.style.margin = "0";
+      button.style.padding = "0";
+      heading.appendChild(button);
+    } else {
+      heading.appendChild(button);
+    }
 
     if (IS_KINDLE) {
       var footer = box.getElementsByClassName("box-meta-footer")[0];
