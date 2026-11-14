@@ -11683,7 +11683,7 @@ function updateHandwrittenToolButtons(){
 }
 
 function saveHandwrittenNote(){
-  if(!handwrittenNoteId) return;
+  if(!handwrittenNoteCanEdit) return;
   var title = $("notesTitle").value.trim();
   if(!title){ alert("Inserisci un titolo."); $("notesTitle").focus(); return; }
   setText($("notesStatus"), "Salvataggio in corso...");
@@ -11701,6 +11701,13 @@ function saveHandwrittenNote(){
     handwrittenNoteDirty = false;
     $("notesSaveButton").disabled = true;
     setText($("notesStatus"),"Appunto salvato. Nessuna modifica in sospeso.");
+    openHandwrittenNoteEditor(data.note || {
+      id: handwrittenNoteId,
+      title: title,
+      strokes: handwrittenStrokes,
+      visibility: payload.visibility,
+      can_edit: true
+    });
     showHandwrittenNotesList();
   });
 }
