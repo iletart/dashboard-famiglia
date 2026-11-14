@@ -9053,7 +9053,7 @@ function renderViewMenu(){
   	panel.appendChild(layoutButton);
   }
 
-  // GESTIONE UTENTI: disponibile solo nel profilo famiglia.
+  // GESTIONE UTENTI: disponibile solo nel profilo famiglia (sessione family).
   if(authToken && authUserType === "family"){
     var manageUsersButton = mk("button", "", "GESTIONE UTENTI");
 
