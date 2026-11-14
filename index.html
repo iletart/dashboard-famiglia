@@ -2158,7 +2158,7 @@ body:not(.k) .agenda-period {
 
 body:not(.k) .section-heading {
   align-items:center;
-  margin-bottom:4px;
+  margin-bottom:12px;
   border-bottom:0;
 }
 
@@ -2673,7 +2673,7 @@ body.k .agenda-period {
 
 body.k .section-heading {
   align-items:center;
-  margin-bottom:12px;
+  margin-bottom:4px;
   border-bottom:0;
 }
 
@@ -3441,47 +3441,8 @@ body.k #loggedUser {
   opacity:.6;
 }
 
-/* Kindle: la lista spesa riusa la stessa struttura e le stesse classi
-   della To-do list, senza regole tabellari separate. */
-body.k .family-shopping-item {
-  display:flex!important;
-  flex-flow:row nowrap!important;
-  align-items:center!important;
-  width:100%!important;
-  min-width:0!important;
-  box-sizing:border-box!important;
-  gap:0!important;
-}
-body.k .family-shopping-item .todo-check-cell {
-  display:block!important;
-  flex:0 0 28px!important;
-  width:28px!important;
-  min-width:28px!important;
-  padding:0 8px 0 0!important;
-}
-body.k .family-shopping-item .todo-check {
-  display:block!important;
-  width:16px!important;
-  height:16px!important;
-  margin:0!important;
-}
-body.k .family-shopping-item .todo-text {
-  display:block!important;
-  flex:1 1 auto!important;
-  width:auto!important;
-  min-width:0!important;
-  padding:0!important;
-  text-align:left!important;
-  overflow-wrap:anywhere!important;
-}
-body.k .family-shopping-item .todo-actions {
-  display:flex!important;
-  flex:0 0 28px!important;
-  width:28px!important;
-  min-width:28px!important;
-  margin:0 0 0 auto!important;
-  padding:0!important;
-}
+/* La lista spesa riutilizza le classi comuni .todo,
+   .todo-check-cell, .todo-text e .todo-actions anche su Kindle. */
 
 /* Ripristina il simbolo ⚙ visibile nel pulsante PC della versione Claude. */
 #recurringTasksBox .recurring-config-button span {
