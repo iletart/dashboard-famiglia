@@ -3720,6 +3720,9 @@ body.k .todo-actions .todo-assign::after {
   text-overflow:ellipsis;
 }
 .notes-list-delete { flex:0 0 auto; }
+.notes-visibility-field { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.notes-visibility-field select { flex:1 1 220px; min-width:0; box-sizing:border-box; }
+.notes-visibility-label { flex:0 0 auto; font-size:10px; color:#666; white-space:nowrap; }
 .notes-editor {
   display:flex;
   flex:1 1 auto;
@@ -4264,6 +4267,15 @@ body.k .box-meta-footer .box-refresh {
   <div id="viewSwitcherButtons" class="view-switcher-buttons"></div>
 </div>
 
+<div class="box" id="handwrittenNotesBox" hidden>
+  <div class="section-heading">
+    <h2>APPUNTI</h2>
+    <button type="button" id="notesNewButton">+ NUOVO APPUNTO</button>
+  </div>
+  <div id="notesList" class="notes-list">Caricamento...</div>
+  <div id="notesBoxStatus" class="small"></div>
+</div>
+
 <!-- ===== VISTE PERSONALI ===== -->
 <div id="personalView" hidden>
 
@@ -4418,15 +4430,18 @@ body.k .box-meta-footer .box-refresh {
 
 <div id="handwrittenNotesOverlay" hidden>
   <div class="notes-topbar">
-    <button type="button" id="notesBackButton">←</button>
-    <button type="button" id="notesNewButton">+ NUOVO</button>
-    <h2 id="notesPageTitle">APPUNTI</h2>
+    <button type="button" id="notesBackButton">← ELENCO</button>
+    <h2 id="notesPageTitle">NUOVO APPUNTO</h2>
   </div>
-  <div id="notesListView" class="notes-list">
-    <div id="notesList">Caricamento...</div>
-  </div>
-  <div id="notesEditorView" class="notes-editor" hidden>
+  <div id="notesEditorView" class="notes-editor">
     <input type="text" id="notesTitle" class="notes-editor-title" maxlength="200" placeholder="Titolo appunto">
+    <label class="notes-visibility-field">
+      <span>Visibilità</span>
+      <select id="notesVisibility">
+        <option value="private">Privato — visibile solo a me</option>
+        <option value="public">Pubblico — visibile alla famiglia</option>
+      </select>
+    </label>
     <div class="notes-toolbar">
       <button type="button" id="notesPenButton" class="active">Penna</button>
       <button type="button" id="notesEraserButton">Gomma</button>
@@ -9202,17 +9217,6 @@ function renderViewMenu(){
   }
 
   if(authToken){
-    var notesButton = mk("button", "", "✎ APPUNTI");
-    notesButton.type = "button";
-    notesButton.classList.add("menu-action-button");
-    notesButton.onclick = function(ev){
-      if(ev){ ev.preventDefault(); ev.stopPropagation(); }
-      openHandwrittenNotes();
-    };
-    panel.appendChild(notesButton);
-  }
-
-  if(authToken){
     var logoutButton = mk("button", "", "↪ ESCI");
 	
     logoutButton.type = "button";
@@ -10912,6 +10916,8 @@ function clearAuthStorage(){
 }
 
 function showLoggedOut(message){
+  setHidden($("handwrittenNotesBox"), true);
+  setHidden($("handwrittenNotesOverlay"), true);
 	authToken = "";
 	authProfile = "";
 	authSessionId = "";
@@ -11102,6 +11108,8 @@ function initBoxRefresh() {
 }
 
 function startDashboard(preferredView){
+  setHidden($("handwrittenNotesBox"), false);
+  showHandwrittenNotesList();
   loadAuthorizedConfig(function(err){
     if(err){
       showLoggedOut("Configurazione dashboard non disponibile: " + err);
@@ -11478,42 +11486,22 @@ function handwrittenNotesRequest(method, path, body, callback){
   catch(e){ finish("Errore di invio", null); }
 }
 
-function openHandwrittenNotes(){
-  if(!authToken){ return; }
-  handwrittenPreviousView = currentView;
-  closeViewMenu();
-  setHidden($("dashboardContent"), true);
-  setHidden($("personalView"), true);
-  setHidden($("viewSwitcher"), true);
-  setHidden($("handwrittenNotesOverlay"), false);
-  showHandwrittenNotesList();
-}
-
-function closeHandwrittenNotes(){
-  setHidden($("handwrittenNotesOverlay"), true);
-  setHidden($("notesEditorView"), true);
-  setHidden($("notesListView"), false);
-  if(handwrittenPreviousView && findItem(DASHBOARD_VIEWS, function(v){ return v.id === handwrittenPreviousView; })){
-    setView(handwrittenPreviousView, false);
-  } else {
-    setHidden($("dashboardContent"), false);
-  }
-}
-
 function showHandwrittenNotesList(){
-  handwrittenNoteId = null;
-  setHidden($("notesEditorView"), true);
-  setHidden($("notesListView"), false);
-  setText($("notesPageTitle"), "APPUNTI");
-  $("notesNewButton").style.display = "";
-  setText($("notesList"), "Caricamento...");
+  var host = $("notesList");
+  if(!host){ return; }
+  setText($("notesBoxStatus"), "Caricamento appunti...");
+  clear(host);
+  host.appendChild(mk("div", "small", "Caricamento..."));
   handwrittenNotesRequest("GET", "/notes", null, function(err, data){
     if(err || !data || !data.ok){
-      setText($("notesList"), err || "Impossibile caricare gli appunti.");
+      clear(host);
+      host.appendChild(mk("div", "small", err || "Impossibile caricare gli appunti."));
+      setText($("notesBoxStatus"), "Errore di caricamento.");
       return;
     }
     handwrittenNotes = Array.isArray(data.notes) ? data.notes : [];
     renderHandwrittenNotesList();
+    setText($("notesBoxStatus"), handwrittenNotes.length + (handwrittenNotes.length === 1 ? " appunto" : " appunti"));
   });
 }
 
@@ -11521,7 +11509,7 @@ function renderHandwrittenNotesList(){
   var host = $("notesList");
   clear(host);
   if(!handwrittenNotes.length){
-    host.appendChild(mk("div", "small", "Nessun appunto. Premi + NUOVO per crearne uno."));
+    host.appendChild(mk("div", "small", "Nessun appunto disponibile. Premi «+ NUOVO APPUNTO» per crearne uno."));
     return;
   }
   for(var i=0;i<handwrittenNotes.length;i++){
@@ -11529,6 +11517,7 @@ function renderHandwrittenNotesList(){
       var row = mk("div", "notes-list-row");
       var open = mk("button", "notes-list-open", note.title || "Nuovo appunto");
       open.type = "button";
+      var visibility = mk("span", "notes-visibility-label", note.visibility === "public" ? "PUBBLICO" : "PRIVATO");
       open.onclick = function(){ loadHandwrittenNote(note.id); };
       var del = mk("button", "notes-list-delete", "✕");
       del.type = "button";
@@ -11541,28 +11530,39 @@ function renderHandwrittenNotesList(){
         });
       };
       row.appendChild(open);
-      row.appendChild(del);
+      row.appendChild(visibility);
+      if(note.can_edit !== false){ row.appendChild(del); }
       host.appendChild(row);
     })(handwrittenNotes[i]);
   }
 }
 
-function createHandwrittenNote(){
-  handwrittenNotesRequest("POST", "/notes", {title:"Nuovo appunto",strokes:[]}, function(err, data){
-    if(err || !data || !data.note){
-      alert(err || "Impossibile creare l'appunto.");
-      return;
-    }
-    loadHandwrittenNote(data.note.id, data.note);
-  });
+function openHandwrittenNoteEditor(note){
+  handwrittenNoteId = note ? note.id : null;
+  handwrittenStrokes = note && Array.isArray(note.strokes) ? note.strokes : [];
+  $("notesTitle").value = note ? (note.title || "Nuovo appunto") : "Nuovo appunto";
+  $("notesVisibility").value = note && note.visibility === "public" ? "public" : "private";
+  setText($("notesPageTitle"), note ? "MODIFICA APPUNTO" : "NUOVO APPUNTO");
+  setHidden($("handwrittenNotesOverlay"), false);
+  handwrittenNoteDirty = false;
+  $("notesSaveButton").disabled = !!note;
+  setText($("notesStatus"), note ? "Nessuna modifica da salvare." : "Nuovo appunto non ancora salvato.");
+  handwrittenTool = "pen";
+  updateHandwrittenToolButtons();
+  window.setTimeout(resizeHandwrittenCanvas, 30);
 }
 
-function loadHandwrittenNote(id, supplied){
-  if(supplied){
-    openHandwrittenNoteEditor(supplied);
-    return;
-  }
-  setText($("notesList"), "Apertura appunto...");
+function closeHandwrittenNoteEditor(){
+  setHidden($("handwrittenNotesOverlay"), true);
+  handwrittenNoteId = null;
+  showHandwrittenNotesList();
+}
+
+function createHandwrittenNote(){
+  openHandwrittenNoteEditor(null);
+}
+
+function loadHandwrittenNote(id){
   handwrittenNotesRequest("GET", "/notes/" + encodeURIComponent(id), null, function(err, data){
     if(err || !data || !data.note){
       alert(err || "Appunto non disponibile.");
@@ -11571,22 +11571,6 @@ function loadHandwrittenNote(id, supplied){
     }
     openHandwrittenNoteEditor(data.note);
   });
-}
-
-function openHandwrittenNoteEditor(note){
-  handwrittenNoteId = note.id;
-  handwrittenStrokes = Array.isArray(note.strokes) ? note.strokes : [];
-  $("notesTitle").value = note.title || "Nuovo appunto";
-  setText($("notesPageTitle"), "MODIFICA APPUNTO");
-  setHidden($("notesListView"), true);
-  setHidden($("notesEditorView"), false);
-  $("notesNewButton").style.display = "none";
-  handwrittenNoteDirty = false;
-  $("notesSaveButton").disabled = true;
-  setText($("notesStatus"), "Nessuna modifica da salvare.");
-  handwrittenTool = "pen";
-  updateHandwrittenToolButtons();
-  window.setTimeout(resizeHandwrittenCanvas, 30);
 }
 
 function handwrittenCanvasPoint(ev){
@@ -11676,18 +11660,20 @@ function saveHandwrittenNote(){
   if(!title){ alert("Inserisci un titolo."); $("notesTitle").focus(); return; }
   setText($("notesStatus"), "Salvataggio in corso...");
   $("notesSaveButton").disabled = true;
-  handwrittenNotesRequest("PUT","/notes/"+encodeURIComponent(handwrittenNoteId),{
-    title:title,
-    strokes:handwrittenStrokes
-  },function(err,data){
+  var payload = {title:title,strokes:handwrittenStrokes,visibility:$("notesVisibility").value};
+  var method = handwrittenNoteId ? "PUT" : "POST";
+  var path = handwrittenNoteId ? "/notes/"+encodeURIComponent(handwrittenNoteId) : "/notes";
+  handwrittenNotesRequest(method,path,payload,function(err,data){
     if(err || !data || !data.ok){
       $("notesSaveButton").disabled = false;
       setText($("notesStatus"),err || "Salvataggio non riuscito.");
       return;
     }
+    handwrittenNoteId = data.note && data.note.id ? data.note.id : handwrittenNoteId;
     handwrittenNoteDirty = false;
     $("notesSaveButton").disabled = true;
     setText($("notesStatus"),"Appunto salvato. Nessuna modifica in sospeso.");
+    showHandwrittenNotesList();
   });
 }
 
@@ -11729,12 +11715,11 @@ function initHandwrittenNotes(){
     return false;
   },false);
   $("notesBackButton").onclick = function(){
-    if(! $("notesEditorView").hasAttribute("hidden")){
-      if(handwrittenNoteDirty && !confirm("Tornare all'elenco? Le modifiche non salvate andranno perse.")) return;
-      showHandwrittenNotesList();
-    } else closeHandwrittenNotes();
+    if(handwrittenNoteDirty && !confirm("Tornare all'elenco? Le modifiche non salvate andranno perse.")) return;
+    closeHandwrittenNoteEditor();
   };
   $("notesNewButton").onclick = createHandwrittenNote;
+  $("notesVisibility").onchange = markHandwrittenNoteDirty;
   $("notesPenButton").onclick = function(){ handwrittenTool="pen"; updateHandwrittenToolButtons(); };
   $("notesEraserButton").onclick = function(){ handwrittenTool="eraser"; updateHandwrittenToolButtons(); };
   $("notesUndoButton").onclick = function(){ if(handwrittenStrokes.length){ handwrittenStrokes.pop(); drawHandwrittenStrokes(); markHandwrittenNoteDirty(); } };
