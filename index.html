@@ -11839,6 +11839,9 @@ var handwrittenTouchDiagRender = null;
 var handwrittenNotesUnread = false;
 var handwrittenNotesLastSeenKey = "dashboardHandwrittenNotesLastSeenAt";
 var handwrittenNotesInitializedKey = "dashboardHandwrittenNotesInitialized";
+var handwrittenNotesSignatureKey = "dashboardHandwrittenNotesSignature";
+var handwrittenNotesBlinkTimer = null;
+var handwrittenNotesBlinkVisible = true;
 var handwrittenNotesPollStarted = false;
 
 function handwrittenNoteTimestampMs(value){
@@ -11869,16 +11872,56 @@ function setHandwrittenNotesLastSeen(value){
 
 function updateHandwrittenNotesUnreadButton(){
   var button = document.querySelector(".view-switcher-notes-button");
-  if(!button) return;
-  if(handwrittenNotesUnread){
-    button.classList.add("notes-unread");
-    button.title = "Ci sono appunti nuovi o modificati: apri per leggerli";
+  if(button){
+    button.title = handwrittenNotesUnread ? "Ci sono appunti nuovi o modificati: apri per leggerli" : "Apri appunti";
     button.setAttribute("aria-label", button.title);
-  } else {
-    button.classList.remove("notes-unread");
-    button.title = "Apri appunti";
-    button.setAttribute("aria-label", "Apri appunti");
+    if(handwrittenNotesUnread) button.classList.add("notes-unread");
+    else button.classList.remove("notes-unread");
   }
+  /* Blink gestito in JavaScript: più compatibile con le versioni datate di Silk
+     che possono non eseguire correttamente le animazioni CSS. */
+  if(handwrittenNotesUnread){
+    if(handwrittenNotesBlinkTimer === null && window.setInterval){
+      handwrittenNotesBlinkVisible = true;
+      handwrittenNotesBlinkTimer = window.setInterval(function(){
+        handwrittenNotesBlinkVisible = !handwrittenNotesBlinkVisible;
+        var currentButton = document.querySelector(".view-switcher-notes-button");
+        if(currentButton){
+          currentButton.style.visibility = handwrittenNotesBlinkVisible ? "visible" : "hidden";
+        }
+      }, 500);
+    }
+  } else {
+    if(handwrittenNotesBlinkTimer !== null){
+      window.clearInterval(handwrittenNotesBlinkTimer);
+      handwrittenNotesBlinkTimer = null;
+    }
+    var currentButton = document.querySelector(".view-switcher-notes-button");
+    if(currentButton) currentButton.style.visibility = "visible";
+  }
+}
+
+function handwrittenNotesSignature(notes){
+  var parts = [];
+  for(var i=0;i<(notes || []).length;i++){
+    var note = notes[i] || {};
+    parts.push([
+      note.id || "",
+      note.created_at || "",
+      note.updated_at || "",
+      note.title || ""
+    ].join("|"));
+  }
+  parts.sort();
+  return parts.join("\n");
+}
+
+function setHandwrittenNotesSignature(value){
+  try { localStorage.setItem(handwrittenNotesSignatureKey, value); } catch(e){}
+}
+
+function getHandwrittenNotesSignature(){
+  try { return localStorage.getItem(handwrittenNotesSignatureKey); } catch(e){ return null; }
 }
 
 function checkHandwrittenNotesUnread(markAsRead, callback){
@@ -11887,34 +11930,28 @@ function checkHandwrittenNotesUnread(markAsRead, callback){
       if(callback) callback(err || "Elenco appunti non disponibile");
       return;
     }
-    var latest = latestHandwrittenNoteTimestamp(data.notes);
-    var lastSeen = getHandwrittenNotesLastSeen();
+    var signature = handwrittenNotesSignature(data.notes);
+    var previousSignature = getHandwrittenNotesSignature();
     var initialized = false;
     try { initialized = localStorage.getItem(handwrittenNotesInitializedKey) === "1"; } catch(e){}
-    if(markAsRead){
-      setHandwrittenNotesLastSeen(Math.max(lastSeen, latest));
+    if(markAsRead || !initialized){
+      setHandwrittenNotesSignature(signature);
+      setHandwrittenNotesLastSeen(latestHandwrittenNoteTimestamp(data.notes));
       try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
       handwrittenNotesUnread = false;
-    } else if(!initialized){
-      /* Il primo controllo riuscito stabilisce la baseline, anche se l'elenco è vuoto
-         (timestamp 0): da quel momento un nuovo appunto viene sempre rilevato. */
-      setHandwrittenNotesLastSeen(latest);
-      try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
-      handwrittenNotesUnread = false;
-    } else if(latest > lastSeen){
+    } else if(previousSignature !== null && signature !== previousSignature){
       handwrittenNotesUnread = true;
     }
     updateHandwrittenNotesUnreadButton();
     if(callback) callback(null, data.notes);
   });
 }
-
 function startHandwrittenNotesUnreadPolling(){
   if(handwrittenNotesPollStarted || !window.setInterval) return;
   handwrittenNotesPollStarted = true;
   window.setInterval(function(){
     if(!handwrittenNotesPageOpen) checkHandwrittenNotesUnread(false);
-  }, 60000);
+  }, 15000);
 }
 
 function defaultHandwrittenNoteTitle(){
@@ -11966,6 +12003,7 @@ function showHandwrittenNotesList(){
     handwrittenNotes = Array.isArray(data.notes) ? data.notes : [];
     var latestSeen = latestHandwrittenNoteTimestamp(handwrittenNotes);
     setHandwrittenNotesLastSeen(Math.max(getHandwrittenNotesLastSeen(), latestSeen));
+    setHandwrittenNotesSignature(handwrittenNotesSignature(handwrittenNotes));
     try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
     handwrittenNotesUnread = false;
     updateHandwrittenNotesUnreadButton();
