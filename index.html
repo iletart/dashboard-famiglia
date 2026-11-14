@@ -10478,9 +10478,48 @@ function alignBoxes(){
 }
 
 
+function fitKindleButtonSizes(){
+  if(!IS_KINDLE){ return; }
+
+  var boxes = document.getElementsByClassName("box");
+  for(var i = 0; i < boxes.length; i++){
+    if(boxes[i].offsetWidth <= 0){ continue; }
+
+    var buttons = boxes[i].getElementsByTagName("button");
+    for(var j = 0; j < buttons.length; j++){
+      var btn = buttons[j];
+
+      if(
+        btn.classList.contains("box-refresh") ||
+        btn.classList.contains("todo-assign") ||
+        btn.classList.contains("recurring-config-button") ||
+        btn.classList.contains("todo-delete") ||
+        btn.parentNode.classList.contains("todo-actions")
+      ){
+        continue;
+      }
+
+      var width = btn.offsetWidth;
+      if(width <= 0){ continue; }
+
+      /* Il font segue la larghezza effettiva del pulsante: una colonna
+         singola può usare caratteri più grandi rispetto a due colonne. */
+      var fontSize = Math.max(10, Math.min(15, 9 + width * 0.012));
+      btn.style.fontSize = fontSize.toFixed(1) + "px";
+      btn.style.minHeight = "32px";
+      btn.style.paddingTop = "4px";
+      btn.style.paddingBottom = "4px";
+    }
+  }
+}
+
 function scheduleAlign(){
   if(alignTimer){ clearTimeout(alignTimer); }
-  alignTimer = setTimeout(function(){ alignTimer = null; safe(alignBoxes); }, 50);
+  alignTimer = setTimeout(function(){
+    alignTimer = null;
+    safe(alignBoxes);
+    fitKindleButtonSizes();
+  }, 50);
 }
 
 window.onresize = scheduleAlign;
