@@ -11934,7 +11934,7 @@ function checkHandwrittenNotesUnread(markAsRead, callback){
     var previousSignature = getHandwrittenNotesSignature();
     var initialized = false;
     try { initialized = localStorage.getItem(handwrittenNotesInitializedKey) === "1"; } catch(e){}
-    if(markAsRead || !initialized){
+    if(markAsRead || !initialized || previousSignature === null){
       setHandwrittenNotesSignature(signature);
       setHandwrittenNotesLastSeen(latestHandwrittenNoteTimestamp(data.notes));
       try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
