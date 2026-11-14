@@ -3874,6 +3874,90 @@ body.k #viewMenuPanel button.menu-action-button:active {
   color:#fff!important;
 }
 
+
+/* Selettore viste sotto l'intestazione: barra compatta con scorrimento orizzontale. */
+.view-switcher {
+  display:block;
+  width:calc(100% - 6px);
+  margin:4px 3px 7px;
+  padding:5px 9px;
+  box-sizing:border-box;
+  overflow:hidden;
+  border:1px solid #D9D3C6;
+  border-radius:12px;
+  background:#E6EFEA;
+  color:#1F5C4D;
+}
+.view-switcher-title {
+  display:inline-block;
+  vertical-align:middle;
+  width:19%;
+  min-width:78px;
+  box-sizing:border-box;
+  padding:3px 8px 3px 2px;
+  font-size:.78em;
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  color:#1F5C4D;
+}
+.view-switcher-buttons {
+  display:inline-block;
+  vertical-align:middle;
+  width:80%;
+  max-width:80%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  white-space:nowrap;
+  -webkit-overflow-scrolling:touch;
+}
+.view-switcher-button {
+  display:inline-block!important;
+  width:auto!important;
+  min-width:0!important;
+  margin:1px 3px 1px 0!important;
+  padding:5px 11px!important;
+  border:1px solid #C8D8CF!important;
+  border-radius:9px!important;
+  background:#F8FBF9!important;
+  color:#1F5C4D!important;
+  font-size:.78em!important;
+  white-space:nowrap!important;
+}
+.view-switcher-button.sel {
+  background:#1F5C4D!important;
+  border-color:#1F5C4D!important;
+  color:#fff!important;
+}
+
+/* Kindle: mantenere la barra su una riga e consentire lo scorrimento dei profili. */
+body.k .view-switcher {
+  display:block;
+  padding:4px 6px;
+  min-height:34px;
+}
+body.k .view-switcher-title {
+  width:18%;
+  min-width:66px;
+  font-size:.7em;
+  padding-right:4px;
+}
+body.k .view-switcher-buttons {
+  width:80%;
+  max-width:80%;
+  white-space:nowrap;
+  overflow-x:auto;
+}
+body.k .view-switcher-button {
+  display:inline-block!important;
+  width:auto!important;
+  min-height:28px!important;
+  margin:0 2px!important;
+  padding:4px 8px!important;
+  font-size:.68em!important;
+}
+
 </style>
 
 </head>
@@ -4028,6 +4112,11 @@ body.k #viewMenuPanel button.menu-action-button:active {
     </div>
   </div>
 
+</div>
+
+<div id="viewSwitcher" class="view-switcher" hidden>
+  <div id="viewSwitcherTitle" class="view-switcher-title"></div>
+  <div id="viewSwitcherButtons" class="view-switcher-buttons"></div>
 </div>
 
 <!-- ===== VISTE PERSONALI ===== -->
@@ -8441,7 +8530,8 @@ function setView(view, manual){
   
   currentView = viewConfig.id;
   view = currentView;
-  
+
+  renderViewSwitcher();
   updateDashboardBoxTitles();
   
   var btns = $("viewMenuPanel").getElementsByTagName("button");
@@ -10421,6 +10511,56 @@ function loadAuthorizedConfig(callback){
 
 
 
+function renderViewSwitcher(){
+  var bar = $("viewSwitcher");
+  var title = $("viewSwitcherTitle");
+  var buttons = $("viewSwitcherButtons");
+
+  if(!bar || !title || !buttons){ return; }
+
+  clear(buttons);
+
+  if(!authToken || !currentView || !Array.isArray(DASHBOARD_VIEWS)){
+    setHidden(bar, true);
+    return;
+  }
+
+  var active = findItem(DASHBOARD_VIEWS, function(v){
+    return String(v.id) === String(currentView);
+  });
+
+  if(!active){
+    setHidden(bar, true);
+    return;
+  }
+
+  title.textContent = active.title || active.name || currentView;
+
+  for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
+    var view = DASHBOARD_VIEWS[i];
+    var button = mk("button", "view-switcher-button",
+      view.title || view.name || view.id
+    );
+    button.type = "button";
+    button.setAttribute("data-view", view.id);
+    if(String(view.id) === String(currentView)){
+      button.classList.add("sel");
+    }
+    button.onclick = (function(viewId){
+      return function(ev){
+        if(ev){
+          ev.preventDefault();
+          ev.stopPropagation();
+        }
+        setView(viewId, true);
+      };
+    })(view.id);
+    buttons.appendChild(button);
+  }
+
+  setHidden(bar, false);
+}
+
 function updateDashboardBoxTitles(){
     if(!Array.isArray(DASHBOARD_BOXES)){
         return;
@@ -10453,7 +10593,10 @@ function updateDashboardBoxTitles(){
 
         var text = box.title || "";
 
+        /* Nelle viste personali il titolo resta generico, senza il nome utente.
+           L'eventuale suffisso è mantenuto solo per le viste condivise. */
         if(
+            isSharedView(currentView) &&
             Number(box.append_user_name) === 1 &&
             currentUser &&
             currentUser.name
@@ -11007,6 +11150,7 @@ function openHandwrittenNotes(){
   closeViewMenu();
   setHidden($("dashboardContent"), true);
   setHidden($("personalView"), true);
+  setHidden($("viewSwitcher"), true);
   setHidden($("handwrittenNotesOverlay"), false);
   showHandwrittenNotesList();
 }
