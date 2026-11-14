@@ -3132,29 +3132,8 @@ body.k .shopping-delete-label > span:after {
 }
 
 
-/* FIX LAYOUT KINDLE E ALLINEAMENTO BOX */
-@media screen and (max-width:800px) {
-  /* Nelle viste personali ogni box occupa tutta la larghezza disponibile. */
-  body.k #personalLayoutRow,
-  body.k #personalLayoutRow .layout-row {
-    display:block;
-    width:100%;
-    max-width:100%;
-  }
-  body.k #personalLayoutRow .col,
-  body.k #personalLayoutRow .col.full {
-    display:block;
-    float:none!important;
-    width:100%!important;
-    max-width:100%!important;
-    box-sizing:border-box;
-  }
-  body.k #personalLayoutRow .box {
-    width:100%;
-    max-width:100%;
-    box-sizing:border-box;
-  }
-}
+/* Il layout a colonne è gestito in modo uniforme da buildLayout()
+   su tutti i dispositivi; restano solo le regole responsive generali. */
 
 /* Sottotask: gli assegnatari restano nel box e vanno a capo se manca spazio. */
 #recurringTasksBox #recurringTaskList {
@@ -8582,77 +8561,107 @@ function personalRow(){
 
 
 function buildLayout(view){
-	var views = DASHBOARD_VIEWS || [];
-	var vc = null;
-	var i, j, el, b;
-	var rows, items, row, item;
-	var host, stash;
+  var views = DASHBOARD_VIEWS || [];
+  var vc = null;
+  var i, j, el, b;
+  var rows, items, row, item;
+  var host, stash;
 
-	for(i = 0; i < views.length; i++){
-		if(views[i].id === view){
-			vc = views[i];
-			break;
-		}
-	}
+  for(i = 0; i < views.length; i++){
+    if(views[i].id === view){
+      vc = views[i];
+      break;
+    }
+  }
 
-	if(!vc){ return; }
+  if(!vc){ return; }
 
-	rows = (vc.rows || []).slice();
-	rows.sort(function(a, b){
-		return a.position - b.position;
-	});
+  rows = (vc.rows || []).slice();
+  rows.sort(function(a, b){ return a.position - b.position; });
 
-	host = vc.view_type === "shared" ? $("dashboardContent") : personalRow();
-	stash = $("stash");
+  host = vc.view_type === "shared" ? $("dashboardContent") : personalRow();
+  stash = $("stash");
+  if(!host || !stash){ return; }
 
-	if(!host || !stash){ return; }
+  /* Riporta tutti i box nello stash prima di ricostruire la vista. */
+  for(var v = 0; v < views.length; v++){
+    var allRows = views[v].rows || [];
+    for(i = 0; i < allRows.length; i++){
+      items = allRows[i].items || [];
+      for(j = 0; j < items.length; j++){
+        el = $(items[j].element_id);
+        if(el && el.parentNode !== stash){ stash.appendChild(el); }
+      }
+    }
+  }
 
-	/* Sposta tutti i box nello stash prima di ricostruire il layout */
-	for(var v = 0; v < views.length; v++){
-		var allRows = views[v].rows || [];
+  clear(host);
 
-		for(i = 0; i < allRows.length; i++){
-			items = allRows[i].items || [];
+  /*
+   * Le righe consecutive con più box formano colonne verticali continue.
+   * In questo modo ogni box successivo parte subito dopo quello precedente
+   * nella propria colonna, senza attendere la colonna più alta.
+   * Una riga con un solo box resta invece a larghezza piena e separa i gruppi.
+   */
+  var segmentRows = [];
 
-			for(j = 0; j < items.length; j++){
-				el = $(items[j].element_id);
-				if(el && el.parentNode !== stash){
-					stash.appendChild(el);
-				}
-			}
-		}
-	}
+  function flushSegment(){
+    if(!segmentRows.length){ return; }
 
-	clear(host);
+    var columnCount = 0;
+    var segmentContainer = mk("div", "row layout-row");
+    var columns = [];
 
-	/* Tutte le viste usano righe: un solo box = larghezza piena;
-	   più box = affiancati nella stessa riga. */
-	for(i = 0; i < rows.length; i++){
-		row = rows[i];
-		items = (row.items || []).slice();
+    for(var r = 0; r < segmentRows.length; r++){
+      if(segmentRows[r].length > columnCount){
+        columnCount = segmentRows[r].length;
+      }
+    }
 
-		items.sort(function(a, b){
-			return a.position - b.position;
-		});
+    for(var c = 0; c < columnCount; c++){
+      var column = mk("div", "col");
+      column.style.width = (100 / columnCount) + "%";
+      columns.push(column);
+      segmentContainer.appendChild(column);
+    }
 
-		if(items.length === 0){ continue; }
+    host.appendChild(segmentContainer);
 
-		var container = mk("div", "row layout-row");
-		host.appendChild(container);
+    for(var rr = 0; rr < segmentRows.length; rr++){
+      for(var cc = 0; cc < segmentRows[rr].length; cc++){
+        b = $(segmentRows[rr][cc].element_id);
+        if(!b){ continue; }
+        setHidden(b, false);
+        columns[cc].appendChild(b);
+      }
+    }
 
-		for(j = 0; j < items.length; j++){
-			item = items[j];
-			b = $(item.element_id);
+    segmentRows = [];
+  }
 
-			if(!b){ continue; }
+  for(i = 0; i < rows.length; i++){
+    row = rows[i];
+    items = (row.items || []).slice();
+    items.sort(function(a, b){ return a.position - b.position; });
+    if(!items.length){ continue; }
 
-			setHidden(b, false);
+    if(items.length === 1){
+      flushSegment();
+      b = $(items[0].element_id);
+      if(!b){ continue; }
+      setHidden(b, false);
 
-			var col = mk("div", items.length === 1 ? "col full" : "col");
-			col.appendChild(b);
-			container.appendChild(col);
-		}
-	}
+      var fullRow = mk("div", "row layout-row");
+      var fullColumn = mk("div", "col full");
+      fullColumn.appendChild(b);
+      fullRow.appendChild(fullColumn);
+      host.appendChild(fullRow);
+    } else {
+      segmentRows.push(items);
+    }
+  }
+
+  flushSegment();
 }
 
 function setView(view, manual){
@@ -10418,96 +10427,59 @@ function growColumn(bs, extra){
 
 
 function alignBoxes(){
-	var currentViewConfig = findItem(DASHBOARD_VIEWS, function(v){
-	  return v.id === currentView;
-	});
+  var currentViewConfig = findItem(DASHBOARD_VIEWS, function(v){
+    return v.id === currentView;
+  });
 
-	var host = currentViewConfig &&
-			   currentViewConfig.view_type === "shared"
-	  ? $("dashboardContent")
-	  : personalRow();
+  var host = currentViewConfig &&
+             currentViewConfig.view_type === "shared"
+    ? $("dashboardContent")
+    : personalRow();
 
   if(!host){ return; }
-  
-  /* Su Kindle i box devono seguire l'altezza del proprio contenuto.
-     L'allineamento forzato delle colonne crea grandi aree vuote nei box
-     più brevi; resta attivo solo nei layout non-Kindle. */
-  var isKindle = document.body.classList.contains("k");
-  var isSmallScreen = !isKindle &&
-                    window.matchMedia &&
-                    window.matchMedia("(max-width:600px)").matches;
 
-  var rows = host.querySelectorAll(".layout-row");
   var all = host.querySelectorAll(".box");
-  var i, j, boxes;
+  var rows = host.querySelectorAll(".layout-row");
+  var i, boxes;
 
-  /* Reset delle altezze */
+  /* Rimuove sempre le altezze calcolate in precedenza. */
   for(i = 0; i < all.length; i++){
     all[i].style.minHeight = "";
     all[i].style.height = "";
     all[i].style.flexGrow = "";
   }
 
-  /* Kindle: i box intermedi restano all'altezza naturale. Solo l'ultimo
-     box di ogni colonna assorbe lo spazio residuo fino al fondo del viewport. */
-  if(isKindle){
-    var kindleColumns = [];
-    if(rows.length){
-      for(i = 0; i < rows.length; i++){
-        for(j = 0; j < rows[i].children.length; j++){
-          boxes = boxesOf(rows[i].children[j]);
-          if(boxes.length){ kindleColumns.push(boxes); }
-        }
-      }
-    } else {
-      for(i = 0; i < host.children.length; i++){
-        boxes = boxesOf(host.children[i]);
-        if(boxes.length){ kindleColumns.push(boxes); }
-      }
-    }
+  /*
+   * Si allunga soltanto l'ultimo box di ogni colonna dell'ultimo gruppo.
+   * I box intermedi restano naturali e le colonne scorrono indipendentemente.
+   * Il fondo comune è almeno il fondo del viewport, oppure quello della
+   * colonna più lunga se il contenuto supera già l'altezza dello schermo.
+   */
+  if(!rows.length){ return; }
 
-    var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-    for(i = 0; i < kindleColumns.length; i++){
-      boxes = kindleColumns[i];
-      var kindleLastBox = boxes[boxes.length - 1];
-      var lastRect = kindleLastBox.getBoundingClientRect();
-      var remaining = viewportHeight - lastRect.bottom;
-      if(remaining > 0){
-        kindleLastBox.style.minHeight = (kindleLastBox.offsetHeight + remaining) + "px";
-      }
-    }
-    return;
+  var lastRow = rows[rows.length - 1];
+  var columns = [];
+  var targetBottom = window.innerHeight || document.documentElement.clientHeight || 0;
+
+  for(i = 0; i < lastRow.children.length; i++){
+    boxes = boxesOf(lastRow.children[i]);
+    if(!boxes.length){ continue; }
+
+    var lastBox = boxes[boxes.length - 1];
+    var rect = lastBox.getBoundingClientRect();
+    columns.push({box:lastBox, bottom:rect.bottom});
+
+    if(rect.bottom > targetBottom){ targetBottom = rect.bottom; }
   }
 
-  /* Ogni colonna mantiene naturali i box superiori.
-     Solo l'ultimo box di ciascuna colonna assorbe lo spazio necessario
-     per allineare il fondo della riga al contenuto della colonna più alta. */
-  if(!isSmallScreen){
-    for(i = 0; i < rows.length; i++){
-      var columns = [];
-      var maxHeight = 0;
-
-      for(j = 0; j < rows[i].children.length; j++){
-        boxes = boxesOf(rows[i].children[j]);
-        if(boxes.length){
-          var total = columnHeight(boxes);
-          columns.push({boxes:boxes, total:total});
-          if(total > maxHeight){ maxHeight = total; }
-        }
-      }
-
-      for(j = 0; j < columns.length; j++){
-        var column = columns[j];
-        var lastBox = column.boxes[column.boxes.length - 1];
-        var extra = maxHeight - column.total;
-        if(extra > 0){
-          lastBox.style.minHeight = (lastBox.offsetHeight + extra) + "px";
-        }
-      }
+  for(i = 0; i < columns.length; i++){
+    var extra = targetBottom - columns[i].bottom;
+    if(extra > 0){
+      columns[i].box.style.minHeight =
+        (columns[i].box.offsetHeight + extra) + "px";
     }
   }
 }
-
 
 function fitKindleButtonSizes(){
   if(!IS_KINDLE){ return; }
