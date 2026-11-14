@@ -3723,7 +3723,13 @@ body.k .recurring-config-button {
   #handwrittenNotesOverlay { padding:5px; }
   .notes-topbar button,.notes-toolbar button { padding:7px 8px; font-size:.85em; }
 }
-body.k #handwrittenCanvas { touch-action:none; }
+body.k #handwrittenCanvas {
+  touch-action:none!important;
+  -ms-touch-action:none!important;
+  -webkit-user-select:none!important;
+  -webkit-touch-callout:none!important;
+  user-select:none!important;
+}
 
 /* Layout legacy per il browser dei Kindle: niente flex/inset nella schermata appunti. */
 body.k #handwrittenNotesOverlay {
@@ -3811,6 +3817,9 @@ body.k .notes-toolbar button {
 body.k #handwrittenCanvas {
   position:absolute!important;
   top:86px!important;
+  -webkit-user-select:none!important;
+  -webkit-touch-callout:none!important;
+  user-select:none!important;
   left:0!important;
   width:100%!important;
   height:auto!important;
@@ -11351,13 +11360,39 @@ function initHandwrittenNotes(){
   var canvas = $("handwrittenCanvas");
   if(!canvas || handwrittenCanvasReady) return;
   handwrittenCanvasReady = true;
-  canvas.addEventListener("mousedown",function(ev){ if(ev.button===0) startHandwrittenStroke(ev); });
-  canvas.addEventListener("mousemove",function(ev){ if(handwrittenCurrentStroke) moveHandwrittenStroke(ev); });
-  document.addEventListener("mouseup",function(){ if(handwrittenCurrentStroke) endHandwrittenStroke(); });
-  canvas.addEventListener("touchstart",function(ev){ if(ev.touches.length) startHandwrittenStroke(ev.touches[0]); },{passive:false});
-  canvas.addEventListener("touchmove",function(ev){ if(ev.touches.length) moveHandwrittenStroke(ev.touches[0]); },{passive:false});
-  canvas.addEventListener("touchend",function(ev){ endHandwrittenStroke(ev); },{passive:false});
-  canvas.addEventListener("touchcancel",function(){ endHandwrittenStroke(); },{passive:false});
+  /* Mouse: compatibile con browser desktop e Kindle che simulano il mouse. */
+  canvas.addEventListener("mousedown",function(ev){
+    if(typeof ev.button === "undefined" || ev.button === 0) startHandwrittenStroke(ev);
+  });
+  canvas.addEventListener("mousemove",function(ev){
+    if(handwrittenCurrentStroke) moveHandwrittenStroke(ev);
+  });
+  document.addEventListener("mouseup",function(){
+    if(handwrittenCurrentStroke) endHandwrittenStroke();
+  });
+
+  /* Touch: preventDefault va chiamato sul TouchEvent, non sull'oggetto Touch.
+     I vecchi browser Kindle ignorano touch-action e altrimenti interrompono il tratto. */
+  canvas.addEventListener("touchstart",function(ev){
+    if(ev.preventDefault) ev.preventDefault();
+    if(ev.touches && ev.touches.length) startHandwrittenStroke(ev.touches[0]);
+    return false;
+  },false);
+  canvas.addEventListener("touchmove",function(ev){
+    if(ev.preventDefault) ev.preventDefault();
+    if(handwrittenCurrentStroke && ev.touches && ev.touches.length) moveHandwrittenStroke(ev.touches[0]);
+    return false;
+  },false);
+  canvas.addEventListener("touchend",function(ev){
+    if(ev.preventDefault) ev.preventDefault();
+    endHandwrittenStroke();
+    return false;
+  },false);
+  canvas.addEventListener("touchcancel",function(ev){
+    if(ev.preventDefault) ev.preventDefault();
+    endHandwrittenStroke();
+    return false;
+  },false);
   $("notesBackButton").onclick = function(){
     if(! $("notesEditorView").hasAttribute("hidden")){
       if(!confirm("Tornare all'elenco? Le modifiche non salvate andranno perse.")) return;
