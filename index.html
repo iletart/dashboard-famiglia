@@ -4020,6 +4020,13 @@ body.k .notes-toolbar button {
   padding:4px 6px!important;
   font-size:12px!important;
 }
+/* In Kindle le regole display esplicite prevalgono sull’attributo hidden.
+   Ripristiniamo il comportamento di hidden per editor e pulsanti. */
+body.k #notesTextEditor[hidden],
+body.k #handwrittenCanvas[hidden],
+body.k .notes-toolbar button[hidden] {
+  display:none!important;
+}
 body.k #notesTextEditor {
   position:absolute!important;
   top:212px!important;
