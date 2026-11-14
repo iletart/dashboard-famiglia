@@ -4008,6 +4008,8 @@ body.k .notes-toolbar button {
 body.k #handwrittenCanvas {
   position:absolute!important;
   top:212px!important;
+  z-index:10002!important;
+  pointer-events:auto!important;
   -webkit-user-select:none!important;
   -webkit-touch-callout:none!important;
   user-select:none!important;
@@ -12103,48 +12105,75 @@ function initHandwrittenNotes(){
     }
     renderTouchDiag();
   }
-  /* Touch Kindle: fallback boolean capture per i browser legacy.
-     Il movimento viene annullato sull'evento originale, non sull'oggetto Touch. */
+  /* Alcuni Kindle consegnano il touch a un target diverso dal canvas,
+     oppure espongono soltanto eventi mouse. Registriamo prima l'evento,
+     poi verifichiamo il bersaglio con target e coordinate. */
   var touchOptions = true;
-  try {
-    var passiveOptions = Object.defineProperty({}, "passive", {
-      get:function(){
-        touchOptions = {capture:true, passive:false};
-        return false;
-      }
-    });
-    window.addEventListener("handwritten-passive-test", function(){}, passiveOptions);
-    window.removeEventListener("handwritten-passive-test", function(){}, passiveOptions);
-  } catch(e){}
+  var handwrittenTouchSeen = false;
+  function pointIsOnCanvas(point, target){
+    if(target === canvas || (canvas.contains && canvas.contains(target))) return true;
+    if(!point || typeof point.clientX !== "number" || typeof point.clientY !== "number") return false;
+    var rect = canvas.getBoundingClientRect();
+    return point.clientX >= rect.left && point.clientX <= rect.right &&
+      point.clientY >= rect.top && point.clientY <= rect.bottom;
+  }
   document.addEventListener("touchstart",function(ev){
-    var target = ev.target;
-    var onCanvas = target === canvas || (canvas.contains && canvas.contains(target));
     var touch = getHandwrittenTouch(ev);
-    if(!onCanvas || !touch) return;
     noteTouchEvent("start", ev, touch);
+    if(!touch || !pointIsOnCanvas(touch, ev.target)) return;
+    handwrittenTouchSeen = true;
+    if(ev.cancelable && ev.preventDefault) ev.preventDefault();
     startHandwrittenStroke(touch);
   },touchOptions);
   document.addEventListener("touchmove",function(ev){
     var touch = getHandwrittenTouch(ev);
-    if(!handwrittenCurrentStroke) return;
     noteTouchEvent("move", ev, touch);
+    if(!handwrittenCurrentStroke && touch && pointIsOnCanvas(touch, ev.target)){
+      handwrittenTouchSeen = true;
+      startHandwrittenStroke(touch);
+    }
+    if(!handwrittenCurrentStroke) return;
     if(ev.cancelable && ev.preventDefault) ev.preventDefault();
     if(touch) moveHandwrittenStroke(touch);
   },touchOptions);
   document.addEventListener("touchend",function(ev){
-    if(!handwrittenCurrentStroke) return;
     noteTouchEvent("end", ev, getHandwrittenTouch(ev));
+    if(!handwrittenCurrentStroke) return;
     if(ev.cancelable && ev.preventDefault) ev.preventDefault();
     endHandwrittenStroke();
   },touchOptions);
   document.addEventListener("touchcancel",function(ev){
-    if(handwrittenCurrentStroke) endHandwrittenStroke();
     noteTouchEvent("cancel", ev, getHandwrittenTouch(ev));
+    if(handwrittenCurrentStroke) endHandwrittenStroke();
   },touchOptions);
-  /* Rileva anche i browser che espongono Pointer Events o mouse al posto
-     della sequenza touch. Non avvia tratti duplicati: registra solo gli eventi. */
-  document.addEventListener("pointermove",function(){ touchDiag.pointer++; },true);
-  document.addEventListener("mousemove",function(){ touchDiag.mouse++; },true);
+  /* Fallback mouse per firmware/browser Kindle che non genera eventi touch.
+     Se è stata riconosciuta una sequenza touch, gli eventi mouse sintetici
+     vengono ignorati per evitare che chiudano subito il tratto. */
+  canvas.addEventListener("mousedown",function(ev){
+    if(handwrittenTouchSeen || (typeof ev.button !== "undefined" && ev.button !== 0)) return;
+    touchDiag.mouse++;
+    touchDiag.last = "mousedown canvas";
+    renderTouchDiag();
+    startHandwrittenStroke(ev);
+  },true);
+  canvas.addEventListener("mousemove",function(ev){
+    if(handwrittenTouchSeen || !handwrittenCurrentStroke) return;
+    touchDiag.mouse++;
+    touchDiag.last = "mousemove canvas";
+    renderTouchDiag();
+    moveHandwrittenStroke(ev);
+  },true);
+  document.addEventListener("mouseup",function(){
+    if(handwrittenTouchSeen || !handwrittenCurrentStroke) return;
+    touchDiag.mouse++;
+    touchDiag.last = "mouseup";
+    renderTouchDiag();
+    endHandwrittenStroke();
+  },true);
+  document.addEventListener("pointermove",function(){
+    touchDiag.pointer++;
+    renderTouchDiag();
+  },true);
   $("notesBackButton").onclick = function(){
     if(handwrittenNoteDirty && !confirm("Tornare all'elenco? Le modifiche non salvate andranno perse.")) return;
     closeHandwrittenNoteEditor();
