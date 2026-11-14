@@ -11890,6 +11890,10 @@ function updateHandwrittenNotesUnreadButton(){
         if(currentButton){
           currentButton.style.visibility = handwrittenNotesBlinkVisible ? "visible" : "hidden";
         }
+        var unreadRows = document.querySelectorAll(".notes-list-row-unread");
+        for(var rowIndex=0;rowIndex<unreadRows.length;rowIndex++){
+          unreadRows[rowIndex].style.visibility = handwrittenNotesBlinkVisible ? "visible" : "hidden";
+        }
       }, 500);
     }
   } else {
@@ -11899,6 +11903,10 @@ function updateHandwrittenNotesUnreadButton(){
     }
     var currentButton = document.querySelector(".view-switcher-notes-button");
     if(currentButton) currentButton.style.visibility = "visible";
+    var unreadRows = document.querySelectorAll(".notes-list-row-unread");
+    for(var rowIndex=0;rowIndex<unreadRows.length;rowIndex++){
+      unreadRows[rowIndex].style.visibility = "visible";
+    }
   }
 }
 
