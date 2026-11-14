@@ -10401,6 +10401,14 @@ function alignBoxes(){
     all[i].style.flexGrow = "";
   }
 
+  /* Su smartphone in verticale i box devono seguire il contenuto:
+     l'allineamento delle colonne è utile solo quando sono affiancate. */
+  var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+  var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+  if(!IS_KINDLE && viewportWidth <= 600 && viewportHeight > viewportWidth){
+    return;
+  }
+
   /*
    * Si allunga soltanto l'ultimo box di ogni colonna dell'ultimo gruppo.
    * I box intermedi restano naturali e le colonne scorrono indipendentemente.
