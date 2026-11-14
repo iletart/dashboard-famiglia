@@ -3884,7 +3884,7 @@ body.k #viewMenuPanel button.menu-action-button:active {
 }
 
 
-/* Selettore viste: stile segmentato come i comandi Ieri/Oggi/Domani. */
+/* Selettore viste: colori coerenti con il profilo collegato. */
 .view-switcher {
   display:block;
   width:calc(100% - 6px);
@@ -3897,20 +3897,7 @@ body.k #viewMenuPanel button.menu-action-button:active {
   background:#EEECE2;
   color:#111;
 }
-.view-switcher-title {
-  display:block;
-  width:auto;
-  min-width:0;
-  padding:0 2px 5px;
-  font-size:1.05em;
-  font-weight:bold;
-  letter-spacing:1.5px;
-  text-transform:uppercase;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  color:#111;
-}
+.view-switcher-title { display:none!important; }
 .view-switcher-buttons {
   display:block;
   width:100%;
@@ -3937,26 +3924,25 @@ body.k #viewMenuPanel button.menu-action-button:active {
   text-align:center!important;
   white-space:nowrap!important;
 }
-.view-switcher-button.sel {
-  background:#1B1B1A!important;
-  border-color:#1B1B1A!important;
+.view-switcher-personal .view-switcher-button.sel {
+  background:#704052!important;
+  border-color:#704052!important;
+  color:#fff!important;
+}
+.view-switcher-shared .view-switcher-button.sel {
+  background:#455a64!important;
+  border-color:#455a64!important;
   color:#fff!important;
 }
 
-/* Kindle: barra semplice, a scorrimento orizzontale. */
+/* Kindle: stessa palette del profilo e scorrimento orizzontale. */
 body.k .view-switcher {
   display:block!important;
   padding:0!important;
   min-height:0!important;
   border-radius:12px!important;
 }
-body.k .view-switcher-title {
-  display:block!important;
-  width:auto!important;
-  min-width:0!important;
-  padding:0 2px 4px!important;
-  font-size:.95em!important;
-}
+body.k .view-switcher-title { display:none!important; }
 body.k .view-switcher-buttons {
   display:block!important;
   width:100%!important;
@@ -10554,7 +10540,13 @@ function renderViewSwitcher(){
     return;
   }
 
-  title.textContent = active.title || active.name || currentView;
+  /* Nessuna intestazione duplicata: la barra mostra solo i pulsanti delle viste. */
+  title.textContent = "";
+  setHidden(title, true);
+
+  var personalTheme = active.view_type === "personal";
+  bar.classList.toggle("view-switcher-personal", personalTheme);
+  bar.classList.toggle("view-switcher-shared", !personalTheme);
 
   for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
     var view = DASHBOARD_VIEWS[i];
