@@ -3725,6 +3725,109 @@ body.k .recurring-config-button {
 }
 body.k #handwrittenCanvas { touch-action:none; }
 
+/* Layout legacy per il browser dei Kindle: niente flex/inset nella schermata appunti. */
+body.k #handwrittenNotesOverlay {
+  position:fixed!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  left:0!important;
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  padding:5px!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+body.k #handwrittenNotesOverlay[hidden] { display:none!important; }
+body.k .notes-topbar {
+  position:absolute!important;
+  top:5px!important;
+  left:5px!important;
+  right:5px!important;
+  height:44px!important;
+  min-height:0!important;
+  display:block!important;
+  overflow:hidden!important;
+}
+body.k .notes-topbar button {
+  display:inline-block!important;
+  vertical-align:middle!important;
+  min-height:34px!important;
+}
+body.k .notes-topbar h2 {
+  display:inline-block!important;
+  width:38%!important;
+  margin:0 3px!important;
+  vertical-align:middle!important;
+  font-size:1em!important;
+}
+body.k #notesListView {
+  position:absolute!important;
+  top:55px!important;
+  left:5px!important;
+  right:5px!important;
+  bottom:5px!important;
+  display:block!important;
+  overflow-y:auto!important;
+  padding:5px 0!important;
+}
+body.k #notesEditorView {
+  position:absolute!important;
+  top:55px!important;
+  left:5px!important;
+  right:5px!important;
+  bottom:5px!important;
+  display:block!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+body.k #notesEditorView[hidden],
+body.k #notesListView[hidden] { display:none!important; }
+body.k .notes-editor-title {
+  position:absolute!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
+  width:100%!important;
+  height:36px!important;
+}
+body.k .notes-toolbar {
+  position:absolute!important;
+  top:43px!important;
+  left:0!important;
+  right:0!important;
+  display:block!important;
+  height:38px!important;
+  overflow:hidden!important;
+}
+body.k .notes-toolbar button {
+  display:inline-block!important;
+  min-height:30px!important;
+  margin:0 2px 2px 0!important;
+  padding:4px 6px!important;
+  font-size:12px!important;
+}
+body.k #handwrittenCanvas {
+  position:absolute!important;
+  top:86px!important;
+  left:0!important;
+  width:100%!important;
+  height:auto!important;
+  bottom:23px!important;
+  min-height:0!important;
+  box-sizing:border-box!important;
+}
+body.k .notes-status {
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  height:18px!important;
+  overflow:hidden!important;
+}
+
+
 </style>
 
 </head>
