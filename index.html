@@ -12007,6 +12007,7 @@ function initHandwrittenNotes(){
      intercetta anche sul document per impedire lo scroll mentre si disegna. */
   document.addEventListener("touchmove",function(ev){
     if(!handwrittenCurrentStroke) return;
+    if(ev.target === canvas) return; /* già gestito dal listener del canvas */
     if(ev.preventDefault) ev.preventDefault();
     if(ev.touches && ev.touches.length) moveHandwrittenStroke(ev.touches[0]);
     return false;
