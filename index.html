@@ -11907,6 +11907,20 @@ function renderHandwrittenNotesList(){
         }
       }
       var kindLabel = mk("span", "notes-kind-label", kind);
+      /* L'endpoint elenco può omettere strokes: in quel caso recupera il
+         dettaglio, che contiene il contenuto completo usato dall'editor. */
+      if(typeof note.strokes === "undefined" || note.strokes === null){
+        handwrittenNotesRequest("GET", "/notes/" + encodeURIComponent(note.id), null, function(detailErr, detailData){
+          if(detailErr || !detailData || !detailData.note) return;
+          var detailStrokes = getHandwrittenNoteStrokes(detailData.note);
+          for(var detailIndex=0;detailIndex<detailStrokes.length;detailIndex++){
+            if(detailStrokes[detailIndex] && detailStrokes[detailIndex].type === "text"){
+              kindLabel.textContent = "TESTO LIBERO";
+              return;
+            }
+          }
+        });
+      }
       var metadata = mk("div", "notes-list-meta", handwrittenNoteAuditText(note));
       info.appendChild(open);
       info.appendChild(kindLabel);
