@@ -11902,9 +11902,15 @@ function loadHandwrittenNote(id){
 
 function handwrittenCanvasPoint(ev){
   var rect = $("handwrittenCanvas").getBoundingClientRect();
+  var scrollX = window.pageXOffset || document.documentElement.scrollLeft || 0;
+  var scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+  var clientX = typeof ev.clientX === "number" ? ev.clientX :
+    (typeof ev.pageX === "number" ? ev.pageX - scrollX : rect.left);
+  var clientY = typeof ev.clientY === "number" ? ev.clientY :
+    (typeof ev.pageY === "number" ? ev.pageY - scrollY : rect.top);
   return {
-    x: Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width)),
-    y: Math.max(0, Math.min(1, (ev.clientY - rect.top) / rect.height))
+    x: Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)),
+    y: Math.max(0, Math.min(1, (clientY - rect.top) / rect.height))
   };
 }
 
@@ -12040,36 +12046,47 @@ function initHandwrittenNotes(){
     if(handwrittenCurrentStroke) endHandwrittenStroke();
   });
 
-  /* Touch Kindle: intercetta i gesti in capture sul document.
-     Alcuni firmware trasformano il touch in scroll prima che il canvas
-     riceva touchmove; il listener capture blocca lo scroll e continua
-     a raccogliere i punti anche se il browser cambia event.target. */
+  /* Touch Kindle: listener non-passivi per impedire al browser di
+     convertire il movimento in scroll e generare touchcancel. */
+  var touchOptions = true;
+  try {
+    var passiveOptions = Object.defineProperty({}, "passive", {
+      get:function(){
+        touchOptions = {capture:true, passive:false};
+        return false;
+      }
+    });
+    window.addEventListener("handwritten-passive-test", function(){}, passiveOptions);
+    window.removeEventListener("handwritten-passive-test", function(){}, passiveOptions);
+  } catch(e){}
+  function getHandwrittenTouch(ev){
+    if(ev.touches && ev.touches.length) return ev.touches[0];
+    if(ev.changedTouches && ev.changedTouches.length) return ev.changedTouches[0];
+    return null;
+  }
   document.addEventListener("touchstart",function(ev){
     var target = ev.target;
     var onCanvas = target === canvas || (canvas.contains && canvas.contains(target));
-    if(!onCanvas || !ev.touches || !ev.touches.length) return;
-    if(ev.preventDefault) ev.preventDefault();
-    startHandwrittenStroke(ev.touches[0]);
-    return false;
-  },true);
+    var touch = getHandwrittenTouch(ev);
+    if(!onCanvas || !touch) return;
+    /* Non annulliamo touchstart: alcuni browser Kindle interrompono
+       la sequenza touch quando il default viene cancellato qui. */
+    startHandwrittenStroke(touch);
+  },touchOptions);
   document.addEventListener("touchmove",function(ev){
     if(!handwrittenCurrentStroke) return;
-    if(ev.preventDefault) ev.preventDefault();
-    if(ev.touches && ev.touches.length) moveHandwrittenStroke(ev.touches[0]);
-    return false;
-  },true);
+    var touch = getHandwrittenTouch(ev);
+    if(ev.cancelable && ev.preventDefault) ev.preventDefault();
+    if(touch) moveHandwrittenStroke(touch);
+  },touchOptions);
   document.addEventListener("touchend",function(ev){
     if(!handwrittenCurrentStroke) return;
-    if(ev.preventDefault) ev.preventDefault();
+    if(ev.cancelable && ev.preventDefault) ev.preventDefault();
     endHandwrittenStroke();
-    return false;
-  },true);
-  document.addEventListener("touchcancel",function(ev){
-    if(!handwrittenCurrentStroke) return;
-    if(ev.preventDefault) ev.preventDefault();
-    endHandwrittenStroke();
-    return false;
-  },true);
+  },touchOptions);
+  document.addEventListener("touchcancel",function(){
+    if(handwrittenCurrentStroke) endHandwrittenStroke();
+  },touchOptions);
   $("notesBackButton").onclick = function(){
     if(handwrittenNoteDirty && !confirm("Tornare all'elenco? Le modifiche non salvate andranno perse.")) return;
     closeHandwrittenNoteEditor();
