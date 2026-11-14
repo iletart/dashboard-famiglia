@@ -11776,7 +11776,6 @@ safe(updateSyncLabels);
 safe(initViewMenu);
 safe(initLoginPage);
 safe(initHandwrittenNotes);
-restoreAuthSession();
 
 </script>
 
@@ -11811,7 +11810,7 @@ restoreAuthSession();
   }
 
   var stored = readStored();
-  if(stored && stored.current instanceof Array){
+  if(stored && stored.current instanceof Array && stored.current.length){
     previousSession = stored.current.slice(-5);
   } else if(stored && stored.previous instanceof Array){
     previousSession = stored.previous.slice(-5);
@@ -11941,6 +11940,10 @@ restoreAuthSession();
 
   setTimeout(reloadWhenIdle, 3 * 3600000);
   render();
+
+  /* Avvia il ripristino sessione solo dopo aver installato il tracciamento,
+     così viene registrata anche la prima verifica/login. */
+  restoreAuthSession();
 })();
 </script>
 </body>
