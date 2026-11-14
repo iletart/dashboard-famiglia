@@ -1,31 +1,31 @@
 {
   "available": true,
-  "date": "2026-11-13",
+  "date": "2026-11-16",
   "site": "U003128",
-  "generated_at": "2026-11-12T00:01:02.156566+01:00",
+  "generated_at": "2026-11-15T00:01:01.945232+01:00",
   "plates": [
     {
-      "position": "1532",
-      "dishCode": "P00769",
-      "name": "Risotto al pomodoro "
+      "position": "2132",
+      "dishCode": "P100098",
+      "name": "Ravioli di magro olio e salvia"
     },
     {
-      "position": "1533",
-      "dishCode": "P101305",
-      "name": "Totano dei marinai"
+      "position": "2133",
+      "dishCode": "P100503",
+      "name": "Straccetti di tacchino alla romana"
     },
     {
-      "position": "1536",
-      "dishCode": "P101204",
-      "name": "Insalata di stagione"
+      "position": "2136",
+      "dishCode": "P100455",
+      "name": "Fagiolini all'olio"
     },
     {
-      "position": "1537",
-      "dishCode": "P02036",
+      "position": "2137",
+      "dishCode": "P00007",
       "name": "Frutta fresca di stagione"
     },
     {
-      "position": "1539",
+      "position": "2139",
       "dishCode": "P01889",
       "name": "Pane tipo 0"
     }
