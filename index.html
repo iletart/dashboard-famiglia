@@ -3499,8 +3499,8 @@ body.k #recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
   text-decoration:none!important;
 }
 /* Mostra un solo cestino: usa l'icona nuova disegnata sul pulsante, non il vecchio span interno. */
-.todo-delete .trash-icon,
-.family-shopping-delete .trash-icon {
+body.k .todo-delete .trash-icon,
+body.k .family-shopping-delete .trash-icon {
   display:none!important;
 }
 
@@ -4426,6 +4426,58 @@ body.k .box.notes-summary-box button:not(.seg-button):not(.todo-assign):not(.box
   font-size:9px!important;
   vertical-align:middle!important;
 }
+
+/* PC: ripristina il cestino originale di prima delle modifiche Kindle.
+   Il disegno è applicato solo ai dispositivi non Kindle. */
+body:not(.k) .todo-delete,
+body:not(.k) .family-shopping-delete {
+  position:relative!important;
+  display:inline-block!important;
+  width:32px!important;
+  height:32px!important;
+  min-width:32px!important;
+  max-width:32px!important;
+  padding:0!important;
+  border:0!important;
+  font-size:0!important;
+  line-height:0!important;
+  color:#5E5B55!important;
+  background:linear-gradient(currentColor,currentColor) 50% 5px / 6px 2px no-repeat!important;
+  box-shadow:none!important;
+}
+body:not(.k) .todo-delete:hover,
+body:not(.k) .family-shopping-delete:hover {
+  color:#B3261E!important;
+}
+body:not(.k) .todo-delete::before,
+body:not(.k) .family-shopping-delete::before {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:50%!important;
+  top:13px!important;
+  width:8px!important;
+  height:8px!important;
+  margin-left:-6px!important;
+  border:2px solid currentColor!important;
+  border-top:0!important;
+  border-radius:0 0 3px 3px!important;
+  background:none!important;
+}
+body:not(.k) .todo-delete::after,
+body:not(.k) .family-shopping-delete::after {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:50%!important;
+  top:8px!important;
+  width:16px!important;
+  height:2px!important;
+  margin-left:-8px!important;
+  border:0!important;
+  background:currentColor!important;
+}
+
 </style>
 
 </head>
@@ -11893,10 +11945,6 @@ function updateHandwrittenNotesUnreadButton(){
         if(currentButton){
           currentButton.style.opacity = handwrittenNotesBlinkVisible ? "1" : "0.25";
         }
-        var unreadRows = document.querySelectorAll(".notes-list-row-unread");
-        for(var rowIndex=0;rowIndex<unreadRows.length;rowIndex++){
-          unreadRows[rowIndex].style.opacity = handwrittenNotesBlinkVisible ? "1" : "0.25";
-        }
       }, 2000);
     }
   } else {
@@ -11906,10 +11954,6 @@ function updateHandwrittenNotesUnreadButton(){
     }
     var currentButton = document.querySelector(".view-switcher-notes-button");
     if(currentButton) currentButton.style.opacity = "1";
-    var unreadRows = document.querySelectorAll(".notes-list-row-unread");
-    for(var rowIndex=0;rowIndex<unreadRows.length;rowIndex++){
-      unreadRows[rowIndex].style.opacity = "1";
-    }
   }
 }
 
