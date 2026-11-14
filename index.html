@@ -1247,18 +1247,21 @@ body.k .col.full {
   width:100%;
 }
 
-/* Pulsanti nei box: maggiore larghezza e margini laterali simmetrici */
+/* Pulsanti Kindle: dimensioni compatte e testo proporzionato */
 body.k .box button {
   box-sizing:border-box;
   margin-right:0;
-  padding-left:12px;
-  padding-right:12px;
+  padding:4px 6px;
+  min-height:26px;
+  font-size:.78em;
+  line-height:1.15;
 }
 
-/* I pulsanti segmentati occupano già tutta la riga: mantieni il padding compatto */
+/* I gruppi segmentati hanno una spaziatura ancora più stretta */
 body.k .box .seg > button {
-  padding-left:3px;
-  padding-right:3px;
+  padding:3px 1px;
+  min-height:0;
+  font-size:.78em;
 }
 
 /* Intestazione box */
@@ -1597,9 +1600,10 @@ body.k .seg > button {
   width:32%;
   min-width:0;
   margin:2px 1px;
-  padding:7px 1px;
-  font-size:14px;
-  line-height:1.3;
+  padding:3px 1px;
+  min-height:0;
+  font-size:.78em;
+  line-height:1.15;
   white-space:nowrap;
 }
 
@@ -2795,14 +2799,10 @@ body.k .seg {
 }
 
 body.k .seg > button {
-  min-height:42px;
-  margin:0;
-  padding:8px 6px;
   border:0;
   border-radius:10px;
   background:transparent;
   color:#3B3935;
-  font-size:13px;
 }
 
 body.k .seg > button.sel,
@@ -2813,8 +2813,6 @@ body.k .seg > button.active {
 
 /* Pulsante "Aggiungi" */
 body.k .add-ctl button {
-  min-height:42px;
-  padding:0 18px;
   border-color:#1B1B1A;
   background:#1B1B1A;
   color:#fff;
@@ -3874,12 +3872,12 @@ body.k .notes-list-row .todo-delete {
   margin:0!important;
 }
 
-/* Layout legacy per il browser dei Kindle: niente flex/inset nella schermata appunti. */
-body.k #handwrittenNotesOverlay {
+/* Barra superiore appunti: layout compatibile con il browser legacy Kindle. */
+body.k .notes-topbar {
   position:absolute!important;
-  top:5px!important;
-  left:5px!important;
-  right:5px!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
   height:44px!important;
   min-height:0!important;
   display:block!important;
@@ -3888,7 +3886,11 @@ body.k #handwrittenNotesOverlay {
 body.k .notes-topbar button {
   display:inline-block!important;
   vertical-align:middle!important;
-  min-height:34px!important;
+  min-height:28px!important;
+  height:28px!important;
+  padding:3px 6px!important;
+  font-size:.78em!important;
+  line-height:1.1!important;
 }
 body.k .notes-topbar h2 {
   display:inline-block!important;
