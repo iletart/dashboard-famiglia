@@ -11963,32 +11963,17 @@ function setHandwrittenKindleScrollLock(enabled){
     handwrittenKindleScrollLock = {
       bodyOverflow: document.body.style.overflow,
       htmlOverflow: document.documentElement.style.overflow,
-      bodyOverscrollBehavior: document.body.style.overscrollBehavior,
-      bodyPosition: document.body.style.position,
-      bodyTop: document.body.style.top,
-      bodyLeft: document.body.style.left,
-      bodyWidth: document.body.style.width,
-      scrollY: window.pageYOffset || document.documentElement.scrollTop || 0
+      bodyOverscrollBehavior: document.body.style.overscrollBehavior
     };
-    /* Silk tende a scorrere la pagina per portare la textarea sopra la
-       tastiera. Blocca il documento, non solo l'overflow, così l'editor
-       resta nella sua posizione e i controlli sopra il campo rimangono visibili. */
-    document.body.style.position = "fixed";
-    document.body.style.top = "-" + handwrittenKindleScrollLock.scrollY + "px";
-    document.body.style.left = "0";
-    document.body.style.width = "100%";
+    /* Mantiene il blocco dello scroll senza fissare il body:
+       position:fixed interferisce con il riposizionamento della tastiera Silk. */
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
     document.body.style.overscrollBehavior = "none";
   } else if(handwrittenKindleScrollLock){
-    document.body.style.position = handwrittenKindleScrollLock.bodyPosition;
-    document.body.style.top = handwrittenKindleScrollLock.bodyTop;
-    document.body.style.left = handwrittenKindleScrollLock.bodyLeft;
-    document.body.style.width = handwrittenKindleScrollLock.bodyWidth;
     document.body.style.overflow = handwrittenKindleScrollLock.bodyOverflow;
     document.documentElement.style.overflow = handwrittenKindleScrollLock.htmlOverflow;
     document.body.style.overscrollBehavior = handwrittenKindleScrollLock.bodyOverscrollBehavior;
-    window.scrollTo(0, handwrittenKindleScrollLock.scrollY);
     handwrittenKindleScrollLock = null;
   }
 }
@@ -12246,8 +12231,7 @@ function initHandwrittenNotes(){
     if(notesTextInput){
       notesTextInput.addEventListener("focus",function(){
         document.body.classList.add("notes-keyboard-open");
-        /* Evita lo scroll automatico di Silk quando apre la tastiera. */
-        window.scrollTo(0,0);
+        /* Non forzare scrollTo: Silk deve gestire il viewport della tastiera. */
       });
       notesTextInput.addEventListener("blur",function(){
         document.body.classList.remove("notes-keyboard-open");
