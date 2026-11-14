@@ -9823,7 +9823,7 @@ function openViewOrder(){
   save.onclick=function(){ save.disabled=true; status.textContent="Salvataggio in corso..."; usersRequest("PUT","/views/order",{views:views.map(function(v){return v.id;})},function(err,result){
     if(err||!result||!result.ok){save.disabled=false;status.textContent=err||(result&&result.error)||"Salvataggio non riuscito.";status.style.color="#b3261e";return;}
     DASHBOARD_VIEWS=views.slice(); renderViewSwitcher(); status.textContent="Ordine aggiornato."; status.style.color="#287548";
-    loadAuthorizedConfig(function(configErr){save.disabled=false;if(configErr){status.textContent="Ordine salvato, ma configurazione non aggiornata.";status.style.color="#946200";return;}renderViewSwitcher();renderViewMenu();});
+    loadAuthorizedConfig(function(configErr){save.disabled=false;if(configErr){status.textContent="Ordine salvato, ma configurazione non aggiornata.";status.style.color="#946200";return;}renderViewSwitcher();clear($("viewMenuPanel"));closeViewMenu();});
   }); }; actions.appendChild(save);
   var footer=mk("div","",""); footer.style.display="flex"; footer.style.justifyContent="flex-end"; var close=mk("button","","CHIUDI"); close.type="button"; close.onclick=renderViewMenu; footer.appendChild(close); box.appendChild(footer); panel.appendChild(box);
 }
@@ -10686,7 +10686,12 @@ function renderViewSwitcher(){
     buttons.appendChild(button);
   }
 
-  var orderButton = mk("button", "view-switcher-order-button", "↔");
+  var orderButton = mk("button", "view-switcher-order-button", "");
+  var orderArrow = mk("span", "", "↔");
+  orderArrow.style.display = "block";
+  orderArrow.style.lineHeight = "1";
+  orderArrow.style.transform = "translateY(-2px)";
+  orderButton.appendChild(orderArrow);
   orderButton.type = "button";
   orderButton.title = "Ordina le tue viste";
   orderButton.setAttribute("aria-label", "Ordina le tue viste");
