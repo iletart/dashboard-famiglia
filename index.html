@@ -10123,6 +10123,9 @@ function openUserManagement(){
             loadUsers();
             return;
           }
+
+          // Aggiorna subito la barra dello switch utente senza ricaricare la pagina.
+          renderViewSwitcher();
   
           // Se la vista corrente non è più autorizzata,
           // passa alla prima vista disponibile.
