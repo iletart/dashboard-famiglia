@@ -12156,10 +12156,15 @@ function initHandwrittenNotes(){
     renderTouchDiag();
     startHandwrittenStroke(ev);
   },true);
-  canvas.addEventListener("mousemove",function(ev){
+  /* Sul browser Kindle il mousemove può avere come target la pagina
+     invece del canvas: durante il trascinamento lo ascoltiamo sul document
+     in capture, così il tratto continua anche se il puntatore esce dal canvas. */
+  document.addEventListener("mousemove",function(ev){
     if(handwrittenTouchSeen || !handwrittenCurrentStroke) return;
+    if(ev.cancelable && ev.preventDefault) ev.preventDefault();
     touchDiag.mouse++;
-    touchDiag.last = "mousemove canvas";
+    touchDiag.last = "mousemove document target:" +
+      (ev.target && ev.target.id ? ev.target.id : (ev.target ? ev.target.tagName : "?"));
     renderTouchDiag();
     moveHandwrittenStroke(ev);
   },true);
