@@ -3748,53 +3748,15 @@ body.k .todo-actions .todo-assign::after {
   overflow:hidden;
   text-overflow:ellipsis;
 }
-.notes-list-delete {
+.notes-list-row .todo-actions {
   display:flex;
-  flex:0 0 30px;
-  width:30px;
-  min-width:30px;
-  height:30px;
+  flex:0 0 32px;
   align-items:center;
-  justify-content:center;
-  margin:0 0 0 auto;
-  padding:0;
-  border:0;
-  background:transparent;
-  box-shadow:none;
+  justify-content:flex-end;
+  margin-left:8px;
 }
-.notes-list-trash-icon {
-  position:relative;
-  display:block;
-  width:11px;
-  height:12px;
-  box-sizing:content-box;
-  border:1px solid #000;
-  border-top:0;
-}
-.notes-list-trash-icon:before {
-  content:"";
-  position:absolute;
-  left:-2px;
-  top:-3px;
-  width:13px;
-  height:1px;
-  background:#000;
-}
-.notes-list-trash-icon:after {
-  content:"";
-  position:absolute;
-  left:2px;
-  top:-5px;
-  width:5px;
-  height:2px;
-  border:1px solid #000;
-  border-bottom:0;
-}
-body.k .notes-list-delete {
+body.k .notes-list-row .todo-actions {
   flex-basis:38px;
-  width:38px;
-  min-width:38px;
-  height:34px;
   margin-left:12px;
 }
 .notes-family-options { display:flex; align-items:center; gap:8px 16px; flex-wrap:wrap; font-size:.85em; }
@@ -11796,10 +11758,11 @@ function renderHandwrittenNotesList(){
       if(note.family_deletable) flags.push("ELIMINA");
       var visibility = mk("span", "notes-visibility-label", flags.length ? flags.join(" · ") : "PRIVATO");
       open.onclick = function(){ loadHandwrittenNote(note.id); };
-      var del = mk("button", "notes-list-delete", "");
-      del.appendChild(mk("span", "notes-list-trash-icon", ""));
+      var actions = mk("span", "todo-actions");
+      var del = mk("button", "todo-delete", "");
       del.type = "button";
       del.title = "Elimina appunto";
+      actions.appendChild(del);
       del.onclick = function(){
         if(!confirm("Eliminare l'appunto «" + (note.title || "Nuovo appunto") + "»?")) return;
         handwrittenNotesRequest("DELETE", "/notes/" + encodeURIComponent(note.id), null, function(err){
@@ -11809,7 +11772,7 @@ function renderHandwrittenNotesList(){
       };
       row.appendChild(info);
       row.appendChild(visibility);
-      if(note.can_delete === true){ row.appendChild(del); }
+      if(note.can_delete === true){ row.appendChild(actions); }
       host.appendChild(row);
     })(handwrittenNotes[i]);
   }
