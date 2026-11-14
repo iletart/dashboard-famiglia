@@ -4226,6 +4226,13 @@ body.k #viewMenuPanel button.menu-action-button:active {
   line-height:1!important;
   text-align:center!important;
 }
+.view-switcher-notes-button.notes-unread {
+  animation:handwrittenNotesBlink 1s steps(2,start) infinite!important;
+}
+@keyframes handwrittenNotesBlink {
+  0%,49% { opacity:1; }
+  50%,100% { opacity:.2; }
+}
 .view-switcher-notes-button {
   display:inline-flex!important;
   align-items:center!important;
@@ -11175,8 +11182,9 @@ function renderViewSwitcher(){
 
   var notesButton = mk("button", "view-switcher-notes-button", "✎");
   notesButton.type = "button";
-  notesButton.title = "Apri appunti";
-  notesButton.setAttribute("aria-label", "Apri appunti");
+  if(handwrittenNotesUnread) notesButton.classList.add("notes-unread");
+  notesButton.title = handwrittenNotesUnread ? "Ci sono appunti nuovi o modificati: apri per leggerli" : "Apri appunti";
+  notesButton.setAttribute("aria-label", notesButton.title);
   notesButton.onclick = function(ev){
     if(ev){ ev.preventDefault(); ev.stopPropagation(); }
     openHandwrittenNotesList();
@@ -11828,6 +11836,86 @@ var handwrittenCanvasReady = false;
 var handwrittenPreviousView = null;
 var handwrittenNotesPageOpen = false;
 var handwrittenTouchDiagRender = null;
+var handwrittenNotesUnread = false;
+var handwrittenNotesLastSeenKey = "dashboardHandwrittenNotesLastSeenAt";
+var handwrittenNotesPollStarted = false;
+
+function handwrittenNoteTimestampMs(value){
+  if(!value) return 0;
+  var raw = String(value);
+  var date = new Date(raw.indexOf("T") >= 0 ? raw : raw.replace(" ", "T") + "Z");
+  return isNaN(date.getTime()) ? 0 : date.getTime();
+}
+
+function latestHandwrittenNoteTimestamp(notes){
+  var latest = 0;
+  for(var i=0;i<(notes || []).length;i++){
+    var note = notes[i] || {};
+    latest = Math.max(latest, handwrittenNoteTimestampMs(note.updated_at), handwrittenNoteTimestampMs(note.created_at));
+  }
+  return latest;
+}
+
+function getHandwrittenNotesLastSeen(){
+  try { return Number(localStorage.getItem(handwrittenNotesLastSeenKey) || 0); }
+  catch(e){ return 0; }
+}
+
+function setHandwrittenNotesLastSeen(value){
+  try { localStorage.setItem(handwrittenNotesLastSeenKey, String(Math.max(0, Number(value) || 0))); }
+  catch(e){}
+}
+
+function updateHandwrittenNotesUnreadButton(){
+  var button = document.querySelector(".view-switcher-notes-button");
+  if(!button) return;
+  if(handwrittenNotesUnread){
+    button.classList.add("notes-unread");
+    button.title = "Ci sono appunti nuovi o modificati: apri per leggerli";
+    button.setAttribute("aria-label", button.title);
+  } else {
+    button.classList.remove("notes-unread");
+    button.title = "Apri appunti";
+    button.setAttribute("aria-label", "Apri appunti");
+  }
+}
+
+function checkHandwrittenNotesUnread(markAsRead, callback){
+  handwrittenNotesRequest("GET", "/notes", null, function(err, data){
+    if(err || !data || !data.ok || !Array.isArray(data.notes)){
+      if(callback) callback(err || "Elenco appunti non disponibile");
+      return;
+    }
+    var latest = latestHandwrittenNoteTimestamp(data.notes);
+    var lastSeen = getHandwrittenNotesLastSeen();
+    if(!lastSeen){
+      setHandwrittenNotesLastSeen(latest);
+      handwrittenNotesUnread = false;
+    } else if(markAsRead){
+      setHandwrittenNotesLastSeen(Math.max(lastSeen, latest));
+      handwrittenNotesUnread = false;
+    } else if(latest > lastSeen){
+      handwrittenNotesUnread = true;
+    }
+    updateHandwrittenNotesUnreadButton();
+    if(callback) callback(null, data.notes);
+  });
+}
+
+function startHandwrittenNotesUnreadPolling(){
+  if(handwrittenNotesPollStarted || !window.setInterval) return;
+  handwrittenNotesPollStarted = true;
+  window.setInterval(function(){
+    if(!handwrittenNotesPageOpen) checkHandwrittenNotesUnread(false);
+  }, 60000);
+}
+
+function defaultHandwrittenNoteTitle(){
+  var d = new Date();
+  function pad(n){ return n < 10 ? "0" + n : String(n); }
+  return "Appunto " + pad(d.getDate()) + "/" + pad(d.getMonth()+1) + "/" +
+    d.getFullYear() + " " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+}
 
 function handwrittenNotesRequest(method, path, body, callback){
   var xhr = new XMLHttpRequest();
@@ -11869,6 +11957,11 @@ function showHandwrittenNotesList(){
       return;
     }
     handwrittenNotes = Array.isArray(data.notes) ? data.notes : [];
+    var latestSeen = latestHandwrittenNoteTimestamp(handwrittenNotes);
+    if(!getHandwrittenNotesLastSeen()) setHandwrittenNotesLastSeen(latestSeen);
+    else setHandwrittenNotesLastSeen(Math.max(getHandwrittenNotesLastSeen(), latestSeen));
+    handwrittenNotesUnread = false;
+    updateHandwrittenNotesUnreadButton();
     renderHandwrittenNotesList();
     setText($("notesBoxStatus"), handwrittenNotes.length + (handwrittenNotes.length === 1 ? " appunto" : " appunti"));
   });
@@ -12035,7 +12128,7 @@ function openHandwrittenNoteEditor(note, forceTextMode){
   $("notesTextEditor").value = savedText;
   setHidden($("notesTextEditor"), !handwrittenTextMode);
   setHidden($("handwrittenCanvas"), handwrittenTextMode);
-  $("notesTitle").value = note ? (note.title || "Nuovo appunto") : "Nuovo appunto";
+  $("notesTitle").value = note ? (note.title || defaultHandwrittenNoteTitle()) : defaultHandwrittenNoteTitle();
   var metadata = $("notesMetadata");
   if(metadata){ metadata.textContent = note ? handwrittenNoteAuditText(note) : ""; metadata.hidden = !note; }
   $("notesFamilyVisible").checked = !!(note && note.visibility === "public");
@@ -12235,6 +12328,8 @@ function initHandwrittenNotes(){
   var canvas = $("handwrittenCanvas");
   if(!canvas || handwrittenCanvasReady) return;
   handwrittenCanvasReady = true;
+  startHandwrittenNotesUnreadPolling();
+  checkHandwrittenNotesUnread(false);
   if(document.body.classList.contains("k")){
     var notesTextInput = $("notesTextEditor");
     if(notesTextInput){
