@@ -4033,7 +4033,7 @@ body.k .box-meta-footer .sync-label {
 body.k .box-meta-footer .box-refresh {
   display:block !important;
   position:absolute !important;
-  top:2px !important;
+  top:-3px !important;
   right:0 !important;
   left:auto !important;
   float:none !important;
@@ -11045,6 +11045,20 @@ function initBoxRefresh() {
       heading.appendChild(button);
     } else {
       heading.appendChild(button);
+    }
+
+    /* Centra la rotella sull'etichetta oraria: se contiene due righe,
+       il centro cade tra upd time e sync time; con una riga si allinea
+       esattamente al sync time. */
+    var syncLabel = box.getElementsByClassName("sync-label")[0];
+    if (syncLabel && button.parentNode) {
+      var labelRect = syncLabel.getBoundingClientRect();
+      var parentRect = button.parentNode.getBoundingClientRect();
+      var buttonHeight = button.offsetHeight || 30;
+      button.style.top = (
+        labelRect.top - parentRect.top +
+        (labelRect.height - buttonHeight) / 2
+      ) + "px";
     }
   }
 }
