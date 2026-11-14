@@ -10408,23 +10408,6 @@ function boxesOf(el){
   return r;
 }
 
-function columnHeight(bs){
-  var h = 0;
-  for(var i = 0; i < bs.length; i++){ h += bs[i].offsetHeight + 6; }   /* 6 = margini del box */
-  return h;
-}
-
-/* Distribuisce extra px tra i box di una colonna; l'ultimo assorbe l'arrotondamento */
-function growColumn(bs, extra){
-  var each = Math.floor(extra / bs.length), used = 0;
-  for(var i = 0; i < bs.length; i++){
-    var add = (i === bs.length - 1) ? extra - used : each;
-    used += add;
-    bs[i].style.minHeight = (bs[i].offsetHeight + add) + "px";
-  }
-}
-
-
 
 function alignBoxes(){
   var currentViewConfig = findItem(DASHBOARD_VIEWS, function(v){
@@ -10459,7 +10442,9 @@ function alignBoxes(){
 
   var lastRow = rows[rows.length - 1];
   var columns = [];
-  var targetBottom = window.innerHeight || document.documentElement.clientHeight || 0;
+  var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+  var targetBottom = scrollTop +
+    (window.innerHeight || document.documentElement.clientHeight || 0);
 
   for(i = 0; i < lastRow.children.length; i++){
     boxes = boxesOf(lastRow.children[i]);
