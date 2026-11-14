@@ -5346,10 +5346,8 @@ function itemRow(item, busy, onToggle, onDelete, extraBtn, assigneeClass){
   var taskLabel = mk("span", item.done ? "task-label-done" : "", item.text);
   textCell.appendChild(taskLabel);
   var assignedNames = assigneeLabel(item.assignees);
-  if(assignedNames){
-    var assignment = mk("span", assigneeClass || "task-assignees",
-      assigneeClass === "recurring-task-owners" ? assignedNames : " · " + assignedNames);
-    textCell.appendChild(assignment);
+  if(assignedNames && assigneeClass){
+    textCell.appendChild(mk("span", assigneeClass, assignedNames));
   }
   row.appendChild(textCell);
 
@@ -5604,9 +5602,6 @@ function renderPersonalTodo() {
       if (item.done) {
         label.classList.add("done");
       }
-      var assignedNames = assigneeLabel(item.assignees);
-      if(assignedNames) label.appendChild(mk("span", "recurring-task-owners", assignedNames));
-
       row.appendChild(checkbox);
       row.appendChild(label);
       box.appendChild(row);
@@ -6253,7 +6248,7 @@ function taskRowEl(index, item, personal){
     function(){ taskAct("toggle", index, personal); },
     function(){ taskAct("delete", index, personal); },
     ctl ? ctl.btn : null,
-    personal ? "recurring-task-owners" : "task-assignees"));
+    personal ? null : "recurring-task-owners"));
   if(ctl){ wrap.appendChild(ctl.menu); }
   return wrap;
 }
