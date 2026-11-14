@@ -3916,12 +3916,16 @@ body.k #viewMenuPanel button.menu-action-button:active {
   text-align:center!important;
 }
 .view-switcher-button {
-  display:inline-block!important;
-  vertical-align:middle;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
   width:auto!important;
-  min-width:100px!important;
+  min-width:0!important;
+  max-width:none!important;
+  box-sizing:border-box!important;
   margin:1px 2px!important;
-  padding:9px 18px!important;
+  padding:9px 12px!important;
   border:0!important;
   border-radius:12px!important;
   background:transparent!important;
@@ -3969,12 +3973,15 @@ body.k .view-switcher-order-button {
   text-align:center!important;
 }
 body.k .view-switcher-button {
-  display:inline-block!important;
+  display:inline-flex!important;
+  flex:0 0 auto!important;
   width:auto!important;
-  min-width:82px!important;
+  min-width:0!important;
+  max-width:none!important;
   min-height:34px!important;
+  box-sizing:border-box!important;
   margin:1px 2px!important;
-  padding:7px 12px!important;
+  padding:7px 10px!important;
   border:0!important;
   border-radius:9px!important;
   font-size:.82em!important;
