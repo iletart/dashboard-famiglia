@@ -3977,15 +3977,16 @@ body.k #viewMenuPanel button.menu-action-button:active {
 }
 .view-switcher-title { display:none!important; }
 .view-switcher-buttons {
-  display:block;
-  width:100%;
-  max-width:100%;
-  box-sizing:border-box;
-  padding:4px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  white-space:nowrap;
-  -webkit-overflow-scrolling:touch;
+  display:flex; align-items:center; gap:2px;
+  width:100%; max-width:100%; box-sizing:border-box;
+  padding:4px; overflow-x:auto; overflow-y:hidden;
+  white-space:nowrap; -webkit-overflow-scrolling:touch;
+}
+.view-switcher-order-button {
+  flex:0 0 auto; margin:1px 2px 1px auto!important;
+  padding:7px 12px!important; min-width:36px!important; width:36px!important;
+  border:1px solid #aaa!important; border-radius:10px!important;
+  background:#fff!important; color:#333!important; font-size:1.05em!important; line-height:1!important;
 }
 .view-switcher-button {
   display:inline-block!important;
@@ -4022,13 +4023,13 @@ body.k .view-switcher {
 }
 body.k .view-switcher-title { display:none!important; }
 body.k .view-switcher-buttons {
-  display:block!important;
-  width:100%!important;
-  max-width:100%!important;
-  padding:3px!important;
-  white-space:nowrap!important;
-  overflow-x:auto!important;
-  overflow-y:hidden!important;
+  display:flex!important; align-items:center!important;
+  width:100%!important; max-width:100%!important; padding:3px!important;
+  white-space:nowrap!important; overflow-x:auto!important; overflow-y:hidden!important;
+}
+body.k .view-switcher-order-button {
+  flex:0 0 34px!important; width:34px!important; min-width:34px!important;
+  min-height:34px!important; margin-left:auto!important; padding:6px!important;
 }
 body.k .view-switcher-button {
   display:inline-block!important;
@@ -9776,6 +9777,27 @@ function openLayoutManagement(){
 }
 
 
+function openViewOrder(){
+  var panel=$("viewMenuPanel"); clear(panel); panel.style.width="560px"; panel.style.maxWidth="92vw"; panel.style.boxSizing="border-box";
+  var box=mk("div","user-management-panel",""); box.style.padding="14px"; box.style.display="flex"; box.style.flexDirection="column"; box.style.gap="12px"; box.style.width="100%"; box.style.boxSizing="border-box";
+  var heading=mk("div","","ORDINE DELLE VISTE"); heading.style.fontWeight="bold"; heading.style.fontSize="18px"; box.appendChild(heading);
+  box.appendChild(mk("div","small","Usa le frecce per definire l’ordine dei pulsanti nello switch. La configurazione è personale e viene salvata per il tuo profilo."));
+  var list=mk("div","",""); list.style.display="flex"; list.style.flexDirection="column"; list.style.gap="6px"; box.appendChild(list);
+  var views=Array.isArray(DASHBOARD_VIEWS)?DASHBOARD_VIEWS.slice():[];
+  function draw(){ clear(list); for(var i=0;i<views.length;i++){ (function(index){ var view=views[index]; var row=mk("div","",""); row.style.display="flex"; row.style.alignItems="center"; row.style.gap="8px"; row.style.padding="7px 9px"; row.style.border="1px solid #deded6"; row.style.borderRadius="6px";
+    var name=mk("div","",view.title||view.name||view.id); name.style.flex="1 1 auto"; name.style.minWidth="0"; row.appendChild(name);
+    var up=mk("button","","↑"); up.type="button"; up.title="Sposta in alto"; up.style.margin="0"; up.style.padding="3px 9px"; up.style.width="auto"; up.disabled=index===0; up.onclick=function(){var t=views[index-1];views[index-1]=views[index];views[index]=t;draw();}; row.appendChild(up);
+    var down=mk("button","","↓"); down.type="button"; down.title="Sposta in basso"; down.style.margin="0"; down.style.padding="3px 9px"; down.style.width="auto"; down.disabled=index===views.length-1; down.onclick=function(){var t=views[index+1];views[index+1]=views[index];views[index]=t;draw();}; row.appendChild(down); list.appendChild(row); })(i); } }
+  draw(); var status=mk("div","small",""); box.appendChild(status); var actions=mk("div","",""); actions.style.display="flex"; actions.style.gap="8px"; actions.style.justifyContent="flex-end"; box.appendChild(actions);
+  var cancel=mk("button","","ANNULLA"); cancel.type="button"; cancel.style.margin="0"; cancel.style.padding="6px 10px"; cancel.style.width="auto"; cancel.onclick=renderViewMenu; actions.appendChild(cancel);
+  var save=mk("button","","SALVA ORDINE"); save.type="button"; save.style.margin="0"; save.style.padding="6px 10px"; save.style.width="auto";
+  save.onclick=function(){ save.disabled=true; status.textContent="Salvataggio in corso..."; usersRequest("PUT","/views/order",{views:views.map(function(v){return v.id;})},function(err,result){
+    if(err||!result||!result.ok){save.disabled=false;status.textContent=err||(result&&result.error)||"Salvataggio non riuscito.";status.style.color="#b3261e";return;}
+    DASHBOARD_VIEWS=views.slice(); renderViewSwitcher(); status.textContent="Ordine aggiornato."; status.style.color="#287548";
+    loadAuthorizedConfig(function(configErr){save.disabled=false;if(configErr){status.textContent="Ordine salvato, ma configurazione non aggiornata.";status.style.color="#946200";return;}renderViewSwitcher();renderViewMenu();});
+  }); }; actions.appendChild(save);
+  var footer=mk("div","",""); footer.style.display="flex"; footer.style.justifyContent="flex-end"; var close=mk("button","","CHIUDI"); close.type="button"; close.onclick=renderViewMenu; footer.appendChild(close); box.appendChild(footer); panel.appendChild(box);
+}
 function openUserManagement(){
   var panel = $("viewMenuPanel");
   clear(panel);
@@ -9817,14 +9839,6 @@ function openUserManagement(){
   header.appendChild(addButton);
   box.appendChild(header);
 
-  var orderButton = mk("button", "", "ORDINA VISTE");
-  orderButton.type = "button";
-  orderButton.style.margin = "0";
-  orderButton.style.padding = "7px 10px";
-  orderButton.style.fontSize = "13px";
-  orderButton.onclick = renderViewOrder;
-  box.insertBefore(orderButton, box.children[1]);
-
   var divider = mk("div", "", "");
   divider.style.borderTop = "1px solid #d8d8d0";
   box.appendChild(divider);
@@ -9855,7 +9869,6 @@ function openUserManagement(){
 
   function loadUsers(){
     setHidden(addButton, false);
-    setHidden(orderButton, false);
     clear(content);
     content.appendChild(mk("div", "small", "Caricamento utenti..."));
     usersRequest("GET", "/users", null, function(err, data){
@@ -9876,135 +9889,6 @@ function openUserManagement(){
       content.appendChild(count);
       for(var i = 0; i < users.length; i++) renderUserRow(users[i]);
     });
-  }
-
-  function renderViewOrder(){
-    setHidden(addButton, true);
-    setHidden(orderButton, true);
-    clear(content);
-
-    var heading = mk("div", "", "ORDINE DELLE VISTE");
-    heading.style.fontWeight = "bold";
-    heading.style.fontSize = "16px";
-    content.appendChild(heading);
-
-    var help = mk("div", "small", "Usa le frecce per definire l'ordine dei pulsanti nello switch della dashboard. L'ordine sarà uguale per tutti gli utenti.");
-    content.appendChild(help);
-
-    var list = mk("div", "", "");
-    list.style.display = "flex";
-    list.style.flexDirection = "column";
-    list.style.gap = "6px";
-    content.appendChild(list);
-
-    var views = DASHBOARD_VIEWS.slice();
-    function draw(){
-      clear(list);
-      for(var i = 0; i < views.length; i++){
-        (function(index){
-          var view = views[index];
-          var row = mk("div", "", "");
-          row.style.display = "flex";
-          row.style.alignItems = "center";
-          row.style.gap = "8px";
-          row.style.padding = "7px 9px";
-          row.style.border = "1px solid #deded6";
-          row.style.borderRadius = "6px";
-
-          var name = mk("div", "", view.title || view.name || view.id);
-          name.style.flex = "1 1 auto";
-          name.style.minWidth = "0";
-          row.appendChild(name);
-
-          var up = mk("button", "", "↑");
-          up.type = "button";
-          up.title = "Sposta in alto";
-          up.style.margin = "0";
-          up.style.padding = "3px 9px";
-          up.style.width = "auto";
-          up.disabled = index === 0;
-          up.onclick = function(){
-            var tmp = views[index - 1];
-            views[index - 1] = views[index];
-            views[index] = tmp;
-            draw();
-          };
-          row.appendChild(up);
-
-          var down = mk("button", "", "↓");
-          down.type = "button";
-          down.title = "Sposta in basso";
-          down.style.margin = "0";
-          down.style.padding = "3px 9px";
-          down.style.width = "auto";
-          down.disabled = index === views.length - 1;
-          down.onclick = function(){
-            var tmp = views[index + 1];
-            views[index + 1] = views[index];
-            views[index] = tmp;
-            draw();
-          };
-          row.appendChild(down);
-          list.appendChild(row);
-        })(i);
-      }
-    }
-    draw();
-
-    var status = mk("div", "small", "");
-    content.appendChild(status);
-
-    var actions = mk("div", "", "");
-    actions.style.display = "flex";
-    actions.style.gap = "8px";
-    actions.style.justifyContent = "flex-end";
-    content.appendChild(actions);
-
-    var cancel = mk("button", "", "ANNULLA");
-    cancel.type = "button";
-    cancel.style.margin = "0";
-    cancel.style.padding = "6px 10px";
-    cancel.style.width = "auto";
-    cancel.onclick = loadUsers;
-    actions.appendChild(cancel);
-
-    var save = mk("button", "", "SALVA ORDINE");
-    save.type = "button";
-    save.style.margin = "0";
-    save.style.padding = "6px 10px";
-    save.style.width = "auto";
-    save.onclick = function(){
-      save.disabled = true;
-      status.textContent = "Salvataggio in corso...";
-      usersRequest("PUT", "/views/order", {
-        views: views.map(function(view){ return view.id; })
-      }, function(err, result){
-        save.disabled = false;
-        if(err || !result || !result.ok){
-          status.textContent = err || (result && result.error) || "Salvataggio non riuscito.";
-          status.style.color = "#b3261e";
-          return;
-        }
-        // Aggiorna subito la barra usando l'ordine appena salvato,
-        // senza attendere una nuova lettura della configurazione.
-        DASHBOARD_VIEWS = views.slice();
-        renderViewSwitcher();
-        status.textContent = "Ordine aggiornato.";
-        status.style.color = "#287548";
-
-        // Riallinea poi la configurazione ai dati restituiti dal server.
-        loadAuthorizedConfig(function(configErr){
-          if(configErr){
-            status.textContent = "Ordine aggiornato; sincronizzazione completata solo localmente.";
-            status.style.color = "#946200";
-            return;
-          }
-          renderViewSwitcher();
-          loadUsers();
-        });
-      });
-    };
-    actions.appendChild(save);
   }
 
   function renderUserRow(user){
@@ -10773,6 +10657,15 @@ function renderViewSwitcher(){
     buttons.appendChild(button);
   }
 
+  var orderButton = mk("button", "view-switcher-order-button", "↕");
+  orderButton.type = "button";
+  orderButton.title = "Ordina le tue viste";
+  orderButton.setAttribute("aria-label", "Ordina le tue viste");
+  orderButton.onclick = function(ev){
+    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+    openViewOrder();
+  };
+  buttons.appendChild(orderButton);
   setHidden(bar, false);
 }
 
