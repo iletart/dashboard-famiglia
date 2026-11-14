@@ -11701,13 +11701,6 @@ function saveHandwrittenNote(){
     handwrittenNoteDirty = false;
     $("notesSaveButton").disabled = true;
     setText($("notesStatus"),"Appunto salvato. Nessuna modifica in sospeso.");
-    openHandwrittenNoteEditor(data.note || {
-      id: handwrittenNoteId,
-      title: title,
-      strokes: handwrittenStrokes,
-      visibility: payload.visibility,
-      can_edit: true
-    });
     showHandwrittenNotesList();
   });
 }
@@ -11908,7 +11901,10 @@ safe(initHandwrittenNotes);
     }
 
     if(xhr.addEventListener){
-      xhr.addEventListener("loadend", finish, false);
+      xhr.addEventListener("load", finish, false);
+      xhr.addEventListener("error", finish, false);
+      xhr.addEventListener("timeout", finish, false);
+      xhr.addEventListener("abort", finish, false);
     } else {
       var oldReady = xhr.onreadystatechange;
       xhr.onreadystatechange = function(){
