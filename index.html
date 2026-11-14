@@ -11735,6 +11735,7 @@ var handwrittenTool = "pen";
 var handwrittenCanvasReady = false;
 var handwrittenPreviousView = null;
 var handwrittenNotesPageOpen = false;
+var handwrittenTouchDiagRender = null;
 
 function handwrittenNotesRequest(method, path, body, callback){
   var xhr = new XMLHttpRequest();
@@ -11887,6 +11888,7 @@ function openHandwrittenNoteEditor(note){
   handwrittenNoteDirty = false;
   $("notesSaveButton").disabled = !handwrittenNoteCanEdit || !!note;
   setText($("notesStatus"), !handwrittenNoteCanEdit ? "Appunto pubblico in sola lettura." : (note ? "Nessuna modifica da salvare." : "Nuovo appunto non ancora salvato."));
+  if(handwrittenTouchDiagRender) handwrittenTouchDiagRender();
   handwrittenTool = "pen";
   updateHandwrittenToolButtons();
   window.setTimeout(resizeHandwrittenCanvas, 30);
@@ -12009,6 +12011,7 @@ function markHandwrittenNoteDirty(){
   handwrittenNoteDirty = true;
   $("notesSaveButton").disabled = false;
   setText($("notesStatus"), "Hai modifiche da salvare.");
+  if(handwrittenTouchDiagRender) handwrittenTouchDiagRender();
 }
 
 function endHandwrittenStroke(ev){
@@ -12083,6 +12086,7 @@ function initHandwrittenNotes(){
       " · P:" + touchDiag.pointer + " Mouse:" + touchDiag.mouse +
       " · " + touchDiag.last;
   }
+  handwrittenTouchDiagRender = renderTouchDiag;
   function getHandwrittenTouch(ev){
     if(ev.touches && ev.touches.length) return ev.touches[0];
     if(ev.changedTouches && ev.changedTouches.length) return ev.changedTouches[0];
