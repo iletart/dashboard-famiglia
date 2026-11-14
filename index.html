@@ -34,6 +34,11 @@ body {
   display:none!important;
 }
 
+/* Il selettore viste deve sparire anche su Kindle quando non autenticati. */
+#viewSwitcher[hidden] {
+  display:none!important;
+}
+
 .wrap {
   padding:4px;
 }
@@ -10957,6 +10962,7 @@ function clearAuthStorage(){
 }
 
 function showLoggedOut(message){
+  setHidden($("viewSwitcher"), true);
   setHidden($("handwrittenNotesBox"), true);
   setHidden($("handwrittenNotesOverlay"), true);
 	authToken = "";
