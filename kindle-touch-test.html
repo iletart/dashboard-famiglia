@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Test touch Kindle</title>
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; padding:16px; font:18px Arial,sans-serif; color:#111; }
+  h1 { font-size:24px; margin:0 0 12px; }
+  p { line-height:1.4; }
+  #pad {
+    height:260px; border:3px solid #333; background:#f2f2f2;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center; font-weight:bold; touch-action:none;
+    -ms-touch-action:none; user-select:none; -webkit-user-select:none;
+  }
+  #status { margin:12px 0; padding:10px; background:#eee; }
+  #counts { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .count { border:1px solid #999; padding:8px; }
+  .count b { display:block; font-size:14px; }
+  .count span { font-size:24px; }
+  button { font-size:18px; padding:10px 16px; margin:12px 0; }
+  #log { white-space:pre-wrap; overflow-wrap:anywhere; font-size:14px; }
+</style>
+</head>
+<body>
+<h1>Test trascinamento Kindle</h1>
+<p>Fai prima un tap nel riquadro. Poi appoggia il dito al centro e trascinalo per 3-4 secondi senza staccarlo. Ripeti una seconda volta.</p>
+<div id="pad">TOCCA E TRASCINA QUI</div>
+<div id="status">In attesa di un gesto…</div>
+<div id="counts">
+  <div class="count"><b>Touch start</b><span id="ts">0</span></div>
+  <div class="count"><b>Touch move</b><span id="tm">0</span></div>
+  <div class="count"><b>Touch end</b><span id="te">0</span></div>
+  <div class="count"><b>Pointer down</b><span id="pd">0</span></div>
+  <div class="count"><b>Pointer move</b><span id="pm">0</span></div>
+  <div class="count"><b>Pointer up</b><span id="pu">0</span></div>
+  <div class="count"><b>Mouse down</b><span id="md">0</span></div>
+  <div class="count"><b>Mouse move</b><span id="mm">0</span></div>
+  <div class="count"><b>Mouse up</b><span id="mu">0</span></div>
+  <div class="count"><b>Scroll pagina</b><span id="sc">0</span></div>
+</div>
+<button id="reset" type="button">Azzera contatori</button>
+<p><b>Ultimo evento:</b> <span id="last">nessuno</span></p>
+<p id="log">Se durante il trascinamento Touch move, Pointer move e Mouse move restano a zero, il browser non sta consegnando alla pagina gli eventi di movimento.</p>
+<div style="height:500px">Area sotto il test: serve a verificare se la pagina scorre.</div>
+<script>
+(function () {
+  var pad = document.getElementById('pad');
+  var status = document.getElementById('status');
+  var last = document.getElementById('last');
+  var log = document.getElementById('log');
+  var counts = {ts:0,tm:0,te:0,pd:0,pm:0,pu:0,md:0,mm:0,mu:0,sc:0};
+  function add(key, eventName, event) {
+    counts[key]++;
+    document.getElementById(key).textContent = counts[key];
+    last.textContent = eventName + (event && event.pointerType ? ' (' + event.pointerType + ')' : '');
+    status.textContent = 'Evento ricevuto: ' + eventName;
+  }
+  function touch(name, key, e) {
+    add(key, name, e);
+    if (name === 'touchmove') e.preventDefault();
+  }
+  pad.addEventListener('touchstart', function(e){touch('touchstart','ts',e);}, {passive:false});
+  pad.addEventListener('touchmove', function(e){touch('touchmove','tm',e);}, {passive:false});
+  pad.addEventListener('touchend', function(e){touch('touchend','te',e);}, {passive:false});
+  pad.addEventListener('touchcancel', function(e){last.textContent='touchcancel';}, {passive:false});
+  pad.addEventListener('pointerdown', function(e){add('pd','pointerdown',e);}, true);
+  pad.addEventListener('pointermove', function(e){add('pm','pointermove',e);}, true);
+  pad.addEventListener('pointerup', function(e){add('pu','pointerup',e);}, true);
+  pad.addEventListener('mousedown', function(e){add('md','mousedown',e);}, true);
+  pad.addEventListener('mousemove', function(e){add('mm','mousemove',e);}, true);
+  pad.addEventListener('mouseup', function(e){add('mu','mouseup',e);}, true);
+  window.addEventListener('scroll', function(){add('sc','scroll',null);}, {passive:true});
+  document.getElementById('reset').addEventListener('click', function(){
+    Object.keys(counts).forEach(function(k){counts[k]=0;document.getElementById(k).textContent='0';});
+    last.textContent='nessuno'; status.textContent='Contatori azzerati'; log.textContent='Ora riprova il trascinamento.';
+  });
+})();
+</script>
+</body>
+</html>
