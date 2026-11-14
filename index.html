@@ -10349,14 +10349,27 @@ function updateLoggedUser() {
   el.textContent = "Utente: " + name + " (" + typeLabel + ")";
 }
 
+function restoreLoginNames(){
+  try {
+    $("loginFamily").value = localStorage.getItem("dashboardLoginFamily") || "";
+    $("loginUser").value = localStorage.getItem("dashboardLoginUser") || "";
+  } catch(e){}
+}
+
+function saveLoginNames(){
+  try {
+    localStorage.setItem("dashboardLoginFamily", $("loginFamily").value.trim());
+    localStorage.setItem("dashboardLoginUser", $("loginUser").value.trim());
+  } catch(e){}
+}
+
 function openLoginPage(){
 
   var family = $("loginFamily");
   var user = $("loginUser");
   var pin = $("loginPin");
 
-  family.value = "";
-  user.value = "";
+  restoreLoginNames();
   pin.value = "";
 
   setHidden($("welcomePage"), true);
@@ -10369,6 +10382,12 @@ function openLoginPage(){
 
 function initLoginPage(){
 
+  restoreLoginNames();
+  $("loginFamily").onchange = saveLoginNames;
+  $("loginUser").onchange = saveLoginNames;
+  $("loginFamily").onblur = saveLoginNames;
+  $("loginUser").onblur = saveLoginNames;
+
   $("loginSubmit").onclick = function(){
 
     var family = $("loginFamily").value.trim();
@@ -10379,6 +10398,8 @@ function initLoginPage(){
       alert("Inserisci famiglia e nome utente.");
       return;
     }
+
+    saveLoginNames();
 
     if(!/^\d{6,12}$/.test(pin)){
       alert("Inserisci un PIN da 6 a 12 cifre.");
