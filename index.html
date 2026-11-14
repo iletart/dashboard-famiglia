@@ -11838,6 +11838,7 @@ var handwrittenNotesPageOpen = false;
 var handwrittenTouchDiagRender = null;
 var handwrittenNotesUnread = false;
 var handwrittenNotesLastSeenKey = "dashboardHandwrittenNotesLastSeenAt";
+var handwrittenNotesInitializedKey = "dashboardHandwrittenNotesInitialized";
 var handwrittenNotesPollStarted = false;
 
 function handwrittenNoteTimestampMs(value){
@@ -11888,11 +11889,17 @@ function checkHandwrittenNotesUnread(markAsRead, callback){
     }
     var latest = latestHandwrittenNoteTimestamp(data.notes);
     var lastSeen = getHandwrittenNotesLastSeen();
-    if(!lastSeen){
-      setHandwrittenNotesLastSeen(latest);
-      handwrittenNotesUnread = false;
-    } else if(markAsRead){
+    var initialized = false;
+    try { initialized = localStorage.getItem(handwrittenNotesInitializedKey) === "1"; } catch(e){}
+    if(markAsRead){
       setHandwrittenNotesLastSeen(Math.max(lastSeen, latest));
+      try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
+      handwrittenNotesUnread = false;
+    } else if(!initialized){
+      /* Il primo controllo riuscito stabilisce la baseline, anche se l'elenco è vuoto
+         (timestamp 0): da quel momento un nuovo appunto viene sempre rilevato. */
+      setHandwrittenNotesLastSeen(latest);
+      try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
       handwrittenNotesUnread = false;
     } else if(latest > lastSeen){
       handwrittenNotesUnread = true;
@@ -11958,8 +11965,8 @@ function showHandwrittenNotesList(){
     }
     handwrittenNotes = Array.isArray(data.notes) ? data.notes : [];
     var latestSeen = latestHandwrittenNoteTimestamp(handwrittenNotes);
-    if(!getHandwrittenNotesLastSeen()) setHandwrittenNotesLastSeen(latestSeen);
-    else setHandwrittenNotesLastSeen(Math.max(getHandwrittenNotesLastSeen(), latestSeen));
+    setHandwrittenNotesLastSeen(Math.max(getHandwrittenNotesLastSeen(), latestSeen));
+    try { localStorage.setItem(handwrittenNotesInitializedKey, "1"); } catch(e){}
     handwrittenNotesUnread = false;
     updateHandwrittenNotesUnreadButton();
     renderHandwrittenNotesList();
@@ -12364,13 +12371,7 @@ function initHandwrittenNotes(){
      I contatori permettono di distinguere touchstart da touchmove/cancel. */
   var touchDiag = {start:0, move:0, end:0, cancel:0, pointer:0, mouse:0, windowMouse:0, windowTouch:0, last:"nessun evento"};
   function renderTouchDiag(){
-    var status = $("notesStatus");
-    if(!status) return;
-    status.textContent = "Touch S:" + touchDiag.start + " M:" + touchDiag.move +
-      " E:" + touchDiag.end + " C:" + touchDiag.cancel +
-      " · P:" + touchDiag.pointer + " Mouse:" + touchDiag.mouse +
-      " · WinM:" + touchDiag.windowMouse + " WinT:" + touchDiag.windowTouch +
-      " · " + touchDiag.last;
+    /* Diagnostica tecnica disattivata nell'interfaccia di creazione appunti. */
   }
   handwrittenTouchDiagRender = renderTouchDiag;
   /* Diagnostica grezza su window: conta i movimenti anche fuori dal canvas,
@@ -12391,15 +12392,7 @@ function initHandwrittenNotes(){
     return null;
   }
   function noteTouchEvent(name, ev, touch){
-    touchDiag[name]++;
-    if(touch){
-      touchDiag.last = name + " x:" + Math.round(touch.clientX || 0) +
-        " y:" + Math.round(touch.clientY || 0);
-    } else {
-      touchDiag.last = name + " target:" +
-        (ev && ev.target && ev.target.id ? ev.target.id : (ev && ev.target ? ev.target.tagName : "?"));
-    }
-    renderTouchDiag();
+    /* Nessuna coordinata o contatore tecnico viene mostrato all'utente. */
   }
   /* Alcuni Kindle consegnano il touch a un target diverso dal canvas,
      oppure espongono soltanto eventi mouse. Registriamo prima l'evento,
