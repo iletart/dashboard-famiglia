@@ -4227,7 +4227,9 @@ body.k #viewMenuPanel button.menu-action-button:active {
   text-align:center!important;
 }
 .view-switcher-notes-button.notes-unread {
-  animation:handwrittenNotesBlink 1s steps(2,start) infinite!important;
+  /* Il lampeggio è gestito dal timer JavaScript: niente animazione CSS
+     che sovrascriva l'opacità impostata dal timer, soprattutto su Silk. */
+  animation:none!important;
 }
 @keyframes handwrittenNotesBlink {
   0%,49% { opacity:1; }
