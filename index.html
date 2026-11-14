@@ -4101,6 +4101,19 @@ body.k .view-switcher-button {
   border-radius:9px!important;
   font-size:.82em!important;
 }
+/* Evidenzia sempre la vista attiva anche sul browser Kindle. */
+body.k .view-switcher-shared .view-switcher-button.sel {
+  background:#455a64!important;
+  background-color:#455a64!important;
+  border-color:#455a64!important;
+  color:#fff!important;
+}
+body.k .view-switcher-personal .view-switcher-button.sel {
+  background:#704052!important;
+  background-color:#704052!important;
+  border-color:#704052!important;
+  color:#fff!important;
+}
 
 </style>
 
@@ -10960,11 +10973,14 @@ function initBoxRefresh() {
     var heading = headings[0];
 	heading.style.position = "relative";
 
-    if (heading.getElementsByClassName("box-refresh").length) {
-      continue;
-    }
+    /* Riutilizza l'eventuale pulsante già presente: su Kindle va comunque
+       spostato nel footer, anche se era stato creato in precedenza nell'header. */
+    var button = heading.getElementsByClassName("box-refresh")[0];
+    var isNewButton = !button;
 
-    var button = mk("button", "box-refresh", "↻");
+    if (!button) {
+      button = mk("button", "box-refresh", "↻");
+    }
 
     button.type = "button";
     button.title = "Aggiorna";
@@ -10982,7 +10998,7 @@ function initBoxRefresh() {
     button.style.color = "#000";
     button.style.cursor = "pointer";
 
-    (function (loader, btn) {
+    if (isNewButton) (function (loader, btn) {
 
       var busy = false;
 
