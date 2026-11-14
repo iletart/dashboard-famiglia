@@ -966,14 +966,16 @@ body.k .recurring-config-panel {
 .family-shopping-tabs { margin:0 0 7px; }
 .family-shopping-section { margin:0; }
 .family-shopping-item {
-  display:flex;
-  align-items:center;
-  gap:8px;
+  display:table;
+  width:100%;
+  table-layout:fixed;
+  border-spacing:0;
   margin:3px 0;
-  min-height:26px;
 }
-.family-shopping-item input[type="checkbox"] { flex:0 0 auto; }
-.family-shopping-item-name { flex:1 1 auto; min-width:0; overflow-wrap:anywhere; }
+.family-shopping-item .todo-check-cell { width:28px; padding-right:8px; }
+.family-shopping-item .todo-check { display:block; width:16px; height:16px; margin:0; }
+.family-shopping-item-name { min-width:0; overflow-wrap:anywhere; }
+.family-shopping-item .todo-actions { width:76px; }
 .family-shopping-item.completed .family-shopping-item-name {
   text-decoration:line-through;
   color:#777;
@@ -984,41 +986,7 @@ body.k .recurring-config-panel {
   padding:2px 5px;
   min-width:28px;
 }
-body.k .family-shopping-delete {
-  border:0;
-  background:transparent;
-  box-shadow:none;
-}
-body.k .family-shopping-delete .trash-icon {
-  position:relative;
-  left:2px;
-  top:7px;
-  display:block;
-  width:11px;
-  height:12px;
-  margin-top:4px;
-  border:1px solid #000;
-  border-top:0;
-}
-body.k .family-shopping-delete .trash-icon:before {
-  content:"";
-  position:absolute;
-  left:-2px;
-  top:-3px;
-  width:13px;
-  height:1px;
-  background:#000;
-}
-body.k .family-shopping-delete .trash-icon:after {
-  content:"";
-  position:absolute;
-  left:2px;
-  top:-5px;
-  width:5px;
-  height:2px;
-  border:1px solid #000;
-  border-bottom:0;
-}
+
 
 /* ==================================================
    6. PC (> 800px)
@@ -6596,8 +6564,9 @@ function loadFamilyShoppingList() {
 
         for (var j=0; j<rows.length; j++) {
           (function(item) {
-            var row = mk("div", "family-shopping-item" + (isCompleted ? " completed" : ""));
-            var checkbox = mk("input");
+            var row = mk("div", "todo family-shopping-item" + (isCompleted ? " completed" : ""));
+            var checkCell = mk("span", "todo-check-cell");
+            var checkbox = mk("input", "todo-check");
             checkbox.type = "checkbox";
             checkbox.checked = !!item.completed;
             checkbox.disabled = familyShoppingBusy;
@@ -6618,11 +6587,14 @@ function loadFamilyShoppingList() {
               );
             };
 
-            var label = mk("span", "family-shopping-item-name");
+            checkCell.appendChild(checkbox);
+            row.appendChild(checkCell);
+
+            var label = mk("span", "todo-text family-shopping-item-name");
             label.textContent = item.name + (item.quantity ? " · " + item.quantity : "");
-            row.appendChild(checkbox);
             row.appendChild(label);
 
+            var actions = mk("span", "todo-actions");
             var remove = mk("button", "todo-delete family-shopping-delete", "");
             remove.type = "button";
             remove.title = "Elimina articolo";
@@ -6642,7 +6614,8 @@ function loadFamilyShoppingList() {
                 }
               );
             };
-            row.appendChild(remove);
+            actions.appendChild(remove);
+            row.appendChild(actions);
             target.appendChild(row);
           })(rows[j]);
         }
@@ -10455,23 +10428,30 @@ function alignBoxes(){
     all[i].style.flexGrow = "";
   }
 
-  /* RIGHE: uniforma in altezza i box affiancati nella stessa riga. */
+  /* Ogni colonna mantiene naturali i box superiori.
+     Solo l'ultimo box di ciascuna colonna assorbe lo spazio necessario
+     per allineare il fondo della riga al contenuto della colonna più alta. */
   if(!isSmallScreen){
     for(i = 0; i < rows.length; i++){
-      var firsts = [];
-      var max = 0;
-  
+      var columns = [];
+      var maxHeight = 0;
+
       for(j = 0; j < rows[i].children.length; j++){
         boxes = boxesOf(rows[i].children[j]);
-  
         if(boxes.length){
-          firsts.push(boxes[0]);
-          max = Math.max(max, boxes[0].offsetHeight);
+          var total = columnHeight(boxes);
+          columns.push({boxes:boxes, total:total});
+          if(total > maxHeight){ maxHeight = total; }
         }
       }
-  
-      for(j = 0; j < firsts.length; j++){
-        firsts[j].style.minHeight = max + "px";
+
+      for(j = 0; j < columns.length; j++){
+        var column = columns[j];
+        var lastBox = column.boxes[column.boxes.length - 1];
+        var extra = maxHeight - column.total;
+        if(extra > 0){
+          lastBox.style.minHeight = (lastBox.offsetHeight + extra) + "px";
+        }
       }
     }
   }
