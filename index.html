@@ -11810,7 +11810,13 @@ function initHandwrittenNotes(){
     closeHandwrittenNoteEditor();
   };
   $("notesNewButton").onclick = createHandwrittenNote;
-  $("notesFamilyVisible").onchange = markHandwrittenNoteDirty;
+  $("notesFamilyVisible").onchange = function(){
+    if(!this.checked){
+      $("notesFamilyEditable").checked = false;
+      $("notesFamilyDeletable").checked = false;
+    }
+    markHandwrittenNoteDirty();
+  };
   $("notesFamilyEditable").onchange = function(){
     if(this.checked) $("notesFamilyVisible").checked = true;
     markHandwrittenNoteDirty();
