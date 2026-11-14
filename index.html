@@ -10511,8 +10511,11 @@ function alignBoxes(){
 
   if(!host){ return; }
   
-  /* Kindle mantiene le colonne anche con viewport stretto. */
-  var isSmallScreen = !document.body.classList.contains("k") &&
+  /* Su Kindle i box devono seguire l'altezza del proprio contenuto.
+     L'allineamento forzato delle colonne crea grandi aree vuote nei box
+     più brevi; resta attivo solo nei layout non-Kindle. */
+  var isKindle = document.body.classList.contains("k");
+  var isSmallScreen = !isKindle &&
                     window.matchMedia &&
                     window.matchMedia("(max-width:600px)").matches;
 
@@ -10526,6 +10529,11 @@ function alignBoxes(){
     all[i].style.height = "";
     all[i].style.flexGrow = "";
   }
+
+  /* Kindle: nessuna altezza minima aggiuntiva, ogni box resta aderente
+     al proprio contenuto. Negli altri dispositivi resta l'allineamento
+     del fondo delle colonne. */
+  if(isKindle){ return; }
 
   /* Ogni colonna mantiene naturali i box superiori.
      Solo l'ultimo box di ciascuna colonna assorbe lo spazio necessario
