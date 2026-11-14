@@ -4044,6 +4044,26 @@ body.k #viewMenuPanel button.menu-action-button:active {
   line-height:1!important;
   text-align:center!important;
 }
+.view-switcher-notes-button {
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 36px!important;
+  width:36px!important;
+  min-width:36px!important;
+  height:36px!important;
+  min-height:36px!important;
+  margin:1px 5px 1px 2px!important;
+  padding:0!important;
+  border:1px solid #999!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#222!important;
+  font-family:Arial,sans-serif!important;
+  font-size:25px!important;
+  line-height:1!important;
+  font-weight:bold!important;
+}
 .view-switcher-button {
   display:inline-flex!important;
   align-items:center!important;
@@ -4100,6 +4120,19 @@ body.k .view-switcher-order-button {
   padding:0!important;
   line-height:1!important;
   text-align:center!important;
+}
+body.k .view-switcher-notes-button {
+  display:inline-flex!important;
+  flex:0 0 34px!important;
+  width:34px!important;
+  min-width:34px!important;
+  height:34px!important;
+  min-height:34px!important;
+  margin:1px 5px 1px 2px!important;
+  padding:0!important;
+  font-family:Arial,sans-serif!important;
+  font-size:24px!important;
+  line-height:1!important;
 }
 body.k .view-switcher-button {
   display:inline-flex!important;
@@ -4618,18 +4651,7 @@ body.k .box.notes-summary-box button:not(.seg-button):not(.todo-assign):not(.box
 </div>
 
 <div id="err"></div>
-<div id="stash" hidden>
-  <div class="box notes-summary-box" id="handwrittenNotesBox" hidden>
-    <div class="section-heading">
-      <h2 data-box-title="handwrittenNotes">Appunti</h2>
-    </div>
-    <div class="notes-summary-count" id="notesBoxStatus">0 appunti</div>
-    <div class="notes-summary-actions">
-      <button type="button" id="notesViewButton">VISUALIZZA</button>
-      <button type="button" id="notesNewButton">+ AGGIUNGI</button>
-    </div>
-  </div>
-</div>
+<div id="stash" hidden></div>
 
 </div>
 
@@ -10965,6 +10987,16 @@ function renderViewSwitcher(){
   bar.classList.toggle("view-switcher-personal", personalTheme);
   bar.classList.toggle("view-switcher-shared", !personalTheme);
 
+  var notesButton = mk("button", "view-switcher-notes-button", "✎");
+  notesButton.type = "button";
+  notesButton.title = "Apri appunti";
+  notesButton.setAttribute("aria-label", "Apri appunti");
+  notesButton.onclick = function(ev){
+    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+    openHandwrittenNotesList();
+  };
+  buttons.appendChild(notesButton);
+
   for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
     var view = DASHBOARD_VIEWS[i];
     var button = mk("button", "view-switcher-button",
@@ -11070,7 +11102,6 @@ function clearAuthStorage(){
 
 function showLoggedOut(message){
   setHidden($("viewSwitcher"), true);
-  setHidden($("handwrittenNotesBox"), true);
   setHidden($("handwrittenNotesOverlay"), true);
 	authToken = "";
 	authProfile = "";
@@ -11966,8 +11997,6 @@ function initHandwrittenNotes(){
     if(handwrittenNoteDirty && !confirm("Tornare all'elenco? Le modifiche non salvate andranno perse.")) return;
     closeHandwrittenNoteEditor();
   };
-  $("notesNewButton").onclick = createHandwrittenNote;
-  $("notesViewButton").onclick = openHandwrittenNotesList;
   $("notesListCloseButton").onclick = function(){
     leaveHandwrittenNotesPage();
   };
