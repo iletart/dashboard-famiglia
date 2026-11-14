@@ -3372,6 +3372,14 @@ body.k #recurringTasksBox .recurring-config-button {
   text-align:right!important;
   vertical-align:middle!important;
 }
+/* La lista spesa ha un solo separatore per articolo:
+   rimuove le righe applicate ai singoli elementi interni (checkbox,
+   testo e azioni), mantenendo il bordo inferiore della riga completa. */
+.family-shopping-item > *,
+body.k .family-shopping-item > * {
+  border-bottom:0!important;
+}
+
 /* Lista spesa: area testo elastica e cestino sul bordo destro,
    centrato verticalmente nella riga. */
 .family-shopping-item {
