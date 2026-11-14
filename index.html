@@ -5346,8 +5346,8 @@ function itemRow(item, busy, onToggle, onDelete, extraBtn, assigneeClass){
   var taskLabel = mk("span", item.done ? "task-label-done" : "", item.text);
   textCell.appendChild(taskLabel);
   var assignedNames = assigneeLabel(item.assignees);
-  if(assignedNames && assigneeClass){
-    textCell.appendChild(mk("span", assigneeClass, assignedNames));
+  if(assignedNames && assigneeClass !== null){
+    textCell.appendChild(mk("span", assigneeClass || "recurring-task-owners", assignedNames));
   }
   row.appendChild(textCell);
 
