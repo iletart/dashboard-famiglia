@@ -2326,10 +2326,17 @@ body:not(.k) .todo > * {
   border-bottom:1px solid #EEE9DF;
 }
 
-body:not(.k) .shopping-item,
-body:not(.k) .family-shopping-item {
+body:not(.k) .shopping-item {
   margin:0;
   padding:8px 0;
+  border-bottom:1px solid #EEE9DF;
+}
+
+/* La lista spesa usa già il padding verticale comune di .todo > *:
+   niente padding aggiuntivo sulla riga esterna, altrimenti lo spazio raddoppia. */
+body:not(.k) .family-shopping-item {
+  margin:0;
+  padding:0;
   border-bottom:1px solid #EEE9DF;
 }
 
@@ -2841,10 +2848,16 @@ body.k .todo > * {
   border-bottom:1px solid #EEE9DF;
 }
 
-body.k .shopping-item,
-body.k .family-shopping-item {
+body.k .shopping-item {
   margin:0;
   padding:8px 0;
+  border-bottom:1px solid #EEE9DF;
+}
+
+/* Come per To-do e Daily task, lo spazio verticale è dato dai figli .todo > *. */
+body.k .family-shopping-item {
+  margin:0;
+  padding:0;
   border-bottom:1px solid #EEE9DF;
 }
 
