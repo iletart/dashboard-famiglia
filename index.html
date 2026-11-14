@@ -724,6 +724,69 @@ body.k .recurring-config-panel {
   padding:10px;
 }
 
+/* Pulsanti profilo nel menu hamburger: neutri, attivo nero. */
+#viewMenuPanel button.user-profile-button {
+  background:#fff!important;
+  background-color:#fff!important;
+  color:#000!important;
+  border:1px solid #000!important;
+}
+#viewMenuPanel button.user-profile-button.sel {
+  background:#000!important;
+  background-color:#000!important;
+  color:#fff!important;
+  border-color:#000!important;
+}
+.user-switch-popup {
+  min-width:220px;
+  padding:12px;
+  background:#fff;
+  color:#000;
+}
+.user-switch-title {
+  margin:0 0 5px;
+  font-weight:bold;
+  letter-spacing:1px;
+}
+.user-switch-subtitle {
+  margin:0 0 9px;
+  font-size:.9em;
+}
+.user-switch-pin {
+  display:block;
+  width:100%!important;
+  min-width:0;
+  box-sizing:border-box;
+  padding:9px!important;
+  border:1px solid #777!important;
+  border-radius:5px;
+  font-size:18px!important;
+  letter-spacing:3px;
+}
+.user-switch-error {
+  min-height:18px;
+  margin:6px 0;
+  color:#b3261e;
+  font-size:.8em;
+  white-space:normal;
+}
+.user-switch-actions {
+  display:block;
+  text-align:right;
+}
+#viewMenuPanel .user-switch-actions button {
+  display:inline-block;
+  width:auto;
+  margin:3px 2px 0;
+  padding:8px 11px;
+  text-align:center;
+}
+#viewMenuPanel .user-switch-confirm {
+  background:#000;
+  color:#fff;
+  border-color:#000;
+}
+
 /* Menu scuola */
 
 #menuList ul {
@@ -8873,10 +8936,11 @@ function renderViewMenu(){
 	  return v.id === id;
 	});
 
-	if(view && view.view_type === "shared"){
-	  b.classList.add("family-view-button");
-	} else if(view) {
-	  b.classList.add("menu-action-button");
+	if(view){
+	  b.classList.add("user-profile-button");
+	  if(authToken && String(view.id) === String(currentView)){
+	    b.classList.add("sel");
+	  }
 	}
 
     b.onclick = function(ev){
@@ -8889,8 +8953,11 @@ function renderViewMenu(){
         panel._pendingLoginUserId = id;
         renderViewMenu();
       } else {
-        personalPeriod = "oggi";
-        setView(id, true);
+        if(String(id) === String(currentView)){
+          closeViewMenu();
+          return;
+        }
+        openUserSwitchPrompt(id, label);
       }
     };
 
@@ -9025,6 +9092,104 @@ function renderViewMenu(){
     logoutButton.onclick = authLogout;
     panel.appendChild(logoutButton);
   }
+}
+
+
+function openUserSwitchPrompt(viewId, userLabel){
+  var panel = $("viewMenuPanel");
+  clear(panel);
+
+  var box = mk("div", "user-switch-popup");
+  var title = mk("div", "user-switch-title", "CAMBIA UTENTE");
+  var subtitle = mk("div", "user-switch-subtitle", "Inserisci il PIN di " + userLabel);
+  var pin = document.createElement("input");
+  pin.type = "password";
+  pin.inputMode = "numeric";
+  pin.autocomplete = "current-password";
+  pin.maxLength = 12;
+  pin.placeholder = "PIN utente";
+  pin.className = "user-switch-pin";
+
+  var error = mk("div", "user-switch-error", "");
+  var actions = mk("div", "user-switch-actions");
+  var cancel = mk("button", "user-switch-cancel", "ANNULLA");
+  var confirmButton = mk("button", "user-switch-confirm", "CONFERMA");
+  cancel.type = "button";
+  confirmButton.type = "button";
+  actions.appendChild(cancel);
+  actions.appendChild(confirmButton);
+
+  function cancelSwitch(){
+    renderViewMenu();
+  }
+
+  function submitSwitch(){
+    var value = pin.value.trim();
+    if(!/^\\d{6,12}$/.test(value)){
+      error.textContent = "Inserisci un PIN da 6 a 12 cifre.";
+      pin.focus();
+      return;
+    }
+
+    confirmButton.disabled = true;
+    error.textContent = "Verifica PIN...";
+
+    authRequest("POST", "/switch-user", {
+      view_id: viewId,
+      pin: value
+    }, function(err, data){
+      if(err || !data || !data.ok){
+        error.textContent = err || "PIN non corretto.";
+        confirmButton.disabled = false;
+        pin.value = "";
+        pin.focus();
+        return;
+      }
+
+      authToken = data.token;
+      authProfile = String(data.user_id || "");
+      authSessionId = data.session_id || "";
+      authUserType = String(data.user_type || "");
+      authUserName = String(data.user_name || "");
+
+      try {
+        localStorage.setItem("dashboardAuthToken", authToken);
+        localStorage.setItem("dashboardAuthProfile", authProfile);
+        localStorage.setItem("dashboardAuthSessionId", authSessionId);
+        localStorage.setItem("dashboardAuthUserType", authUserType);
+        localStorage.setItem("dashboardAuthUserName", authUserName);
+      } catch(e){
+        error.textContent = "Errore nel salvataggio della sessione: " + e.message;
+        confirmButton.disabled = false;
+        return;
+      }
+
+      saveAuthCookie(authToken);
+      updateLoggedUser();
+      closeViewMenu();
+      startDashboard(viewId);
+    });
+  }
+
+  cancel.onclick = cancelSwitch;
+  confirmButton.onclick = submitSwitch;
+  pin.onkeydown = function(ev){
+    if(ev.key === "Enter"){
+      ev.preventDefault();
+      submitSwitch();
+    } else if(ev.key === "Escape"){
+      ev.preventDefault();
+      cancelSwitch();
+    }
+  };
+
+  box.appendChild(title);
+  box.appendChild(subtitle);
+  box.appendChild(pin);
+  box.appendChild(error);
+  box.appendChild(actions);
+  panel.appendChild(box);
+  pin.focus();
 }
 
 
