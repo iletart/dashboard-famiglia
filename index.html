@@ -4483,6 +4483,55 @@ body:not(.k) .family-shopping-delete::after {
     linear-gradient(currentColor,currentColor) center bottom / 18px 2px no-repeat!important;
 }
 
+/* Anche il cestino della lista Amazon usa la stessa sagoma della To-do list.
+   Il contenitore resta compatto per non spostare la checkbox adiacente. */
+body:not(.k) .shopping-delete-label > .trash-icon {
+  position:relative!important;
+  display:inline-block!important;
+  width:20px!important;
+  height:20px!important;
+  margin:0 2px 0 0!important;
+  padding:0!important;
+  vertical-align:middle!important;
+  color:#5E5B55!important;
+  font-size:0!important;
+  background:none!important;
+}
+body:not(.k) .shopping-delete-label > .trash-icon:hover {
+  color:#B3261E!important;
+}
+body:not(.k) .shopping-delete-label > .trash-icon::before {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:50%!important;
+  top:5px!important;
+  width:12px!important;
+  height:15px!important;
+  margin-left:-6px!important;
+  border:2.5px solid currentColor!important;
+  border-top:0!important;
+  border-radius:0 0 3px 3px!important;
+  box-sizing:border-box!important;
+  background:none!important;
+}
+body:not(.k) .shopping-delete-label > .trash-icon::after {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:50%!important;
+  top:-3px!important;
+  width:18px!important;
+  height:5px!important;
+  margin-left:-9px!important;
+  border:0!important;
+  border-radius:0!important;
+  box-sizing:border-box!important;
+  background:
+    linear-gradient(currentColor,currentColor) center top / 7px 2px no-repeat,
+    linear-gradient(currentColor,currentColor) center bottom / 18px 2px no-repeat!important;
+}
+
 </style>
 
 </head>
