@@ -1,82 +1,19 @@
 {
-  "generated_at": "2026-11-14T00:01:02.758115+01:00",
+  "generated_at": "2026-11-15T00:01:01.945232+01:00",
   "site": "U003128",
   "siteType": "02",
   "menus": {
-    "2026-11-13": {
-      "P00769": {
-        "dishCode": "P00769",
-        "name": "Risotto al pomodoro ",
+    "2026-11-16": {
+      "P100098": {
+        "dishCode": "P100098",
+        "name": "Ravioli di magro olio e salvia",
         "alternative": 40,
         "label": "Ricetta Infanzia",
         "photo": "band",
         "ingredients": [
           {
-            "name": "RISO",
-            "quantity": "50",
-            "unit": "Gr"
-          },
-          {
-            "name": "POLPA DI POMODORO BIOLOGICA",
-            "quantity": "33",
-            "unit": "Gr"
-          },
-          {
-            "name": "PARMIGIANO REGGIANO",
-            "quantity": "3,6",
-            "unit": "Gr"
-          },
-          {
-            "name": "ESTRATTO PER BRODO VEGETALE",
-            "quantity": "2,1",
-            "unit": "Gr"
-          },
-          {
-            "name": "OLIO DI OLIVA EXTRAVERGINE",
-            "quantity": "2,1",
-            "unit": "Gr"
-          },
-          {
-            "name": "BURRO",
-            "quantity": "1,8",
-            "unit": "Gr"
-          },
-          {
-            "name": "CIPOLLE",
-            "quantity": "1,1",
-            "unit": "Gr"
-          },
-          {
-            "name": "SALE IODATO",
-            "quantity": "0,2",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P101305": {
-        "dishCode": "P101305",
-        "name": "Totano dei marinai",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "BASTONCINI DI PESCE",
-            "quantity": "60",
-            "unit": "Gr"
-          }
-        ]
-      },
-      "P101204": {
-        "dishCode": "P101204",
-        "name": "Insalata di stagione",
-        "alternative": 40,
-        "label": "Ricetta Infanzia",
-        "photo": "band",
-        "ingredients": [
-          {
-            "name": "INSALATA",
-            "quantity": "25",
+            "name": "RAVIOLI DI MAGRO",
+            "quantity": "79",
             "unit": "Gr"
           },
           {
@@ -85,22 +22,105 @@
             "unit": "Gr"
           },
           {
+            "name": "PARMIGIANO REGGIANO",
+            "quantity": "3",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALVIA",
+            "quantity": "0,25",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P100503": {
+        "dishCode": "P100503",
+        "name": "Straccetti di tacchino alla romana",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "FESA DI TACCHINO",
+            "quantity": "67",
+            "unit": "Gr"
+          },
+          {
+            "name": "CAROTE",
+            "quantity": "4,2",
+            "unit": "Gr"
+          },
+          {
+            "name": "CIPOLLE",
+            "quantity": "3,5",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "3,5",
+            "unit": "Gr"
+          },
+          {
+            "name": "AMIDO DI MAIS",
+            "quantity": "3,3",
+            "unit": "Gr"
+          },
+          {
+            "name": "SEDANO",
+            "quantity": "3",
+            "unit": "Gr"
+          },
+          {
+            "name": "ESTRATTO PER BRODO VEGETALE",
+            "quantity": "2,2",
+            "unit": "Gr"
+          },
+          {
             "name": "SALE IODATO",
             "quantity": "0,2",
             "unit": "Gr"
           }
         ]
       },
-      "P02036": {
-        "dishCode": "P02036",
+      "P100455": {
+        "dishCode": "P100455",
+        "name": "Fagiolini all'olio",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "FAGIOLINI",
+            "quantity": "50",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "2,5",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P00007": {
+        "dishCode": "P00007",
         "name": "Frutta fresca di stagione",
         "alternative": 40,
         "label": "Ricetta Infanzia",
         "photo": "band",
         "ingredients": [
           {
-            "name": "MANDARANCI e CLEMENTINE",
-            "quantity": "136",
+            "name": "ARANCE",
+            "quantity": "143",
             "unit": "Gr"
           }
         ]
