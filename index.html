@@ -9125,7 +9125,7 @@ function openUserSwitchPrompt(viewId, userLabel){
 
   function submitSwitch(){
     var value = pin.value.trim();
-    if(!/^\\d{6,12}$/.test(value)){
+    if(!/^\d{6,12}$/.test(value)){
       error.textContent = "Inserisci un PIN da 6 a 12 cifre.";
       pin.focus();
       return;
