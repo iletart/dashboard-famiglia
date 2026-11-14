@@ -11853,7 +11853,8 @@ safe(initHandwrittenNotes);
 /* ==================================================
    DIAGNOSTICA KINDLE
    - Riavvio ogni 3 ore, rinviato se si sta scrivendo.
-   - Registro persistente delle ultime 5 richieste XHR.
+   - Registro persistente delle ultime 12 richieste XHR.
+   - Dettaglio stato HTTP, evento di errore e connettivita.
    ================================================== */
 (function(){
   if(typeof IS_KINDLE === "undefined" || !IS_KINDLE){ return; }
@@ -11862,6 +11863,7 @@ safe(initHandwrittenNotes);
   var storageKey = "dashboardKindleRequestLog";
   var previousSession = [];
   var currentRequests = [];
+  var maxRequests = 12;
 
   function readStored(){
     try {
@@ -11873,17 +11875,17 @@ safe(initHandwrittenNotes);
   function persist(){
     try {
       localStorage.setItem(storageKey, JSON.stringify({
-        current: currentRequests.slice(-5),
-        previous: previousSession.slice(-5)
+        current: currentRequests.slice(-maxRequests),
+        previous: previousSession.slice(-maxRequests)
       }));
     } catch(e){}
   }
 
   var stored = readStored();
   if(stored && stored.current instanceof Array && stored.current.length){
-    previousSession = stored.current.slice(-5);
+    previousSession = stored.current.slice(-maxRequests);
   } else if(stored && stored.previous instanceof Array){
-    previousSession = stored.previous.slice(-5);
+    previousSession = stored.previous.slice(-maxRequests);
   }
   currentRequests = [];
   persist();
@@ -11911,11 +11913,15 @@ safe(initHandwrittenNotes);
     var lines = [];
     for(var i=0;i<list.length;i++){
       var item = list[i];
-      lines.push(clock(item.started) + " > " + item.method + " " + shortUrl(item.url));
+      lines.push(clock(item.started) + " > " + item.method + " " +
+        shortUrl(item.url) + " [rete:" + (item.onlineStart ? "online" : "offline") + "]");
       if(item.finished){
-        lines.push(clock(item.finished) + " < " +
-          (item.error ? "ERRORE" : String(item.status)) + " " +
-          shortUrl(item.url) + " " + item.duration + "ms");
+        var result = item.error ? "ERRORE" : String(item.status);
+        var detail = item.statusText ? " " + item.statusText : "";
+        lines.push(clock(item.finished) + " < " + result + detail +
+          " [" + (item.eventType || "evento n/d") + "; rete:" +
+          (item.onlineEnd ? "online" : "offline") + "] " +
+          item.duration + "ms " + shortUrl(item.url));
       }
     }
     return lines.join("\n");
@@ -11923,7 +11929,7 @@ safe(initHandwrittenNotes);
 
   function render(){
     var html = "DIAGNOSTICA KINDLE — avvio " + clock(startedAt) +
-      "\n\nULTIME 5 RICHIESTE\n" + renderRequests(currentRequests);
+      "\n\nULTIME " + maxRequests + " RICHIESTE\n" + renderRequests(currentRequests);
     if(previousSession.length){
       html += "\n\nPRIMA DEL RIAVVIO\n" + renderRequests(previousSession);
     }
@@ -11932,13 +11938,13 @@ safe(initHandwrittenNotes);
 
   function addRequest(item){
     currentRequests.push(item);
-    if(currentRequests.length > 5) currentRequests.shift();
+    if(currentRequests.length > maxRequests) currentRequests.shift();
     persist();
     render();
   }
 
-  /* Traccia tutte le XMLHttpRequest: JSON, login, meteo, lista spesa,
-     appunti, API dei task e richieste a servizi esterni. */
+  /* Traccia le XMLHttpRequest senza registrare i contenuti delle risposte,
+     che potrebbero contenere dati personali o informazioni di sessione. */
   var proto = XMLHttpRequest.prototype;
   var originalOpen = proto.open;
   var originalSend = proto.send;
@@ -11946,7 +11952,6 @@ safe(initHandwrittenNotes);
   proto.open = function(method, url){
     this.__dashboardDiagMethod = String(method || "GET").toUpperCase();
     this.__dashboardDiagUrl = String(url || "");
-    this.__dashboardDiagStarted = 0;
     this.__dashboardDiagLogged = false;
     return originalOpen.apply(this, arguments);
   };
@@ -11959,33 +11964,39 @@ safe(initHandwrittenNotes);
       url: xhr.__dashboardDiagUrl || "",
       finished: 0,
       status: 0,
+      statusText: "",
       duration: 0,
+      eventType: "",
+      onlineStart: typeof navigator !== "undefined" ? navigator.onLine !== false : true,
+      onlineEnd: true,
       error: false
     };
-    xhr.__dashboardDiagStarted = item.started;
     xhr.__dashboardDiagLogged = false;
     addRequest(item);
 
-    function finish(){
+    function finish(eventType){
       if(xhr.__dashboardDiagLogged) return;
       xhr.__dashboardDiagLogged = true;
       item.finished = new Date().getTime();
       item.duration = item.finished - item.started;
-      item.status = xhr.status || 0;
-      item.error = !item.status;
+      try { item.status = xhr.status || 0; } catch(e){ item.status = 0; }
+      try { item.statusText = xhr.statusText || ""; } catch(e){ item.statusText = ""; }
+      item.eventType = eventType || "evento n/d";
+      item.onlineEnd = typeof navigator !== "undefined" ? navigator.onLine !== false : true;
+      item.error = item.status === 0 || item.status >= 400;
       persist();
       render();
     }
 
     if(xhr.addEventListener){
-      xhr.addEventListener("load", finish, false);
-      xhr.addEventListener("error", finish, false);
-      xhr.addEventListener("timeout", finish, false);
-      xhr.addEventListener("abort", finish, false);
+      xhr.addEventListener("load", function(){ finish("load"); }, false);
+      xhr.addEventListener("error", function(){ finish("error rete"); }, false);
+      xhr.addEventListener("timeout", function(){ finish("timeout"); }, false);
+      xhr.addEventListener("abort", function(){ finish("abort"); }, false);
     } else {
       var oldReady = xhr.onreadystatechange;
       xhr.onreadystatechange = function(){
-        if(xhr.readyState === 4) finish();
+        if(xhr.readyState === 4) finish("readyState=4");
         if(typeof oldReady === "function") oldReady.apply(xhr, arguments);
       };
     }
@@ -11993,7 +12004,7 @@ safe(initHandwrittenNotes);
     try {
       return originalSend.apply(xhr, arguments);
     } catch(error){
-      finish();
+      finish("eccezione send");
       throw error;
     }
   };
