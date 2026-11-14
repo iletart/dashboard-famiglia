@@ -3983,10 +3983,23 @@ body.k #viewMenuPanel button.menu-action-button:active {
   white-space:nowrap; -webkit-overflow-scrolling:touch;
 }
 .view-switcher-order-button {
-  flex:0 0 auto; margin:1px 2px 1px auto!important;
-  padding:7px 12px!important; min-width:36px!important; width:36px!important;
-  border:1px solid #aaa!important; border-radius:10px!important;
-  background:#fff!important; color:#333!important; font-size:1.05em!important; line-height:1!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 36px!important;
+  margin:1px 2px 1px auto!important;
+  padding:0!important;
+  min-width:36px!important;
+  width:36px!important;
+  height:36px!important;
+  box-sizing:border-box!important;
+  border:1px solid #aaa!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#333!important;
+  font-size:1.05em!important;
+  line-height:1!important;
+  text-align:center!important;
 }
 .view-switcher-button {
   display:inline-block!important;
@@ -4028,8 +4041,18 @@ body.k .view-switcher-buttons {
   white-space:nowrap!important; overflow-x:auto!important; overflow-y:hidden!important;
 }
 body.k .view-switcher-order-button {
-  flex:0 0 34px!important; width:34px!important; min-width:34px!important;
-  min-height:34px!important; margin-left:auto!important; padding:6px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 34px!important;
+  width:34px!important;
+  min-width:34px!important;
+  height:34px!important;
+  min-height:34px!important;
+  margin-left:auto!important;
+  padding:0!important;
+  line-height:1!important;
+  text-align:center!important;
 }
 body.k .view-switcher-button {
   display:inline-block!important;
@@ -9778,7 +9801,13 @@ function openLayoutManagement(){
 
 
 function openViewOrder(){
-  var panel=$("viewMenuPanel"); clear(panel); panel.style.width="560px"; panel.style.maxWidth="92vw"; panel.style.boxSizing="border-box";
+  var panel=$("viewMenuPanel");
+  clear(panel);
+  panel.style.width="560px";
+  panel.style.maxWidth="92vw";
+  panel.style.boxSizing="border-box";
+  setHidden(panel, false);
+  $("viewMenuToggle").setAttribute("aria-expanded", "true");
   var box=mk("div","user-management-panel",""); box.style.padding="14px"; box.style.display="flex"; box.style.flexDirection="column"; box.style.gap="12px"; box.style.width="100%"; box.style.boxSizing="border-box";
   var heading=mk("div","","ORDINE DELLE VISTE"); heading.style.fontWeight="bold"; heading.style.fontSize="18px"; box.appendChild(heading);
   box.appendChild(mk("div","small","Usa le frecce per definire l’ordine dei pulsanti nello switch. La configurazione è personale e viene salvata per il tuo profilo."));
