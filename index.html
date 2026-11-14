@@ -11864,7 +11864,7 @@ function renderHandwrittenNotesList(){
   var host = $("notesList");
   clear(host);
   if(!handwrittenNotes.length){
-    host.appendChild(mk("div", "small", "Nessun appunto disponibile. Premi «+ NUOVO APPUNTO» per crearne uno."));
+    host.appendChild(mk("div", "small", "Nessun appunto disponibile. Usa uno dei pulsanti in alto per crearne uno."));
     return;
   }
   for(var i=0;i<handwrittenNotes.length;i++){
