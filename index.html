@@ -11937,10 +11937,11 @@ safe(initHandwrittenNotes);
   setTimeout(reloadWhenIdle, 3 * 3600000);
   render();
 
-  /* Avvia il ripristino sessione solo dopo aver installato il tracciamento,
-     così viene registrata anche la prima verifica/login. */
-  restoreAuthSession();
 })();
+ 
+/* Ripristino sessione in tutte le modalità.
+   Su Kindle il tracciamento XHR è già stato installato dallo script precedente. */
+restoreAuthSession();
 </script>
 </body>
 </html>
