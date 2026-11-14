@@ -12175,9 +12175,42 @@ function initHandwrittenNotes(){
     renderTouchDiag();
     endHandwrittenStroke();
   },true);
-  document.addEventListener("pointermove",function(){
+  /* Pointer Events: alcuni browser legacy espongono pointermove anche quando
+     non consegnano touchmove o mousemove. Se disponibili, usiamoli per il tratto. */
+  var handwrittenPointerSeen = false;
+  document.addEventListener("pointerdown",function(ev){
+    if(!pointIsOnCanvas(ev, ev.target)) return;
+    handwrittenPointerSeen = true;
     touchDiag.pointer++;
+    touchDiag.last = "pointerdown";
     renderTouchDiag();
+    if(ev.cancelable && ev.preventDefault) ev.preventDefault();
+    if(!handwrittenCurrentStroke) startHandwrittenStroke(ev);
+  },true);
+  document.addEventListener("pointermove",function(ev){
+    touchDiag.pointer++;
+    touchDiag.last = "pointermove";
+    renderTouchDiag();
+    if(handwrittenPointerSeen && handwrittenCurrentStroke){
+      if(ev.cancelable && ev.preventDefault) ev.preventDefault();
+      moveHandwrittenStroke(ev);
+    }
+  },true);
+  document.addEventListener("pointerup",function(ev){
+    if(!handwrittenPointerSeen) return;
+    touchDiag.pointer++;
+    touchDiag.last = "pointerup";
+    renderTouchDiag();
+    if(handwrittenCurrentStroke) endHandwrittenStroke(ev);
+    handwrittenPointerSeen = false;
+  },true);
+  document.addEventListener("pointercancel",function(ev){
+    if(!handwrittenPointerSeen) return;
+    touchDiag.pointer++;
+    touchDiag.last = "pointercancel";
+    renderTouchDiag();
+    if(handwrittenCurrentStroke) endHandwrittenStroke(ev);
+    handwrittenPointerSeen = false;
   },true);
   $("notesBackButton").onclick = function(){
     if(handwrittenNoteDirty && !confirm("Tornare all'elenco? Le modifiche non salvate andranno perse.")) return;
