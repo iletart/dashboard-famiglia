@@ -11935,13 +11935,15 @@ function openHandwrittenNoteEditor(note){
   handwrittenNoteCanEdit = !note || note.can_edit !== false;
   handwrittenStrokes = note && Array.isArray(note.strokes) ? note.strokes : [];
   var savedText = "";
+  var hasSavedText = false;
   for(var textIndex=0;textIndex<handwrittenStrokes.length;textIndex++){
     if(handwrittenStrokes[textIndex] && handwrittenStrokes[textIndex].type === "text"){
       savedText = String(handwrittenStrokes[textIndex].text || "");
+      hasSavedText = true;
       break;
     }
   }
-  handwrittenTextMode = !!(savedText || (IS_KINDLE && !note) ||
+  handwrittenTextMode = !!(hasSavedText || (IS_KINDLE && !note) ||
     (note && handwrittenStrokes.length === 0 && IS_KINDLE));
   $("notesTextEditor").value = savedText;
   setHidden($("notesTextEditor"), !handwrittenTextMode);
@@ -12117,7 +12119,7 @@ function saveHandwrittenNote(){
   var familyDeletable = $("notesFamilyDeletable").checked;
   var familyVisible = $("notesFamilyVisible").checked || familyEditable || familyDeletable;
   var noteContent = handwrittenTextMode
-    ? ($("notesTextEditor").value.length ? [{type:"text",text:$("notesTextEditor").value}] : [])
+    ? [{type:"text",text:$("notesTextEditor").value}]
     : handwrittenStrokes;
   var payload = {
     title:title,
