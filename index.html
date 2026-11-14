@@ -11782,82 +11782,165 @@ restoreAuthSession();
 
 <script>
 /* ==================================================
-   DIAGNOSTICA E RIAVVIO KINDLE
-   1) Riavvio ogni 3 ore, rinviato se si sta scrivendo.
-   2) Diagnostica degli errori di rete.
+   DIAGNOSTICA KINDLE
+   - Riavvio ogni 3 ore, rinviato se si sta scrivendo.
+   - Registro persistente delle ultime 5 richieste XHR.
    ================================================== */
 (function(){
   if(typeof IS_KINDLE === "undefined" || !IS_KINDLE){ return; }
 
   var startedAt = new Date().getTime();
-  var netErrors = 0;
-  var lastErr = "";
+  var storageKey = "dashboardKindleRequestLog";
+  var previousSession = [];
+  var currentRequests = [];
 
-  /* Diagnostica visibile in fondo alla pagina. */
-  var line = document.createElement("div");
-  line.id = "dashboard-kindle-diagnostics";
-  line.style.cssText = "font-size:10px;color:#555;margin:4px 6px;padding:3px 0;";
-  document.body.appendChild(line);
-
-  function show(){
-    var message = "Avvio " + hhmmRome(startedAt) +
-      " - errori rete: " + netErrors +
-      (lastErr ? " - ultimo: " + lastErr : "");
-    line.textContent = message;
+  function readStored(){
+    try {
+      var value = localStorage.getItem(storageKey);
+      return value ? JSON.parse(value) : null;
+    } catch(e){ return null; }
   }
 
-  function note(err){
-    var message = String(err || "");
-    if(!/Errore di|Timeout|non raggiungibile|Richiesta/i.test(message)){ return; }
-
-    netErrors++;
-    lastErr = hhmmRome(new Date().getTime()) + " " + message.substring(0, 45);
-    show();
+  function persist(){
+    try {
+      localStorage.setItem(storageKey, JSON.stringify({
+        current: currentRequests.slice(-5),
+        previous: previousSession.slice(-5)
+      }));
+    } catch(e){}
   }
 
-  /* Intercetta gli errori restituiti dalle richieste dell'app. */
-  function wrapRequest(name, callbackIndex){
-    var original = window[name];
-    if(typeof original !== "function"){ return; }
+  var stored = readStored();
+  if(stored && stored.current instanceof Array){
+    previousSession = stored.current.slice(-5);
+  } else if(stored && stored.previous instanceof Array){
+    previousSession = stored.previous.slice(-5);
+  }
+  currentRequests = [];
+  persist();
 
-    window[name] = function(){
-      var args = Array.prototype.slice.call(arguments);
-      var callback = args[callbackIndex];
+  var panel = document.createElement("div");
+  panel.id = "dashboard-kindle-diagnostics";
+  panel.style.cssText = "font-size:10px;line-height:1.45;color:#333;background:#f2f0eb;border:1px solid #aaa;margin:8px 5px;padding:6px;white-space:normal;word-break:break-all;";
+  document.body.appendChild(panel);
 
-      if(typeof callback === "function"){
-        args[callbackIndex] = function(err){
-          if(err){ note(err); }
-          return callback.apply(this, arguments);
-        };
+  function clock(ms){
+    var d = new Date(ms);
+    function two(n){ return n < 10 ? "0" + n : String(n); }
+    return two(d.getHours()) + ":" + two(d.getMinutes()) + ":" + two(d.getSeconds());
+  }
+
+  function shortUrl(value){
+    var url = String(value || "");
+    url = url.replace(/^https?:\/\//i, "");
+    if(url.length > 105) url = url.substring(0, 102) + "...";
+    return url;
+  }
+
+  function renderRequests(list){
+    if(!list.length) return "Nessuna richiesta registrata.";
+    var lines = [];
+    for(var i=0;i<list.length;i++){
+      var item = list[i];
+      lines.push(clock(item.started) + " > " + item.method + " " + shortUrl(item.url));
+      if(item.finished){
+        lines.push(clock(item.finished) + " < " +
+          (item.error ? "ERRORE" : String(item.status)) + " " +
+          shortUrl(item.url) + " " + item.duration + "ms");
       }
-
-      return original.apply(this, args);
-    };
+    }
+    return lines.join("\n");
   }
 
-  wrapRequest("authRequest", 3);
-  wrapRequest("usersRequest", 3);
-  wrapRequest("api", 3);
-  wrapRequest("getJson", 1);
+  function render(){
+    var html = "DIAGNOSTICA KINDLE — avvio " + clock(startedAt) +
+      "\n\nULTIME 5 RICHIESTE\n" + renderRequests(currentRequests);
+    if(previousSession.length){
+      html += "\n\nPRIMA DEL RIAVVIO\n" + renderRequests(previousSession);
+    }
+    panel.textContent = html;
+  }
 
-  /* Riavvia la pagina dopo 3 ore per liberare memoria.
-     Se è attivo un campo di inserimento, riprova tra 10 minuti. */
+  function addRequest(item){
+    currentRequests.push(item);
+    if(currentRequests.length > 5) currentRequests.shift();
+    persist();
+    render();
+  }
+
+  /* Traccia tutte le XMLHttpRequest: JSON, login, meteo, lista spesa,
+     appunti, API dei task e richieste a servizi esterni. */
+  var proto = XMLHttpRequest.prototype;
+  var originalOpen = proto.open;
+  var originalSend = proto.send;
+
+  proto.open = function(method, url){
+    this.__dashboardDiagMethod = String(method || "GET").toUpperCase();
+    this.__dashboardDiagUrl = String(url || "");
+    this.__dashboardDiagStarted = 0;
+    this.__dashboardDiagLogged = false;
+    return originalOpen.apply(this, arguments);
+  };
+
+  proto.send = function(){
+    var xhr = this;
+    var item = {
+      started: new Date().getTime(),
+      method: xhr.__dashboardDiagMethod || "GET",
+      url: xhr.__dashboardDiagUrl || "",
+      finished: 0,
+      status: 0,
+      duration: 0,
+      error: false
+    };
+    xhr.__dashboardDiagStarted = item.started;
+    xhr.__dashboardDiagLogged = false;
+    addRequest(item);
+
+    function finish(){
+      if(xhr.__dashboardDiagLogged) return;
+      xhr.__dashboardDiagLogged = true;
+      item.finished = new Date().getTime();
+      item.duration = item.finished - item.started;
+      item.status = xhr.status || 0;
+      item.error = !item.status;
+      persist();
+      render();
+    }
+
+    if(xhr.addEventListener){
+      xhr.addEventListener("loadend", finish, false);
+    } else {
+      var oldReady = xhr.onreadystatechange;
+      xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4) finish();
+        if(typeof oldReady === "function") oldReady.apply(xhr, arguments);
+      };
+    }
+
+    try {
+      return originalSend.apply(xhr, arguments);
+    } catch(error){
+      finish();
+      throw error;
+    }
+  };
+
+  /* Riavvio dopo 3 ore; se un campo è attivo, riprova tra 10 minuti. */
   function reloadWhenIdle(){
     var active = document.activeElement;
     var typing = active &&
       /^(INPUT|SELECT|TEXTAREA)$/.test(active.tagName) &&
       active.type !== "checkbox";
-
     if(typing){
       setTimeout(reloadWhenIdle, 600000);
       return;
     }
-
     window.location.reload();
   }
 
   setTimeout(reloadWhenIdle, 3 * 3600000);
-  show();
+  render();
 })();
 </script>
 </body>
