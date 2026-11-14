@@ -10613,13 +10613,9 @@ function alignBoxes(){
   var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
   var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
 
-  /* Kindle: non allungare i box fino al fondo del viewport.
-     Il ricalcolo veniva ripetuto dopo caricamenti e cambi vista,
-     aumentando artificialmente l'altezza degli ultimi box. */
-  if(IS_KINDLE){ return; }
-
-  /* Su smartphone in verticale i box seguono il contenuto. */
-  if(viewportWidth <= 600 && viewportHeight > viewportWidth){
+  /* Su smartphone in verticale i box seguono il contenuto.
+     Su Kindle manteniamo invece l'allineamento dei box affiancati. */
+  if(!IS_KINDLE && viewportWidth <= 600 && viewportHeight > viewportWidth){
     return;
   }
 
@@ -10634,12 +10630,9 @@ function alignBoxes(){
   var lastRow = rows[rows.length - 1];
   var columns = [];
   var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
-  /* Su Kindle resta il riempimento fino al fondo del viewport.
-     Su PC si allunga solo la colonna più corta fino al box adiacente,
-     senza portare artificialmente i box inferiori a fondo schermo. */
-  var targetBottom = IS_KINDLE
-    ? scrollTop + (window.innerHeight || document.documentElement.clientHeight || 0)
-    : 0;
+  /* Su tutte le piattaforme si allunga solo il box più corto
+     fino al fondo del box adiacente, mai fino al fondo del viewport. */
+  var targetBottom = 0;
 
   for(i = 0; i < lastRow.children.length; i++){
     boxes = boxesOf(lastRow.children[i]);
