@@ -26,7 +26,7 @@
 </head>
 <body>
 <h1>Test trascinamento Kindle</h1>
-<p>Fai prima un tap nel riquadro. Poi appoggia il dito al centro e trascinalo per 3-4 secondi senza staccarlo. Ripeti una seconda volta.</p>
+<p>Questa versione prova a bloccare il gesto fin dal primo touchstart, prima che il browser possa trasformarlo in scorrimento. Tocca e trascina nel riquadro per 3-4 secondi.</p>
 <div id="pad">TOCCA E TRASCINA QUI</div>
 <div id="status">In attesa di un gesto…</div>
 <div id="counts">
@@ -43,7 +43,7 @@
 </div>
 <button id="reset" type="button">Azzera contatori</button>
 <p><b>Ultimo evento:</b> <span id="last">nessuno</span></p>
-<p id="log">Se durante il trascinamento Touch move, Pointer move e Mouse move restano a zero, il browser non sta consegnando alla pagina gli eventi di movimento.</p>
+<p id="log">Test preventivo attivo: se il touchstart viene ricevuto, la pagina tenta subito di impedirne l'azione predefinita. Verifichiamo se lo scroll si ferma.</p>
 <div style="height:500px">Area sotto il test: serve a verificare se la pagina scorre.</div>
 <script>
 (function () {
