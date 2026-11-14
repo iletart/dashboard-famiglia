@@ -97,6 +97,12 @@ h3 {
 
 /* Intestazione box e sincronizzazione */
 
+.section-heading-title {
+  flex:0 1 auto;
+  min-width:0;
+  margin:0;
+}
+
 .section-heading {
   position:relative;
   display:flex;
@@ -11056,41 +11062,6 @@ function initBoxRefresh() {
       button.style.margin = "0";
       button.style.padding = "0";
       footer.appendChild(button);
-    } else if (boxes[i].id === "schoolMenuBox") {
-      /* Titolo a sinistra, refresh ancorato in alto a destra e orari
-         sulla riga sottostante: nessun elemento Flex può centrare la rotella. */
-      heading.style.display = "block";
-      heading.style.position = "relative";
-      heading.style.paddingRight = "38px";
-      var menuTitle = heading.getElementsByTagName("h2")[0];
-      var menuTimesLabel = $("menuTimes");
-      if (menuTitle) {
-        menuTitle.style.display = "block";
-        menuTitle.style.width = "auto";
-        menuTitle.style.minWidth = "0";
-        menuTitle.style.margin = "0";
-      }
-      if (menuTimesLabel) {
-        menuTimesLabel.style.display = "block";
-        menuTimesLabel.style.position = "static";
-        menuTimesLabel.style.top = "auto";
-        menuTimesLabel.style.width = "100%";
-        menuTimesLabel.style.minWidth = "0";
-        menuTimesLabel.style.margin = "0";
-        menuTimesLabel.style.textAlign = "right";
-        menuTimesLabel.style.whiteSpace = "normal";
-      }
-      button.style.position = "absolute";
-      button.style.top = "-6px";
-      button.style.right = "0";
-      button.style.order = "";
-      button.style.flex = "none";
-      button.style.width = "30px";
-      button.style.height = "30px";
-      button.style.margin = "0";
-      button.style.padding = "0";
-      button.style.alignSelf = "";
-      heading.appendChild(button);
     } else {
       heading.appendChild(button);
     }
@@ -11099,7 +11070,7 @@ function initBoxRefresh() {
        il centro cade tra upd time e sync time; con una riga si allinea
        esattamente al sync time. */
     var syncLabel = box.getElementsByClassName("sync-label")[0];
-    if (boxes[i].id !== "schoolMenuBox" && syncLabel && button.parentNode) {
+    if (syncLabel && button.parentNode) {
       var labelRect = syncLabel.getBoundingClientRect();
       var parentRect = button.parentNode.getBoundingClientRect();
       var buttonHeight = button.offsetHeight || 30;
