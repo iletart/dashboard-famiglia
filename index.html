@@ -11602,7 +11602,7 @@ function renderHandwrittenNotesList(){
       };
       row.appendChild(open);
       row.appendChild(visibility);
-      if(note.can_delete !== false){ row.appendChild(del); }
+      if(note.can_delete === true){ row.appendChild(del); }
       host.appendChild(row);
     })(handwrittenNotes[i]);
   }
