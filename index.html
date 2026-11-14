@@ -12062,6 +12062,9 @@ function initHandwrittenNotes(){
   var canvas = $("handwrittenCanvas");
   if(!canvas || handwrittenCanvasReady) return;
   handwrittenCanvasReady = true;
+  /* Strumento predefinito su tutti i dispositivi: penna. */
+  handwrittenTool = "pen";
+  updateHandwrittenToolButtons();
   /* Mouse solo su dispositivi non Kindle.
      Il Kindle può generare mouseup sintetici tra touchstart e touchmove:
      questo chiudeva il tratto subito dopo il puntino iniziale. */
