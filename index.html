@@ -4414,7 +4414,7 @@ body:not(.k) .shopping-delete-label > .trash-icon::after {
    di .todo-delete sopra: una sola definizione evita divergenze. */
 
 /* Unico disegno PC per cestini To-do, Daily task e Appunti. */
-body:not(.k) .trash-button {
+body:not(.k) button.trash-button {
   position:relative!important;
   display:inline-block!important;
   box-sizing:border-box!important;
@@ -4431,8 +4431,8 @@ body:not(.k) .trash-button {
   font-size:0!important;
   line-height:0!important;
 }
-body:not(.k) .trash-button:hover { color:#B3261E!important; }
-body:not(.k) .trash-button::before {
+body:not(.k) button.trash-button:hover { color:#B3261E!important; }
+body:not(.k) button.trash-button::before {
   content:""!important;
   position:absolute!important;
   left:50%!important;
@@ -4446,7 +4446,7 @@ body:not(.k) .trash-button::before {
   border-radius:0 0 3px 3px!important;
   background:none!important;
 }
-body:not(.k) .trash-button::after {
+body:not(.k) button.trash-button::after {
   content:""!important;
   position:absolute!important;
   left:50%!important;
@@ -6982,7 +6982,7 @@ function loadFamilyShoppingList() {
             row.appendChild(label);
 
             var actions = mk("span", "todo-actions");
-            var remove = mk("button", "todo-delete family-shopping-delete", "");
+            var remove = mk("button", "todo-delete family-shopping-delete trash-button", "");
             remove.type = "button";
             remove.title = "Elimina articolo";
             remove.setAttribute("aria-label", "Elimina " + item.name);
