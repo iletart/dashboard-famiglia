@@ -9009,20 +9009,13 @@ function renderViewMenu(){
 		panel.appendChild(backButton);
 		
 	} else {
-		var sortedViews = DASHBOARD_VIEWS.slice().sort(function(a, b){
-		if(a.view_type === "shared") return -1;
-		if(b.view_type === "shared") return 1;
+		var orderedViews = DASHBOARD_VIEWS.slice();
 
-		return a.title.localeCompare(b.title, "it", {
-			sensitivity: "base"
-		});
-		});
-
-		for(var i = 0; i < sortedViews.length; i++){
+		for(var i = 0; i < orderedViews.length; i++){
 			addButton(
-			sortedViews[i].id,
-			sortedViews[i].title.charAt(0).toUpperCase() +
-			sortedViews[i].title.slice(1).toLowerCase()
+			orderedViews[i].id,
+			(orderedViews[i].title || orderedViews[i].id).charAt(0).toUpperCase() +
+			(orderedViews[i].title || orderedViews[i].id).slice(1).toLowerCase()
 			);
 		}
   }
