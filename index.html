@@ -11136,8 +11136,11 @@ function renderViewSwitcher(){
   setHidden(title, true);
 
   var personalTheme = active.view_type === "personal";
-  bar.classList.toggle("view-switcher-personal", personalTheme);
-  bar.classList.toggle("view-switcher-shared", !personalTheme);
+  /* Silk su Kindle può non supportare classList.toggle(token, force):
+     imposta il tema in modo deterministico a ogni rendering. */
+  bar.classList.remove("view-switcher-personal");
+  bar.classList.remove("view-switcher-shared");
+  bar.classList.add(personalTheme ? "view-switcher-personal" : "view-switcher-shared");
 
   var notesButton = mk("button", "view-switcher-notes-button", "✎");
   notesButton.type = "button";
