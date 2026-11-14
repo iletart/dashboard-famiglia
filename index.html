@@ -11840,6 +11840,28 @@ function renderHandwrittenNotesList(){
   }
 }
 
+var handwrittenKindleScrollLock = null;
+
+function setHandwrittenKindleScrollLock(enabled){
+  if(!document.body.classList.contains("k")) return;
+  if(enabled){
+    if(handwrittenKindleScrollLock) return;
+    handwrittenKindleScrollLock = {
+      bodyOverflow: document.body.style.overflow,
+      htmlOverflow: document.documentElement.style.overflow,
+      bodyOverscrollBehavior: document.body.style.overscrollBehavior
+    };
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+  } else if(handwrittenKindleScrollLock){
+    document.body.style.overflow = handwrittenKindleScrollLock.bodyOverflow;
+    document.documentElement.style.overflow = handwrittenKindleScrollLock.htmlOverflow;
+    document.body.style.overscrollBehavior = handwrittenKindleScrollLock.bodyOverscrollBehavior;
+    handwrittenKindleScrollLock = null;
+  }
+}
+
 function enterHandwrittenNotesPage(){
   if(handwrittenNotesPageOpen) return;
   handwrittenNotesPageOpen = true;
@@ -11852,6 +11874,7 @@ function enterHandwrittenNotesPage(){
 }
 
 function leaveHandwrittenNotesPage(){
+  setHandwrittenKindleScrollLock(false);
   handwrittenNotesPageOpen = false;
   setHidden($("handwrittenNotesOverlay"), true);
   setHidden($("head"), false);
@@ -11867,6 +11890,7 @@ function leaveHandwrittenNotesPage(){
 
 function openHandwrittenNoteEditor(note){
   enterHandwrittenNotesPage();
+  setHandwrittenKindleScrollLock(true);
   setHidden($("notesListView"), true);
   setHidden($("notesEditorView"), false);
   handwrittenNoteId = note ? note.id : null;
@@ -11897,6 +11921,7 @@ function openHandwrittenNoteEditor(note){
 }
 
 function closeHandwrittenNoteEditor(){
+  setHandwrittenKindleScrollLock(false);
   handwrittenNoteId = null;
   setHidden($("notesEditorView"), true);
   setHidden($("notesListView"), false);
@@ -11904,6 +11929,7 @@ function closeHandwrittenNoteEditor(){
 }
 
 function openHandwrittenNotesList(){
+  setHandwrittenKindleScrollLock(false);
   enterHandwrittenNotesPage();
   setHidden($("handwrittenNotesOverlay"), false);
   setHidden($("notesEditorView"), true);
