@@ -9890,6 +9890,11 @@ function openUserManagement(){
     manage.type = "button";
     manage.style.margin = "0";
     manage.style.padding = "7px 9px";
+    manage.style.flex = "0 0 auto";
+    manage.style.width = "auto";
+    manage.style.minWidth = "0";
+    manage.style.fontSize = "14px";
+    manage.style.whiteSpace = "nowrap";
     manage.onclick = function(){ renderUserDetails(user); };
     row.appendChild(manage);
     content.appendChild(row);
