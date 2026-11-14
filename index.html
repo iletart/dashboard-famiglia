@@ -3704,6 +3704,35 @@ body.k .todo-actions .todo-assign::after {
   padding:7px 10px;
   white-space:nowrap;
 }
+.notes-summary-box {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:5px 9px;
+  margin:3px;
+  border-width:1px;
+  border-radius:5px;
+}
+.notes-summary-count {
+  flex:1 1 auto;
+  min-width:0;
+  margin:0;
+  font-size:.78em;
+  color:#666;
+}
+.notes-summary-box button {
+  flex:0 0 auto;
+  margin:0;
+  padding:4px 8px;
+  font-size:.78em;
+}
+.notes-list-view {
+  display:flex;
+  flex:1 1 auto;
+  min-height:0;
+  flex-direction:column;
+}
+.notes-list-view[hidden] { display:none!important; }
 .notes-list {
   flex:1 1 auto;
   min-height:0;
@@ -3827,13 +3856,14 @@ body.k .notes-topbar h2 {
 }
 body.k #notesListView {
   position:absolute!important;
-  top:55px!important;
+  top:5px!important;
   left:5px!important;
   right:5px!important;
   bottom:5px!important;
-  display:block!important;
-  overflow-y:auto!important;
-  padding:5px 0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  padding:0!important;
 }
 body.k #notesEditorView {
   position:absolute!important;
@@ -4294,13 +4324,10 @@ body.k .box-meta-footer .box-refresh {
   <div id="viewSwitcherButtons" class="view-switcher-buttons"></div>
 </div>
 
-<div class="box" id="handwrittenNotesBox" hidden>
-  <div class="section-heading">
-    <h2>APPUNTI</h2>
-    <button type="button" id="notesNewButton">+ NUOVO APPUNTO</button>
-  </div>
-  <div id="notesList" class="notes-list">Caricamento...</div>
-  <div id="notesBoxStatus" class="small"></div>
+<div class="box notes-summary-box" id="handwrittenNotesBox" hidden>
+  <div class="notes-summary-count" id="notesBoxStatus">0 appunti</div>
+  <button type="button" id="notesViewButton">VISUALIZZA</button>
+  <button type="button" id="notesNewButton">+ AGGIUNGI</button>
 </div>
 
 <!-- ===== VISTE PERSONALI ===== -->
@@ -4456,11 +4483,18 @@ body.k .box-meta-footer .box-refresh {
 
 
 <div id="handwrittenNotesOverlay" hidden>
-  <div class="notes-topbar">
-    <button type="button" id="notesBackButton">← ELENCO</button>
-    <h2 id="notesPageTitle">NUOVO APPUNTO</h2>
+  <div id="notesListView" class="notes-list-view" hidden>
+    <div class="notes-topbar">
+      <button type="button" id="notesListCloseButton">CHIUDI</button>
+      <h2>ELENCO APPUNTI</h2>
+    </div>
+    <div id="notesList" class="notes-list">Caricamento...</div>
   </div>
-  <div id="notesEditorView" class="notes-editor">
+  <div id="notesEditorView" class="notes-editor" hidden>
+    <div class="notes-topbar">
+      <button type="button" id="notesBackButton">← ELENCO</button>
+      <h2 id="notesPageTitle">NUOVO APPUNTO</h2>
+    </div>
     <input type="text" id="notesTitle" class="notes-editor-title" maxlength="200" placeholder="Titolo appunto">
     <div class="notes-family-options">
       <label><input type="checkbox" id="notesFamilyVisible"> Visibile alla famiglia</label>
@@ -10544,7 +10578,14 @@ function alignBoxes(){
      l'allineamento delle colonne è utile solo quando sono affiancate. */
   var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
   var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-  if(!IS_KINDLE && viewportWidth <= 600 && viewportHeight > viewportWidth){
+
+  /* Kindle: non allungare i box fino al fondo del viewport.
+     Il ricalcolo veniva ripetuto dopo caricamenti e cambi vista,
+     aumentando artificialmente l'altezza degli ultimi box. */
+  if(IS_KINDLE){ return; }
+
+  /* Su smartphone in verticale i box seguono il contenuto. */
+  if(viewportWidth <= 600 && viewportHeight > viewportWidth){
     return;
   }
 
@@ -11556,7 +11597,8 @@ function handwrittenNotesRequest(method, path, body, callback){
 function showHandwrittenNotesList(){
   var host = $("notesList");
   if(!host){ return; }
-  setText($("notesBoxStatus"), "Caricamento appunti...");
+  setText($("notesBoxStatus"), "Caricamento...");
+  
   clear(host);
   host.appendChild(mk("div", "small", "Caricamento..."));
   handwrittenNotesRequest("GET", "/notes", null, function(err, data){
@@ -11609,6 +11651,8 @@ function renderHandwrittenNotesList(){
 }
 
 function openHandwrittenNoteEditor(note){
+  setHidden($("notesListView"), true);
+  setHidden($("notesEditorView"), false);
   handwrittenNoteId = note ? note.id : null;
   handwrittenNoteCanEdit = !note || note.can_edit !== false;
   handwrittenStrokes = note && Array.isArray(note.strokes) ? note.strokes : [];
@@ -11634,8 +11678,16 @@ function openHandwrittenNoteEditor(note){
 }
 
 function closeHandwrittenNoteEditor(){
-  setHidden($("handwrittenNotesOverlay"), true);
   handwrittenNoteId = null;
+  setHidden($("notesEditorView"), true);
+  setHidden($("notesListView"), false);
+  showHandwrittenNotesList();
+}
+
+function openHandwrittenNotesList(){
+  setHidden($("handwrittenNotesOverlay"), false);
+  setHidden($("notesEditorView"), true);
+  setHidden($("notesListView"), false);
   showHandwrittenNotesList();
 }
 
@@ -11810,6 +11862,10 @@ function initHandwrittenNotes(){
     closeHandwrittenNoteEditor();
   };
   $("notesNewButton").onclick = createHandwrittenNote;
+  $("notesViewButton").onclick = openHandwrittenNotesList;
+  $("notesListCloseButton").onclick = function(){
+    setHidden($("handwrittenNotesOverlay"), true);
+  };
   $("notesFamilyVisible").onchange = function(){
     if(!this.checked){
       $("notesFamilyEditable").checked = false;
