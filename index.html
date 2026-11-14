@@ -724,7 +724,7 @@ body.k .recurring-config-panel {
   padding:10px;
 }
 
-/* Pulsanti profilo nel menu hamburger: neutri, attivo nero. */
+/* Pulsanti profilo nel menu hamburger: neutri, utente autenticato evidenziato. */
 #viewMenuPanel button.user-profile-button {
   background:#fff!important;
   background-color:#fff!important;
@@ -736,6 +736,18 @@ body.k .recurring-config-panel {
   background-color:#000!important;
   color:#fff!important;
   border-color:#000!important;
+}
+#viewMenuPanel button.user-profile-button.logged-in-family {
+  background:#455a64!important;
+  background-color:#455a64!important;
+  color:#fff!important;
+  border-color:#455a64!important;
+}
+#viewMenuPanel button.user-profile-button.logged-in-personal {
+  background:#704052!important;
+  background-color:#704052!important;
+  color:#fff!important;
+  border-color:#704052!important;
 }
 .user-switch-popup {
   min-width:220px;
@@ -8943,6 +8955,18 @@ function renderViewMenu(){
 	  if(authToken && String(view.id) === String(currentView)){
 	    b.classList.add("sel");
 	  }
+
+      if(authToken && authUserType === "family" && view.view_type === "shared"){
+        b.classList.add("logged-in-family");
+      } else if(authToken && authUserType !== "family"){
+        var loggedUserView = findItem(USERS, function(user){
+          return String(user.id) === String(view.id) &&
+            String(user.name || "").toLowerCase() === String(authUserName || "").toLowerCase();
+        });
+        if(loggedUserView){
+          b.classList.add("logged-in-personal");
+        }
+      }
 	}
 
     b.onclick = function(ev){
