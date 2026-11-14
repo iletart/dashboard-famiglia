@@ -4162,7 +4162,7 @@ body.k #viewMenuPanel button.menu-action-button:active {
   /* Il lampeggio PC/mobile è gestito dal timer JavaScript. */
   animation:none!important;
 }
-body:not(.k) .view-switcher-notes-button.notes-blink-red {
+.view-switcher-notes-button.notes-blink-red {
   color:#B3261E!important;
   border-color:#B3261E!important;
 }
@@ -11919,10 +11919,8 @@ function updateHandwrittenNotesUnreadButton(){
     else button.classList.remove("notes-unread");
   }
 
-  /* Il lampeggio rosso è riservato a PC e smartphone: il Kindle non deve
-     lampeggiare quando l'appunto viene creato o letto proprio da lì. */
-  var isKindle = document.body && document.body.classList.contains("k");
-  if(isKindle || !handwrittenNotesUnread){
+  /* Il lampeggio rosso è attivo su tutti i dispositivi, incluso Kindle. */
+  if(!handwrittenNotesUnread){
     if(handwrittenNotesBlinkTimer !== null){
       window.clearInterval(handwrittenNotesBlinkTimer);
       handwrittenNotesBlinkTimer = null;
