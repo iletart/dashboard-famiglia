@@ -9025,8 +9025,8 @@ function renderViewMenu(){
 		}
   }
 
-  // CONFIGURAZIONE LAYOUT
-  if(authToken){
+  // CONFIGURAZIONE LAYOUT: disponibile solo nel profilo famiglia.
+  if(authToken && authUserType === "family"){
 	var layoutButton = mk(
 	  "button",
 	  "",
