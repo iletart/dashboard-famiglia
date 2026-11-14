@@ -4123,16 +4123,20 @@ body.k .view-switcher-order-button {
 }
 body.k .view-switcher-notes-button {
   display:inline-flex!important;
+  align-self:center!important;
+  vertical-align:middle!important;
+  box-sizing:border-box!important;
   flex:0 0 34px!important;
   width:34px!important;
   min-width:34px!important;
   height:34px!important;
   min-height:34px!important;
-  margin:1px 5px 1px 2px!important;
+  max-height:34px!important;
+  margin:1px 2px!important;
   padding:0!important;
   font-family:Arial,sans-serif!important;
   font-size:24px!important;
-  line-height:1!important;
+  line-height:34px!important;
 }
 body.k .view-switcher-button {
   display:inline-flex!important;
@@ -11254,6 +11258,22 @@ function initBoxRefresh() {
         box.appendChild(footer);
       }
 
+      /* I contenuti asincroni possono essere aggiunti dopo l'inizializzazione
+         del box: mantieni sempre il footer come ultimo elemento del box. */
+      if (window.MutationObserver && !box._metaFooterObserver) {
+        box._metaFooterObserver = new MutationObserver(function(){
+          var currentFooter = box.getElementsByClassName("box-meta-footer")[0];
+          if (currentFooter && currentFooter.parentNode === box &&
+              box.lastChild !== currentFooter) {
+            box.appendChild(currentFooter);
+          }
+        });
+        box._metaFooterObserver.observe(box, {childList:true});
+      }
+      if (footer.parentNode === box && box.lastChild !== footer) {
+        box.appendChild(footer);
+      }
+
       var timeLabels = heading.getElementsByClassName("sync-label");
       while (timeLabels.length) {
         footer.appendChild(timeLabels[0]);
@@ -11981,6 +12001,14 @@ function initHandwrittenNotes(){
   canvas.addEventListener("touchmove",function(ev){
     if(ev.preventDefault) ev.preventDefault();
     if(handwrittenCurrentStroke && ev.touches && ev.touches.length) moveHandwrittenStroke(ev.touches[0]);
+    return false;
+  },false);
+  /* Alcuni browser Kindle spostano il target del touch durante il gesto:
+     intercetta anche sul document per impedire lo scroll mentre si disegna. */
+  document.addEventListener("touchmove",function(ev){
+    if(!handwrittenCurrentStroke) return;
+    if(ev.preventDefault) ev.preventDefault();
+    if(ev.touches && ev.touches.length) moveHandwrittenStroke(ev.touches[0]);
     return false;
   },false);
   canvas.addEventListener("touchend",function(ev){
