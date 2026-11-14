@@ -2095,6 +2095,7 @@ body.k #authDiagnosticButton {
 body.k .box-meta-footer {
   display:flex !important;
   flex-direction:row !important;
+  flex-wrap:nowrap !important;
   align-items:center !important;
   justify-content:flex-end !important;
   gap:6px !important;
@@ -2117,6 +2118,7 @@ body.k .box-meta-footer .sync-label {
   margin:0 !important;
   padding:0 !important;
   box-sizing:border-box !important;
+  order:1 !important;
   text-align:right !important;
   white-space:normal !important;
   overflow-wrap:anywhere !important;
@@ -2129,6 +2131,8 @@ body.k .box-meta-footer .box-refresh {
   position:relative !important;
   top:auto !important;
   right:auto !important;
+  order:2 !important;
+  align-self:center !important;
   flex:0 0 30px !important;
   width:30px !important;
   min-width:30px !important;
@@ -10975,7 +10979,8 @@ function initBoxRefresh() {
 
     /* Riutilizza l'eventuale pulsante già presente: su Kindle va comunque
        spostato nel footer, anche se era stato creato in precedenza nell'header. */
-    var button = heading.getElementsByClassName("box-refresh")[0];
+    var button = heading.getElementsByClassName("box-refresh")[0] ||
+      box.getElementsByClassName("box-refresh")[0];
     var isNewButton = !button;
 
     if (!button) {
