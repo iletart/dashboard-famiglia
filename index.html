@@ -4413,6 +4413,53 @@ body:not(.k) .shopping-delete-label > .trash-icon::after {
 /* Daily task e Appunti usano direttamente le regole PC comuni
    di .todo-delete sopra: una sola definizione evita divergenze. */
 
+/* Unico disegno PC per cestini To-do, Daily task e Appunti. */
+body:not(.k) .trash-button {
+  position:relative!important;
+  display:inline-block!important;
+  box-sizing:border-box!important;
+  width:30px!important;
+  min-width:30px!important;
+  max-width:30px!important;
+  height:30px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  color:#5E5B55!important;
+  background:none!important;
+  box-shadow:none!important;
+  font-size:0!important;
+  line-height:0!important;
+}
+body:not(.k) .trash-button:hover { color:#B3261E!important; }
+body:not(.k) .trash-button::before {
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  top:10px!important;
+  width:12px!important;
+  height:15px!important;
+  margin-left:-6px!important;
+  box-sizing:border-box!important;
+  border:2.5px solid currentColor!important;
+  border-top:0!important;
+  border-radius:0 0 3px 3px!important;
+  background:none!important;
+}
+body:not(.k) .trash-button::after {
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  top:2px!important;
+  width:18px!important;
+  height:5px!important;
+  margin-left:-9px!important;
+  box-sizing:border-box!important;
+  border:0!important;
+  background:
+    linear-gradient(currentColor,currentColor) center top / 7px 2px no-repeat,
+    linear-gradient(currentColor,currentColor) center bottom / 18px 2px no-repeat!important;
+}
 </style>
 
 </head>
@@ -12654,51 +12701,3 @@ restoreAuthSession();
 </script>
 </body>
 </html>
-
-/* Unico disegno PC per cestini To-do, Daily task e Appunti. */
-body:not(.k) .trash-button {
-  position:relative!important;
-  display:inline-block!important;
-  box-sizing:border-box!important;
-  width:30px!important;
-  min-width:30px!important;
-  max-width:30px!important;
-  height:30px!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  color:#5E5B55!important;
-  background:none!important;
-  box-shadow:none!important;
-  font-size:0!important;
-  line-height:0!important;
-}
-body:not(.k) .trash-button:hover { color:#B3261E!important; }
-body:not(.k) .trash-button::before {
-  content:""!important;
-  position:absolute!important;
-  left:50%!important;
-  top:10px!important;
-  width:12px!important;
-  height:15px!important;
-  margin-left:-6px!important;
-  box-sizing:border-box!important;
-  border:2.5px solid currentColor!important;
-  border-top:0!important;
-  border-radius:0 0 3px 3px!important;
-  background:none!important;
-}
-body:not(.k) .trash-button::after {
-  content:""!important;
-  position:absolute!important;
-  left:50%!important;
-  top:2px!important;
-  width:18px!important;
-  height:5px!important;
-  margin-left:-9px!important;
-  box-sizing:border-box!important;
-  border:0!important;
-  background:
-    linear-gradient(currentColor,currentColor) center top / 7px 2px no-repeat,
-    linear-gradient(currentColor,currentColor) center bottom / 18px 2px no-repeat!important;
-}
