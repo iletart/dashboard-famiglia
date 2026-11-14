@@ -4087,6 +4087,18 @@ body.k .notes-status {
   overflow:hidden!important;
 }
 
+/* Quando la tastiera Kindle è aperta, mantieni la barra dei comandi
+   ancorata allo schermo: SALVA resta visibile anche scrivendo una sola riga. */
+body.k.notes-keyboard-open .notes-toolbar {
+  position:fixed!important;
+  top:174px!important;
+  left:5px!important;
+  right:5px!important;
+  z-index:10005!important;
+  background:#fff!important;
+  padding:2px 0!important;
+}
+
 
 
 /* Rifiniture Kindle: header, hamburger e pulsanti del menu profili. */
@@ -12195,6 +12207,17 @@ function initHandwrittenNotes(){
   var canvas = $("handwrittenCanvas");
   if(!canvas || handwrittenCanvasReady) return;
   handwrittenCanvasReady = true;
+  if(document.body.classList.contains("k")){
+    var notesTextInput = $("notesTextEditor");
+    if(notesTextInput){
+      notesTextInput.addEventListener("focus",function(){
+        document.body.classList.add("notes-keyboard-open");
+      });
+      notesTextInput.addEventListener("blur",function(){
+        document.body.classList.remove("notes-keyboard-open");
+      });
+    }
+  }
   /* Strumento predefinito su tutti i dispositivi: penna. */
   handwrittenTool = "pen";
   updateHandwrittenToolButtons();
