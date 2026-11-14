@@ -11864,6 +11864,15 @@ function handwrittenNoteAuditText(note){
     " · Modificato: " + formatHandwrittenNoteDate(note.updated_at) + " da " + (note.last_editor_name || note.creator_name || "—");
 }
 
+function getHandwrittenNoteStrokes(note){
+  if(!note) return [];
+  var strokes = note.strokes;
+  if(typeof strokes === "string"){
+    try { strokes = JSON.parse(strokes); } catch(e){ return []; }
+  }
+  return Array.isArray(strokes) ? strokes : [];
+}
+
 function renderHandwrittenNotesList(){
   var host = $("notesList");
   clear(host);
@@ -11878,12 +11887,11 @@ function renderHandwrittenNotesList(){
       open.type = "button";
       var info = mk("div", "notes-list-info");
       var kind = "MANOSCRITTO";
-      if(Array.isArray(note.strokes)){
-        for(var kindIndex=0;kindIndex<note.strokes.length;kindIndex++){
-          if(note.strokes[kindIndex] && note.strokes[kindIndex].type === "text"){
-            kind = "TESTO LIBERO";
-            break;
-          }
+      var noteStrokes = getHandwrittenNoteStrokes(note);
+      for(var kindIndex=0;kindIndex<noteStrokes.length;kindIndex++){
+        if(noteStrokes[kindIndex] && noteStrokes[kindIndex].type === "text"){
+          kind = "TESTO LIBERO";
+          break;
         }
       }
       var kindLabel = mk("span", "notes-kind-label", kind);
@@ -11972,7 +11980,7 @@ function openHandwrittenNoteEditor(note, forceTextMode){
   setHidden($("notesEditorView"), false);
   handwrittenNoteId = note ? note.id : null;
   handwrittenNoteCanEdit = !note || note.can_edit !== false;
-  handwrittenStrokes = note && Array.isArray(note.strokes) ? note.strokes : [];
+  handwrittenStrokes = getHandwrittenNoteStrokes(note);
   var savedText = "";
   var hasSavedText = false;
   for(var textIndex=0;textIndex<handwrittenStrokes.length;textIndex++){
@@ -12364,14 +12372,14 @@ function initHandwrittenNotes(){
     createHandwrittenNote(false);
   };
   $("notesCreateTextButton").onclick = function(){
-    if(IS_KINDLE) return;
     createHandwrittenNote(true);
   };
   if(IS_KINDLE){
+    /* Sul Kindle si creano appunti testuali; il disegno resta disponibile su PC. */
     $("notesCreateHandwrittenButton").disabled = true;
     $("notesCreateHandwrittenButton").hidden = true;
-    $("notesCreateTextButton").disabled = true;
-    $("notesCreateTextButton").title = "La creazione di appunti dal Kindle non è disponibile";
+    $("notesCreateTextButton").disabled = false;
+    $("notesCreateTextButton").title = "Crea un appunto di testo libero";
   }
   $("notesFamilyVisible").onchange = function(){
     if(!this.checked){
