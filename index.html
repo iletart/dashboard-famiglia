@@ -9007,6 +9007,24 @@ function renderViewMenu(){
   
     var userInput = createLoginInput("Nome utente");
     userInput.autocomplete = "username";
+
+    // Il login dal menu hamburger usa campi distinti da quelli della pagina login:
+    // ripristina e salva qui i nomi, senza memorizzare mai il PIN.
+    try {
+      familyInput.value = localStorage.getItem("dashboardLoginFamily") || "";
+      userInput.value = localStorage.getItem("dashboardLoginUser") || "";
+    } catch(e) {}
+
+    function saveMenuLoginNames(){
+      try {
+        localStorage.setItem("dashboardLoginFamily", familyInput.value.trim());
+        localStorage.setItem("dashboardLoginUser", userInput.value.trim());
+      } catch(e) {}
+    }
+    familyInput.oninput = saveMenuLoginNames;
+    userInput.oninput = saveMenuLoginNames;
+    familyInput.onblur = saveMenuLoginNames;
+    userInput.onblur = saveMenuLoginNames;
   
     var pinInput = createLoginInput("PIN", "password");
     pinInput.inputMode = "numeric";
@@ -9042,6 +9060,7 @@ function renderViewMenu(){
       }
   
       error.textContent = "";
+      saveMenuLoginNames();
       loginButton.disabled = true;
   
       authLogin(family, username, pin);
