@@ -11887,14 +11887,15 @@ function updateHandwrittenNotesUnreadButton(){
       handwrittenNotesBlinkTimer = window.setInterval(function(){
         handwrittenNotesBlinkVisible = !handwrittenNotesBlinkVisible;
         var currentButton = document.querySelector(".view-switcher-notes-button");
+        /* L'opacità attenua il pulsante senza rimuoverlo dall'area cliccabile. */
         if(currentButton){
-          currentButton.style.visibility = handwrittenNotesBlinkVisible ? "visible" : "hidden";
+          currentButton.style.opacity = handwrittenNotesBlinkVisible ? "1" : "0.25";
         }
         var unreadRows = document.querySelectorAll(".notes-list-row-unread");
         for(var rowIndex=0;rowIndex<unreadRows.length;rowIndex++){
-          unreadRows[rowIndex].style.visibility = handwrittenNotesBlinkVisible ? "visible" : "hidden";
+          unreadRows[rowIndex].style.opacity = handwrittenNotesBlinkVisible ? "1" : "0.25";
         }
-      }, 500);
+      }, 2000);
     }
   } else {
     if(handwrittenNotesBlinkTimer !== null){
@@ -11902,10 +11903,10 @@ function updateHandwrittenNotesUnreadButton(){
       handwrittenNotesBlinkTimer = null;
     }
     var currentButton = document.querySelector(".view-switcher-notes-button");
-    if(currentButton) currentButton.style.visibility = "visible";
+    if(currentButton) currentButton.style.opacity = "1";
     var unreadRows = document.querySelectorAll(".notes-list-row-unread");
     for(var rowIndex=0;rowIndex<unreadRows.length;rowIndex++){
-      unreadRows[rowIndex].style.visibility = "visible";
+      unreadRows[rowIndex].style.opacity = "1";
     }
   }
 }
