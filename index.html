@@ -2542,51 +2542,7 @@ body.k .settings-gear:after {
   box-shadow:0 12px 0 #000, 6px 6px 0 #000, -6px 6px 0 #000;
 }
 
-/* Cestino su PC e smartphone (sostituisce 🗑; su Kindle resta quello esistente) */
-body:not(.k) .todo-delete,
-body:not(.k) .family-shopping-delete {
-  position:relative;
-  width:32px;
-  height:32px;
-  min-width:32px;
-  padding:0;
-  border:0;
-  font-size:0;
-  line-height:0;
-  color:#5E5B55;
-  background:linear-gradient(currentColor,currentColor) 50% 5px / 6px 2px no-repeat;
-}
-
-body:not(.k) .todo-delete:hover,
-body:not(.k) .family-shopping-delete:hover {
-  color:#B3261E;
-}
-
-body:not(.k) .todo-delete:before,
-body:not(.k) .family-shopping-delete:before {
-  content:"";
-  position:absolute;
-  left:50%;
-  top:13px;
-  width:8px;
-  height:8px;
-  margin-left:-6px;
-  border:2px solid currentColor;
-  border-top:0;
-  border-radius:0 0 3px 3px;
-}
-
-body:not(.k) .todo-delete:after,
-body:not(.k) .family-shopping-delete:after {
-  content:"";
-  position:absolute;
-  left:50%;
-  top:8px;
-  width:16px;
-  height:2px;
-  margin-left:-8px;
-  background:currentColor;
-}
+/* Disegno PC unificato gestito dalla classe .trash-button. */
 
 /* Cestino accanto alle checkbox "da eliminare" della lista Amazon (PC) */
 body:not(.k) .shopping-delete-label > span {
@@ -3528,31 +3484,7 @@ body.k #recurringTasksBox .recurring-config-button {
 
 
 
-/* Icona cestino Claude: unica, ridotta e senza span grafico legacy */
-.todo-actions .todo-delete,
-.family-shopping-item .family-shopping-delete {
- position:relative!important;display:inline-block!important;box-sizing:border-box!important;
- width:28px!important;min-width:28px!important;max-width:28px!important;height:32px!important;
- margin:0 0 0 auto!important;padding:0!important;overflow:visible!important;border:0!important;
- border-radius:0!important;color:#66645f!important;background:none!important;box-shadow:none!important;
- font-size:0!important;line-height:0!important;
-}
-.todo-actions .todo-delete::before,
-.family-shopping-item .family-shopping-delete::before {
- content:""!important;position:absolute!important;left:8px!important;top:12px!important;
- width:12px!important;height:15px!important;box-sizing:border-box!important;
- border:2px solid currentColor!important;border-top:0!important;border-radius:0 0 4px 4px!important;
- background:none!important;margin:0!important;
-}
-.todo-actions .todo-delete::after,
-.family-shopping-item .family-shopping-delete::after {
- content:""!important;display:block!important;position:absolute!important;left:4px!important;top:7px!important;
- width:20px!important;height:4px!important;box-sizing:border-box!important;
- background:linear-gradient(currentColor,currentColor) center top / 5px 1px no-repeat,
- linear-gradient(currentColor,currentColor) center bottom / 20px 1px no-repeat!important;
- border:0!important;border-radius:0!important;margin:0!important;
-}
-
+/* La geometria dell'icona è definita una sola volta da .trash-button. */
 
 /* L'etichetta assegnatario dei sottotask è indivisibile anche con task lunghi */
 #recurringTasksBox .recurring-subtask-row .task-assignees {
@@ -4427,61 +4359,7 @@ body.k .box.notes-summary-box button:not(.seg-button):not(.todo-assign):not(.box
   vertical-align:middle!important;
 }
 
-/* PC: ripristina il cestino originale di prima delle modifiche Kindle.
-   Il disegno è applicato solo ai dispositivi non Kindle. */
-body:not(.k) .todo-delete,
-body:not(.k) .family-shopping-delete {
-  position:relative!important;
-  display:inline-block!important;
-  width:30px!important;
-  height:30px!important;
-  min-width:30px!important;
-  max-width:30px!important;
-  padding:0!important;
-  border:0!important;
-  font-size:0!important;
-  line-height:0!important;
-  color:#5E5B55!important;
-  background:none!important;
-  box-shadow:none!important;
-}
-body:not(.k) .todo-delete:hover,
-body:not(.k) .family-shopping-delete:hover {
-  color:#B3261E!important;
-}
-body:not(.k) .todo-delete::before,
-body:not(.k) .family-shopping-delete::before {
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  left:50%!important;
-  top:10px!important;
-  width:12px!important;
-  height:15px!important;
-  margin-left:-6px!important;
-  border:2.5px solid currentColor!important;
-  border-top:0!important;
-  border-radius:0 0 3px 3px!important;
-  box-sizing:border-box!important;
-  background:none!important;
-}
-body:not(.k) .todo-delete::after,
-body:not(.k) .family-shopping-delete::after {
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  left:50%!important;
-  top:2px!important;
-  width:18px!important;
-  height:5px!important;
-  margin-left:-9px!important;
-  border:0!important;
-  border-radius:0!important;
-  box-sizing:border-box!important;
-  background:
-    linear-gradient(currentColor,currentColor) center top / 7px 2px no-repeat,
-    linear-gradient(currentColor,currentColor) center bottom / 18px 2px no-repeat!important;
-}
+/* La grafica PC dei cestini è gestita dalla sola classe .trash-button. */
 
 /* Anche il cestino della lista Amazon usa la stessa sagoma della To-do list.
    Il contenitore resta compatto per non spostare la checkbox adiacente. */
@@ -5868,7 +5746,7 @@ function itemRow(item, busy, onToggle, onDelete, extraBtn, assigneeClass){
   var actions = mk("span", "todo-actions");
   if(extraBtn){ actions.appendChild(extraBtn); }
 
-  var del = mk("button", "todo-delete", "");
+  var del = mk("button", "todo-delete trash-button", "");
   del.type = "button";
   del.disabled = busy;
   del.title = "Elimina attività";
@@ -12252,7 +12130,7 @@ function renderHandwrittenNotesList(){
       var visibility = mk("span", "notes-visibility-label", flags.length ? flags.join(" · ") : "PRIVATO");
       open.onclick = function(){ markHandwrittenNoteRead(note.id); loadHandwrittenNote(note.id); };
       var actions = mk("span", "todo-actions");
-      var del = mk("button", "todo-delete", "");
+      var del = mk("button", "todo-delete trash-button", "");
       del.type = "button";
       del.title = "Elimina appunto";
       actions.appendChild(del);
@@ -12776,3 +12654,51 @@ restoreAuthSession();
 </script>
 </body>
 </html>
+
+/* Unico disegno PC per cestini To-do, Daily task e Appunti. */
+body:not(.k) .trash-button {
+  position:relative!important;
+  display:inline-block!important;
+  box-sizing:border-box!important;
+  width:30px!important;
+  min-width:30px!important;
+  max-width:30px!important;
+  height:30px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  color:#5E5B55!important;
+  background:none!important;
+  box-shadow:none!important;
+  font-size:0!important;
+  line-height:0!important;
+}
+body:not(.k) .trash-button:hover { color:#B3261E!important; }
+body:not(.k) .trash-button::before {
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  top:10px!important;
+  width:12px!important;
+  height:15px!important;
+  margin-left:-6px!important;
+  box-sizing:border-box!important;
+  border:2.5px solid currentColor!important;
+  border-top:0!important;
+  border-radius:0 0 3px 3px!important;
+  background:none!important;
+}
+body:not(.k) .trash-button::after {
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  top:2px!important;
+  width:18px!important;
+  height:5px!important;
+  margin-left:-9px!important;
+  box-sizing:border-box!important;
+  border:0!important;
+  background:
+    linear-gradient(currentColor,currentColor) center top / 7px 2px no-repeat,
+    linear-gradient(currentColor,currentColor) center bottom / 18px 2px no-repeat!important;
+}
