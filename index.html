@@ -8447,6 +8447,12 @@ function loadMenu(){
   var k = menuSel;
   markSeg("menuDays", k);
 
+  /* I timestamp devono appartenere sempre al giorno selezionato:
+     non mostrare quelli del menu caricato in precedenza. */
+  menuSyncedAt = null;
+  menuUpdatedAt = null;
+  setTimes($("menuTimes"), null, null, false, 0, true);
+
   var day = dateOfDayNum(todayNum() + TASK_OFF[k]).getUTCDay();
   setText($("menuStatus"), "Caricamento...");
 
@@ -8481,7 +8487,7 @@ function renderMenu(k, err, d){
   var list = $("menuList");
   clear(list);
 
-  setTimes($("menuTimes"), menuUpdatedAt, menuSyncedAt, false, 0, true);
+  setTimes($("menuTimes"), menuUpdatedAt, menuSyncedAt, !!err, 0, true);
   setText($("menuDate"), fullDateText(todayNum() + TASK_OFF[k]));
 
   if(err){
