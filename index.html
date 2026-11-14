@@ -9205,7 +9205,18 @@ function renderViewMenu(){
         panel._pendingLoginUserId = id;
         renderViewMenu();
       } else {
-        if(String(id) === String(currentView)){
+        var targetView = findItem(DASHBOARD_VIEWS, function(v){
+          return String(v.id) === String(id);
+        });
+        var targetIsFamily = targetView && targetView.view_type === "shared";
+
+        /* La vista Condivisa puo essere attiva anche con una sessione personale
+           per effetto della pianificazione oraria. In quel caso il profilo
+           Famiglia deve comunque poter essere selezionato e autenticato. */
+        if(
+          String(id) === String(currentView) &&
+          (!targetIsFamily || authUserType === "family")
+        ){
           closeViewMenu();
           return;
         }
