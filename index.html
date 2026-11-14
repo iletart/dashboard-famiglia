@@ -9761,499 +9761,334 @@ function openLayoutManagement(){
 function openUserManagement(){
   var panel = $("viewMenuPanel");
   clear(panel);
-
   panel.style.width = "560px";
   panel.style.maxWidth = "92vw";
   panel.style.boxSizing = "border-box";
 
   var box = mk("div", "user-management-panel", "");
-  box.style.padding = "12px";
+  box.style.padding = "14px";
   box.style.display = "flex";
   box.style.flexDirection = "column";
-  box.style.gap = "10px";
+  box.style.gap = "12px";
   box.style.width = "100%";
   box.style.boxSizing = "border-box";
 
-  var title = mk("div", "", "GESTIONE UTENTI");
-  title.style.textAlign = "center";
+  var header = mk("div", "", "");
+  header.style.display = "flex";
+  header.style.alignItems = "center";
+  header.style.justifyContent = "space-between";
+  header.style.gap = "10px";
+
+  var heading = mk("div", "", "");
+  var title = mk("div", "", "UTENTI");
   title.style.fontSize = "18px";
   title.style.fontWeight = "bold";
-  box.appendChild(title);
+  var subtitle = mk("div", "small", "Gestisci profili, accessi e autorizzazioni.");
+  subtitle.style.marginTop = "2px";
+  heading.appendChild(title);
+  heading.appendChild(subtitle);
+  header.appendChild(heading);
 
-  var list = mk("div", "", "");
-  list.style.display = "flex";
-  list.style.flexDirection = "column";
-  list.style.gap = "8px";
-  box.appendChild(list);
-
-  var message = mk("div", "", "Caricamento utenti...");
-  message.style.textAlign = "center";
-  box.appendChild(message);
-
-  var addButton = mk("button", "", "+ AGGIUNGI UTENTE");
+  var addButton = mk("button", "", "+ AGGIUNGI");
   addButton.type = "button";
-  addButton.style.width = "100%";
-  addButton.style.padding = "12px";
+  addButton.style.margin = "0";
+  addButton.style.whiteSpace = "nowrap";
   addButton.onclick = openAddUserForm;
-  box.appendChild(addButton);
+  header.appendChild(addButton);
+  box.appendChild(header);
 
-  var backButton = mk("button", "", "INDIETRO");
+  var divider = mk("div", "", "");
+  divider.style.borderTop = "1px solid #d8d8d0";
+  box.appendChild(divider);
+
+  var content = mk("div", "", "");
+  content.style.display = "flex";
+  content.style.flexDirection = "column";
+  content.style.gap = "8px";
+  box.appendChild(content);
+
+  var footer = mk("div", "", "");
+  footer.style.display = "flex";
+  footer.style.justifyContent = "flex-end";
+  footer.style.paddingTop = "4px";
+  var backButton = mk("button", "", "CHIUDI");
   backButton.type = "button";
-  backButton.style.width = "100%";
-  backButton.style.padding = "12px";
   backButton.onclick = renderViewMenu;
-  box.appendChild(backButton);
-
+  footer.appendChild(backButton);
+  box.appendChild(footer);
   panel.appendChild(box);
 
+  function setMessage(host, value, isError){
+    if(host){
+      host.textContent = value || "";
+      host.style.color = isError ? "#b3261e" : "#555";
+    }
+  }
+
   function loadUsers(){
+    clear(content);
+    content.appendChild(mk("div", "small", "Caricamento utenti..."));
     usersRequest("GET", "/users", null, function(err, data){
-      clear(list);
-
+      clear(content);
       if(err || !data || !data.ok || !Array.isArray(data.users)){
-        message.textContent = err || "Impossibile caricare gli utenti.";
+        var error = mk("div", "small", err || "Impossibile caricare gli utenti.");
+        error.style.color = "#b3261e";
+        content.appendChild(error);
         return;
       }
-
-      message.textContent = data.users.length
-        ? "UTENTI REGISTRATI: " + data.users.length
-        : "Nessun utente presente.";
-
-      for(var i = 0; i < data.users.length; i++){
-        renderUser(data.users[i]);
+      var users = data.users;
+      if(!users.length){
+        content.appendChild(mk("div", "small", "Non ci sono ancora utenti."));
+        return;
       }
+      var count = mk("div", "small", users.length + (users.length === 1 ? " utente" : " utenti"));
+      count.style.margin = "0 0 2px";
+      content.appendChild(count);
+      for(var i = 0; i < users.length; i++) renderUserRow(users[i]);
     });
   }
 
-  function renderUser(user){
-    var item = mk("div", "user-management-item", "");
-    item.style.padding = "10px";
-    item.style.border = "1px solid #ccc";
-    item.style.borderRadius = "6px";
-    item.style.display = "flex";
-    item.style.flexDirection = "column";
-    item.style.gap = "7px";
-
-    var name = mk("div", "", user.name || user.view_id);
-    name.style.fontWeight = "bold";
-    item.appendChild(name);
-
-    var owner = mk(
-      "div",
-      "",
-      "Codice attività: " + (user.task_owner || "—")
-    );
-    item.appendChild(owner);
-
-    if(authUserType === "family"){
-      var canManageRecurring = Array.isArray(user.permissions) &&
-        user.permissions.indexOf("recurring_tasks.manage") !== -1;
-      var recurringGrantButton = mk(
-        "button",
-        "",
-        canManageRecurring
-          ? "REVOCA GESTIONE ATTIVITÀ RICORRENTI"
-          : "ABILITA GESTIONE ATTIVITÀ RICORRENTI"
-      );
-      recurringGrantButton.type = "button";
-      recurringGrantButton.style.width = "100%";
-      recurringGrantButton.style.padding = "9px 5px";
-      recurringGrantButton.style.background = canManageRecurring ? "#ef8f00" : "#2e7d32";
-      recurringGrantButton.style.color = "#fff";
-      recurringGrantButton.style.border = "1px solid #777";
-      recurringGrantButton.onclick = function(){
-        recurringGrantButton.disabled = true;
-        message.textContent = "Aggiornamento permesso...";
-        usersRequest(
-          "PUT",
-          "/users/" + user.id,
-          { recurring_tasks_manage: !canManageRecurring },
-          function(err, data){
-            if(err || !data || !data.ok){
-              message.textContent = err || (data && data.error) || "Aggiornamento permesso non riuscito.";
-              recurringGrantButton.disabled = false;
-              return;
-            }
-            message.textContent = canManageRecurring
-              ? "Permesso revocato."
-              : "Permesso concesso.";
-            loadUsers();
-          }
-        );
-      };
-      item.appendChild(recurringGrantButton);
-    }
-
-    var enabled = !!user.enabled;
+  function renderUserRow(user){
+    var active = !!user.enabled;
     var hidden = !!user.hidden;
+    var row = mk("div", "user-management-item", "");
+    row.style.display = "flex";
+    row.style.alignItems = "center";
+    row.style.gap = "10px";
+    row.style.padding = "10px 11px";
+    row.style.border = "1px solid #deded6";
+    row.style.borderRadius = "7px";
+    row.style.background = "#fff";
 
-    var statusText = "Stato: ";
+    var avatar = mk("div", "", (user.name || user.view_id || "?").charAt(0).toUpperCase());
+    avatar.style.display = "flex";
+    avatar.style.alignItems = "center";
+    avatar.style.justifyContent = "center";
+    avatar.style.flex = "0 0 36px";
+    avatar.style.width = "36px";
+    avatar.style.height = "36px";
+    avatar.style.borderRadius = "50%";
+    avatar.style.background = "#eeece2";
+    avatar.style.fontWeight = "bold";
+    row.appendChild(avatar);
 
-    if(enabled){
-      statusText += "ATTIVO";
-    }else{
-      statusText += "DISATTIVATO";
-    }
+    var info = mk("div", "", "");
+    info.style.flex = "1 1 auto";
+    info.style.minWidth = "0";
+    var name = mk("div", "", user.name || user.view_id || "Utente");
+    name.style.fontWeight = "bold";
+    var meta = mk("div", "small", "");
+    meta.style.marginTop = "2px";
+    var state = !active ? "Disattivato" : (hidden ? "Nascosto" : "Attivo");
+    meta.textContent = (user.task_owner ? "Codice " + user.task_owner + " · " : "") + state;
+    meta.style.color = !active ? "#b3261e" : (hidden ? "#946200" : "#555");
+    info.appendChild(name);
+    info.appendChild(meta);
+    row.appendChild(info);
 
-    if(hidden){
-      statusText += ", NASCOSTO";
-    }
-
-    var status = mk("div", "", statusText);
-    status.style.fontSize = "13px";
-    status.style.fontWeight = "bold";
-    status.style.color = !enabled ? "#c00" : (hidden ? "#a66b00" : "#287a36");
-    item.appendChild(status);
-	
-	var renameActions = mk("div", "", "");
-	renameActions.style.display = "flex";
-	renameActions.style.gap = "8px";
-	renameActions.style.width = "100%";
-	
-	var renameButton = mk("button", "", "RINOMINA UTENTE");
-	renameButton.type = "button";
-	renameButton.style.flex = "1";
-	renameButton.style.padding = "9px 5px";
-	renameButton.classList.add("user-rename-button");
-	
-	renameButton.onclick = function(){
-	renameUser(user, renameButton);
-	};
-	
-	var renameOwnerButton = mk(
-	"button",
-	"",
-	"RINOMINA CODICE ATTIVITÀ"
-	);
-	renameOwnerButton.type = "button";
-	renameOwnerButton.style.flex = "1";
-	renameOwnerButton.style.padding = "9px 5px";
-	renameOwnerButton.classList.add("user-rename-button");
-	
-	renameOwnerButton.onclick = function(){
-	renameTaskOwner(user, renameOwnerButton);
-	};
-	
-	renameActions.appendChild(renameButton);
-	renameActions.appendChild(renameOwnerButton);
-	item.appendChild(renameActions);
-
-    var actions = mk("div", "", "");
-    actions.style.display = "flex";
-    actions.style.gap = "8px";
-    actions.style.width = "100%";
-	var enabledButton = mk(
-	"button",
-	"",
-	enabled ? "DISATTIVA" : "ATTIVA"
-	);
-	enabledButton.type = "button";
-	enabledButton.style.flex = "1";
-	enabledButton.style.padding = "9px 5px";
-	enabledButton.style.backgroundColor =
-	enabled ? "#c62828" : "#2e7d32";
-	enabledButton.style.color = "#ffffff";
-	enabledButton.style.border = "1px solid #777";
-	
-	enabledButton.onclick = function(){
-		updateUserStatus(
-			user,
-			"enabled",
-			!enabled,
-			enabledButton,
-			hiddenButton
-		);
-	};
-	
-	var hiddenButton = mk(
-		"button",
-		"",
-		hidden ? "MOSTRA" : "NASCONDI"
-	);
-	
-	hiddenButton.type = "button";
-	hiddenButton.style.flex = "1";
-	hiddenButton.style.padding = "9px 5px";
-	hiddenButton.style.backgroundColor =
-	hidden ? "#2e7d32" : "#ef8f00";
-	hiddenButton.style.color = "#ffffff";
-	hiddenButton.style.border = "1px solid #777";
-	
-	hiddenButton.onclick = function(){
-		updateUserStatus(
-			user,
-			"hidden",
-			!hidden,
-			enabledButton,
-			hiddenButton
-		);
-	};
-
-    actions.appendChild(enabledButton);
-    actions.appendChild(hiddenButton);
-    
-    var deleteButton = mk("button", "", "ELIMINA");
-    deleteButton.type = "button";
-    deleteButton.style.flex = "1";
-    deleteButton.style.padding = "9px 5px";
-    deleteButton.style.background = "#c62828";
-    deleteButton.style.color = "#fff";
-    deleteButton.style.border = "none";
-    
-    deleteButton.onclick = function(){
-      deleteUser(
-        user,
-        deleteButton,
-        enabledButton,
-        hiddenButton
-      );
-    };
-    
-    actions.appendChild(deleteButton);
-    item.appendChild(actions);
-    
-    list.appendChild(item);
-
+    var manage = mk("button", "", "GESTISCI");
+    manage.type = "button";
+    manage.style.margin = "0";
+    manage.style.padding = "7px 9px";
+    manage.onclick = function(){ renderUserDetails(user); };
+    row.appendChild(manage);
+    content.appendChild(row);
   }
 
-  function updateUserStatus(
-    user,
-    field,
-    value,
-    enabledButton,
-    hiddenButton
-  ){
-    enabledButton.disabled = true;
-    hiddenButton.disabled = true;
+  function renderUserDetails(user){
+    clear(content);
+    var top = mk("div", "", "");
+    top.style.display = "flex";
+    top.style.alignItems = "center";
+    top.style.gap = "8px";
+    var back = mk("button", "", "‹");
+    back.type = "button";
+    back.title = "Torna all'elenco";
+    back.style.margin = "0";
+    back.style.fontSize = "20px";
+    back.style.padding = "2px 10px";
+    back.onclick = loadUsers;
+    var topTitle = mk("div", "", user.name || user.view_id || "Utente");
+    topTitle.style.fontWeight = "bold";
+    topTitle.style.fontSize = "17px";
+    top.appendChild(back);
+    top.appendChild(topTitle);
+    content.appendChild(top);
 
-    var endpoint = "/users/" + user.id + "/" + field;
-    var body = {};
-    body[field] = value;
-
-    usersRequest("PATCH", endpoint, body, function(err, data){
-      if(err || !data || !data.ok){
-        message.textContent =
-          err || (data && data.error) || "Aggiornamento non riuscito.";
-
-        enabledButton.disabled = false;
-        hiddenButton.disabled = false;
-        return;
+    function section(label){
+      var wrap = mk("div", "", "");
+      wrap.style.padding = "10px 0";
+      wrap.style.borderTop = "1px solid #e2e2dc";
+      var h = mk("div", "", label);
+      h.style.fontWeight = "bold";
+      h.style.fontSize = "12px";
+      h.style.letterSpacing = ".5px";
+      h.style.color = "#666";
+      h.style.marginBottom = "8px";
+      wrap.appendChild(h);
+      content.appendChild(wrap);
+      return wrap;
+    }
+    function field(host, labelText, value){
+      var group = mk("label", "", "");
+      group.style.display = "flex";
+      group.style.flexDirection = "column";
+      group.style.gap = "4px";
+      group.style.flex = "1 1 0";
+      group.style.minWidth = "0";
+      var label = mk("span", "small", labelText);
+      label.style.margin = "0";
+      var input = mk("input");
+      input.type = "text";
+      input.value = value || "";
+      input.style.width = "100%";
+      input.style.minWidth = "0";
+      input.style.boxSizing = "border-box";
+      input.style.padding = "8px";
+      input.style.border = "1px solid #bbb";
+      input.style.borderRadius = "4px";
+      group.appendChild(label);
+      group.appendChild(input);
+      host.appendChild(group);
+      return input;
+    }
+    function actionButton(host, label, callback, color){
+      var button = mk("button", "", label);
+      button.type = "button";
+      button.style.margin = "0";
+      button.style.padding = "8px 10px";
+      if(color){
+        button.style.background = color;
+        button.style.color = "#fff";
+        button.style.borderColor = color;
       }
-
-	  message.textContent = "Utente aggiornato.";
-	  
-	  loadAuthorizedConfig(function(configErr){
-	  
-	  if(configErr){
-	  	message.textContent =
-	  	"Utente aggiornato, ma aggiornamento della configurazione non riuscito.";
-	  	loadUsers();
-	  	return;
-	  }
-	  
-	  // Se la vista corrente non è più autorizzata,
-	  // passa alla prima vista disponibile.
-	  if(!findItem(DASHBOARD_VIEWS, function(v){
-	  	return v.id === currentView;
-	  })){
-	  	if(DASHBOARD_VIEWS.length){
-	  	setView(DASHBOARD_VIEWS[0].id, false);
-	  	}
-	  }
-	  
-	  loadUsers();
-	  });
-
-    });
-  }
-  
-    function deleteUser(
-    user,
-    deleteButton,
-    enabledButton,
-    hiddenButton
-  ){
-    var userName = user.name || user.view_id;
-  
-    var confirmed = confirm(
-      "Vuoi eliminare definitivamente dalla dashboard l'utente " +
-      userName +
-      "?\n\n" +
-      "L'utente non sarà più visibile e non potrà accedere.\n" +
-      "I suoi dati storici resteranno conservati nel database."
-    );
-  
-    if(!confirmed){
-      return;
+      button.onclick = callback;
+      host.appendChild(button);
+      return button;
     }
-  
-    deleteButton.disabled = true;
-    enabledButton.disabled = true;
-    hiddenButton.disabled = true;
-  
-    message.textContent = "Eliminazione in corso...";
-  
-    usersRequest(
-      "PATCH",
-      "/users/" + user.id + "/deleted",
-      { deleted: true },
-      function(err, data){
-  
+    function updateProfile(){
+      var newName = nameInput.value.trim();
+      var newOwner = ownerInput.value.trim().toUpperCase();
+      if(!newName){ setMessage(statusMessage, "Il nome non può essere vuoto.", true); return; }
+      if(!newOwner){ setMessage(statusMessage, "Il codice attività non può essere vuoto.", true); return; }
+      if(newOwner.length > 30){ setMessage(statusMessage, "Il codice attività può contenere al massimo 30 caratteri.", true); return; }
+      saveProfile.disabled = true;
+      usersRequest("PUT", "/users/" + user.id, {name:newName, task_owner:newOwner}, function(err, data){
+        saveProfile.disabled = false;
         if(err || !data || !data.ok){
-          message.textContent =
-            err ||
-            (data && data.error) ||
-            "Eliminazione non riuscita.";
-  
-          deleteButton.disabled = false;
-          enabledButton.disabled = false;
-          hiddenButton.disabled = false;
+          setMessage(statusMessage, err || (data && data.error) || "Salvataggio non riuscito.", true);
           return;
         }
-  
-        message.textContent =
-          "Utente " + userName + " eliminato.";
-  
         loadAuthorizedConfig(function(configErr){
-  
           if(configErr){
-            message.textContent =
-              "Utente eliminato, ma aggiornamento della configurazione non riuscito.";
-  
+            setMessage(statusMessage, "Dati salvati, ma configurazione non aggiornata.", true);
+            return;
+          }
+          loadUsers();
+        });
+      });
+    }
+
+    var profile = section("PROFILO");
+    var fields = mk("div", "", "");
+    fields.style.display = "flex";
+    fields.style.gap = "8px";
+    fields.style.flexWrap = "wrap";
+    profile.appendChild(fields);
+    var nameInput = field(fields, "Nome visualizzato", user.name || "");
+    var ownerInput = field(fields, "Codice attività", user.task_owner || "");
+    var saveProfile = actionButton(profile, "SALVA MODIFICHE", updateProfile);
+    saveProfile.style.marginTop = "8px";
+
+    var access = section("ACCESSO ALLA DASHBOARD");
+    var accessInfo = mk("div", "small", "Attivo: può accedere. Visibile: compare tra le viste selezionabili.");
+    accessInfo.style.margin = "0 0 8px";
+    access.appendChild(accessInfo);
+    var accessActions = mk("div", "", "");
+    accessActions.style.display = "flex";
+    accessActions.style.gap = "8px";
+    accessActions.style.flexWrap = "wrap";
+    access.appendChild(accessActions);
+
+    function changeStatus(fieldName, value, button){
+      button.disabled = true;
+      var body = {};
+      body[fieldName] = value;
+      usersRequest("PATCH", "/users/" + user.id + "/" + fieldName, body, function(err, data){
+        if(err || !data || !data.ok){
+          button.disabled = false;
+          setMessage(statusMessage, err || (data && data.error) || "Aggiornamento non riuscito.", true);
+          return;
+        }
+        loadAuthorizedConfig(function(configErr){
+          if(configErr){
+            setMessage(statusMessage, "Stato aggiornato, ma configurazione non aggiornata.", true);
+            return;
+          }
+          loadUsers();
+        });
+      });
+    }
+    actionButton(accessActions, user.enabled ? "DISATTIVA ACCESSO" : "ATTIVA ACCESSO",
+      function(){ changeStatus("enabled", !user.enabled, this); },
+      user.enabled ? "#8b3434" : "#347348");
+    actionButton(accessActions, user.hidden ? "MOSTRA NELLE VISTE" : "NASCONDI DALLE VISTE",
+      function(){ changeStatus("hidden", !user.hidden, this); },
+      user.hidden ? "#347348" : "#8a6a27");
+
+    var permissions = section("AUTORIZZAZIONI");
+    var canManageRecurring = Array.isArray(user.permissions) &&
+      user.permissions.indexOf("recurring_tasks.manage") !== -1;
+    var permissionInfo = mk("div", "small", "Gestione delle attività ricorrenti.");
+    permissionInfo.style.margin = "0 0 8px";
+    permissions.appendChild(permissionInfo);
+    actionButton(permissions,
+      canManageRecurring ? "REVOCA PERMESSO" : "CONCEDI PERMESSO",
+      function(){
+        this.disabled = true;
+        usersRequest("PUT", "/users/" + user.id, {recurring_tasks_manage:!canManageRecurring}, function(err, data){
+          if(err || !data || !data.ok){
+            setMessage(statusMessage, err || (data && data.error) || "Modifica permesso non riuscita.", true);
             loadUsers();
             return;
           }
+          loadUsers();
+        });
+      },
+      canManageRecurring ? "#8a6a27" : "#347348");
 
-          // Aggiorna subito la barra dello switch utente senza ricaricare la pagina.
+    var danger = section("ZONA DI ATTENZIONE");
+    var dangerText = mk("div", "small", "L'eliminazione rimuove l'utente dalla dashboard e gli impedisce di accedere. I dati storici restano conservati.");
+    dangerText.style.margin = "0 0 8px";
+    danger.appendChild(dangerText);
+    actionButton(danger, "ELIMINA UTENTE", function(){
+      if(!confirm("Eliminare definitivamente l'utente " + (user.name || user.view_id) + "? I dati storici resteranno conservati.")) return;
+      this.disabled = true;
+      usersRequest("PATCH", "/users/" + user.id + "/deleted", {deleted:true}, function(err, data){
+        if(err || !data || !data.ok){
+          setMessage(statusMessage, err || (data && data.error) || "Eliminazione non riuscita.", true);
+          loadUsers();
+          return;
+        }
+        loadAuthorizedConfig(function(configErr){
+          if(configErr){
+            setMessage(statusMessage, "Utente eliminato, ma configurazione non aggiornata.", true);
+            loadUsers();
+            return;
+          }
           renderViewSwitcher();
-  
-          // Se la vista corrente non è più autorizzata,
-          // passa alla prima vista disponibile.
-          if(!findItem(DASHBOARD_VIEWS, function(v){
-            return v.id === currentView;
-          })){
-            if(DASHBOARD_VIEWS.length){
-              setView(DASHBOARD_VIEWS[0].id, false);
-            }
+          if(!findItem(DASHBOARD_VIEWS, function(v){ return v.id === currentView; }) && DASHBOARD_VIEWS.length){
+            setView(DASHBOARD_VIEWS[0].id, false);
           }
-  
           loadUsers();
         });
-      }
-    );
-  }
+      });
+    }, "#b3261e");
 
-  function renameUser(user, renameButton){
-    var oldName = user.name || "";
-  
-    var newName = prompt(
-      "Inserisci il nuovo nome dell'utente:",
-      oldName
-    );
-  
-    if(newName === null){
-      return;
-    }
-  
-    newName = newName.trim();
-  
-    if(!newName){
-      alert("Il nome non può essere vuoto.");
-      return;
-    }
-  
-    if(newName === oldName){
-      return;
-    }
-  
-    renameButton.disabled = true;
-    message.textContent = "Rinomina in corso...";
-  
-    usersRequest(
-      "PUT",
-      "/users/" + user.id,
-      { name: newName },
-      function(err, data){
-  
-        if(err || !data || !data.ok){
-          message.textContent =
-            err || (data && data.error) ||
-            "Rinomina non riuscita.";
-  
-          renameButton.disabled = false;
-          return;
-        }
-  
-        message.textContent =
-          "Utente rinominato correttamente.";
-  
-        loadAuthorizedConfig(function(configErr){
-  
-          if(configErr){
-            message.textContent =
-              "Nome aggiornato, ma configurazione non aggiornata.";
-  
-            loadUsers();
-            return;
-          }
-  
-          loadUsers();
-        });
-      }
-    );
+    var statusMessage = mk("div", "small", "");
+    statusMessage.style.minHeight = "18px";
+    content.appendChild(statusMessage);
   }
-  
-  function renameTaskOwner(user, button){
-	var oldCode = user.task_owner || "";
-	
-	var newCode = prompt(
-		"Inserisci il nuovo codice attività:",
-		oldCode
-	);
-	
-	if(newCode === null){
-		return;
-	}
-	
-	newCode = newCode.trim().toUpperCase();
-	
-	if(!newCode){
-		alert("Il codice attività non può essere vuoto.");
-		return;
-	}
-	
-	if(newCode.length > 30){
-		alert("Il codice attività può contenere al massimo 30 caratteri.");
-		return;
-	}
-	
-	if(newCode === oldCode){
-		return;
-	}
-	
-	button.disabled = true;
-	message.textContent = "Aggiornamento codice attività...";
-	
-	usersRequest(
-		"PUT",
-		"/users/" + user.id,
-		{ task_owner: newCode },
-		function(err, data){
-	
-			if(err || !data || !data.ok){
-				message.textContent =
-				err || (data && data.error) ||
-				"Aggiornamento non riuscito.";
-		
-				button.disabled = false;
-				return;
-			}
-		
-			message.textContent = "Codice attività aggiornato.";
-		
-			loadUsers();
-		});
-	}
 
   loadUsers();
 }
