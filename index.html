@@ -3822,7 +3822,7 @@ body.k #handwrittenCanvas {
 
 /* Layout legacy per il browser dei Kindle: niente flex/inset nella schermata appunti. */
 body.k #handwrittenNotesOverlay {
-  position:fixed!important;
+  position:absolute!important;
   top:0!important;
   right:0!important;
   bottom:0!important;
@@ -3870,7 +3870,7 @@ body.k #notesListView {
 }
 body.k #notesEditorView {
   position:absolute!important;
-  top:55px!important;
+  top:5px!important;
   left:5px!important;
   right:5px!important;
   bottom:5px!important;
@@ -3882,7 +3882,7 @@ body.k #notesEditorView[hidden],
 body.k #notesListView[hidden] { display:none!important; }
 body.k .notes-editor-title {
   position:absolute!important;
-  top:0!important;
+  top:50px!important;
   left:0!important;
   right:0!important;
   width:100%!important;
@@ -3890,7 +3890,7 @@ body.k .notes-editor-title {
 }
 body.k #notesMetadata {
   position:absolute!important;
-  top:38px!important;
+  top:88px!important;
   left:0!important;
   right:0!important;
   height:18px!important;
@@ -3899,7 +3899,7 @@ body.k #notesMetadata {
 }
 body.k .notes-family-options {
   position:absolute!important;
-  top:60px!important;
+  top:110px!important;
   left:0!important;
   right:0!important;
   display:block!important;
@@ -3920,7 +3920,7 @@ body.k .notes-family-options input {
 }
 body.k .notes-toolbar {
   position:absolute!important;
-  top:119px!important;
+  top:169px!important;
   left:0!important;
   right:0!important;
   display:block!important;
@@ -3936,7 +3936,7 @@ body.k .notes-toolbar button {
 }
 body.k #handwrittenCanvas {
   position:absolute!important;
-  top:162px!important;
+  top:212px!important;
   -webkit-user-select:none!important;
   -webkit-touch-callout:none!important;
   user-select:none!important;
@@ -11806,7 +11806,7 @@ function resizeHandwrittenCanvas(){
   /* Il browser Kindle legacy non calcola in modo affidabile l'altezza
      di un canvas assoluto definito solo da top e bottom. */
   if(document.body.classList.contains("k")){
-    var availableHeight = editor.clientHeight - 185;
+    var availableHeight = editor.clientHeight - 235;
     if(availableHeight < 80) availableHeight = 80;
     canvas.style.height = availableHeight + "px";
     canvas.style.bottom = "auto";
