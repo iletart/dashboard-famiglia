@@ -4147,6 +4147,39 @@ body.k .box-meta-footer .box-refresh {
   vertical-align:middle !important;
   text-align:right !important;
 }
+
+/* KINDLE: allinea il gruppo orari + refresh al bordo destro del box.
+   Posizionamento assoluto della rotella per evitare centrature del layout tabellare. */
+body.k .box-meta-footer {
+  display:block !important;
+  position:relative !important;
+  width:100% !important;
+  min-height:36px !important;
+  box-sizing:border-box !important;
+  text-align:right !important;
+}
+body.k .box-meta-footer .sync-label {
+  display:block !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  padding:0 38px 0 0 !important;
+  margin:0 !important;
+  text-align:right !important;
+  white-space:nowrap !important;
+  line-height:30px !important;
+}
+body.k .box-meta-footer .box-refresh {
+  display:block !important;
+  position:absolute !important;
+  top:6px !important;
+  right:0 !important;
+  width:30px !important;
+  min-width:30px !important;
+  max-width:30px !important;
+  height:30px !important;
+  margin:0 !important;
+  padding:0 !important;
+}
 </style>
 
 </head>
