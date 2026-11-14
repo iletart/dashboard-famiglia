@@ -4159,9 +4159,12 @@ body.k #viewMenuPanel button.menu-action-button:active {
   text-align:center!important;
 }
 .view-switcher-notes-button.notes-unread {
-  /* Il lampeggio è gestito dal timer JavaScript: niente animazione CSS
-     che sovrascriva l'opacità impostata dal timer, soprattutto su Silk. */
+  /* Il lampeggio PC/mobile è gestito dal timer JavaScript. */
   animation:none!important;
+}
+body:not(.k) .view-switcher-notes-button.notes-blink-red {
+  color:#B3261E!important;
+  border-color:#B3261E!important;
 }
 @keyframes handwrittenNotesBlink {
   0%,49% { opacity:1; }
@@ -11915,27 +11918,30 @@ function updateHandwrittenNotesUnreadButton(){
     if(handwrittenNotesUnread) button.classList.add("notes-unread");
     else button.classList.remove("notes-unread");
   }
-  /* Blink gestito in JavaScript: più compatibile con le versioni datate di Silk
-     che possono non eseguire correttamente le animazioni CSS. */
-  if(handwrittenNotesUnread){
-    if(handwrittenNotesBlinkTimer === null && window.setInterval){
-      handwrittenNotesBlinkVisible = true;
-      handwrittenNotesBlinkTimer = window.setInterval(function(){
-        handwrittenNotesBlinkVisible = !handwrittenNotesBlinkVisible;
-        var currentButton = document.querySelector(".view-switcher-notes-button");
-        /* L'opacità attenua il pulsante senza rimuoverlo dall'area cliccabile. */
-        if(currentButton){
-          currentButton.style.opacity = handwrittenNotesBlinkVisible ? "1" : "0.25";
-        }
-      }, 2000);
-    }
-  } else {
+
+  /* Il lampeggio rosso è riservato a PC e smartphone: il Kindle non deve
+     lampeggiare quando l'appunto viene creato o letto proprio da lì. */
+  var isKindle = document.body && document.body.classList.contains("k");
+  if(isKindle || !handwrittenNotesUnread){
     if(handwrittenNotesBlinkTimer !== null){
       window.clearInterval(handwrittenNotesBlinkTimer);
       handwrittenNotesBlinkTimer = null;
     }
-    var currentButton = document.querySelector(".view-switcher-notes-button");
-    if(currentButton) currentButton.style.opacity = "1";
+    if(button) button.classList.remove("notes-blink-red");
+    handwrittenNotesBlinkVisible = true;
+    return;
+  }
+
+  if(handwrittenNotesBlinkTimer === null && window.setInterval){
+    handwrittenNotesBlinkVisible = false;
+    handwrittenNotesBlinkTimer = window.setInterval(function(){
+      handwrittenNotesBlinkVisible = !handwrittenNotesBlinkVisible;
+      var currentButton = document.querySelector(".view-switcher-notes-button");
+      if(currentButton){
+        if(handwrittenNotesBlinkVisible) currentButton.classList.add("notes-blink-red");
+        else currentButton.classList.remove("notes-blink-red");
+      }
+    }, 1000);
   }
 }
 
