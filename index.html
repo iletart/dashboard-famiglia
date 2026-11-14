@@ -1186,13 +1186,14 @@ body.k .recurring-config-panel {
   }
 }
 
-/* Colonne impilate solo su telefoni stretti, mai su Kindle */
-
+/* Su smartphone in verticale, ogni colonna occupa tutta la larghezza.
+   !important serve a sovrascrivere la width inline impostata da buildLayout(). */
 @media screen and (max-width:600px) {
   body:not(.k) .col {
     float:none;
-    width:100%;
+    width:100% !important;
     max-width:100%;
+    box-sizing:border-box;
   }
 }
 
