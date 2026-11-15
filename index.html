@@ -4740,34 +4740,53 @@ body.k #viewMenuPanel {
   background:#fff!important;
 }
 
-/* Icona matita: corpo inclinato e punta riconoscibile, senza glifi Unicode. */
+/* Kindle: icona appunti leggibile, matita classica con gomma e punta. */
 body.k .view-switcher-notes-button {
   position:relative!important;
   z-index:3!important;
   pointer-events:auto!important;
   touch-action:manipulation!important;
+  color:#222!important;
 }
 body.k .view-switcher-notes-button:before {
-  left:15px!important;
-  top:7px!important;
+  content:""!important;
+  position:absolute!important;
+  left:14px!important;
+  top:8px!important;
   width:6px!important;
-  height:19px!important;
-  border:1px solid #111!important;
+  height:17px!important;
+  box-sizing:border-box!important;
+  border:1px solid #333!important;
   border-radius:1px!important;
-  background:linear-gradient(to right,#fff 0%,#fff 35%,#bbb 36%,#bbb 62%,#fff 63%)!important;
+  background:linear-gradient(to right,#d8d8d8 0,#fff 35%,#b5b5b5 36%,#fff 72%,#d8d8d8 100%)!important;
   transform:rotate(42deg)!important;
 }
 body.k .view-switcher-notes-button:after {
+  content:""!important;
+  position:absolute!important;
   left:12px!important;
   top:22px!important;
   width:0!important;
   height:0!important;
-  border-left:4px solid transparent!important;
-  border-right:4px solid transparent!important;
-  border-top:6px solid #111!important;
+  border-left:3px solid transparent!important;
+  border-right:3px solid transparent!important;
+  border-top:6px solid #333!important;
   transform:rotate(42deg)!important;
   background:transparent!important;
   pointer-events:none!important;
+}
+
+/* Cestino Kindle più definito e spostato verso il bordo destro. */
+body.k .todo:not(.family-shopping-item) > .todo-actions > .todo-delete,
+body.k .family-shopping-item > .todo-actions > .family-shopping-delete {
+  transform:translateX(4px)!important;
+}
+body.k .family-shopping-item > .todo-actions {
+  flex-basis:40px!important;
+  width:40px!important;
+  min-width:40px!important;
+  padding-right:0!important;
+  justify-content:flex-end!important;
 }
 
 </style>
@@ -11865,6 +11884,10 @@ function initBoxRefresh() {
 }
 
 function startDashboard(preferredView){
+  /* La sessione è già stata verificata da restoreAuthSession:
+     avvia solo ora il controllo delle note, evitando GET /notes anonime. */
+  startHandwrittenNotesUnreadPolling();
+  checkHandwrittenNotesUnread(false);
   showHandwrittenNotesList();
   loadAuthorizedConfig(function(err){
     if(err){
@@ -12402,6 +12425,11 @@ function defaultHandwrittenNoteTitle(){
 }
 
 function handwrittenNotesRequest(method, path, body, callback){
+  /* Evita richieste protette prima che sia disponibile la sessione. */
+  if(!authToken){
+    if(callback) callback("Sessione non autenticata", null);
+    return;
+  }
   var xhr = new XMLHttpRequest();
   var done = false;
   function finish(err, data){
@@ -12848,8 +12876,8 @@ function initHandwrittenNotes(){
   var canvas = $("handwrittenCanvas");
   if(!canvas || handwrittenCanvasReady) return;
   handwrittenCanvasReady = true;
-  startHandwrittenNotesUnreadPolling();
-  checkHandwrittenNotesUnread(false);
+  /* Il controllo note viene avviato da startDashboard, dopo il verify
+     della sessione: initHandwrittenNotes gira prima del ripristino auth. */
   if(document.body.classList.contains("k")){
     var notesTextInput = $("notesTextEditor");
     if(notesTextInput){
