@@ -4612,6 +4612,81 @@ body:not(.k) button.trash-button::after {
     linear-gradient(currentColor,currentColor) center top / 7px 2px no-repeat,
     linear-gradient(currentColor,currentColor) center bottom / 18px 2px no-repeat!important;
 }
+
+/* Kindle/Silk: icone autonome in CSS. Le vecchie .trash-icon interne
+   sono nascoste sopra, quindi il pulsante deve disegnare direttamente il cestino. */
+body.k button.trash-button {
+  position:relative!important;
+  display:inline-block!important;
+  width:28px!important;
+  min-width:28px!important;
+  max-width:28px!important;
+  height:28px!important;
+  margin:0 0 0 4px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#000!important;
+  font-size:0!important;
+  line-height:0!important;
+}
+body.k button.trash-button:before {
+  content:""!important;
+  position:absolute!important;
+  left:8px!important;
+  top:9px!important;
+  width:12px!important;
+  height:14px!important;
+  box-sizing:border-box!important;
+  border:1px solid #000!important;
+  border-top:0!important;
+  background:transparent!important;
+}
+body.k button.trash-button:after {
+  content:""!important;
+  position:absolute!important;
+  left:6px!important;
+  top:5px!important;
+  width:16px!important;
+  height:4px!important;
+  box-sizing:border-box!important;
+  border-top:1px solid #000!important;
+  border-bottom:1px solid #000!important;
+  background:transparent!important;
+}
+
+/* La matita non dipende dal glifo Unicode, che può mancare nei font Silk. */
+body.k .view-switcher-notes-button {
+  position:relative!important;
+  font-size:0!important;
+}
+body.k .view-switcher-notes-button:before {
+  content:""!important;
+  position:absolute!important;
+  left:15px!important;
+  top:8px!important;
+  width:5px!important;
+  height:18px!important;
+  box-sizing:border-box!important;
+  border:2px solid #000!important;
+  border-radius:1px!important;
+  background:#fff!important;
+  transform:rotate(42deg)!important;
+}
+body.k .view-switcher-notes-button:after {
+  content:""!important;
+  position:absolute!important;
+  left:12px!important;
+  top:23px!important;
+  width:0!important;
+  height:0!important;
+  border-left:4px solid transparent!important;
+  border-right:4px solid transparent!important;
+  border-top:5px solid #000!important;
+  transform:rotate(42deg)!important;
+}
+
 </style>
 
 </head>
