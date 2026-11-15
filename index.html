@@ -4687,6 +4687,40 @@ body.k .view-switcher-notes-button:after {
   transform:rotate(42deg)!important;
 }
 
+
+/* Kindle: allinea a destra i comandi nelle To-do e nei Daily task.
+   La regola globale .todo-actions impostava text-align:left!important. */
+body.k .todo:not(.family-shopping-item) > .todo-actions {
+  display:table-cell!important;
+  width:76px!important;
+  min-width:76px!important;
+  box-sizing:border-box!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+  vertical-align:middle!important;
+  padding-right:0!important;
+}
+body.k .todo:not(.family-shopping-item) > .todo-actions > button {
+  float:none!important;
+  vertical-align:middle!important;
+}
+body.k .todo:not(.family-shopping-item) > .todo-actions > .todo-assign {
+  margin:0 7px 0 0!important;
+}
+body.k .todo:not(.family-shopping-item) > .todo-actions > .todo-delete {
+  margin:0 0 0 4px!important;
+}
+
+/* Lista della spesa: un solo cestino, spinto sul bordo destro della riga. */
+body.k .family-shopping-item > .todo-actions {
+  justify-content:flex-end!important;
+  text-align:right!important;
+  padding-right:0!important;
+}
+body.k .family-shopping-item > .todo-actions > .family-shopping-delete {
+  margin:0!important;
+}
+
 </style>
 
 </head>
