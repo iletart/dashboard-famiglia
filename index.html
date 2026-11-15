@@ -4353,6 +4353,10 @@ body.k .view-switcher-order-button {
   text-align:center!important;
 }
 body.k .view-switcher-notes-button {
+  position:relative!important;
+  z-index:30!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
   display:inline-flex!important;
   align-self:center!important;
   vertical-align:middle!important;
@@ -11326,10 +11330,16 @@ function renderViewSwitcher(){
   if(handwrittenNotesUnread) notesButton.classList.add("notes-unread");
   notesButton.title = handwrittenNotesUnread ? "Ci sono appunti nuovi o modificati: apri per leggerli" : "Apri appunti";
   notesButton.setAttribute("aria-label", notesButton.title);
-  notesButton.onclick = function(ev){
+  function activateNotesButton(ev){
     if(ev){ ev.preventDefault(); ev.stopPropagation(); }
     openHandwrittenNotesList();
-  };
+  }
+  notesButton.onclick = activateNotesButton;
+  /* Silk su alcuni Kindle non genera sempre il click sui pulsanti dentro
+     un contenitore flex con scorrimento orizzontale: gestisci il touchend. */
+  if(document.body.classList.contains("k")){
+    notesButton.ontouchend = activateNotesButton;
+  }
   buttons.appendChild(notesButton);
 
   for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
