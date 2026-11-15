@@ -3834,6 +3834,11 @@ body.k .notes-list-row {
 body.k .notes-list-info {
   width:auto!important;
 }
+/* Lampeggio del titolo dell'appunto non letto, compatibile con Silk. */
+body.k .notes-list-open.notes-title-blink-visible {
+  background:#000!important;
+  color:#fff!important;
+}
 body.k .notes-visibility-label {
   width:64px!important;
   min-width:64px!important;
@@ -11991,7 +11996,17 @@ function updateHandwrittenNotesUnreadButton(){
     else button.classList.remove("notes-unread");
   }
 
-  /* Il lampeggio rosso è attivo su tutti i dispositivi, incluso Kindle. */
+  /* Su Kindle il titolo dell'appunto lampeggia via JavaScript:
+     Silk può non gestire in modo affidabile le animazioni CSS. */
+  function updateKindleUnreadNotes(){
+    if(!document.body || !document.body.classList.contains("k")) return;
+    var titles = document.querySelectorAll(".notes-list-row-unread .notes-list-open");
+    for(var i=0;i<titles.length;i++){
+      if(handwrittenNotesUnread && handwrittenNotesBlinkVisible) titles[i].classList.add("notes-title-blink-visible");
+      else titles[i].classList.remove("notes-title-blink-visible");
+    }
+  }
+
   if(!handwrittenNotesUnread){
     if(handwrittenNotesBlinkTimer !== null){
       window.clearInterval(handwrittenNotesBlinkTimer);
@@ -11999,6 +12014,7 @@ function updateHandwrittenNotesUnreadButton(){
     }
     if(button) button.classList.remove("notes-blink-red");
     handwrittenNotesBlinkVisible = true;
+    updateKindleUnreadNotes();
     return;
   }
 
@@ -12011,6 +12027,7 @@ function updateHandwrittenNotesUnreadButton(){
         if(handwrittenNotesBlinkVisible) currentButton.classList.add("notes-blink-red");
         else currentButton.classList.remove("notes-blink-red");
       }
+      updateKindleUnreadNotes();
     }, 1000);
   }
 }
