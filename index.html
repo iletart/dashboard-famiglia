@@ -3358,6 +3358,24 @@ body.k .family-shopping-item > * {
   transform:none!important;
 }
 
+/* Lista spesa condivisa: il wrapper azioni deve restare una colonna flex
+   visibile nella riga flex, altrimenti il display:table-cell lo comprime. */
+.family-shopping-item > .todo-actions {
+  display:flex!important;
+  flex:0 0 32px!important;
+  width:32px!important;
+  min-width:32px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+
+/* To-do e Daily task: il cestino segue l'assegnazione, senza margin:auto
+   che lo disallinea all'interno della cella delle azioni. */
+.todo-actions > .todo-delete {
+  margin:0 0 0 4px!important;
+}
+
 /* Nome utente sempre in alto a destra, senza la dicitura "collegato". */
 #headerRight {
   align-items:flex-end!important;
