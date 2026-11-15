@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NestPlan</title>
+<title>KinoTask</title>
 <link rel="icon" type="image/png" href="favicon.png">
 
 
@@ -1708,7 +1708,7 @@ body.k #personalTodoList .todo-row .todo-text {
   word-break:normal;
 }
 
-/* ===== PAGINA INIZIALE NESTPLAN ===== */
+/* ===== PAGINA INIZIALE KINOTASK ===== */
 
 #welcomePage {
   max-width: 850px;
@@ -1831,7 +1831,7 @@ body.k #personalTodoList .todo-row .todo-text {
   }
 }
 
-/* ===== KINDLE - HOME NESTPLAN ===== */
+/* ===== KINDLE - HOME KINOTASK ===== */
 
 body.k #welcomePage {
   box-sizing:border-box;
@@ -1954,7 +1954,7 @@ body.k #welcomePage .welcome-footer {
   margin:2px 0 0;
 }
 
-/* ===== PAGINA LOGIN NESTPLAN ===== */
+/* ===== PAGINA LOGIN KINOTASK ===== */
 
 #loginPage {
   max-width: 430px;
@@ -2060,7 +2060,7 @@ body.k .box button:not(.seg-button):not(.todo-assign):not(.box-refresh):not(.sho
 
 
 /* ==================================================
-   TEMA NESTPLAN - solo grafica, nessuna funzione toccata.
+   TEMA KINOTASK - solo grafica, nessuna funzione toccata.
    PC e smartphone: regole "body:not(.k)".
    Kindle: layout invariato, solo icone ridisegnate in CSS.
    ================================================== */
@@ -2575,7 +2575,7 @@ body:not(.k) .shopping-delete-label > span:after {
 /* Tema aggiornato anche in modalità Kindle su smartphone */
 @media screen and (max-width:800px) {
 /* ==================================================
-   TEMA NESTPLAN - solo grafica, nessuna funzione toccata.
+   TEMA KINOTASK - solo grafica, nessuna funzione toccata.
    PC e smartphone: regole "body.k".
    Kindle: layout invariato, solo icone ridisegnate in CSS.
    ================================================== */
@@ -3574,11 +3574,11 @@ body.k #recurringTasksBox .sync-label {
 <body>
 <div class="wrap">
 
-<!-- ===== PAGINA INIZIALE NESTPLAN ===== -->
+<!-- ===== PAGINA INIZIALE KINOTASK ===== -->
 <div id="welcomePage" hidden>
 
   <div class="welcome-header">
-    <h1>NestPlan</h1>
+    <h1>KinoTask</h1>
     <div class="welcome-tagline">Everything in its place.</div>
     <p>La tua famiglia, organizzata meglio.</p>
   </div>
@@ -3586,7 +3586,7 @@ body.k #recurringTasksBox .sync-label {
   <div class="welcome-intro">
     <h2>La quotidianità, senza caos.</h2>
     <p>
-      NestPlan è lo spazio digitale che aiuta tutta la famiglia
+      KinoTask è lo spazio digitale che aiuta tutta la famiglia
       a organizzare impegni, attività e vita quotidiana,
       in modo semplice e condiviso.
     </p>
@@ -3642,7 +3642,7 @@ body.k #recurringTasksBox .sync-label {
 
   <div class="login-card">
 
-    <div class="login-logo">NestPlan</div>
+    <div class="login-logo">KinoTask</div>
 
     <div class="login-subtitle">
       Accedi al tuo spazio familiare
@@ -10130,7 +10130,7 @@ function clearAuthStorage(){
 
   // Elimina anche il cookie di autenticazione
   document.cookie =
-    "nestplan_auth=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax";
+    "kinotask_auth=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax";
 
   authUserType = "";
   authUserName = "";
@@ -10521,13 +10521,13 @@ function saveAuthCookie(token) {
   expires.setDate(expires.getDate() + 30);
 
   document.cookie =
-    "nestplan_auth=" + encodeURIComponent(token) +
+    "kinotask_auth=" + encodeURIComponent(token) +
     "; expires=" + expires.toUTCString() +
     "; path=/; SameSite=Lax; Secure";
 }
 
 function getAuthCookie() {
-  var name = "nestplan_auth=";
+  var name = "kinotask_auth=";
   var cookies = document.cookie.split(";");
 
   for (var i = 0; i < cookies.length; i++) {
