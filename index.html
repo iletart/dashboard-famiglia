@@ -4327,7 +4327,9 @@ body.k .view-switcher-notes-button.notes-blink-red {
 
 /* Kindle: stessa palette del profilo e scorrimento orizzontale. */
 body.k .view-switcher {
-  display:block!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
   padding:0!important;
   min-height:0!important;
   border-radius:12px!important;
@@ -4335,7 +4337,9 @@ body.k .view-switcher {
 body.k .view-switcher-title { display:none!important; }
 body.k .view-switcher-buttons {
   display:flex!important; align-items:center!important;
-  width:100%!important; max-width:100%!important; padding:3px!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  width:auto!important; max-width:100%!important; padding:3px!important;
   white-space:nowrap!important; overflow-x:auto!important; overflow-y:hidden!important;
 }
 body.k .view-switcher-order-button {
@@ -11340,7 +11344,13 @@ function renderViewSwitcher(){
   if(document.body.classList.contains("k")){
     notesButton.ontouchend = activateNotesButton;
   }
-  buttons.appendChild(notesButton);
+  if(document.body.classList.contains("k")){
+    /* Kindle: il pulsante resta fuori dal contenitore con overflow-x:auto.
+       Silk può intercettare i tocchi degli elementi interni alla barra scorrevole. */
+    bar.insertBefore(notesButton, buttons);
+  }else{
+    buttons.appendChild(notesButton);
+  }
 
   for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
     var view = DASHBOARD_VIEWS[i];
