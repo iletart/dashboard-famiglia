@@ -3652,17 +3652,33 @@ body.k .todo-actions .todo-assign::after {
   border-bottom:1px solid #ddd;
 }
 
-/* Evidenzia anche la riga dell'appunto non ancora letto, non soltanto la matita. */
-@keyframes handwrittenNoteRowBlink {
-  0%,49% { background-color:#fff; }
-  50%,100% { background-color:#f7dedd; }
+/* PC: lampeggia soltanto il pulsante con il titolo dell'appunto non letto. */
+@keyframes handwrittenNoteTitleBlink {
+  0%,49% { background-color:#fff; color:#222; }
+  50%,100% { background-color:#f7dedd; color:#B3261E; }
 }
-body:not(.k) .notes-list-row.notes-list-row-unread {
-  animation:handwrittenNoteRowBlink 1s steps(1,end) infinite;
+body:not(.k) .notes-list-row-unread .notes-list-open {
+  animation:handwrittenNoteTitleBlink 1s steps(1,end) infinite;
 }
 .notes-list-info { flex:1 1 auto; min-width:0; }
 .notes-list-meta { font-size:10px; color:#666; line-height:1.35; padding:3px 2px 0; }
-.notes-kind-label { display:inline-block; margin:2px 0 0 5px; padding:2px 5px; border:1px solid #aaa; border-radius:3px; font-size:9px; line-height:1.2; color:#555; vertical-align:middle; }
+.notes-kind-label,
+.notes-visibility-label {
+  display:inline-block!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  margin:2px 4px 0 5px!important;
+  padding:2px 5px!important;
+  box-sizing:border-box!important;
+  border:1px solid #aaa!important;
+  border-radius:3px!important;
+  font-size:9px!important;
+  line-height:1.2!important;
+  color:#555!important;
+  vertical-align:middle!important;
+  text-align:left!important;
+}
 .notes-list-open {
   flex:1 1 auto;
   min-width:0;
@@ -3795,13 +3811,14 @@ body.k .notes-list-info {
   overflow:hidden!important;
 }
 body.k .notes-visibility-label {
-  display:table-cell!important;
-  width:46px!important;
-  max-width:46px!important;
-  padding:0 2px!important;
-  box-sizing:border-box!important;
+  display:inline-block!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:90px!important;
+  margin:2px 2px 0 3px!important;
+  padding:2px 4px!important;
   vertical-align:middle!important;
-  text-align:center!important;
+  text-align:left!important;
   white-space:normal!important;
   overflow-wrap:anywhere!important;
   word-wrap:break-word!important;
@@ -3829,9 +3846,9 @@ body.k .notes-visibility-label {
 }
 body.k .notes-list-row .todo-actions {
   display:table-cell!important;
-  width:26px!important;
-  min-width:26px!important;
-  max-width:26px!important;
+  width:30px!important;
+  min-width:30px!important;
+  max-width:30px!important;
   padding:0!important;
   margin:0!important;
   box-sizing:border-box!important;
@@ -4207,9 +4224,19 @@ body.k #viewMenuPanel button.menu-action-button:active {
   /* Il lampeggio PC/mobile è gestito dal timer JavaScript. */
   animation:none!important;
 }
-.view-switcher-notes-button.notes-blink-red {
+body:not(.k) .view-switcher-notes-button.notes-blink-red {
   color:#B3261E!important;
   border-color:#B3261E!important;
+}
+body.k .view-switcher-notes-button {
+  background:#fff!important;
+  color:#000!important;
+  border-color:#000!important;
+}
+body.k .view-switcher-notes-button.notes-blink-red {
+  background:#000!important;
+  color:#fff!important;
+  border-color:#000!important;
 }
 @keyframes handwrittenNotesBlink {
   0%,49% { opacity:1; }
@@ -12218,12 +12245,13 @@ function renderHandwrittenNotesList(){
       var metadata = mk("div", "notes-list-meta", handwrittenNoteAuditText(note));
       info.appendChild(open);
       info.appendChild(kindLabel);
-      info.appendChild(metadata);
       var flags = [];
       if(note.visibility === "public") flags.push("FAMIGLIA");
       if(note.family_editable) flags.push("MODIFICA");
       if(note.family_deletable) flags.push("ELIMINA");
       var visibility = mk("span", "notes-visibility-label", flags.length ? flags.join(" · ") : "PRIVATO");
+      info.appendChild(visibility);
+      info.appendChild(metadata);
       open.onclick = function(){ markHandwrittenNoteRead(note.id); loadHandwrittenNote(note.id); };
       var actions = mk("span", "todo-actions");
       var del = mk("button", "todo-delete trash-button", "");
@@ -12238,7 +12266,6 @@ function renderHandwrittenNotesList(){
         });
       };
       row.appendChild(info);
-      row.appendChild(visibility);
       if(note.can_delete === true){ row.appendChild(actions); }
       host.appendChild(row);
     })(handwrittenNotes[i]);
@@ -12507,6 +12534,16 @@ function saveHandwrittenNote(){
     }
     handwrittenNoteId = data.note && data.note.id ? data.note.id : handwrittenNoteId;
     handwrittenNoteDirty = false;
+    /* La modifica fatta da questo dispositivo non deve generare una notifica
+       di appunto non letto sullo stesso dispositivo. */
+    var savedNote = data.note || null;
+    if(savedNote && savedNote.id !== null && typeof savedNote.id !== "undefined"){
+      var savedId = String(savedNote.id);
+      var savedMap = getHandwrittenNotesSignatureMap() || {};
+      savedMap[savedId] = handwrittenNoteSignature(savedNote);
+      setHandwrittenNotesSignatureMap(savedMap);
+      markHandwrittenNoteRead(savedId);
+    }
     $("notesSaveButton").disabled = true;
     setText($("notesStatus"),"Appunto salvato. Nessuna modifica in sospeso.");
     showHandwrittenNotesList();
