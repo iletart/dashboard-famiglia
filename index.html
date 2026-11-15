@@ -3644,6 +3644,15 @@ body.k .todo-actions .todo-assign::after {
   overflow-y:auto;
   padding:8px 0;
 }
+.notes-list-section { margin:0 0 12px; }
+.notes-list-section-title {
+  padding:7px 2px 5px;
+  margin:0 0 2px;
+  border-bottom:2px solid #999;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.04em;
+}
 .notes-list-row {
   display:flex;
   align-items:center;
@@ -12252,67 +12261,87 @@ function renderHandwrittenNotesList(){
     host.appendChild(mk("div", "small", "Nessun appunto disponibile. Usa uno dei pulsanti in alto per crearne uno."));
     return;
   }
-  for(var i=0;i<handwrittenNotes.length;i++){
-    (function(note){
-      var row = mk("div", "notes-list-row");
-      if(isHandwrittenNoteUnread(note.id)) row.className += " notes-list-row-unread";
-      var open = mk("button", "notes-list-open", note.title || "Nuovo appunto");
-      open.type = "button";
-      var info = mk("div", "notes-list-info");
-      var kind = "MANOSCRITTO";
-      var noteStrokes = getHandwrittenNoteStrokes(note);
-      for(var kindIndex=0;kindIndex<noteStrokes.length;kindIndex++){
-        if(noteStrokes[kindIndex] && noteStrokes[kindIndex].type === "text"){
-          kind = "TESTO LIBERO";
-          break;
-        }
-      }
-      var kindLabel = mk("span", "notes-kind-label", kind);
-      /* L'endpoint elenco può omettere strokes: in quel caso recupera il
-         dettaglio, che contiene il contenuto completo usato dall'editor. */
-      if(typeof note.strokes === "undefined" || note.strokes === null){
-        handwrittenNotesRequest("GET", "/notes/" + encodeURIComponent(note.id), null, function(detailErr, detailData){
-          if(detailErr || !detailData || !detailData.note) return;
-          var detailStrokes = getHandwrittenNoteStrokes(detailData.note);
-          for(var detailIndex=0;detailIndex<detailStrokes.length;detailIndex++){
-            if(detailStrokes[detailIndex] && detailStrokes[detailIndex].type === "text"){
-              kindLabel.textContent = "TESTO LIBERO";
-              return;
-            }
-          }
-        });
-      }
-      var metadata = mk("div", "notes-list-meta", handwrittenNoteAuditText(note));
-      info.appendChild(open);
-      info.appendChild(kindLabel);
-      var flags = [];
-      if(note.visibility === "public") flags.push("FAMIGLIA");
-      if(note.family_editable) flags.push("MODIFICA");
-      if(note.family_deletable) flags.push("ELIMINA");
-      var visibility = mk("span", "notes-visibility-label", flags.length ? flags.join(" · ") : "PRIVATO");
-      info.appendChild(visibility);
-      info.appendChild(metadata);
-      open.onclick = function(){ markHandwrittenNoteRead(note.id); loadHandwrittenNote(note.id); };
-      var actions = mk("span", "todo-actions");
-      var del = mk("button", "todo-delete trash-button", "");
-      del.type = "button";
-      del.title = "Elimina appunto";
-      actions.appendChild(del);
-      del.onclick = function(){
-        if(!confirm("Eliminare l'appunto «" + (note.title || "Nuovo appunto") + "»?")) return;
-        handwrittenNotesRequest("DELETE", "/notes/" + encodeURIComponent(note.id), null, function(err){
-          if(err){ alert(err); return; }
-          showHandwrittenNotesList();
-        });
-      };
-      row.appendChild(info);
-      if(note.can_delete === true){ row.appendChild(actions); }
-      host.appendChild(row);
-    })(handwrittenNotes[i]);
-  }
-}
 
-var handwrittenKindleScrollLock = null;
+  var publicNotes = [];
+  var privateNotes = [];
+  for(var groupIndex=0;groupIndex<handwrittenNotes.length;groupIndex++){
+    var groupedNote = handwrittenNotes[groupIndex];
+    if(groupedNote && groupedNote.visibility === "public") publicNotes.push(groupedNote);
+    else privateNotes.push(groupedNote);
+  }
+
+  function renderSection(title, notes){
+    if(!notes.length) return;
+    var section = mk("div", "notes-list-section");
+    var heading = mk("div", "notes-list-section-title", title);
+    section.appendChild(heading);
+    for(var i=0;i<notes.length;i++){
+      (function(note){
+        var row = mk("div", "notes-list-row");
+        if(isHandwrittenNoteUnread(note.id)) row.className += " notes-list-row-unread";
+        var open = mk("button", "notes-list-open", note.title || "Nuovo appunto");
+        open.type = "button";
+        var info = mk("div", "notes-list-info");
+        var kind = "MANOSCRITTO";
+        var noteStrokes = getHandwrittenNoteStrokes(note);
+        for(var kindIndex=0;kindIndex<noteStrokes.length;kindIndex++){
+          if(noteStrokes[kindIndex] && noteStrokes[kindIndex].type === "text"){
+            kind = "TESTO LIBERO";
+            break;
+          }
+        }
+        var kindLabel = mk("span", "notes-kind-label", kind);
+        var editability = mk("span", "notes-visibility-label",
+          (note.can_edit !== false && !(IS_KINDLE && kind === "MANOSCRITTO")) ? "EDITABILE" : "NON EDITABILE");
+
+        /* L'elenco può omettere strokes: recupera il dettaglio per distinguere
+           manoscritto e testo libero e aggiornare l'indicazione di modifica. */
+        if(typeof note.strokes === "undefined" || note.strokes === null){
+          handwrittenNotesRequest("GET", "/notes/" + encodeURIComponent(note.id), null, function(detailErr, detailData){
+            if(detailErr || !detailData || !detailData.note) return;
+            var detailNote = detailData.note;
+            var detailStrokes = getHandwrittenNoteStrokes(detailNote);
+            var detailKind = "MANOSCRITTO";
+            for(var detailIndex=0;detailIndex<detailStrokes.length;detailIndex++){
+              if(detailStrokes[detailIndex] && detailStrokes[detailIndex].type === "text"){
+                detailKind = "TESTO LIBERO";
+                break;
+              }
+            }
+            kindLabel.textContent = detailKind;
+            editability.textContent = (detailNote.can_edit !== false &&
+              !(IS_KINDLE && detailKind === "MANOSCRITTO")) ? "EDITABILE" : "NON EDITABILE";
+          });
+        }
+        var metadata = mk("div", "notes-list-meta", handwrittenNoteAuditText(note));
+        info.appendChild(open);
+        info.appendChild(kindLabel);
+        info.appendChild(editability);
+        info.appendChild(metadata);
+        open.onclick = function(){ markHandwrittenNoteRead(note.id); loadHandwrittenNote(note.id); };
+        var actions = mk("span", "todo-actions");
+        var del = mk("button", "todo-delete trash-button", "");
+        del.type = "button";
+        del.title = "Elimina appunto";
+        actions.appendChild(del);
+        del.onclick = function(){
+          if(!confirm("Eliminare l'appunto «" + (note.title || "Nuovo appunto") + "»?")) return;
+          handwrittenNotesRequest("DELETE", "/notes/" + encodeURIComponent(note.id), null, function(err){
+            if(err){ alert(err); return; }
+            showHandwrittenNotesList();
+          });
+        };
+        row.appendChild(info);
+        if(note.can_delete === true){ row.appendChild(actions); }
+        section.appendChild(row);
+      })(notes[i]);
+    }
+    host.appendChild(section);
+  }
+
+  renderSection("PUBBLICI", publicNotes);
+  renderSection("PRIVATI", privateNotes);
+}
 
 function setHandwrittenKindleScrollLock(enabled){
   if(!document.body.classList.contains("k")) return;
