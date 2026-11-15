@@ -991,12 +991,7 @@ body.k .recurring-config-panel {
   text-decoration:line-through;
   color:#777;
 }
-.family-shopping-delete {
-  flex:0 0 auto;
-  margin:0;
-  padding:2px 5px;
-  min-width:28px;
-}
+
 
 
 /* ==================================================
@@ -3010,8 +3005,7 @@ body.k .overlay .panel {
 }
 
 /* Cestino su PC e smartphone (sostituisce 🗑; su Kindle resta quello esistente) */
-body.k .todo-delete,
-body.k .family-shopping-delete {
+body.k .todo-delete {
   position:relative;
   width:32px;
   height:32px;
@@ -3025,13 +3019,11 @@ body.k .family-shopping-delete {
   background:linear-gradient(currentColor,currentColor) 50% 5px / 5px 1px no-repeat;
 }
 
-body.k .todo-delete:hover,
-body.k .family-shopping-delete:hover {
+body.k .todo-delete:hover {
   color:#B3261E;
 }
 
-body.k .todo-delete:before,
-body.k .family-shopping-delete:before {
+body.k .todo-delete:before {
   content:"";
   position:absolute;
   left:50%;
@@ -3044,8 +3036,7 @@ body.k .family-shopping-delete:before {
   border-radius:0 0 3px 3px;
 }
 
-body.k .todo-delete:after,
-body.k .family-shopping-delete:after {
+body.k .todo-delete:after {
   content:"";
   position:absolute;
   left:50%;
@@ -3214,24 +3205,7 @@ body.k #recurringTasksBox .recurring-config-button {
   width:0;
   min-width:0;
 }
-.family-shopping-delete {
-  display:flex;
-  flex:0 0 28px;
-  width:28px;
-  min-width:28px;
-  height:28px;
-  align-items:center;
-  justify-content:center;
-  margin:0 0 0 auto;
-  padding:0;
-  box-sizing:border-box;
-}
-body.k .family-shopping-delete .trash-icon {
-  position:relative;
-  left:0;
-  top:0;
-  margin:0;
-}
+
 
 
 /* Sottotask: stessa struttura e stessi stili assegnatario della To-do list. */
@@ -3307,8 +3281,7 @@ body.k #recurringTasksBox .recurring-config-button {
 
 
 /* Icona cestino CSS unica su tutti i dispositivi e in entrambi i file. */
-.todo-actions .todo-delete,
-.family-shopping-item .family-shopping-delete {
+.todo-actions .todo-delete {
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -3348,13 +3321,14 @@ body.k .family-shopping-item > * {
   gap:8px;
 }
 .family-shopping-item-name {
+  display:block!important;
   flex:1 1 0!important;
-  width:0;
+  width:auto!important;
   min-width:0!important;
+  box-sizing:border-box!important;
 }
-.family-shopping-item .family-shopping-delete {
-  align-self:center!important;
-  margin-left:auto!important;
+.family-shopping-item > .todo-actions > .todo-delete {
+  margin:0!important;
   transform:none!important;
 }
 
@@ -3362,12 +3336,12 @@ body.k .family-shopping-item > * {
    visibile nella riga flex, altrimenti il display:table-cell lo comprime. */
 .family-shopping-item > .todo-actions {
   display:flex!important;
-  flex:0 0 32px!important;
-  width:32px!important;
-  min-width:32px!important;
+  flex:0 0 76px!important;
+  width:76px!important;
+  min-width:76px!important;
   align-items:center!important;
-  justify-content:center!important;
-  text-align:center!important;
+  justify-content:flex-end!important;
+  text-align:right!important;
 }
 
 /* To-do e Daily task: assegnazione e cestino restano affiancati
@@ -3393,9 +3367,9 @@ body.k .family-shopping-item > .family-shopping-item-name {
   min-width:0!important;
 }
 body.k .family-shopping-item > .todo-actions {
-  flex:0 0 32px!important;
-  width:32px!important;
-  min-width:32px!important;
+  flex:0 0 76px!important;
+  width:76px!important;
+  min-width:76px!important;
 }
 
 /* Nome utente sempre in alto a destra, senza la dicitura "collegato". */
@@ -3495,8 +3469,7 @@ body.k #recurringTasksBox .recurring-subtask-row .recurring-subtask-owners {
   text-decoration:none!important;
 }
 /* Mostra un solo cestino: usa l'icona nuova disegnata sul pulsante, non il vecchio span interno. */
-body.k .todo-delete .trash-icon,
-body.k .family-shopping-delete .trash-icon {
+body.k .todo-delete .trash-icon {
   display:none!important;
 }
 
@@ -3589,7 +3562,6 @@ body.k #recurringTasksBox .recurring-subtask-row .todo-text {
 
 /* Controlli più facili da premere sul touchscreen Kindle. */
 body.k .todo-actions button,
-body.k .family-shopping-delete,
 body.k .recurring-config-button {
   min-height:30px!important;
 }
@@ -4717,7 +4689,7 @@ body.k .family-shopping-item > .todo-actions {
   text-align:right!important;
   padding-right:0!important;
 }
-body.k .family-shopping-item > .todo-actions > .family-shopping-delete {
+body.k .family-shopping-item > .todo-actions > .todo-delete {
   margin:0!important;
 }
 
@@ -4770,14 +4742,16 @@ body.k .todo:not(.family-shopping-item) > .todo-actions > .todo-delete {
 }
 body.k .family-shopping-item > .todo-actions {
   position:relative!important;
-  left:10px!important;
-  flex:0 0 48px!important;
-  width:48px!important;
-  min-width:48px!important;
+  left:26px!important;
+  flex:0 0 76px!important;
+  width:76px!important;
+  min-width:76px!important;
   padding-right:0!important;
   justify-content:flex-end!important;
+  text-align:right!important;
 }
-body.k .family-shopping-item > .todo-actions > .family-shopping-delete {
+body.k .family-shopping-item > .todo-actions > .todo-delete {
+  margin:0!important;
   transform:none!important;
 }
 
@@ -7303,7 +7277,7 @@ function loadFamilyShoppingList() {
             row.appendChild(label);
 
             var actions = mk("span", "todo-actions");
-            var remove = mk("button", "todo-delete family-shopping-delete trash-button", "");
+            var remove = mk("button", "todo-delete trash-button", "");
             remove.type = "button";
             remove.title = "Elimina articolo";
             remove.setAttribute("aria-label", "Elimina " + item.name);
