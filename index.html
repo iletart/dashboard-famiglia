@@ -4244,10 +4244,13 @@ body.k #viewMenuPanel button.menu-action-button:active {
   color:#222!important;
   border:1px solid #999!important;
 }
-body:not(.k) .view-switcher-notes-button.notes-blink-red {
-  background:#fff!important;
-  color:#B3261E!important;
-  border-color:#B3261E!important;
+@keyframes handwrittenNotesPencilBlink {
+  0%,49% { color:#222; border-color:#999; }
+  50%,100% { color:#B3261E; border-color:#B3261E; }
+}
+/* PC e smartphone: animazione CSS continua anche dopo il ridisegno del menu. */
+body:not(.k) .view-switcher-notes-button.notes-unread {
+  animation:handwrittenNotesPencilBlink 1s steps(1,end) infinite!important;
 }
 body.k .view-switcher-notes-button {
   background:#fff!important;
@@ -11305,7 +11308,10 @@ function renderViewSwitcher(){
   bar.classList.remove("view-switcher-shared");
   bar.classList.add(personalTheme ? "view-switcher-personal" : "view-switcher-shared");
 
-  var notesButton = mk("button", "view-switcher-notes-button", "✎");
+  var notesButton = mk("button", "view-switcher-notes-button", "");
+  /* SVG inline: la stessa identica matita su PC, smartphone e Kindle,
+     senza dipendere dal glifo disponibile nel font del dispositivo. */
+  notesButton.innerHTML = '<svg viewBox="0 0 24 24" width="23" height="23" aria-hidden="true" focusable="false"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.06 6.19l1.77-1.77a1.5 1.5 0 0 1 2.12 0l1.63 1.63a1.5 1.5 0 0 1 0 2.12l-1.77 1.77" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   notesButton.type = "button";
   if(handwrittenNotesUnread) notesButton.classList.add("notes-unread");
   notesButton.title = handwrittenNotesUnread ? "Ci sono appunti nuovi o modificati: apri per leggerli" : "Apri appunti";
@@ -12005,6 +12011,7 @@ function updateHandwrittenNotesUnreadButton(){
     button.setAttribute("aria-label", button.title);
     if(handwrittenNotesUnread) button.classList.add("notes-unread");
     else button.classList.remove("notes-unread");
+    if(!document.body.classList.contains("k")) button.classList.remove("notes-blink-red");
   }
 
   /* Su Kindle il titolo dell'appunto lampeggia via JavaScript:
