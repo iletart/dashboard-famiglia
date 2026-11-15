@@ -4225,12 +4225,29 @@ body.k #viewMenuPanel button.menu-action-button:active {
   line-height:1!important;
   text-align:center!important;
 }
-@keyframes handwrittenNotesPencilBlink {
-  0%,49% { color:#222; border-color:#999; }
-  50%,100% { color:#B3261E; border-color:#B3261E; }
+/* Stessa matita e stesse dimensioni su PC, smartphone e Kindle. */
+.view-switcher-notes-button {
+  width:36px!important;
+  min-width:36px!important;
+  max-width:36px!important;
+  height:36px!important;
+  min-height:36px!important;
+  max-height:36px!important;
+  flex:0 0 36px!important;
+  box-sizing:border-box!important;
+  font-family:Arial,sans-serif!important;
+  font-size:25px!important;
+  font-weight:bold!important;
+  line-height:1!important;
+  text-align:center!important;
+  background:#fff!important;
+  color:#222!important;
+  border:1px solid #999!important;
 }
-body:not(.k) .view-switcher-notes-button.notes-unread {
-  animation:handwrittenNotesPencilBlink 1s steps(1,end) infinite!important;
+body:not(.k) .view-switcher-notes-button.notes-blink-red {
+  background:#fff!important;
+  color:#B3261E!important;
+  border-color:#B3261E!important;
 }
 body.k .view-switcher-notes-button {
   background:#fff!important;
@@ -4332,9 +4349,6 @@ body.k .view-switcher-notes-button {
   max-height:36px!important;
   margin:1px 5px 1px 2px!important;
   padding:0!important;
-  font-family:Arial,sans-serif!important;
-  font-size:25px!important;
-  line-height:1!important;
 }
 body.k .view-switcher-button {
   display:inline-flex!important;
@@ -11955,6 +11969,8 @@ var handwrittenNotesUnreadIdsKey = "dashboardHandwrittenNotesUnreadIds";
 var handwrittenNotesBlinkTimer = null;
 var handwrittenNotesBlinkVisible = true;
 var handwrittenNotesPollStarted = false;
+var handwrittenNotesCheckSequence = 0;
+var handwrittenNotesSaveSyncPending = false;
 
 function handwrittenNoteTimestampMs(value){
   if(!value) return 0;
@@ -12086,7 +12102,11 @@ function markHandwrittenNoteRead(id){
 }
 
 function checkHandwrittenNotesUnread(markAsRead, callback){
+  if(handwrittenNotesSaveSyncPending) return;
+  var checkSequence = ++handwrittenNotesCheckSequence;
   handwrittenNotesRequest("GET", "/notes", null, function(err, data){
+    /* Ignora risposte di polling partite prima di un salvataggio locale. */
+    if(checkSequence !== handwrittenNotesCheckSequence) return;
     if(err || !data || !data.ok || !Array.isArray(data.notes)){
       if(callback) callback(err || "Elenco appunti non disponibile");
       return;
@@ -12546,15 +12566,17 @@ function saveHandwrittenNote(){
     }
     handwrittenNoteId = data.note && data.note.id ? data.note.id : handwrittenNoteId;
     handwrittenNoteDirty = false;
-    /* Sincronizza la firma direttamente dall'elenco server dopo il salvataggio:
-       la risposta PUT/POST può contenere solo una nota parziale. */
+    /* Blocca e invalida i polling già partiti: non devono sovrascrivere
+       la firma aggiornata con una risposta precedente al salvataggio. */
+    handwrittenNotesSaveSyncPending = true;
+    handwrittenNotesCheckSequence++;
     var savedId = handwrittenNoteId !== null && typeof handwrittenNoteId !== "undefined" ? String(handwrittenNoteId) : "";
     handwrittenNotesRequest("GET", "/notes", null, function(listErr,listData){
       if(!listErr && listData && listData.ok && Array.isArray(listData.notes)){
         setHandwrittenNotesSignatureMap(handwrittenNotesSignatureMap(listData.notes));
       }
-      /* Rimuove solo l'appunto appena modificato, senza azzerare gli altri avvisi. */
       if(savedId) markHandwrittenNoteRead(savedId);
+      handwrittenNotesSaveSyncPending = false;
       $("notesSaveButton").disabled = true;
       setText($("notesStatus"),"Appunto salvato. Nessuna modifica in sospeso.");
       showHandwrittenNotesList();
