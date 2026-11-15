@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-15T00:01:01.945232+01:00",
+  "generated_at": "2026-11-16T00:01:02.321435+01:00",
   "site": "U003128",
   "siteType": "02",
   "menus": {
@@ -134,6 +134,133 @@
         "ingredients": [
           {
             "name": "PANE",
+            "quantity": "30",
+            "unit": "Gr"
+          }
+        ]
+      }
+    },
+    "2026-11-17": {
+      "P100449": {
+        "dishCode": "P100449",
+        "name": "Pasta integrale biologica con crema di broccoli e pesto",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PASTA INTEGRALE BIOLOGICA",
+            "quantity": "50",
+            "unit": "Gr"
+          },
+          {
+            "name": "BROCCOLI",
+            "quantity": "14",
+            "unit": "Gr"
+          },
+          {
+            "name": "PESTO",
+            "quantity": "7",
+            "unit": "Gr"
+          },
+          {
+            "name": "PARMIGIANO REGGIANO",
+            "quantity": "3",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "1,4",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P100194": {
+        "dishCode": "P100194",
+        "name": "Frittata",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "UOVA BIOLOGICHE",
+            "quantity": "50",
+            "unit": "Gr"
+          },
+          {
+            "name": "LATTE INTERO",
+            "quantity": "7",
+            "unit": "Gr"
+          },
+          {
+            "name": "PARMIGIANO REGGIANO",
+            "quantity": "3,33",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "0,83",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P01991": {
+        "dishCode": "P01991",
+        "name": "Carote julienne",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "CAROTE",
+            "quantity": "32",
+            "unit": "Gr"
+          },
+          {
+            "name": "OLIO DI OLIVA EXTRAVERGINE",
+            "quantity": "3,4",
+            "unit": "Gr"
+          },
+          {
+            "name": "SALE IODATO",
+            "quantity": "0,2",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P00001": {
+        "dishCode": "P00001",
+        "name": "Frutta fresca di stagione",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "MELE",
+            "quantity": "150",
+            "unit": "Gr"
+          }
+        ]
+      },
+      "P01891": {
+        "dishCode": "P01891",
+        "name": "Pane ai cereali ",
+        "alternative": 40,
+        "label": "Ricetta Infanzia",
+        "photo": "band",
+        "ingredients": [
+          {
+            "name": "PANE AI CEREALI",
             "quantity": "30",
             "unit": "Gr"
           }
