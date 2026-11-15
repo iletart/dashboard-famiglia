@@ -4225,14 +4225,7 @@ body.k #viewMenuPanel button.menu-action-button:active {
   line-height:1!important;
   text-align:center!important;
 }
-/* PC: mantiene il glifo originale. Smartphone e Kindle: icona SVG stabile. */
-.view-switcher-notes-button .notes-pencil-mobile { display:inline-block; width:23px; height:23px; }
-.view-switcher-notes-button .notes-pencil-desktop { display:none; }
-@media (min-width:768px) {
-  .view-switcher-notes-button .notes-pencil-mobile { display:none; }
-  .view-switcher-notes-button .notes-pencil-desktop { display:inline; }
-}
-/* Dimensioni e allineamento condivisi del pulsante. */
+/* Un solo glifo originale su PC, smartphone e Kindle. */
 .view-switcher-notes-button {
   width:36px!important;
   min-width:36px!important;
@@ -4263,6 +4256,10 @@ body.k .view-switcher-notes-button {
   background:#fff!important;
   color:#000!important;
   border-color:#000!important;
+}
+body:not(.k) .view-switcher-notes-button.notes-blink-red {
+  color:#B3261E!important;
+  border-color:#B3261E!important;
 }
 body.k .view-switcher-notes-button.notes-blink-red {
   background:#000!important;
@@ -11315,10 +11312,7 @@ function renderViewSwitcher(){
   bar.classList.remove("view-switcher-shared");
   bar.classList.add(personalTheme ? "view-switcher-personal" : "view-switcher-shared");
 
-  var notesButton = mk("button", "view-switcher-notes-button", "");
-  /* SVG inline: la stessa identica matita su PC, smartphone e Kindle,
-     senza dipendere dal glifo disponibile nel font del dispositivo. */
-  notesButton.innerHTML = '<span class="notes-pencil-desktop" aria-hidden="true">✎</span><svg class="notes-pencil-mobile" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.06 6.19l1.77-1.77a1.5 1.5 0 0 1 2.12 0l1.63 1.63a1.5 1.5 0 0 1 0 2.12l-1.77 1.77" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var notesButton = mk("button", "view-switcher-notes-button", "✎");
   notesButton.type = "button";
   if(handwrittenNotesUnread) notesButton.classList.add("notes-unread");
   notesButton.title = handwrittenNotesUnread ? "Ci sono appunti nuovi o modificati: apri per leggerli" : "Apri appunti";
