@@ -3370,10 +3370,32 @@ body.k .family-shopping-item > * {
   text-align:center!important;
 }
 
-/* To-do e Daily task: il cestino segue l'assegnazione, senza margin:auto
-   che lo disallinea all'interno della cella delle azioni. */
+/* To-do e Daily task: assegnazione e cestino restano affiancati
+   all'inizio della cella azioni, senza margin:auto o allineamenti a destra. */
+.todo-actions {
+  text-align:left!important;
+}
 .todo-actions > .todo-delete {
   margin:0 0 0 4px!important;
+}
+
+/* Kindle: .todo-text comune imposta width:100%; nella riga flex della
+   lista condivisa questo spingeva il wrapper del cestino fuori schermo. */
+body.k .family-shopping-item > .todo-check-cell {
+  flex:0 0 28px!important;
+  width:28px!important;
+  box-sizing:border-box!important;
+}
+body.k .family-shopping-item > .family-shopping-item-name {
+  display:block!important;
+  flex:1 1 0!important;
+  width:auto!important;
+  min-width:0!important;
+}
+body.k .family-shopping-item > .todo-actions {
+  flex:0 0 32px!important;
+  width:32px!important;
+  min-width:32px!important;
 }
 
 /* Nome utente sempre in alto a destra, senza la dicitura "collegato". */
@@ -11355,12 +11377,9 @@ function renderViewSwitcher(){
     if(ev){ ev.preventDefault(); ev.stopPropagation(); }
     openHandwrittenNotesList();
   }
+  /* Usa lo stesso modello dei pulsanti di cambio vista:
+     un solo click, senza intercettare touchstart e sopprimere il click sintetico di Silk. */
   notesButton.onclick = activateNotesButton;
-  /* Kindle Silk può evidenziare il pulsante ma non completare il click:
-     apriamo gli appunti al touchstart, evitando il click sintetico successivo. */
-  if(document.body.classList.contains("k")){
-    notesButton.ontouchstart = activateNotesButton;
-  }
   buttons.appendChild(notesButton);
 
   for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
