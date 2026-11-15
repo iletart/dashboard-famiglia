@@ -4225,13 +4225,12 @@ body.k #viewMenuPanel button.menu-action-button:active {
   line-height:1!important;
   text-align:center!important;
 }
-.view-switcher-notes-button.notes-unread {
-  /* Il lampeggio PC/mobile è gestito dal timer JavaScript. */
-  animation:none!important;
+@keyframes handwrittenNotesPencilBlink {
+  0%,49% { color:#222; border-color:#999; }
+  50%,100% { color:#B3261E; border-color:#B3261E; }
 }
-body:not(.k) .view-switcher-notes-button.notes-blink-red {
-  color:#B3261E!important;
-  border-color:#B3261E!important;
+body:not(.k) .view-switcher-notes-button.notes-unread {
+  animation:handwrittenNotesPencilBlink 1s steps(1,end) infinite!important;
 }
 body.k .view-switcher-notes-button {
   background:#fff!important;
@@ -4242,10 +4241,6 @@ body.k .view-switcher-notes-button.notes-blink-red {
   background:#000!important;
   color:#fff!important;
   border-color:#000!important;
-}
-@keyframes handwrittenNotesBlink {
-  0%,49% { opacity:1; }
-  50%,100% { opacity:.2; }
 }
 .view-switcher-notes-button {
   display:inline-flex!important;
@@ -4329,17 +4324,17 @@ body.k .view-switcher-notes-button {
   align-self:center!important;
   vertical-align:middle!important;
   box-sizing:border-box!important;
-  flex:0 0 34px!important;
-  width:34px!important;
-  min-width:34px!important;
-  height:34px!important;
-  min-height:34px!important;
-  max-height:34px!important;
-  margin:1px 2px!important;
+  flex:0 0 36px!important;
+  width:36px!important;
+  min-width:36px!important;
+  height:36px!important;
+  min-height:36px!important;
+  max-height:36px!important;
+  margin:1px 5px 1px 2px!important;
   padding:0!important;
   font-family:Arial,sans-serif!important;
-  font-size:24px!important;
-  line-height:34px!important;
+  font-size:25px!important;
+  line-height:1!important;
 }
 body.k .view-switcher-button {
   display:inline-flex!important;
@@ -12551,19 +12546,19 @@ function saveHandwrittenNote(){
     }
     handwrittenNoteId = data.note && data.note.id ? data.note.id : handwrittenNoteId;
     handwrittenNoteDirty = false;
-    /* La modifica fatta da questo dispositivo non deve generare una notifica
-       di appunto non letto sullo stesso dispositivo. */
-    var savedNote = data.note || null;
-    if(savedNote && savedNote.id !== null && typeof savedNote.id !== "undefined"){
-      var savedId = String(savedNote.id);
-      var savedMap = getHandwrittenNotesSignatureMap() || {};
-      savedMap[savedId] = handwrittenNoteSignature(savedNote);
-      setHandwrittenNotesSignatureMap(savedMap);
-      markHandwrittenNoteRead(savedId);
-    }
-    $("notesSaveButton").disabled = true;
-    setText($("notesStatus"),"Appunto salvato. Nessuna modifica in sospeso.");
-    showHandwrittenNotesList();
+    /* Sincronizza la firma direttamente dall'elenco server dopo il salvataggio:
+       la risposta PUT/POST può contenere solo una nota parziale. */
+    var savedId = handwrittenNoteId !== null && typeof handwrittenNoteId !== "undefined" ? String(handwrittenNoteId) : "";
+    handwrittenNotesRequest("GET", "/notes", null, function(listErr,listData){
+      if(!listErr && listData && listData.ok && Array.isArray(listData.notes)){
+        setHandwrittenNotesSignatureMap(handwrittenNotesSignatureMap(listData.notes));
+      }
+      /* Rimuove solo l'appunto appena modificato, senza azzerare gli altri avvisi. */
+      if(savedId) markHandwrittenNoteRead(savedId);
+      $("notesSaveButton").disabled = true;
+      setText($("notesStatus"),"Appunto salvato. Nessuna modifica in sospeso.");
+      showHandwrittenNotesList();
+    });
   });
 }
 
