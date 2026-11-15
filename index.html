@@ -11333,10 +11333,16 @@ function renderViewSwitcher(){
   if(handwrittenNotesUnread) notesButton.classList.add("notes-unread");
   notesButton.title = handwrittenNotesUnread ? "Ci sono appunti nuovi o modificati: apri per leggerli" : "Apri appunti";
   notesButton.setAttribute("aria-label", notesButton.title);
-  notesButton.onclick = function(ev){
+  function activateNotesButton(ev){
     if(ev){ ev.preventDefault(); ev.stopPropagation(); }
     openHandwrittenNotesList();
-  };
+  }
+  notesButton.onclick = activateNotesButton;
+  /* Kindle Silk può evidenziare il pulsante ma non completare il click:
+     apriamo gli appunti al touchstart, evitando il click sintetico successivo. */
+  if(document.body.classList.contains("k")){
+    notesButton.ontouchstart = activateNotesButton;
+  }
   buttons.appendChild(notesButton);
 
   for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
