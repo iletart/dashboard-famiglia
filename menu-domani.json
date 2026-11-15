@@ -1,33 +1,33 @@
 {
   "available": true,
-  "date": "2026-11-16",
+  "date": "2026-11-17",
   "site": "U003128",
-  "generated_at": "2026-11-15T00:01:01.945232+01:00",
+  "generated_at": "2026-11-16T00:01:02.321435+01:00",
   "plates": [
     {
-      "position": "2132",
-      "dishCode": "P100098",
-      "name": "Ravioli di magro olio e salvia"
+      "position": "2232",
+      "dishCode": "P100449",
+      "name": "Pasta integrale biologica con crema di broccoli e pesto"
     },
     {
-      "position": "2133",
-      "dishCode": "P100503",
-      "name": "Straccetti di tacchino alla romana"
+      "position": "2233",
+      "dishCode": "P100194",
+      "name": "Frittata"
     },
     {
-      "position": "2136",
-      "dishCode": "P100455",
-      "name": "Fagiolini all'olio"
+      "position": "2236",
+      "dishCode": "P01991",
+      "name": "Carote julienne"
     },
     {
-      "position": "2137",
-      "dishCode": "P00007",
+      "position": "2237",
+      "dishCode": "P00001",
       "name": "Frutta fresca di stagione"
     },
     {
-      "position": "2139",
-      "dishCode": "P01889",
-      "name": "Pane tipo 0"
+      "position": "2239",
+      "dishCode": "P01891",
+      "name": "Pane ai cereali "
     }
   ]
 }
