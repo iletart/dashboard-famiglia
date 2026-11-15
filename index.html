@@ -4757,12 +4757,11 @@ body.k .view-switcher-notes-button:after {
   display:none!important;
 }
 
-/* Kindle: sposta l'intero gruppo azioni, così assegnazione e cestino
-   restano allineati. position:relative è più compatibile del transform
-   con il browser Silk dei Kindle meno recenti. */
+/* Kindle: sposta ulteriormente a destra l'intero gruppo azioni,
+   senza allargare la colonna e sottrarre spazio al testo. */
 body.k .todo:not(.family-shopping-item) > .todo-actions {
   position:relative!important;
-  left:10px!important;
+  left:16px!important;
   width:76px!important;
   min-width:76px!important;
 }
