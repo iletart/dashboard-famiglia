@@ -4721,6 +4721,19 @@ body.k .family-shopping-item > .todo-actions > .family-shopping-delete {
   margin:0!important;
 }
 
+
+/* Il disegno della matita non deve intercettare il tocco destinato al pulsante. */
+body.k .view-switcher-notes-button {
+  position:relative!important;
+  z-index:3!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+}
+body.k .view-switcher-notes-button:before,
+body.k .view-switcher-notes-button:after {
+  pointer-events:none!important;
+}
+
 </style>
 
 </head>
@@ -11482,13 +11495,25 @@ function renderViewSwitcher(){
   if(handwrittenNotesUnread) notesButton.classList.add("notes-unread");
   notesButton.title = handwrittenNotesUnread ? "Ci sono appunti nuovi o modificati: apri per leggerli" : "Apri appunti";
   notesButton.setAttribute("aria-label", notesButton.title);
+  var notesTouchHandledAt = 0;
   function activateNotesButton(ev){
     if(ev){ ev.preventDefault(); ev.stopPropagation(); }
     openHandwrittenNotesList();
   }
-  /* Usa lo stesso modello dei pulsanti di cambio vista:
-     un solo click, senza intercettare touchstart e sopprimere il click sintetico di Silk. */
-  notesButton.onclick = activateNotesButton;
+  /* Silk su Kindle a volte non genera il click sintetico sui pulsanti
+     con contenuto disegnato via pseudo-elementi: gestiamo touchend
+     direttamente e conserviamo click per mouse/tastiera e browser normali. */
+  notesButton.addEventListener("touchend", function(ev){
+    notesTouchHandledAt = new Date().getTime();
+    activateNotesButton(ev);
+  }, false);
+  notesButton.addEventListener("click", function(ev){
+    if(new Date().getTime() - notesTouchHandledAt < 900){
+      if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+      return;
+    }
+    activateNotesButton(ev);
+  }, false);
   buttons.appendChild(notesButton);
 
   for(var i = 0; i < DASHBOARD_VIEWS.length; i++){
