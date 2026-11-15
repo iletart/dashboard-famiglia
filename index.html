@@ -11976,7 +11976,9 @@ function startDashboard(preferredView){
 	initBoxRefresh();
 
 	safe(loadAgenda, "loadAgenda");
-	safe(loadShoppingList, "loadShoppingList");
+	/* loadShoppingList appartiene al vecchio contenitore #shoppingList,
+	   rimosso quando la lista è stata migrata a #familyShoppingList.
+	   Il box attuale viene caricato dal relativo loader dinamico. */
 	safe(loadWeather, "loadWeather");
 	safe(loadSunTimes, "loadSunTimes");
 	safe(loadMenu, "loadMenu");
