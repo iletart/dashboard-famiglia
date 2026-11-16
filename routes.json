@@ -21,14 +21,14 @@
       "to": "Asilo",
       "mode": "departure",
       "target_time": "17:15",
-      "departure": "2026-11-16T20:07:07.296674+01:00",
-      "arrival": "2026-11-16T20:18:39.296674+01:00",
+      "departure": "2026-11-16T20:07:26.675784+01:00",
+      "arrival": "2026-11-16T20:19:00.675784+01:00",
       "duration_minutes": 12,
       "static_duration_minutes": 11,
       "buffer_minutes": 0,
       "distance_meters": 9927,
-      "calculated_at": "2026-11-16T20:05:07.296674+01:00"
+      "calculated_at": "2026-11-16T20:05:26.675784+01:00"
     }
   },
-  "generated_at": "2026-11-16T20:05:07.296674+01:00"
+  "generated_at": "2026-11-16T20:05:26.675784+01:00"
 }
