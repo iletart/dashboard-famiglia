@@ -9571,6 +9571,39 @@ function buildLayout(view){
   flushSegment();
 }
 
+/* Registry dei renderer attivati quando una vista diventa attiva.
+   L'elenco dei box da caricare viene sempre letto dal layout D1. */
+function loadConfiguredViewBoxes(viewConfig){
+  if(!viewConfig) return;
+  var renderers = {
+    personalTodo: function(){ personalTodoConnect(); },
+    familyShopping: function(){ safe(loadFamilyShoppingList); },
+    recurringTasks: function(){ safe(loadRecurringTasks, "loadRecurringTasks"); },
+    personalRoutes: function(){ loadRoutes(currentView); },
+    userAgenda: function(){
+      renderUserAgenda();
+      loadUserAgenda(currentView);
+    }
+  };
+  var loaded = {};
+  function visit(items){
+    items = items || [];
+    for(var i = 0; i < items.length; i++){
+      var id = String(items[i].box_id || "");
+      if(!id || loaded[id] || typeof renderers[id] !== "function") continue;
+      loaded[id] = true;
+      renderers[id]();
+    }
+  }
+  var sections = viewConfig.sections || [];
+  for(var s = 0; s < sections.length; s++){
+    var columns = sections[s].columns || [];
+    for(var c = 0; c < columns.length; c++) visit(columns[c].items);
+  }
+  var rows = viewConfig.rows || [];
+  for(var r = 0; r < rows.length; r++) visit(rows[r].items);
+}
+
 function setView(view, manual){
   if(manual){ viewManualUntil = Date.now() + 10 * 60 * 1000; }
   
@@ -9609,22 +9642,8 @@ function setView(view, manual){
   buildLayout(view);
   loadCustomBoxesInView(viewConfig);
 
-  if (
-    viewHasBox(view, "personalTodo") &&
-    $("personalTodoBox")
-  ) {
-    personalTodoConnect();
-  }
-
-  /* La vecchia loadShoppingList() usa #shoppingList, non più presente.
-     La lista attuale viene caricata solo quando prevista dalla vista. */
-  if (viewHasBox(view, "familyShopping")) {
-    safe(loadFamilyShoppingList);
-  }
-
-  if (viewHasBox(view, "recurringTasks")) {
-    safe(loadRecurringTasks, "loadRecurringTasks");
-  }
+  /* Avvia i renderer previsti dalla configurazione della vista nel DB. */
+  loadConfiguredViewBoxes(viewConfig);
 
 
   /* box riservati a una sola vista (data-only) */
@@ -9637,15 +9656,6 @@ function setView(view, manual){
   
   if(personal){
     safe(renderPersonalTasks);
-  
-    if(viewHasBox(view, "personalRoutes")){
-      loadRoutes(view);
-    }
-  
-    if(viewHasBox(view, "userAgenda")){
-      renderUserAgenda();
-      loadUserAgenda(view);
-    }
   }
 
   closeViewMenu();
