@@ -121,6 +121,13 @@ h3 {
   flex:0 0 auto;
   margin-left:4px;
 }
+.custom-task-assignee-select {
+  flex:0 0 auto;
+  max-width:125px;
+  min-width:0;
+  font-size:12px;
+  padding:4px;
+}
 
 /* Intestazione box e sincronizzazione */
 
@@ -9462,7 +9469,7 @@ function ensureCustomBoxContainers(){
   }
 }
 
-function renderCustomBoxTasks(numericId, elementId, tasks){
+function renderCustomBoxTasks(numericId, elementId, tasks, assignmentEnabled){
   var content = $(elementId + "_content");
   if(!content) return;
   clear(content);
@@ -9492,7 +9499,41 @@ function renderCustomBoxTasks(numericId, elementId, tasks){
       var label = mk("label", "custom-task-label", task.description || "");
       row.appendChild(check);
       row.appendChild(label);
-      if(task.assigned_user_name){
+
+      if(assignmentEnabled){
+        var select = document.createElement("select");
+        select.className = "custom-task-assignee-select";
+        var none = document.createElement("option");
+        none.value = "";
+        none.appendChild(document.createTextNode("Non assegnata"));
+        select.appendChild(none);
+        for(var u = 0; u < USERS.length; u++){
+          if(Number(USERS[u].is_assignable) !== 1) continue;
+          var option = document.createElement("option");
+          option.value = String(USERS[u].id);
+          option.appendChild(document.createTextNode(USERS[u].name));
+          select.appendChild(option);
+        }
+        select.value = task.assigned_user_id ? String(task.assigned_user_id) : "";
+        select.onchange = (function(previousValue){
+          return function(){
+            var selected = select.value;
+            select.disabled = true;
+            customBoxRequest("PATCH", "/custom-tasks/" + encodeURIComponent(task.id),
+              {assigned_user_id: selected ? Number(selected) : null}, function(ok, data){
+                select.disabled = false;
+                if(!ok){
+                  select.value = previousValue;
+                  var status = $(elementId + "_status");
+                  if(status) setText(status, data && data.error ? data.error : "Assegnazione non salvata");
+                  return;
+                }
+                loadCustomBoxTasks(numericId, elementId);
+              });
+          };
+        })(select.value);
+        row.appendChild(select);
+      } else if(task.assigned_user_name){
         row.appendChild(mk("span", "small custom-task-assignee", task.assigned_user_name));
       }
       content.appendChild(row);
@@ -9510,7 +9551,7 @@ function loadCustomBoxTasks(numericId, elementId){
         if(status) setText(status, data && data.error ? data.error : "Attività non disponibili");
         return;
       }
-      renderCustomBoxTasks(numericId, elementId, data.tasks || []);
+      renderCustomBoxTasks(numericId, elementId, data.tasks || [], data.assignment_enabled === true || Number(data.assignment_enabled) === 1);
       if(status) setText(status, "");
     });
 }
