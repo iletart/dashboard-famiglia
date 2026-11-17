@@ -9385,12 +9385,24 @@ function ensureStandardBoxContainers(){
     if(box.custom_family_id !== null && box.custom_family_id !== undefined) continue;
     if($(box.element_id)) continue;
     var template = document.querySelector('script[data-dashboard-template="' + box.id + '"]');
-    if(!template) continue;
-    var holder = document.createElement("div");
-    holder.innerHTML = template.text || template.textContent || template.innerHTML || "";
-    var root = holder.firstChild;
-    while(root && root.nodeType !== 1) root = root.nextSibling;
-    if(!root) continue;
+    var root = null;
+    if(template){
+      var holder = document.createElement("div");
+      holder.innerHTML = template.text || template.textContent || template.innerHTML || "";
+      root = holder.firstChild;
+      while(root && root.nodeType !== 1) root = root.nextSibling;
+    }
+    if(!root){
+      /* Un tipo nuovo resta visibile nel layout, ma segnala che manca
+         ancora il renderer specifico invece di sparire silenziosamente. */
+      root = mk("div", "box dashboard-box-unavailable");
+      var heading = mk("div", "section-heading");
+      var title = mk("h2", "", box.title || box.id);
+      title.setAttribute("data-box-title", box.id);
+      heading.appendChild(title);
+      root.appendChild(heading);
+      root.appendChild(mk("div", "small", "Renderer non ancora disponibile per questo tipo di box."));
+    }
     root.id = box.element_id;
     root.removeAttribute("hidden");
     stash.appendChild(root);
