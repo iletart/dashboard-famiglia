@@ -5471,6 +5471,11 @@ function setTimes(el, gen, synced, err, staleMs, needGen){
 }
 
 /* Gruppi di pulsanti (.seg) con data-day */
+function bindElementEvent(id, eventName, handler){
+  var element = $(id);
+  if(element) element[eventName] = handler;
+}
+
 function bindSeg(id, fn){
   var container = $(id);
   // Alcune viste possono non avere il box che contiene questo selettore.
@@ -12153,55 +12158,47 @@ function startDashboard(preferredView){
 	  renderPersonalTasks();
 	});
 	
-	$("recurringConfigButton").onclick = openRecurringConfig;
-	$("recurringConfigClose").onclick = closeRecurringConfig;
-	$("recurringCancelEditButton").onclick = resetRecurringForm;
-	$("recurringType").onchange = updateRecurringFields;
-	$("recurringSaveButton").onclick = saveRecurringDefinition;
-  $("recurringSubtaskAddButton").onclick = function() { addRecurringSubtask("", null); };
+	bindElementEvent("recurringConfigButton", "onclick", openRecurringConfig);
+	bindElementEvent("recurringConfigClose", "onclick", closeRecurringConfig);
+	bindElementEvent("recurringCancelEditButton", "onclick", resetRecurringForm);
+	bindElementEvent("recurringType", "onchange", updateRecurringFields);
+	bindElementEvent("recurringSaveButton", "onclick", saveRecurringDefinition);
+  bindElementEvent("recurringSubtaskAddButton", "onclick", function(){ addRecurringSubtask("", null); });
 
-	// Aggiunta task giornalieri
-	$("taskAddButton").onclick = function(){
+	// I controlli vengono collegati solo se il box corrispondente è nel catalogo.
+	bindElementEvent("taskAddButton", "onclick", function(){
 	  var input = $("taskInput");
+	  if(!input) return;
 	  var value = input.value.trim();
-
-	  if(!value){ return; }
-
-	  if(taskPost({
-		action: "add",
-		date: taskKey(taskSel),
-		text: value
-	  }, false)){
-		input.value = "";
+	  if(!value) return;
+	  if(taskPost({action:"add", date:taskKey(taskSel), text:value}, false)){
+		 input.value = "";
 	  }
-	};
+	});
 
-	// Aggiunta task condivisi
-	$("todoAddButton").onclick = function(){
+	bindElementEvent("todoAddButton", "onclick", function(){
 	  var input = $("todoInput");
+	  if(!input) return;
 	  var value = input.value.trim();
+	  if(!value) return;
+	  if(todoChange("add", null, value)) input.value = "";
+	});
 
-	  if(!value){ return; }
-
-	  if(todoChange("add", null, value)){
-		input.value = "";
-	  }
-	};
-
-	// Invio da tastiera
-	$("taskInput").onkeydown = function(ev){
+	bindElementEvent("taskInput", "onkeydown", function(ev){
 	  if(ev.key === "Enter"){
-		ev.preventDefault();
-		$("taskAddButton").click();
+		 ev.preventDefault();
+		 var button = $("taskAddButton");
+		 if(button) button.click();
 	  }
-	};
+	});
 
-	$("todoInput").onkeydown = function(ev){
+	bindElementEvent("todoInput", "onkeydown", function(ev){
 	  if(ev.key === "Enter"){
-		ev.preventDefault();
-		$("todoAddButton").click();
+		 ev.preventDefault();
+		 var button = $("todoAddButton");
+		 if(button) button.click();
 	  }
-	};
+	});
 
 	initBoxRefresh();
 
