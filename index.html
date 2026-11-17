@@ -9259,97 +9259,267 @@ function personalRow(){
 }
 
 
+
+/* ==================================================
+   BOX DINAMICI: contenitori e renderer delle tasklist custom
+   ================================================== */
+function customBoxRequest(method, path, payload, done){
+  var x = new XMLHttpRequest();
+  x.open(method, USERS_API_URL + path, true);
+  x.setRequestHeader("Authorization", "Bearer " + authToken);
+  if(payload !== null) x.setRequestHeader("Content-Type", "application/json");
+  x.timeout = 15000;
+  x.onreadystatechange = function(){
+    if(x.readyState !== 4) return;
+    var data = null;
+    try { data = JSON.parse(x.responseText); } catch(e){}
+    done(x.status >= 200 && x.status < 300 && data && data.ok, data);
+  };
+  x.onerror = function(){ done(false, {error:"Errore di connessione"}); };
+  x.ontimeout = function(){ done(false, {error:"Timeout"}); };
+  x.send(payload === null ? null : JSON.stringify(payload));
+}
+
+function ensureCustomBoxContainers(){
+  var stash = $("stash");
+  if(!stash) return;
+  for(var i = 0; i < DASHBOARD_BOXES.length; i++){
+    var box = DASHBOARD_BOXES[i];
+    if(!box || box.custom_family_id === null || box.custom_family_id === undefined) continue;
+    if($(box.element_id)) continue;
+
+    var root = mk("div", "box custom-task-box");
+    root.id = box.element_id;
+    root.setAttribute("data-custom-box-id", String(box.numeric_id || ""));
+    var heading = mk("div", "section-heading", box.title || "Task");
+    root.appendChild(heading);
+
+    var content = mk("div", "custom-task-content");
+    content.id = box.element_id + "_content";
+    root.appendChild(content);
+
+    var status = mk("div", "small sync-label");
+    status.id = box.element_id + "_status";
+    root.appendChild(status);
+
+    var addRow = mk("div", "custom-task-add");
+    var input = mk("input", "custom-task-input");
+    input.type = "text";
+    input.maxLength = 500;
+    input.placeholder = "Nuova attività";
+    input.id = box.element_id + "_input";
+    var add = mk("button", "custom-task-add-button", "+");
+    add.type = "button";
+    add.setAttribute("aria-label", "Aggiungi attività");
+    add.onclick = (function(numericId, elementId){
+      return function(){ addCustomBoxTask(numericId, elementId); };
+    })(box.numeric_id, box.element_id);
+    input.onkeydown = (function(numericId, elementId){
+      return function(ev){
+        ev = ev || window.event;
+        if(ev.keyCode === 13){ addCustomBoxTask(numericId, elementId); }
+      };
+    })(box.numeric_id, box.element_id);
+    addRow.appendChild(input);
+    addRow.appendChild(add);
+    root.appendChild(addRow);
+    stash.appendChild(root);
+  }
+}
+
+function renderCustomBoxTasks(numericId, elementId, tasks){
+  var content = $(elementId + "_content");
+  if(!content) return;
+  clear(content);
+  tasks = tasks || [];
+  if(!tasks.length){
+    content.appendChild(mk("div", "small", "Nessuna attività."));
+    return;
+  }
+  for(var i = 0; i < tasks.length; i++){
+    (function(task){
+      var row = mk("div", "custom-task-row");
+      var check = mk("input", "custom-task-checkbox");
+      check.type = "checkbox";
+      check.checked = Number(task.done) === 1 || task.done === true;
+      check.onclick = function(){
+        check.disabled = true;
+        customBoxRequest("PATCH", "/custom-tasks/" + encodeURIComponent(task.id),
+          {done: check.checked}, function(ok, data){
+            if(!ok){
+              check.checked = !check.checked;
+              var status = $(elementId + "_status");
+              if(status) setText(status, data && data.error ? data.error : "Salvataggio non riuscito");
+            }
+            check.disabled = false;
+          });
+      };
+      var label = mk("label", "custom-task-label", task.description || "");
+      row.appendChild(check);
+      row.appendChild(label);
+      if(task.assigned_user_name){
+        row.appendChild(mk("span", "small custom-task-assignee", task.assigned_user_name));
+      }
+      content.appendChild(row);
+    })(tasks[i]);
+  }
+}
+
+function loadCustomBoxTasks(numericId, elementId){
+  if(!numericId || !authToken) return;
+  var status = $(elementId + "_status");
+  if(status) setText(status, "Aggiornamento...");
+  customBoxRequest("GET", "/custom-boxes/" + encodeURIComponent(numericId) + "/tasks", null,
+    function(ok, data){
+      if(!ok){
+        if(status) setText(status, data && data.error ? data.error : "Attività non disponibili");
+        return;
+      }
+      renderCustomBoxTasks(numericId, elementId, data.tasks || []);
+      if(status) setText(status, "");
+    });
+}
+
+function addCustomBoxTask(numericId, elementId){
+  var input = $(elementId + "_input");
+  if(!input) return;
+  var description = String(input.value || "").replace(/^\s+|\s+$/g, "");
+  if(!description) return;
+  input.disabled = true;
+  customBoxRequest("POST", "/custom-boxes/" + encodeURIComponent(numericId) + "/tasks",
+    {description: description}, function(ok, data){
+      input.disabled = false;
+      if(!ok){
+        var status = $(elementId + "_status");
+        if(status) setText(status, data && data.error ? data.error : "Aggiunta non riuscita");
+        return;
+      }
+      input.value = "";
+      loadCustomBoxTasks(numericId, elementId);
+      input.focus();
+    });
+}
+
+function loadCustomBoxesInView(viewConfig){
+  if(!viewConfig) return;
+  var ids = {};
+  var boxes = {};
+  for(var i = 0; i < DASHBOARD_BOXES.length; i++){
+    var b = DASHBOARD_BOXES[i];
+    if(b && b.custom_family_id !== null && b.custom_family_id !== undefined){
+      boxes[String(b.id)] = b;
+    }
+  }
+  function visit(items){
+    items = items || [];
+    for(var j = 0; j < items.length; j++){
+      var b = boxes[String(items[j].box_id)];
+      if(b && !ids[String(b.id)]){
+        ids[String(b.id)] = true;
+        loadCustomBoxTasks(b.numeric_id, b.element_id);
+      }
+    }
+  }
+  if(viewConfig.sections && viewConfig.sections.length){
+    for(var s = 0; s < viewConfig.sections.length; s++){
+      var cols = viewConfig.sections[s].columns || [];
+      for(var c = 0; c < cols.length; c++) visit(cols[c].items);
+    }
+  } else {
+    var rows = viewConfig.rows || [];
+    for(var r = 0; r < rows.length; r++) visit(rows[r].items);
+  }
+}
+
 function buildLayout(view){
   var views = DASHBOARD_VIEWS || [];
   var vc = null;
   var i, j, el, b;
-  var rows, items, row, item;
   var host, stash;
 
   for(i = 0; i < views.length; i++){
-    if(views[i].id === view){
-      vc = views[i];
-      break;
-    }
+    if(String(views[i].id) === String(view)){ vc = views[i]; break; }
   }
-
-  if(!vc){ return; }
-
-  rows = (vc.rows || []).slice();
-  rows.sort(function(a, b){ return a.position - b.position; });
+  if(!vc) return;
 
   host = vc.view_type === "shared" ? $("dashboardContent") : personalRow();
   stash = $("stash");
-  if(!host || !stash){ return; }
+  if(!host || !stash) return;
 
-  /* Riporta tutti i box nello stash prima di ricostruire la vista. */
-  for(var v = 0; v < views.length; v++){
-    var allRows = views[v].rows || [];
-    for(i = 0; i < allRows.length; i++){
-      items = allRows[i].items || [];
-      for(j = 0; j < items.length; j++){
-        el = $(items[j].element_id);
-        if(el && el.parentNode !== stash){ stash.appendChild(el); }
-      }
-    }
+  /* I box custom non hanno un nodo HTML statico: lo creiamo dal catalogo DB. */
+  ensureCustomBoxContainers();
+
+  /* Riporta tutti i contenitori del catalogo nello stash prima di ricostruire la vista. */
+  for(i = 0; i < DASHBOARD_BOXES.length; i++){
+    el = $(DASHBOARD_BOXES[i].element_id);
+    if(el && el.parentNode !== stash) stash.appendChild(el);
   }
-
   clear(host);
 
-  /*
-   * Le righe consecutive con più box formano colonne verticali continue.
-   * In questo modo ogni box successivo parte subito dopo quello precedente
-   * nella propria colonna, senza attendere la colonna più alta.
-   * Una riga con un solo box resta invece a larghezza piena e separa i gruppi.
-   */
-  var segmentRows = [];
+  /* Layout v2: sezioni full-width e colonne verticali indipendenti. */
+  if(vc.sections && vc.sections.length){
+    var sections = vc.sections.slice().sort(function(a,b){ return Number(a.position)-Number(b.position); });
+    for(var si = 0; si < sections.length; si++){
+      var section = sections[si];
+      var columnsData = (section.columns || []).slice().sort(function(a,b){ return Number(a.position)-Number(b.position); });
+      if(!columnsData.length) continue;
 
-  function flushSegment(){
-    if(!segmentRows.length){ return; }
+      var sectionRow = mk("div", "row layout-row");
+      var isFull = section.type === "full";
+      var width = isFull ? 100 : 100 / columnsData.length;
 
-    var columnCount = 0;
-    var segmentContainer = mk("div", "row layout-row");
-    var columns = [];
-
-    for(var r = 0; r < segmentRows.length; r++){
-      if(segmentRows[r].length > columnCount){
-        columnCount = segmentRows[r].length;
+      for(var ci = 0; ci < columnsData.length; ci++){
+        var column = mk("div", "col" + (isFull ? " full" : ""));
+        column.style.width = width + "%";
+        var columnItems = (columnsData[ci].items || []).slice().sort(function(a,b){ return Number(a.position)-Number(b.position); });
+        for(var ii = 0; ii < columnItems.length; ii++){
+          var item = columnItems[ii];
+          b = $(item.element_id);
+          if(!b) continue;
+          setHidden(b, false);
+          column.appendChild(b);
+        }
+        sectionRow.appendChild(column);
       }
+      host.appendChild(sectionRow);
     }
+    return;
+  }
 
-    for(var c = 0; c < columnCount; c++){
-      var column = mk("div", "col");
-      column.style.width = (100 / columnCount) + "%";
-      columns.push(column);
-      segmentContainer.appendChild(column);
+  /* Compatibilità con le viste che usano ancora righe legacy. */
+  var rows = (vc.rows || []).slice();
+  rows.sort(function(a,b){ return Number(a.position)-Number(b.position); });
+  var segmentRows = [];
+  function flushSegment(){
+    if(!segmentRows.length) return;
+    var count = 0;
+    for(var r = 0; r < segmentRows.length; r++) count = Math.max(count, segmentRows[r].length);
+    var rowEl = mk("div", "row layout-row");
+    var cols = [];
+    for(var c = 0; c < count; c++){
+      var col = mk("div", "col");
+      col.style.width = (100 / count) + "%";
+      cols.push(col);
+      rowEl.appendChild(col);
     }
-
-    host.appendChild(segmentContainer);
-
+    host.appendChild(rowEl);
     for(var rr = 0; rr < segmentRows.length; rr++){
       for(var cc = 0; cc < segmentRows[rr].length; cc++){
         b = $(segmentRows[rr][cc].element_id);
-        if(!b){ continue; }
-        setHidden(b, false);
-        columns[cc].appendChild(b);
+        if(b){ setHidden(b, false); cols[cc].appendChild(b); }
       }
     }
-
     segmentRows = [];
   }
-
   for(i = 0; i < rows.length; i++){
-    row = rows[i];
-    items = (row.items || []).slice();
-    items.sort(function(a, b){ return a.position - b.position; });
-    if(!items.length){ continue; }
-
+    var items = (rows[i].items || []).slice();
+    items.sort(function(a,b){ return Number(a.position)-Number(b.position); });
+    if(!items.length) continue;
     if(items.length === 1){
       flushSegment();
       b = $(items[0].element_id);
-      if(!b){ continue; }
+      if(!b) continue;
       setHidden(b, false);
-
       var fullRow = mk("div", "row layout-row");
       var fullColumn = mk("div", "col full");
       fullColumn.appendChild(b);
@@ -9359,7 +9529,6 @@ function buildLayout(view){
       segmentRows.push(items);
     }
   }
-
   flushSegment();
 }
 
@@ -9399,6 +9568,7 @@ function setView(view, manual){
   setHidden($("personalView"), !personal);
 
   buildLayout(view);
+  loadCustomBoxesInView(viewConfig);
 
   if (
     viewHasBox(view, "personalTodo") &&
