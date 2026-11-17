@@ -9302,18 +9302,24 @@ function personalRow(){
    ================================================== */
 function customBoxRequest(method, path, payload, done){
   var x = new XMLHttpRequest();
+  var completed = false;
+  function finish(ok, data){
+    if(completed) return;
+    completed = true;
+    done(ok, data);
+  }
   x.open(method, USERS_API_URL + path, true);
   x.setRequestHeader("Authorization", "Bearer " + authToken);
   if(payload !== null) x.setRequestHeader("Content-Type", "application/json");
   x.timeout = 15000;
   x.onreadystatechange = function(){
-    if(x.readyState !== 4) return;
+    if(x.readyState !== 4 || completed) return;
     var data = null;
     try { data = JSON.parse(x.responseText); } catch(e){}
-    done(x.status >= 200 && x.status < 300 && data && data.ok, data);
+    finish(x.status >= 200 && x.status < 300 && data && data.ok, data);
   };
-  x.onerror = function(){ done(false, {error:"Errore di connessione"}); };
-  x.ontimeout = function(){ done(false, {error:"Timeout"}); };
+  x.onerror = function(){ finish(false, {error:"Errore di connessione"}); };
+  x.ontimeout = function(){ finish(false, {error:"Timeout"}); };
   x.send(payload === null ? null : JSON.stringify(payload));
 }
 
