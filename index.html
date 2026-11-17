@@ -9626,11 +9626,11 @@ function buildLayout(view){
 function loadConfiguredViewBoxes(viewConfig){
   if(!viewConfig) return;
   var renderers = {
-    agenda: function(){ safe(renderAgenda); },
-    personalTasks: function(){ safe(renderPersonalTasks); },
-    personalGlobalTasks: function(){ safe(renderPersonalGlobalTasks); },
-    sharedTasks: function(){ safe(renderTasks); },
-    todo: function(){ safe(renderTodo); },
+    agenda: function(){ safe(loadAgenda); },
+    personalTasks: function(){ safe(loadAgenda); },
+    personalGlobalTasks: function(){ safe(loadTasks); },
+    sharedTasks: function(){ safe(loadTasks); },
+    todo: function(){ safe(loadTodo); },
     schoolMenu: function(){ safe(loadMenu); },
     personalTodo: function(){ personalTodoConnect(); },
     familyShopping: function(){ safe(loadFamilyShoppingList); },
@@ -9691,6 +9691,7 @@ function setView(view, manual){
   setHidden($("personalView"), !personal);
 
   buildLayout(view);
+  updateDashboardBoxTitles();
   loadCustomBoxesInView(viewConfig);
 
   /* Avvia i renderer previsti dalla configurazione della vista nel DB. */
@@ -12192,14 +12193,10 @@ function startDashboard(preferredView){
 
 	initBoxRefresh();
 
-	safe(loadAgenda, "loadAgenda");
-	/* loadShoppingList appartiene al vecchio contenitore #shoppingList,
-	   rimosso quando la lista è stata migrata a #familyShoppingList.
-	   Il box attuale viene caricato dal relativo loader dinamico. */
+	/* I renderer dei box vengono avviati esclusivamente dalla vista D1.
+	   Meteo e orari solari restano servizi indipendenti dall'insieme dei box. */
 	safe(loadWeather, "loadWeather");
 	safe(loadSunTimes, "loadSunTimes");
-	safe(loadMenu, "loadMenu");
-	safe(loadTodo, "loadTodo");
 
 	if(!scheduleViewTimer){
 	  scheduleViewTimer = setInterval(checkScheduledView, 15000);
