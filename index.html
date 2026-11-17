@@ -5487,27 +5487,42 @@ function viewHasBox(view, boxName){
   var viewConfig = null;
 
   for(var i = 0; i < views.length; i++){
-    if(views[i].id === view){
+    if(String(views[i].id) === String(view)){
       viewConfig = views[i];
       break;
     }
   }
+  if(!viewConfig) return false;
 
-  if(!viewConfig || !Array.isArray(viewConfig.rows)){
-    return false;
-  }
-
-  for(var i = 0; i < viewConfig.rows.length; i++){
-    var items = viewConfig.rows[i].items || [];
-
+  var wanted = String(boxName);
+  var found = false;
+  function visit(items){
+    items = items || [];
     for(var j = 0; j < items.length; j++){
-      if(items[j].box_id === boxName){
-        return true;
+      var item = items[j] || {};
+      if(String(item.box_id) === wanted ||
+         String(item.element_id) === wanted){
+        found = true;
+        return;
       }
     }
   }
 
-  return false;
+  /* Layout v2: sezioni -> colonne -> elementi. */
+  var sections = viewConfig.sections || [];
+  for(var s = 0; s < sections.length && !found; s++){
+    var columns = sections[s].columns || [];
+    for(var c = 0; c < columns.length && !found; c++){
+      visit(columns[c].items);
+    }
+  }
+
+  /* Compatibilità con il layout legacy a righe. */
+  var rows = viewConfig.rows || [];
+  for(var r = 0; r < rows.length && !found; r++){
+    visit(rows[r].items);
+  }
+  return found;
 }
 
 /* ==================================================
@@ -11859,54 +11874,30 @@ function showLoggedOut(message){
 
 function initBoxRefresh() {
 
-  var boxes = [
+  /* Registry dei renderer: i box attivi e i relativi contenitori
+     arrivano dal catalogo D1; qui si definisce una sola volta come aggiornarli. */
+  var refreshRenderers = {
+    recurringTasksBox: function(){ loadRecurringTasks(); },
+    personalGlobalTaskBox: function(){ loadTasks(); },
+    personalTasksBox: function(){ loadAgenda(); },
+    personalRoutesBox: function(){ loadRoutes(currentView); },
+    userAgendaBox: function(){ loadUserAgenda(currentView); },
+    agendaBox: function(){ loadAgenda(); },
+    familyShoppingBox: function(){ loadFamilyShoppingList(); },
+    sharedTasksBox: function(){ loadTasks(); },
+    todoBox: function(){ todoConnect(); },
+    personalTodoBox: function(){ personalTodoConnect(); },
+    schoolMenuBox: function(){ loadMenu(); }
+  };
 
-    {
-      id: "recurringTasksBox",
-      load: function () { loadRecurringTasks(); }
-    },
-
-    {
-      id: "personalGlobalTaskBox",
-      load: function () { loadTasks(); }
-    },
-    {
-      id: "personalTasksBox",
-      load: function () { loadAgenda(); }
-    },
-    {
-      id: "personalRoutesBox",
-      load: function () { loadRoutes(currentView); }
-    },
-    {
-      id: "userAgendaBox",
-      load: function () { loadUserAgenda(currentView); }
-    },
-    {
-      id: "agendaBox",
-      load: function () { loadAgenda(); }
-    },
-    {
-      id: "familyShoppingBox",
-      load: function () { loadFamilyShoppingList(); }
-    },
-    {
-      id: "sharedTasksBox",
-      load: function () { loadTasks(); }
-    },
-    {
-      id: "todoBox",
-      load: function () { todoConnect(); }
-    },
-	{
-	  id: "personalTodoBox",
-	  load: function () { personalTodoConnect(); }
-	},
-    {
-      id: "schoolMenuBox",
-      load: function () { loadMenu(); }
-    }
-  ];
+  var boxes = [];
+  for(var catalogIndex = 0; catalogIndex < DASHBOARD_BOXES.length; catalogIndex++){
+    var catalogBox = DASHBOARD_BOXES[catalogIndex];
+    if(!catalogBox || !catalogBox.element_id) continue;
+    var renderer = refreshRenderers[catalogBox.element_id];
+    if(typeof renderer !== "function") continue;
+    boxes.push({ id: catalogBox.element_id, load: renderer });
+  }
 
   for (var i = 0; i < boxes.length; i++) {
 
