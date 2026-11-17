@@ -6348,9 +6348,13 @@ function pollTodo(){
 function schedulePoll(){
   clearTimeout(pollTimer);
   pollTimer = setTimeout(function(){
-    if(todoConnected && !document.querySelector(".todo-assign-menu.open")){
-      if(!todoBusy){ pollTodo(); }
-      if(!taskBusy){ loadTasks(true); }
+    if(todoConnected && viewHasBox(currentView, "todo") &&
+       !document.querySelector(".todo-assign-menu.open") && !todoBusy){
+      pollTodo();
+    }
+    if((viewHasBox(currentView, "sharedTasks") ||
+        viewHasBox(currentView, "personalGlobalTasks")) && !taskBusy){
+      loadTasks(true);
     }
     schedulePoll();
   }, 30000);
@@ -6488,12 +6492,9 @@ function personalTodoPoll() {
 function taskKey(sel){ return fmtDay(todayNum() + TASK_OFF[sel]); }
 
 function loadTasks(silent){
-  if(!todoConnected){
-    taskSyncError = false;
-    updateSyncLabels();
-    return;
-  }
+  if(!authToken) return;
   if(!silent){ setText($("taskStatus"), "Caricamento..."); }
+  if(!pollTimer) schedulePoll();
 
   api("GET", "?list=tasks", null, function(err, d){
     if(err || !d || !d.days){
