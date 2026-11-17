@@ -100,6 +100,28 @@ h3 {
   text-decoration:line-through;
 }
 
+/* Tasklist dei box custom generati dal catalogo D1. */
+.custom-task-row {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:6px 0;
+  min-width:0;
+}
+.custom-task-checkbox {
+  flex:0 0 auto;
+  margin:0;
+}
+.custom-task-label {
+  flex:1 1 auto;
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.custom-task-assignee {
+  flex:0 0 auto;
+  margin-left:4px;
+}
+
 /* Intestazione box e sincronizzazione */
 
 .section-heading-title {
@@ -9291,18 +9313,20 @@ function ensureCustomBoxContainers(){
     var root = mk("div", "box custom-task-box");
     root.id = box.element_id;
     root.setAttribute("data-custom-box-id", String(box.numeric_id || ""));
-    var heading = mk("div", "section-heading", box.title || "Task");
+    var heading = mk("div", "section-heading");
+    var title = mk("h2", "", box.title || "Task");
+    title.setAttribute("data-box-title", box.id);
+    var status = mk("div", "sync-label");
+    status.id = box.element_id + "_status";
+    heading.appendChild(title);
+    heading.appendChild(status);
     root.appendChild(heading);
 
     var content = mk("div", "custom-task-content");
     content.id = box.element_id + "_content";
     root.appendChild(content);
 
-    var status = mk("div", "small sync-label");
-    status.id = box.element_id + "_status";
-    root.appendChild(status);
-
-    var addRow = mk("div", "custom-task-add");
+    var addRow = mk("div", "add-ctl custom-task-add");
     var input = mk("input", "custom-task-input");
     input.type = "text";
     input.maxLength = 500;
