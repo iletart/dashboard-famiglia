@@ -100,35 +100,6 @@ h3 {
   text-decoration:line-through;
 }
 
-/* Tasklist dei box custom generati dal catalogo D1. */
-.custom-task-row {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin:6px 0;
-  min-width:0;
-}
-.custom-task-checkbox {
-  flex:0 0 auto;
-  margin:0;
-}
-.custom-task-label {
-  flex:1 1 auto;
-  min-width:0;
-  overflow-wrap:anywhere;
-}
-.custom-task-assignee {
-  flex:0 0 auto;
-  margin-left:4px;
-}
-.custom-task-assignee-select {
-  flex:0 0 auto;
-  max-width:125px;
-  min-width:0;
-  font-size:12px;
-  padding:4px;
-}
-
 /* Intestazione box e sincronizzazione */
 
 .section-heading-title {
@@ -4942,17 +4913,151 @@ body.k .family-shopping-item > .todo-actions > .todo-delete {
 <!-- ===== VISTE PERSONALI ===== -->
 <div id="personalView" hidden>
 
+  <div class="box" id="personalGlobalTaskBox">
+    <div class="section-heading">
+      <h2 data-box-title="personalGlobalTasks"></h2>
+      <div class="sync-label" id="personalGlobalTaskTimes"></div>
+    </div>
+    <div class="seg" id="personalGlobalTaskDays">
+      <button type="button" class="seg-button" data-day="ieri">Ieri</button>
+      <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+      <button type="button" class="seg-button" data-day="domani">Domani</button>
+    </div>
+    <div id="personalGlobalTaskList">Caricamento...</div>
+    <div class="small" id="personalGlobalTaskStatus"></div>
   </div>
+
+  <div class="box" id="personalTasksBox">
+    <div class="section-heading">
+      <h2 data-box-title="personalTasks"></h2>
+      <div class="sync-label" id="personalTasksTimes"></div>
+    </div>
+    <div class="seg two" id="personalPeriod">
+      <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+      <button type="button" class="seg-button" data-day="domani">Domani</button>
+    </div>
+    <div id="personalTasks">Caricamento...</div>
+  </div>
+
+  <div class="box" id="personalRoutesBox" hidden>
+    <div class="section-heading">
+      <h2 data-box-title="personalRoutes"></h2>
+      <div class="sync-label" id="personalRoutesTimes"></div>
+    </div>
+    <div id="personalRoutes"></div>
+    <div class="small" id="personalRoutesStatus"></div>
+  </div>
+
+  <div class="box" id="userAgendaBox" hidden>
+    <div class="section-heading">
+      <h2 data-box-title="userAgenda"></h2>
+      <div class="sync-label" id="userAgendaTimes"></div>
+    </div>
+    <div id="userAgenda">Caricamento...</div>
+  </div>
+</div>
 
 <!-- ===== VISTA FAMIGLIA ===== -->
 <div class="row" id="dashboardContent" hidden>
   <div class="col">
 
+    <div class="box" id="agendaBox">
+      <div class="section-heading">
+        <h2 data-box-title="agenda"></h2>
+        <div class="sync-label" id="agendaTimes"></div>
+      </div>
+      <div id="agenda">Caricamento...</div>
     </div>
+
+    <div class="box" id="familyShoppingBox" hidden>
+      <div class="section-heading">
+        <h2 data-box-title="familyShopping">Lista della spesa</h2>
+        <div class="sync-label" id="familyShoppingTimes"></div>
+      </div>
+      <div class="add-ctl family-shopping-add">
+        <input type="text" id="familyShoppingInput" maxlength="200" placeholder="Aggiungi un articolo">
+        <input type="text" id="familyShoppingQuantity" maxlength="50" placeholder="Qtà" aria-label="Quantità">
+        <button type="button" id="familyShoppingAdd">+</button>
+      </div>
+      <div id="familyShoppingList">Caricamento...</div>
+    </div>
+  </div>
 
   <div class="col">
 
+    <div class="box" id="sharedTasksBox">
+      <div class="section-heading">
+        <h2 data-box-title="sharedTasks"></h2>
+        <div class="sync-label" id="taskTimes"></div>
+      </div>
+      <div class="seg" id="taskDays">
+        <button type="button" class="seg-button" data-day="ieri">Ieri</button>
+        <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+        <button type="button" class="seg-button" data-day="domani">Domani</button>
+      </div>
+      <div class="add-ctl" id="taskCtl" hidden>
+        <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
+        <button type="button" id="taskAddButton">Aggiungi</button>
+      </div>
+      <div id="taskList"></div>
+      <div class="small" id="taskStatus"></div>
     </div>
+
+
+    <div class="box" id="recurringTasksBox" hidden>
+      <div class="section-heading">
+        <h2 data-box-title="recurringTasks">Attività ricorrenti</h2>
+        <button type="button" id="recurringConfigButton" class="recurring-config-button" title="Configura attività ricorrenti" aria-label="Configura attività ricorrenti" hidden><span aria-hidden="true">≡</span></button>
+        <div class="sync-label" id="recurringTasksTimes"></div>
+      </div>
+      <div class="seg" id="recurringTaskDays">
+        <button type="button" class="seg-button" data-day="ieri">Ieri</button>
+        <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+        <button type="button" class="seg-button" data-day="domani">Domani</button>
+      </div>
+      <div id="recurringTaskList">Caricamento...</div>
+      <div class="small" id="recurringTaskStatus"></div>
+    </div>
+
+    <div class="box" id="todoBox">
+      <div class="section-heading">
+        <h2 data-box-title="todo"></h2>
+        <div class="sync-label" id="todoSyncLabel">non connesso</div>
+      </div>
+      <div class="add-ctl" id="todoCtl" hidden>
+        <input type="text" id="todoInput" maxlength="200" placeholder="Nuova attività">
+        <button type="button" id="todoAddButton">Aggiungi</button>
+      </div>
+      <div id="todoList"></div>
+      <div class="small" id="todoStatus"></div>
+    </div>
+	
+	<div class="box" id="personalTodoBox">
+	  <div class="section-heading">
+		<h2 data-box-title="personalTodo"></h2>
+		<div class="sync-label" id="personalTodoSyncLabel">non connesso</div>
+	  </div>
+	  <div id="personalTodoList"></div>
+	  <div class="small" id="personalTodoStatus"></div>
+	</div>
+
+    <div class="box" id="schoolMenuBox">
+      <div class="section-heading">
+        <h2 data-box-title="schoolMenu"></h2>
+        <div class="sync-label" id="menuTimes"></div>
+      </div>
+      <div class="seg" id="menuDays">
+        <button type="button" class="seg-button" data-day="ieri">Ieri</button>
+        <button type="button" class="seg-button" data-day="oggi">Oggi</button>
+        <button type="button" class="seg-button" data-day="domani">Domani</button>
+      </div>
+      <div class="menu-head">
+        <h3 id="menuDate"></h3>
+        <div class="small" id="menuStatus"></div>
+      </div>
+      <div id="menuList"></div>
+    </div>
+  </div>
 </div>
 
 
@@ -5064,187 +5169,6 @@ body.k .family-shopping-item > .todo-actions > .todo-delete {
     <h3>Attività configurate</h3>
     <div id="recurringDefinitions"></div>
   </div>
-</div>
-
-<div id="boxTemplates" hidden>
-<script type="text/x-dashboard-template" data-dashboard-template="personalGlobalTasks">
-<div class="box" id="personalGlobalTaskBox">
-    <div class="section-heading">
-      <h2 data-box-title="personalGlobalTasks"></h2>
-      <div class="sync-label" id="personalGlobalTaskTimes"></div>
-    </div>
-    <div class="seg" id="personalGlobalTaskDays">
-      <button type="button" class="seg-button" data-day="ieri">Ieri</button>
-      <button type="button" class="seg-button" data-day="oggi">Oggi</button>
-      <button type="button" class="seg-button" data-day="domani">Domani</button>
-    </div>
-    <div id="personalGlobalTaskList">Caricamento...</div>
-    <div class="small" id="personalGlobalTaskStatus"></div>
-  </div>
-</script>
-
-  
-<script type="text/x-dashboard-template" data-dashboard-template="personalTasks">
-<div class="box" id="personalTasksBox">
-    <div class="section-heading">
-      <h2 data-box-title="personalTasks"></h2>
-      <div class="sync-label" id="personalTasksTimes"></div>
-    </div>
-    <div class="seg two" id="personalPeriod">
-      <button type="button" class="seg-button" data-day="oggi">Oggi</button>
-      <button type="button" class="seg-button" data-day="domani">Domani</button>
-    </div>
-    <div id="personalTasks">Caricamento...</div>
-  </div>
-</script>
-
-  
-<script type="text/x-dashboard-template" data-dashboard-template="personalRoutes">
-<div class="box" id="personalRoutesBox" hidden>
-    <div class="section-heading">
-      <h2 data-box-title="personalRoutes"></h2>
-      <div class="sync-label" id="personalRoutesTimes"></div>
-    </div>
-    <div id="personalRoutes"></div>
-    <div class="small" id="personalRoutesStatus"></div>
-  </div>
-</script>
-
-  
-<script type="text/x-dashboard-template" data-dashboard-template="userAgenda">
-<div class="box" id="userAgendaBox" hidden>
-    <div class="section-heading">
-      <h2 data-box-title="userAgenda"></h2>
-      <div class="sync-label" id="userAgendaTimes"></div>
-    </div>
-    <div id="userAgenda">Caricamento...</div>
-  </div>
-</script>
-
-<script type="text/x-dashboard-template" data-dashboard-template="shopping">
-<div class="box" id="shoppingBox">
-  <div class="section-heading">
-    <h2 data-box-title="shopping">Amazon Shopping</h2>
-    <div class="sync-label" id="shoppingTimes"></div>
-  </div>
-  <div id="shoppingList">Caricamento...</div>
-</div>
-</script>
-
-
-<script type="text/x-dashboard-template" data-dashboard-template="agenda">
-<div class="box" id="agendaBox">
-      <div class="section-heading">
-        <h2 data-box-title="agenda"></h2>
-        <div class="sync-label" id="agendaTimes"></div>
-      </div>
-      <div id="agenda">Caricamento...</div>
-    </div>
-</script>
-
-    
-<script type="text/x-dashboard-template" data-dashboard-template="familyShopping">
-<div class="box" id="familyShoppingBox" hidden>
-      <div class="section-heading">
-        <h2 data-box-title="familyShopping">Lista della spesa</h2>
-        <div class="sync-label" id="familyShoppingTimes"></div>
-      </div>
-      <div class="add-ctl family-shopping-add">
-        <input type="text" id="familyShoppingInput" maxlength="200" placeholder="Aggiungi un articolo">
-        <input type="text" id="familyShoppingQuantity" maxlength="50" placeholder="Qtà" aria-label="Quantità">
-        <button type="button" id="familyShoppingAdd">+</button>
-      </div>
-      <div id="familyShoppingList">Caricamento...</div>
-    </div>
-</script>
-  
-<script type="text/x-dashboard-template" data-dashboard-template="sharedTasks">
-<div class="box" id="sharedTasksBox">
-      <div class="section-heading">
-        <h2 data-box-title="sharedTasks"></h2>
-        <div class="sync-label" id="taskTimes"></div>
-      </div>
-      <div class="seg" id="taskDays">
-        <button type="button" class="seg-button" data-day="ieri">Ieri</button>
-        <button type="button" class="seg-button" data-day="oggi">Oggi</button>
-        <button type="button" class="seg-button" data-day="domani">Domani</button>
-      </div>
-      <div class="add-ctl" id="taskCtl" hidden>
-        <input type="text" id="taskInput" maxlength="200" placeholder="Nuova attività">
-        <button type="button" id="taskAddButton">Aggiungi</button>
-      </div>
-      <div id="taskList"></div>
-      <div class="small" id="taskStatus"></div>
-    </div>
-</script>
-
-
-    
-<script type="text/x-dashboard-template" data-dashboard-template="recurringTasks">
-<div class="box" id="recurringTasksBox" hidden>
-      <div class="section-heading">
-        <h2 data-box-title="recurringTasks">Attività ricorrenti</h2>
-        <button type="button" id="recurringConfigButton" class="recurring-config-button" title="Configura attività ricorrenti" aria-label="Configura attività ricorrenti" hidden><span aria-hidden="true">≡</span></button>
-        <div class="sync-label" id="recurringTasksTimes"></div>
-      </div>
-      <div class="seg" id="recurringTaskDays">
-        <button type="button" class="seg-button" data-day="ieri">Ieri</button>
-        <button type="button" class="seg-button" data-day="oggi">Oggi</button>
-        <button type="button" class="seg-button" data-day="domani">Domani</button>
-      </div>
-      <div id="recurringTaskList">Caricamento...</div>
-      <div class="small" id="recurringTaskStatus"></div>
-    </div>
-</script>
-
-    
-<script type="text/x-dashboard-template" data-dashboard-template="todo">
-<div class="box" id="todoBox">
-      <div class="section-heading">
-        <h2 data-box-title="todo"></h2>
-        <div class="sync-label" id="todoSyncLabel">non connesso</div>
-      </div>
-      <div class="add-ctl" id="todoCtl" hidden>
-        <input type="text" id="todoInput" maxlength="200" placeholder="Nuova attività">
-        <button type="button" id="todoAddButton">Aggiungi</button>
-      </div>
-      <div id="todoList"></div>
-      <div class="small" id="todoStatus"></div>
-    </div>
-</script>
-	
-	
-<script type="text/x-dashboard-template" data-dashboard-template="personalTodo">
-<div class="box" id="personalTodoBox">
-	  <div class="section-heading">
-		<h2 data-box-title="personalTodo"></h2>
-		<div class="sync-label" id="personalTodoSyncLabel">non connesso</div>
-	  </div>
-	  <div id="personalTodoList"></div>
-	  <div class="small" id="personalTodoStatus"></div>
-	</div>
-</script>
-
-    
-<script type="text/x-dashboard-template" data-dashboard-template="schoolMenu">
-<div class="box" id="schoolMenuBox">
-      <div class="section-heading">
-        <h2 data-box-title="schoolMenu"></h2>
-        <div class="sync-label" id="menuTimes"></div>
-      </div>
-      <div class="seg" id="menuDays">
-        <button type="button" class="seg-button" data-day="ieri">Ieri</button>
-        <button type="button" class="seg-button" data-day="oggi">Oggi</button>
-        <button type="button" class="seg-button" data-day="domani">Domani</button>
-      </div>
-      <div class="menu-head">
-        <h3 id="menuDate"></h3>
-        <div class="small" id="menuStatus"></div>
-      </div>
-      <div id="menuList"></div>
-    </div>
-</script>
-  
 </div>
 
 <div id="err"></div>
@@ -5493,11 +5417,6 @@ function setTimes(el, gen, synced, err, staleMs, needGen){
 }
 
 /* Gruppi di pulsanti (.seg) con data-day */
-function bindElementEvent(id, eventName, handler){
-  var element = $(id);
-  if(element) element[eventName] = handler;
-}
-
 function bindSeg(id, fn){
   var container = $(id);
   // Alcune viste possono non avere il box che contiene questo selettore.
@@ -5546,42 +5465,27 @@ function viewHasBox(view, boxName){
   var viewConfig = null;
 
   for(var i = 0; i < views.length; i++){
-    if(String(views[i].id) === String(view)){
+    if(views[i].id === view){
       viewConfig = views[i];
       break;
     }
   }
-  if(!viewConfig) return false;
 
-  var wanted = String(boxName);
-  var found = false;
-  function visit(items){
-    items = items || [];
+  if(!viewConfig || !Array.isArray(viewConfig.rows)){
+    return false;
+  }
+
+  for(var i = 0; i < viewConfig.rows.length; i++){
+    var items = viewConfig.rows[i].items || [];
+
     for(var j = 0; j < items.length; j++){
-      var item = items[j] || {};
-      if(String(item.box_id) === wanted ||
-         String(item.element_id) === wanted){
-        found = true;
-        return;
+      if(items[j].box_id === boxName){
+        return true;
       }
     }
   }
 
-  /* Layout v2: sezioni -> colonne -> elementi. */
-  var sections = viewConfig.sections || [];
-  for(var s = 0; s < sections.length && !found; s++){
-    var columns = sections[s].columns || [];
-    for(var c = 0; c < columns.length && !found; c++){
-      visit(columns[c].items);
-    }
-  }
-
-  /* Compatibilità con il layout legacy a righe. */
-  var rows = viewConfig.rows || [];
-  for(var r = 0; r < rows.length && !found; r++){
-    visit(rows[r].items);
-  }
-  return found;
+  return false;
 }
 
 /* ==================================================
@@ -6355,17 +6259,9 @@ function pollTodo(){
 function schedulePoll(){
   clearTimeout(pollTimer);
   pollTimer = setTimeout(function(){
-    if(!authToken || !currentView){
-      pollTimer = null;
-      return;
-    }
-    if(todoConnected && viewHasBox(currentView, "todo") &&
-       !document.querySelector(".todo-assign-menu.open") && !todoBusy){
-      pollTodo();
-    }
-    if((viewHasBox(currentView, "sharedTasks") ||
-        viewHasBox(currentView, "personalGlobalTasks")) && !taskBusy){
-      loadTasks(true);
+    if(todoConnected && !document.querySelector(".todo-assign-menu.open")){
+      if(!todoBusy){ pollTodo(); }
+      if(!taskBusy){ loadTasks(true); }
     }
     schedulePoll();
   }, 30000);
@@ -6503,9 +6399,12 @@ function personalTodoPoll() {
 function taskKey(sel){ return fmtDay(todayNum() + TASK_OFF[sel]); }
 
 function loadTasks(silent){
-  if(!authToken) return;
+  if(!todoConnected){
+    taskSyncError = false;
+    updateSyncLabels();
+    return;
+  }
   if(!silent){ setText($("taskStatus"), "Caricamento..."); }
-  if(!pollTimer) schedulePoll();
 
   api("GET", "?list=tasks", null, function(err, d){
     if(err || !d || !d.days){
@@ -9360,343 +9259,97 @@ function personalRow(){
 }
 
 
-
-/* ==================================================
-   BOX DINAMICI: contenitori e renderer delle tasklist custom
-   ================================================== */
-function customBoxRequest(method, path, payload, done){
-  var x = new XMLHttpRequest();
-  var completed = false;
-  function finish(ok, data){
-    if(completed) return;
-    completed = true;
-    done(ok, data);
-  }
-  x.open(method, USERS_API_URL + path, true);
-  x.setRequestHeader("Authorization", "Bearer " + authToken);
-  if(payload !== null) x.setRequestHeader("Content-Type", "application/json");
-  x.timeout = 15000;
-  x.onreadystatechange = function(){
-    if(x.readyState !== 4 || completed) return;
-    var data = null;
-    try { data = JSON.parse(x.responseText); } catch(e){}
-    finish(x.status >= 200 && x.status < 300 && data && data.ok, data);
-  };
-  x.onerror = function(){ finish(false, {error:"Errore di connessione"}); };
-  x.ontimeout = function(){ finish(false, {error:"Timeout"}); };
-  x.send(payload === null ? null : JSON.stringify(payload));
-}
-
-function ensureStandardBoxContainers(){
-  var stash = $("stash");
-  if(!stash) return;
-  for(var i = 0; i < DASHBOARD_BOXES.length; i++){
-    var box = DASHBOARD_BOXES[i];
-    if(!box || !box.id || !box.element_id) continue;
-    if(box.custom_family_id !== null && box.custom_family_id !== undefined) continue;
-    if($(box.element_id)) continue;
-    var template = document.querySelector('script[data-dashboard-template="' + box.id + '"]');
-    var root = null;
-    if(template){
-      var holder = document.createElement("div");
-      holder.innerHTML = template.text || template.textContent || template.innerHTML || "";
-      root = holder.firstChild;
-      while(root && root.nodeType !== 1) root = root.nextSibling;
-    }
-    if(!root){
-      /* Un tipo nuovo resta visibile nel layout, ma segnala che manca
-         ancora il renderer specifico invece di sparire silenziosamente. */
-      root = mk("div", "box dashboard-box-unavailable");
-      var heading = mk("div", "section-heading");
-      var title = mk("h2", "", box.title || box.id);
-      title.setAttribute("data-box-title", box.id);
-      heading.appendChild(title);
-      root.appendChild(heading);
-      root.appendChild(mk("div", "small", "Renderer non ancora disponibile per questo tipo di box."));
-    }
-    root.id = box.element_id;
-    root.removeAttribute("hidden");
-    stash.appendChild(root);
-  }
-}
-
-function ensureCustomBoxContainers(){
-  var stash = $("stash");
-  if(!stash) return;
-  for(var i = 0; i < DASHBOARD_BOXES.length; i++){
-    var box = DASHBOARD_BOXES[i];
-    if(!box || box.custom_family_id === null || box.custom_family_id === undefined) continue;
-    if($(box.element_id)) continue;
-
-    var root = mk("div", "box custom-task-box");
-    root.id = box.element_id;
-    root.setAttribute("data-custom-box-id", String(box.numeric_id || ""));
-    var heading = mk("div", "section-heading");
-    var title = mk("h2", "", box.title || "Task");
-    title.setAttribute("data-box-title", box.id);
-    var status = mk("div", "sync-label");
-    status.id = box.element_id + "_status";
-    heading.appendChild(title);
-    heading.appendChild(status);
-    root.appendChild(heading);
-
-    var content = mk("div", "custom-task-content");
-    content.id = box.element_id + "_content";
-    root.appendChild(content);
-
-    var addRow = mk("div", "add-ctl custom-task-add");
-    var input = mk("input", "custom-task-input");
-    input.type = "text";
-    input.maxLength = 500;
-    input.placeholder = "Nuova attività";
-    input.id = box.element_id + "_input";
-    var add = mk("button", "custom-task-add-button", "+");
-    add.type = "button";
-    add.setAttribute("aria-label", "Aggiungi attività");
-    add.onclick = (function(numericId, elementId){
-      return function(){ addCustomBoxTask(numericId, elementId); };
-    })(box.numeric_id, box.element_id);
-    input.onkeydown = (function(numericId, elementId){
-      return function(ev){
-        ev = ev || window.event;
-        if(ev.keyCode === 13){ addCustomBoxTask(numericId, elementId); }
-      };
-    })(box.numeric_id, box.element_id);
-    addRow.appendChild(input);
-    addRow.appendChild(add);
-    root.appendChild(addRow);
-    stash.appendChild(root);
-  }
-}
-
-function renderCustomBoxTasks(numericId, elementId, tasks, assignmentEnabled){
-  var content = $(elementId + "_content");
-  if(!content) return;
-  clear(content);
-  tasks = tasks || [];
-  if(!tasks.length){
-    content.appendChild(mk("div", "small", "Nessuna attività."));
-    return;
-  }
-  for(var i = 0; i < tasks.length; i++){
-    (function(task){
-      var row = mk("div", "custom-task-row");
-      var check = mk("input", "custom-task-checkbox");
-      check.type = "checkbox";
-      check.checked = Number(task.done) === 1 || task.done === true;
-      check.onclick = function(){
-        check.disabled = true;
-        customBoxRequest("PATCH", "/custom-tasks/" + encodeURIComponent(task.id),
-          {done: check.checked}, function(ok, data){
-            if(!ok){
-              check.checked = !check.checked;
-              var status = $(elementId + "_status");
-              if(status) setText(status, data && data.error ? data.error : "Salvataggio non riuscito");
-            }
-            check.disabled = false;
-          });
-      };
-      var label = mk("label", "custom-task-label", task.description || "");
-      row.appendChild(check);
-      row.appendChild(label);
-
-      if(assignmentEnabled){
-        var select = document.createElement("select");
-        select.className = "custom-task-assignee-select";
-        var none = document.createElement("option");
-        none.value = "";
-        none.appendChild(document.createTextNode("Non assegnata"));
-        select.appendChild(none);
-        for(var u = 0; u < USERS.length; u++){
-          if(Number(USERS[u].is_assignable) !== 1) continue;
-          var option = document.createElement("option");
-          option.value = String(USERS[u].id);
-          option.appendChild(document.createTextNode(USERS[u].name));
-          select.appendChild(option);
-        }
-        select.value = task.assigned_user_id ? String(task.assigned_user_id) : "";
-        select.onchange = (function(previousValue){
-          return function(){
-            var selected = select.value;
-            select.disabled = true;
-            customBoxRequest("PATCH", "/custom-tasks/" + encodeURIComponent(task.id),
-              {assigned_user_id: selected ? Number(selected) : null}, function(ok, data){
-                select.disabled = false;
-                if(!ok){
-                  select.value = previousValue;
-                  var status = $(elementId + "_status");
-                  if(status) setText(status, data && data.error ? data.error : "Assegnazione non salvata");
-                  return;
-                }
-                loadCustomBoxTasks(numericId, elementId);
-              });
-          };
-        })(select.value);
-        row.appendChild(select);
-      } else if(task.assigned_user_name){
-        row.appendChild(mk("span", "small custom-task-assignee", task.assigned_user_name));
-      }
-      content.appendChild(row);
-    })(tasks[i]);
-  }
-}
-
-function loadCustomBoxTasks(numericId, elementId){
-  if(!numericId || !authToken) return;
-  var status = $(elementId + "_status");
-  if(status) setText(status, "Aggiornamento...");
-  customBoxRequest("GET", "/custom-boxes/" + encodeURIComponent(numericId) + "/tasks", null,
-    function(ok, data){
-      if(!ok){
-        if(status) setText(status, data && data.error ? data.error : "Attività non disponibili");
-        return;
-      }
-      renderCustomBoxTasks(numericId, elementId, data.tasks || [], data.assignment_enabled === true || Number(data.assignment_enabled) === 1);
-      if(status) setText(status, "");
-    });
-}
-
-function addCustomBoxTask(numericId, elementId){
-  var input = $(elementId + "_input");
-  if(!input) return;
-  var description = String(input.value || "").replace(/^\s+|\s+$/g, "");
-  if(!description) return;
-  input.disabled = true;
-  customBoxRequest("POST", "/custom-boxes/" + encodeURIComponent(numericId) + "/tasks",
-    {description: description}, function(ok, data){
-      input.disabled = false;
-      if(!ok){
-        var status = $(elementId + "_status");
-        if(status) setText(status, data && data.error ? data.error : "Aggiunta non riuscita");
-        return;
-      }
-      input.value = "";
-      loadCustomBoxTasks(numericId, elementId);
-      input.focus();
-    });
-}
-
-function loadCustomBoxesInView(viewConfig){
-  if(!viewConfig) return;
-  var ids = {};
-  var boxes = {};
-  for(var i = 0; i < DASHBOARD_BOXES.length; i++){
-    var b = DASHBOARD_BOXES[i];
-    if(b && b.custom_family_id !== null && b.custom_family_id !== undefined){
-      boxes[String(b.id)] = b;
-    }
-  }
-  function visit(items){
-    items = items || [];
-    for(var j = 0; j < items.length; j++){
-      var b = boxes[String(items[j].box_id)];
-      if(b && !ids[String(b.id)]){
-        ids[String(b.id)] = true;
-        loadCustomBoxTasks(b.numeric_id, b.element_id);
-      }
-    }
-  }
-  if(viewConfig.sections && viewConfig.sections.length){
-    for(var s = 0; s < viewConfig.sections.length; s++){
-      var cols = viewConfig.sections[s].columns || [];
-      for(var c = 0; c < cols.length; c++) visit(cols[c].items);
-    }
-  } else {
-    var rows = viewConfig.rows || [];
-    for(var r = 0; r < rows.length; r++) visit(rows[r].items);
-  }
-}
-
 function buildLayout(view){
   var views = DASHBOARD_VIEWS || [];
   var vc = null;
   var i, j, el, b;
+  var rows, items, row, item;
   var host, stash;
 
   for(i = 0; i < views.length; i++){
-    if(String(views[i].id) === String(view)){ vc = views[i]; break; }
+    if(views[i].id === view){
+      vc = views[i];
+      break;
+    }
   }
-  if(!vc) return;
+
+  if(!vc){ return; }
+
+  rows = (vc.rows || []).slice();
+  rows.sort(function(a, b){ return a.position - b.position; });
 
   host = vc.view_type === "shared" ? $("dashboardContent") : personalRow();
   stash = $("stash");
-  if(!host || !stash) return;
+  if(!host || !stash){ return; }
 
-  /* I box custom non hanno un nodo HTML statico: lo creiamo dal catalogo DB. */
-  ensureStandardBoxContainers();
-  ensureCustomBoxContainers();
-
-  /* Riporta tutti i contenitori del catalogo nello stash prima di ricostruire la vista. */
-  for(i = 0; i < DASHBOARD_BOXES.length; i++){
-    el = $(DASHBOARD_BOXES[i].element_id);
-    if(el && el.parentNode !== stash) stash.appendChild(el);
+  /* Riporta tutti i box nello stash prima di ricostruire la vista. */
+  for(var v = 0; v < views.length; v++){
+    var allRows = views[v].rows || [];
+    for(i = 0; i < allRows.length; i++){
+      items = allRows[i].items || [];
+      for(j = 0; j < items.length; j++){
+        el = $(items[j].element_id);
+        if(el && el.parentNode !== stash){ stash.appendChild(el); }
+      }
+    }
   }
+
   clear(host);
 
-  /* Layout v2: sezioni full-width e colonne verticali indipendenti. */
-  if(vc.sections && vc.sections.length){
-    var sections = vc.sections.slice().sort(function(a,b){ return Number(a.position)-Number(b.position); });
-    for(var si = 0; si < sections.length; si++){
-      var section = sections[si];
-      var columnsData = (section.columns || []).slice().sort(function(a,b){ return Number(a.position)-Number(b.position); });
-      if(!columnsData.length) continue;
-
-      var sectionRow = mk("div", "row layout-row");
-      var isFull = section.type === "full";
-      var width = isFull ? 100 : 100 / columnsData.length;
-
-      for(var ci = 0; ci < columnsData.length; ci++){
-        var column = mk("div", "col" + (isFull ? " full" : ""));
-        column.style.width = width + "%";
-        var columnItems = (columnsData[ci].items || []).slice().sort(function(a,b){ return Number(a.position)-Number(b.position); });
-        for(var ii = 0; ii < columnItems.length; ii++){
-          var item = columnItems[ii];
-          b = $(item.element_id);
-          if(!b) continue;
-          setHidden(b, false);
-          column.appendChild(b);
-        }
-        sectionRow.appendChild(column);
-      }
-      host.appendChild(sectionRow);
-    }
-    return;
-  }
-
-  /* Compatibilità con le viste che usano ancora righe legacy. */
-  var rows = (vc.rows || []).slice();
-  rows.sort(function(a,b){ return Number(a.position)-Number(b.position); });
+  /*
+   * Le righe consecutive con più box formano colonne verticali continue.
+   * In questo modo ogni box successivo parte subito dopo quello precedente
+   * nella propria colonna, senza attendere la colonna più alta.
+   * Una riga con un solo box resta invece a larghezza piena e separa i gruppi.
+   */
   var segmentRows = [];
+
   function flushSegment(){
-    if(!segmentRows.length) return;
-    var count = 0;
-    for(var r = 0; r < segmentRows.length; r++) count = Math.max(count, segmentRows[r].length);
-    var rowEl = mk("div", "row layout-row");
-    var cols = [];
-    for(var c = 0; c < count; c++){
-      var col = mk("div", "col");
-      col.style.width = (100 / count) + "%";
-      cols.push(col);
-      rowEl.appendChild(col);
+    if(!segmentRows.length){ return; }
+
+    var columnCount = 0;
+    var segmentContainer = mk("div", "row layout-row");
+    var columns = [];
+
+    for(var r = 0; r < segmentRows.length; r++){
+      if(segmentRows[r].length > columnCount){
+        columnCount = segmentRows[r].length;
+      }
     }
-    host.appendChild(rowEl);
+
+    for(var c = 0; c < columnCount; c++){
+      var column = mk("div", "col");
+      column.style.width = (100 / columnCount) + "%";
+      columns.push(column);
+      segmentContainer.appendChild(column);
+    }
+
+    host.appendChild(segmentContainer);
+
     for(var rr = 0; rr < segmentRows.length; rr++){
       for(var cc = 0; cc < segmentRows[rr].length; cc++){
         b = $(segmentRows[rr][cc].element_id);
-        if(b){ setHidden(b, false); cols[cc].appendChild(b); }
+        if(!b){ continue; }
+        setHidden(b, false);
+        columns[cc].appendChild(b);
       }
     }
+
     segmentRows = [];
   }
+
   for(i = 0; i < rows.length; i++){
-    var items = (rows[i].items || []).slice();
-    items.sort(function(a,b){ return Number(a.position)-Number(b.position); });
-    if(!items.length) continue;
+    row = rows[i];
+    items = (row.items || []).slice();
+    items.sort(function(a, b){ return a.position - b.position; });
+    if(!items.length){ continue; }
+
     if(items.length === 1){
       flushSegment();
       b = $(items[0].element_id);
-      if(!b) continue;
+      if(!b){ continue; }
       setHidden(b, false);
+
       var fullRow = mk("div", "row layout-row");
       var fullColumn = mk("div", "col full");
       fullColumn.appendChild(b);
@@ -9706,47 +9359,8 @@ function buildLayout(view){
       segmentRows.push(items);
     }
   }
-  flushSegment();
-}
 
-/* Registry dei renderer attivati quando una vista diventa attiva.
-   L'elenco dei box da caricare viene sempre letto dal layout D1. */
-function loadConfiguredViewBoxes(viewConfig){
-  if(!viewConfig) return;
-  var renderers = {
-    agenda: function(){ safe(loadAgenda); },
-    shopping: function(){ safe(loadShoppingList); },
-    personalTasks: function(){ safe(loadAgenda); },
-    personalGlobalTasks: function(){ safe(loadTasks); },
-    sharedTasks: function(){ safe(loadTasks); },
-    todo: function(){ safe(loadTodo); },
-    schoolMenu: function(){ safe(loadMenu); },
-    personalTodo: function(){ personalTodoConnect(); },
-    familyShopping: function(){ safe(loadFamilyShoppingList); },
-    recurringTasks: function(){ safe(loadRecurringTasks, "loadRecurringTasks"); },
-    personalRoutes: function(){ loadRoutes(currentView); },
-    userAgenda: function(){
-      renderUserAgenda();
-      loadUserAgenda(currentView);
-    }
-  };
-  var loaded = {};
-  function visit(items){
-    items = items || [];
-    for(var i = 0; i < items.length; i++){
-      var id = String(items[i].box_id || "");
-      if(!id || loaded[id] || typeof renderers[id] !== "function") continue;
-      loaded[id] = true;
-      renderers[id]();
-    }
-  }
-  var sections = viewConfig.sections || [];
-  for(var s = 0; s < sections.length; s++){
-    var columns = sections[s].columns || [];
-    for(var c = 0; c < columns.length; c++) visit(columns[c].items);
-  }
-  var rows = viewConfig.rows || [];
-  for(var r = 0; r < rows.length; r++) visit(rows[r].items);
+  flushSegment();
 }
 
 function setView(view, manual){
@@ -9758,6 +9372,11 @@ function setView(view, manual){
   
   if(!viewConfig){
     console.error("Vista non autorizzata o inesistente:", view);
+    currentView = null;
+    return;
+  }
+  
+  if(!viewConfig){
     currentView = null;
     return;
   }
@@ -9780,14 +9399,45 @@ function setView(view, manual){
   setHidden($("personalView"), !personal);
 
   buildLayout(view);
-  updateDashboardBoxTitles();
-  loadCustomBoxesInView(viewConfig);
 
-  /* Avvia i renderer previsti dalla configurazione della vista nel DB. */
-  loadConfiguredViewBoxes(viewConfig);
+  if (
+    viewHasBox(view, "personalTodo") &&
+    $("personalTodoBox")
+  ) {
+    personalTodoConnect();
+  }
+
+  /* La vecchia loadShoppingList() usa #shoppingList, non più presente.
+     La lista attuale viene caricata solo quando prevista dalla vista. */
+  if (viewHasBox(view, "familyShopping")) {
+    safe(loadFamilyShoppingList);
+  }
+
+  if (viewHasBox(view, "recurringTasks")) {
+    safe(loadRecurringTasks, "loadRecurringTasks");
+  }
 
 
-  /* La vista determina anche quali renderer vengono aggiornati. */
+  /* box riservati a una sola vista (data-only) */
+  var only = document.querySelectorAll(".box[data-only]");
+  for(i = 0; i < only.length; i++){
+    setHidden(only[i], only[i].getAttribute("data-only") !== view);
+  }
+
+  renderAgenda();
+  
+  if(personal){
+    safe(renderPersonalTasks);
+  
+    if(viewHasBox(view, "personalRoutes")){
+      loadRoutes(view);
+    }
+  
+    if(viewHasBox(view, "userAgenda")){
+      renderUserAgenda();
+      loadUserAgenda(view);
+    }
+  }
 
   closeViewMenu();
   scheduleAlign();
@@ -12015,38 +11665,54 @@ function showLoggedOut(message){
 
 function initBoxRefresh() {
 
-  /* Registry dei renderer: i box attivi e i relativi contenitori
-     arrivano dal catalogo D1; qui si definisce una sola volta come aggiornarli. */
-  var refreshRenderers = {
-    recurringTasks: function(){ loadRecurringTasks(); },
-    shopping: function(){ loadShoppingList(); },
-    personalGlobalTasks: function(){ loadTasks(); },
-    personalTasks: function(){ loadAgenda(); },
-    personalRoutes: function(){ loadRoutes(currentView); },
-    userAgenda: function(){ loadUserAgenda(currentView); },
-    agenda: function(){ loadAgenda(); },
-    familyShopping: function(){ loadFamilyShoppingList(); },
-    sharedTasks: function(){ loadTasks(); },
-    todo: function(){ todoConnect(); },
-    personalTodo: function(){ personalTodoConnect(); },
-    schoolMenu: function(){ loadMenu(); }
-  };
+  var boxes = [
 
-  var boxes = [];
-  for(var catalogIndex = 0; catalogIndex < DASHBOARD_BOXES.length; catalogIndex++){
-    var catalogBox = DASHBOARD_BOXES[catalogIndex];
-    if(!catalogBox || !catalogBox.element_id) continue;
-    var renderer = refreshRenderers[catalogBox.id];
-    if(typeof renderer !== "function" &&
-       catalogBox.custom_family_id !== null &&
-       catalogBox.custom_family_id !== undefined){
-      renderer = (function(numericId, elementId){
-        return function(){ loadCustomBoxTasks(numericId, elementId); };
-      })(catalogBox.numeric_id, catalogBox.element_id);
+    {
+      id: "recurringTasksBox",
+      load: function () { loadRecurringTasks(); }
+    },
+
+    {
+      id: "personalGlobalTaskBox",
+      load: function () { loadTasks(); }
+    },
+    {
+      id: "personalTasksBox",
+      load: function () { loadAgenda(); }
+    },
+    {
+      id: "personalRoutesBox",
+      load: function () { loadRoutes(currentView); }
+    },
+    {
+      id: "userAgendaBox",
+      load: function () { loadUserAgenda(currentView); }
+    },
+    {
+      id: "agendaBox",
+      load: function () { loadAgenda(); }
+    },
+    {
+      id: "familyShoppingBox",
+      load: function () { loadFamilyShoppingList(); }
+    },
+    {
+      id: "sharedTasksBox",
+      load: function () { loadTasks(); }
+    },
+    {
+      id: "todoBox",
+      load: function () { todoConnect(); }
+    },
+	{
+	  id: "personalTodoBox",
+	  load: function () { personalTodoConnect(); }
+	},
+    {
+      id: "schoolMenuBox",
+      load: function () { loadMenu(); }
     }
-    if(typeof renderer !== "function") continue;
-    boxes.push({ id: catalogBox.element_id, load: renderer });
-  }
+  ];
 
   for (var i = 0; i < boxes.length; i++) {
 
@@ -12231,54 +11897,66 @@ function startDashboard(preferredView){
 	  renderPersonalTasks();
 	});
 	
-	bindElementEvent("recurringConfigButton", "onclick", openRecurringConfig);
-	bindElementEvent("recurringConfigClose", "onclick", closeRecurringConfig);
-	bindElementEvent("recurringCancelEditButton", "onclick", resetRecurringForm);
-	bindElementEvent("recurringType", "onchange", updateRecurringFields);
-	bindElementEvent("recurringSaveButton", "onclick", saveRecurringDefinition);
-  bindElementEvent("recurringSubtaskAddButton", "onclick", function(){ addRecurringSubtask("", null); });
+	$("recurringConfigButton").onclick = openRecurringConfig;
+	$("recurringConfigClose").onclick = closeRecurringConfig;
+	$("recurringCancelEditButton").onclick = resetRecurringForm;
+	$("recurringType").onchange = updateRecurringFields;
+	$("recurringSaveButton").onclick = saveRecurringDefinition;
+  $("recurringSubtaskAddButton").onclick = function() { addRecurringSubtask("", null); };
 
-	// I controlli vengono collegati solo se il box corrispondente è nel catalogo.
-	bindElementEvent("taskAddButton", "onclick", function(){
+	// Aggiunta task giornalieri
+	$("taskAddButton").onclick = function(){
 	  var input = $("taskInput");
-	  if(!input) return;
 	  var value = input.value.trim();
-	  if(!value) return;
-	  if(taskPost({action:"add", date:taskKey(taskSel), text:value}, false)){
-		 input.value = "";
-	  }
-	});
 
-	bindElementEvent("todoAddButton", "onclick", function(){
+	  if(!value){ return; }
+
+	  if(taskPost({
+		action: "add",
+		date: taskKey(taskSel),
+		text: value
+	  }, false)){
+		input.value = "";
+	  }
+	};
+
+	// Aggiunta task condivisi
+	$("todoAddButton").onclick = function(){
 	  var input = $("todoInput");
-	  if(!input) return;
 	  var value = input.value.trim();
-	  if(!value) return;
-	  if(todoChange("add", null, value)) input.value = "";
-	});
 
-	bindElementEvent("taskInput", "onkeydown", function(ev){
-	  if(ev.key === "Enter"){
-		 ev.preventDefault();
-		 var button = $("taskAddButton");
-		 if(button) button.click();
-	  }
-	});
+	  if(!value){ return; }
 
-	bindElementEvent("todoInput", "onkeydown", function(ev){
-	  if(ev.key === "Enter"){
-		 ev.preventDefault();
-		 var button = $("todoAddButton");
-		 if(button) button.click();
+	  if(todoChange("add", null, value)){
+		input.value = "";
 	  }
-	});
+	};
+
+	// Invio da tastiera
+	$("taskInput").onkeydown = function(ev){
+	  if(ev.key === "Enter"){
+		ev.preventDefault();
+		$("taskAddButton").click();
+	  }
+	};
+
+	$("todoInput").onkeydown = function(ev){
+	  if(ev.key === "Enter"){
+		ev.preventDefault();
+		$("todoAddButton").click();
+	  }
+	};
 
 	initBoxRefresh();
 
-	/* I renderer dei box vengono avviati esclusivamente dalla vista D1.
-	   Meteo e orari solari restano servizi indipendenti dall'insieme dei box. */
+	safe(loadAgenda, "loadAgenda");
+	/* loadShoppingList appartiene al vecchio contenitore #shoppingList,
+	   rimosso quando la lista è stata migrata a #familyShoppingList.
+	   Il box attuale viene caricato dal relativo loader dinamico. */
 	safe(loadWeather, "loadWeather");
 	safe(loadSunTimes, "loadSunTimes");
+	safe(loadMenu, "loadMenu");
+	safe(loadTodo, "loadTodo");
 
 	if(!scheduleViewTimer){
 	  scheduleViewTimer = setInterval(checkScheduledView, 15000);
