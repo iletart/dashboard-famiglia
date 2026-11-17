@@ -4991,7 +4991,17 @@ body.k .family-shopping-item > .todo-actions > .todo-delete {
 <div class="row" id="dashboardContent" hidden>
   <div class="col">
 
-    <script type="text/x-dashboard-template" data-dashboard-template="agenda">
+    <script type="text/x-dashboard-template" data-dashboard-template="shopping">
+<div class="box" id="shoppingBox">
+  <div class="section-heading">
+    <h2 data-box-title="shopping">Amazon Shopping</h2>
+    <div class="sync-label" id="shoppingTimes"></div>
+  </div>
+  <div id="shoppingList">Caricamento...</div>
+</div>
+</script>
+
+<script type="text/x-dashboard-template" data-dashboard-template="agenda">
 <div class="box" id="agendaBox">
       <div class="section-heading">
         <h2 data-box-title="agenda"></h2>
@@ -9627,6 +9637,7 @@ function loadConfiguredViewBoxes(viewConfig){
   if(!viewConfig) return;
   var renderers = {
     agenda: function(){ safe(loadAgenda); },
+    shopping: function(){ safe(loadShoppingList); },
     personalTasks: function(){ safe(loadAgenda); },
     personalGlobalTasks: function(){ safe(loadTasks); },
     sharedTasks: function(){ safe(loadTasks); },
@@ -11930,6 +11941,7 @@ function initBoxRefresh() {
      arrivano dal catalogo D1; qui si definisce una sola volta come aggiornarli. */
   var refreshRenderers = {
     recurringTasks: function(){ loadRecurringTasks(); },
+    shopping: function(){ loadShoppingList(); },
     personalGlobalTasks: function(){ loadTasks(); },
     personalTasks: function(){ loadAgenda(); },
     personalRoutes: function(){ loadRoutes(currentView); },
