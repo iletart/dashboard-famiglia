@@ -11887,24 +11887,31 @@ function initBoxRefresh() {
   /* Registry dei renderer: i box attivi e i relativi contenitori
      arrivano dal catalogo D1; qui si definisce una sola volta come aggiornarli. */
   var refreshRenderers = {
-    recurringTasksBox: function(){ loadRecurringTasks(); },
-    personalGlobalTaskBox: function(){ loadTasks(); },
-    personalTasksBox: function(){ loadAgenda(); },
-    personalRoutesBox: function(){ loadRoutes(currentView); },
-    userAgendaBox: function(){ loadUserAgenda(currentView); },
-    agendaBox: function(){ loadAgenda(); },
-    familyShoppingBox: function(){ loadFamilyShoppingList(); },
-    sharedTasksBox: function(){ loadTasks(); },
-    todoBox: function(){ todoConnect(); },
-    personalTodoBox: function(){ personalTodoConnect(); },
-    schoolMenuBox: function(){ loadMenu(); }
+    recurringTasks: function(){ loadRecurringTasks(); },
+    personalGlobalTasks: function(){ loadTasks(); },
+    personalTasks: function(){ loadAgenda(); },
+    personalRoutes: function(){ loadRoutes(currentView); },
+    userAgenda: function(){ loadUserAgenda(currentView); },
+    agenda: function(){ loadAgenda(); },
+    familyShopping: function(){ loadFamilyShoppingList(); },
+    sharedTasks: function(){ loadTasks(); },
+    todo: function(){ todoConnect(); },
+    personalTodo: function(){ personalTodoConnect(); },
+    schoolMenu: function(){ loadMenu(); }
   };
 
   var boxes = [];
   for(var catalogIndex = 0; catalogIndex < DASHBOARD_BOXES.length; catalogIndex++){
     var catalogBox = DASHBOARD_BOXES[catalogIndex];
     if(!catalogBox || !catalogBox.element_id) continue;
-    var renderer = refreshRenderers[catalogBox.element_id];
+    var renderer = refreshRenderers[catalogBox.id];
+    if(typeof renderer !== "function" &&
+       catalogBox.custom_family_id !== null &&
+       catalogBox.custom_family_id !== undefined){
+      renderer = (function(numericId, elementId){
+        return function(){ loadCustomBoxTasks(numericId, elementId); };
+      })(catalogBox.numeric_id, catalogBox.element_id);
+    }
     if(typeof renderer !== "function") continue;
     boxes.push({ id: catalogBox.element_id, load: renderer });
   }
