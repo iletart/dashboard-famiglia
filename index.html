@@ -6348,6 +6348,10 @@ function pollTodo(){
 function schedulePoll(){
   clearTimeout(pollTimer);
   pollTimer = setTimeout(function(){
+    if(!authToken || !currentView){
+      pollTimer = null;
+      return;
+    }
     if(todoConnected && viewHasBox(currentView, "todo") &&
        !document.querySelector(".todo-assign-menu.open") && !todoBusy){
       pollTodo();
