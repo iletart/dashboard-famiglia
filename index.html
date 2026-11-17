@@ -9576,6 +9576,12 @@ function buildLayout(view){
 function loadConfiguredViewBoxes(viewConfig){
   if(!viewConfig) return;
   var renderers = {
+    agenda: function(){ safe(renderAgenda); },
+    personalTasks: function(){ safe(renderPersonalTasks); },
+    personalGlobalTasks: function(){ safe(renderPersonalGlobalTasks); },
+    sharedTasks: function(){ safe(renderTasks); },
+    todo: function(){ safe(renderTodo); },
+    schoolMenu: function(){ safe(loadMenu); },
     personalTodo: function(){ personalTodoConnect(); },
     familyShopping: function(){ safe(loadFamilyShoppingList); },
     recurringTasks: function(){ safe(loadRecurringTasks, "loadRecurringTasks"); },
@@ -9646,17 +9652,7 @@ function setView(view, manual){
   loadConfiguredViewBoxes(viewConfig);
 
 
-  /* box riservati a una sola vista (data-only) */
-  var only = document.querySelectorAll(".box[data-only]");
-  for(i = 0; i < only.length; i++){
-    setHidden(only[i], only[i].getAttribute("data-only") !== view);
-  }
-
-  renderAgenda();
-  
-  if(personal){
-    safe(renderPersonalTasks);
-  }
+  /* La vista determina anche quali renderer vengono aggiornati. */
 
   closeViewMenu();
   scheduleAlign();
